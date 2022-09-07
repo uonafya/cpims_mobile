@@ -1,16 +1,21 @@
-# cpims_mobile
+# CPIMS Mobile App
+A cross-platform mobile app replicating and extending the existing CPMIS platform.
+The app is developed using Flutter, the backend in Django.
 
-A new Flutter project.
 
-## Getting Started
+## Tools and Architecture
+* Provider package for State Management
+* MVC pattern
 
-This project is a starting point for a Flutter application.
+## Folder Structure
+### Models
+To handle data models and data mapping
+### Screens
+To contain all pages/full screens, folders and widgets related to the screens
+### Providers
+To contain controllers/providers to handle shared logic, http requests and state management
+### Utils/Helpers
+To contain commonly used or shared functions
+### Widgets
+To contain shared widgets across the app
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
