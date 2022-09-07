@@ -8,14 +8,14 @@ The app is developed using Flutter, the backend in Django.
 * MVC pattern
 
 ## Folder Structure
-### Models
+#### Models
 To handle data models and data mapping
-### Screens
+#### Screens
 To contain all pages/full screens, folders and widgets related to the screens
-### Providers
+#### Providers
 To contain controllers/providers to handle shared logic, http requests and state management
-### Utils/Helpers
+#### Utils/Helpers
 To contain commonly used or shared functions
-### Widgets
+#### Widgets
 To contain shared widgets across the app
 
