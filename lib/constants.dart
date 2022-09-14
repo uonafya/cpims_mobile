@@ -303,7 +303,7 @@ List<Map<String, dynamic>> personRegistryStepper = [
   },
 ];
 
-const String baseurl = "http://197.136.123.149:8000/api/";
+const String baseurl = "http://192.168.215.50:8000/api/";
 const Map<String, String> headers = {"Content-Type": "application/json"};
 
 errorSnackBar(BuildContext context, message){

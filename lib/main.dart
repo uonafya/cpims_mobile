@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
+import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,16 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // final prefs = await SharedPreferences.getInstance();
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final appDocumentDirectory = await getApplicationDocumentsDirectory();
-  Hive.init(appDocumentDirectory.path);
+void main() async {
   runApp(const CPIMS());
-}
-
-checkLogin() async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getBool('authenticated');
 }
 
 
@@ -34,6 +27,31 @@ class CPIMS extends StatefulWidget {
 }
 
 class _CPIMSState extends State<CPIMS> {
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLogin();
+  }
+  bool isLoggedin = false;
+
+  _checkLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    print(prefs.getString('authenticated'));
+    // await prefs.remove('authenticated');
+
+    var authKey = prefs.getString('authenticated');
+
+    if(authKey != null){
+      // isLoggedin = !isLoggedin;
+      Get.to(() =>const Homepage());
+    }else{
+      isLoggedin = false;
+    }
+
+    return prefs.getString('authenticated');
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -54,7 +72,7 @@ class _CPIMSState extends State<CPIMS> {
           ),
         );
       },
-      child:  const LoginScreen(),
+      child: isLoggedin ? const Homepage() : const LoginScreen(),
     );
   }
 }

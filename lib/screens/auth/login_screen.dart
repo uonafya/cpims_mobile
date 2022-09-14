@@ -26,6 +26,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   String _username = "";
   String _password = "";
+  bool _isObscure = true;
 
 
   loginuser() async {
@@ -45,9 +46,6 @@ class _LoginScreenState extends State<LoginScreen> {
       if(response.statusCode==200){
         // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Homepage()));
         // print(responseMap["token"]);
-
-        // await box.put("token", responseMap['token']);
-        // print(box.get("token"));
         // Save an integer value to 'counter' key.
         await prefs.setString('authenticated', responseMap['token']);
 
@@ -103,8 +101,15 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            CustomTextField(
-              hintText: 'Username',
+            TextFormField(
+              // hintText: 'Username',
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: kPrimaryColor),
+                ),
+                labelText: "Enter Username here..."
+              ),
               onChanged: (value){
                 _username = value;
               },
@@ -115,8 +120,23 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            CustomTextField(
-              hintText: 'Password',
+                TextFormField(
+                  obscureText: _isObscure,
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: kPrimaryColor),
+                    ),
+                    labelText: "Enter password here...",
+                    suffixIcon: IconButton(
+                      icon: Icon( _isObscure ? Icons.visibility : Icons.visibility_off),
+                      onPressed: (){
+                        setState(() {
+                          _isObscure = !_isObscure;
+                        });
+                      },
+                    )
+                  ),
               onChanged: (value){
                 _password = value;
               },
