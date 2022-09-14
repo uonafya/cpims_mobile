@@ -49,7 +49,7 @@ List<Map<String, dynamic>> homeCardsTitles = [
   {
     'title': 'HOUSEHOLDS',
     'value': '0',
-    'icon': FontAwesomeIcons.home,
+    'icon': FontAwesomeIcons.house,
     'color': const Color(0xffFE5C57),
     's_color': const Color(0xff9A3734),
   }
@@ -58,7 +58,7 @@ List<Map<String, dynamic>> homeCardsTitles = [
 List<Map<String, dynamic>> drawerOptions = [
   {
     'title': 'Home',
-    'icon': FontAwesomeIcons.home,
+    'icon': FontAwesomeIcons.house,
     'onTap': () => {Get.off(() => const Homepage())},
   },
   {
@@ -77,7 +77,7 @@ List<Map<String, dynamic>> drawerOptions = [
   },
   {
     'title': 'Forms',
-    'icon': FontAwesomeIcons.fileAlt,
+    'icon': FontAwesomeIcons.fileLines,
     'children': [
       {
         'title': 'Case Record Sheet',
@@ -105,7 +105,7 @@ List<Map<String, dynamic>> drawerOptions = [
       },
       {
         'title': 'OVC Care(Comp)',
-        'onTap': () => {},
+        'onTap': () => {Get.off(() => const DocumentsManager())},
       },
       {
         'title': 'Preventive and Family Support)',
@@ -123,7 +123,7 @@ List<Map<String, dynamic>> drawerOptions = [
   },
   {
     'title': 'Reports',
-    'icon': FontAwesomeIcons.fileAlt,
+    'icon': FontAwesomeIcons.fileLines,
     'children': [
       {
         'title': 'Case Load Report',
@@ -161,7 +161,7 @@ List<Map<String, dynamic>> drawerOptions = [
   },
   {
     'title': 'Maintenance',
-    'icon': FontAwesomeIcons.cogs,
+    'icon': FontAwesomeIcons.gears,
     'children': [
       {
         'title': 'Reports',
@@ -187,7 +187,7 @@ List<Map<String, dynamic>> drawerOptions = [
   },
   {
     'title': 'GIS Module',
-    'icon': FontAwesomeIcons.mapMarkedAlt,
+    'icon': FontAwesomeIcons.mapLocationDot,
     'children': [
       {
         'title': 'Map',
@@ -302,3 +302,16 @@ List<Map<String, dynamic>> personRegistryStepper = [
     'onTap': () => {},
   },
 ];
+
+const String baseurl = "http://197.136.123.149:8000/api/";
+const Map<String, String> headers = {"Content-Type": "application/json"};
+
+errorSnackBar(BuildContext context, message){
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    backgroundColor: Colors.red,
+    content: Text(message),
+    duration: const Duration(seconds: 1),
+  ));
+}
+
+

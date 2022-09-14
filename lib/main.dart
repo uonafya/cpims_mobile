@@ -1,4 +1,3 @@
-import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
 import 'package:cpims_mobile/theme.dart';
@@ -7,13 +6,34 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+import 'package:path_provider/path_provider.dart';
+import 'package:hive/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+// final prefs = await SharedPreferences.getInstance();
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentDirectory = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDirectory.path);
   runApp(const CPIMS());
 }
 
-class CPIMS extends StatelessWidget {
+checkLogin() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getBool('authenticated');
+}
+
+
+class CPIMS extends StatefulWidget {
+  
   const CPIMS({Key? key}) : super(key: key);
 
+  @override
+  State<CPIMS> createState() => _CPIMSState();
+}
+
+class _CPIMSState extends State<CPIMS> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -34,7 +54,7 @@ class CPIMS extends StatelessWidget {
           ),
         );
       },
-      child: const LoginScreen(),
+      child:  const LoginScreen(),
     );
   }
 }
