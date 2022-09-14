@@ -6,6 +6,7 @@ The app is developed using Flutter, the backend in Django.
 ## Tools and Architecture
 * Provider package for State Management
 * MVC pattern
+* [Initial UI design](https://www.figma.com/file/cPzPl6HRvOIDWUxjKehPkT/CPMIS-App-Low-Fidelity?node-id=0%3A1)
 
 ## Folder Structure
 #### Models
