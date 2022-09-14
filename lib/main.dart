@@ -33,20 +33,17 @@ class _CPIMSState extends State<CPIMS> {
     super.initState();
     _checkLogin();
   }
-  bool isLoggedin = false;
 
   _checkLogin() async {
     final prefs = await SharedPreferences.getInstance();
-    print(prefs.getString('authenticated'));
     // await prefs.remove('authenticated');
 
     var authKey = prefs.getString('authenticated');
 
     if(authKey != null){
-      // isLoggedin = !isLoggedin;
-      Get.to(() =>const Homepage());
+      Get.to(() =>const Homepage(), transition: Transition.fade, duration: const Duration(milliseconds: 2000));
     }else{
-      isLoggedin = false;
+      Get.to(() =>const LoginScreen(), transition: Transition.fade, duration: const Duration(milliseconds: 1000));
     }
 
     return prefs.getString('authenticated');
@@ -72,7 +69,7 @@ class _CPIMSState extends State<CPIMS> {
           ),
         );
       },
-      child: isLoggedin ? const Homepage() : const LoginScreen(),
+      child: const LoginScreen(),
     );
   }
 }

@@ -104,7 +104,7 @@ class _PersonsRegistryState extends State<PersonsRegistry> {
                   ],
                 ),
               ]),
-              Footer(),
+              const Footer(),
             ]));
   }
 }

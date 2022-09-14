@@ -59,7 +59,7 @@ List<Map<String, dynamic>> drawerOptions = [
   {
     'title': 'Home',
     'icon': FontAwesomeIcons.house,
-    'onTap': () => {Get.off(() => const Homepage())},
+    'onTap': () => {Get.off(() => const Homepage(), transition: Transition.cupertino, duration: const Duration(milliseconds: 1000))},
   },
   {
     'title': 'Registry',
@@ -67,11 +67,11 @@ List<Map<String, dynamic>> drawerOptions = [
     'children': [
       {
         'title': 'Organisational Units',
-        'onTap': () => {Get.off(() => const OrganisationUnitsRegistry())},
+        'onTap': () => {Get.off(() => const OrganisationUnitsRegistry(), transition: Transition.cupertino, duration: const Duration(milliseconds: 1000))},
       },
       {
         'title': 'Persons Registry',
-        'onTap': () => {Get.off(() => const PersonsRegistry())},
+        'onTap': () => {Get.off(() => const PersonsRegistry(), transition: Transition.cupertino, duration: const Duration(milliseconds: 1000))},
       }
     ]
   },
@@ -81,31 +81,31 @@ List<Map<String, dynamic>> drawerOptions = [
     'children': [
       {
         'title': 'Case Record Sheet',
-        'onTap': () => {Get.off(() => const CaseRecordSheet())},
+        'onTap': () => {Get.off(() => const CaseRecordSheet(), transition: Transition.cupertino, duration: const Duration(milliseconds: 1000))},
       },
       {
         'title': 'Institutional Placement',
-        'onTap': () => {Get.off(() => const InstitutionalPlacement())},
+        'onTap': () => {Get.off(() => const InstitutionalPlacement(), transition: Transition.cupertino, duration: const Duration(milliseconds: 1000))},
       },
       {
         'title': 'Alternative Family Care',
-        'onTap': () => {Get.off(() => const AlternativeFamilyCare())},
+        'onTap': () => {Get.off(() => const AlternativeFamilyCare(), transition: Transition.cupertino, duration: const Duration(milliseconds: 1000))},
       },
       {
         'title': 'School and Bursary',
-        'onTap': () => {Get.off(() => const SchoolBursary())},
+        'onTap': () => {Get.off(() => const SchoolBursary(), transition: Transition.cupertino, duration: const Duration(milliseconds: 1000))},
       },
       {
         'title': 'Follow-ups',
-        'onTap': () => {Get.off(() => const FollowUps())},
+        'onTap': () => {Get.off(() => const FollowUps(), transition: Transition.cupertino, duration: const Duration(milliseconds: 1000))},
       },
       {
         'title': 'Documents Manager',
-        'onTap': () => {Get.off(() => const DocumentsManager())},
+        'onTap': () => {Get.off(() => const DocumentsManager(), transition: Transition.cupertino, duration: const Duration(milliseconds: 1000))},
       },
       {
         'title': 'OVC Care(Comp)',
-        'onTap': () => {Get.off(() => const DocumentsManager())},
+        'onTap': () => {Get.off(() => const DocumentsManager(), transition: Transition.cupertino, duration: const Duration(milliseconds: 1000))},
       },
       {
         'title': 'Preventive and Family Support)',
@@ -127,7 +127,7 @@ List<Map<String, dynamic>> drawerOptions = [
     'children': [
       {
         'title': 'Case Load Report',
-        'onTap': () => {Get.off(() => const CaseLoadReport())},
+        'onTap': () => {Get.off(() => const CaseLoadReport(), transition: Transition.cupertino, duration: const Duration(milliseconds: 1000))},
       },
       {
         'title': 'KNBS Report',
@@ -229,7 +229,7 @@ List<Map<String, dynamic>> drawerOptions = [
     'children': [
       {
         'title': 'Change Notes',
-        'onTap': () => {Get.off(() => const ChangeNotesScreen())},
+        'onTap': () => {Get.off(() => const ChangeNotesScreen(), transition: Transition.cupertino, duration: const Duration(milliseconds: 1000))},
       },
       {
         'title': 'Documentation',

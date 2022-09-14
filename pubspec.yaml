@@ -43,6 +43,7 @@ dependencies:
   hive_flutter: ^1.0.0
   path_provider: ^2.0.0
   shared_preferences: ^2.0.15
+  page_transition: ^2.0.9
 
 dev_dependencies:
   flutter_lints: ^2.0.0
