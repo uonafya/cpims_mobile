@@ -11,15 +11,15 @@ import 'package:path_provider/path_provider.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'screens/homepage/home_page.dart';
+
 // final prefs = await SharedPreferences.getInstance();
 
 void main() async {
   runApp(const CPIMS());
 }
 
-
 class CPIMS extends StatefulWidget {
-  
   const CPIMS({Key? key}) : super(key: key);
 
   @override
@@ -27,11 +27,10 @@ class CPIMS extends StatefulWidget {
 }
 
 class _CPIMSState extends State<CPIMS> {
-
   @override
   void initState() {
     super.initState();
-    _checkLogin();
+    // _checkLogin();
   }
 
   _checkLogin() async {
@@ -40,10 +39,14 @@ class _CPIMSState extends State<CPIMS> {
 
     var authKey = prefs.getString('authenticated');
 
-    if(authKey != null){
-      Get.to(() =>const Homepage(), transition: Transition.fade, duration: const Duration(milliseconds: 2000));
-    }else{
-      Get.to(() =>const LoginScreen(), transition: Transition.fade, duration: const Duration(milliseconds: 1000));
+    if (authKey != null) {
+      Get.to(() => const Homepage(),
+          transition: Transition.fade,
+          duration: const Duration(milliseconds: 2000));
+    } else {
+      Get.to(() => const LoginScreen(),
+          transition: Transition.fade,
+          duration: const Duration(milliseconds: 1000));
     }
 
     return prefs.getString('authenticated');
@@ -53,23 +56,24 @@ class _CPIMSState extends State<CPIMS> {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(392, 781),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context, child) {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => UIProvider()),
-          ],
-          child: GetMaterialApp(
-            title: 'CPIMS',
-            debugShowCheckedModeBanner: false,
-            theme: appTheme(),
-            home: child,
-          ),
+        designSize: const Size(392, 781),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) => UIProvider()),
+            ],
+            child: GetMaterialApp(
+              title: 'CPIMS',
+              debugShowCheckedModeBanner: false,
+              theme: appTheme(),
+              home: child,
+            ),
+          );
+        },
+        child: const Homepage()
+        //  LoginScreen(),
         );
-      },
-      child: const LoginScreen(),
-    );
   }
 }
