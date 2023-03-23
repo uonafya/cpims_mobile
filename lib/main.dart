@@ -30,7 +30,7 @@ class _CPIMSState extends State<CPIMS> {
   @override
   void initState() {
     super.initState();
-    // _checkLogin();
+    _checkLogin();
   }
 
   _checkLogin() async {
@@ -56,24 +56,25 @@ class _CPIMSState extends State<CPIMS> {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-        designSize: const Size(392, 781),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (context, child) {
-          return MultiProvider(
-            providers: [
-              ChangeNotifierProvider(create: (_) => UIProvider()),
-            ],
-            child: GetMaterialApp(
-              title: 'CPIMS',
-              debugShowCheckedModeBanner: false,
-              theme: appTheme(),
-              home: child,
-            ),
-          );
-        },
-        child: const Homepage()
-        //  LoginScreen(),
+      designSize: const Size(392, 781),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => UIProvider()),
+          ],
+          child: GetMaterialApp(
+            title: 'CPIMS',
+            debugShowCheckedModeBanner: false,
+            theme: appTheme(),
+            home: child,
+          ),
         );
+      },
+      child:
+          // const Homepage()
+          LoginScreen(),
+    );
   }
 }

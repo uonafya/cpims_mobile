@@ -17,10 +17,12 @@ const kPrimaryColor = Color(0xff00acac);
 const kTextGrey = Color(0XFF707478);
 const kSystemPadding = EdgeInsets.symmetric(horizontal: 20, vertical: 0);
 
+var _ovcActiveOrRegistered = '132,294 / 307,005';
+
 List<Map<String, dynamic>> homeCardsTitles = [
   {
     'title': 'OVC-ACTIVE/EVER REGISTERED',
-    'value': '132,294 / 307,005',
+    'value': _ovcActiveOrRegistered,
     'icon': FontAwesomeIcons.person,
     'color': kPrimaryColor,
     's_color': const Color(0xff0E6668),
@@ -61,7 +63,7 @@ List<Map<String, dynamic>> drawerOptions = [
     'icon': FontAwesomeIcons.house,
     'onTap': () => {
           Get.off(() => const Homepage(),
-              transition: Transition.cupertino,
+              transition: Transition.fadeIn,
               duration: const Duration(milliseconds: 1000))
         },
   },
@@ -73,7 +75,7 @@ List<Map<String, dynamic>> drawerOptions = [
         'title': 'Organisational Units',
         'onTap': () => {
               Get.off(() => const OrganisationUnitsRegistry(),
-                  transition: Transition.cupertino,
+                  transition: Transition.fadeIn,
                   duration: const Duration(milliseconds: 1000))
             },
       },
@@ -81,7 +83,7 @@ List<Map<String, dynamic>> drawerOptions = [
         'title': 'Persons Registry',
         'onTap': () => {
               Get.off(() => const PersonsRegistry(),
-                  transition: Transition.cupertino,
+                  transition: Transition.fadeIn,
                   duration: const Duration(milliseconds: 1000))
             },
       }
@@ -99,46 +101,46 @@ List<Map<String, dynamic>> drawerOptions = [
                   duration: const Duration(milliseconds: 1000))
             },
       },
-      {
-        'title': 'Institutional Placement',
-        'onTap': () => {
-              Get.off(() => const InstitutionalPlacement(),
-                  transition: Transition.cupertino,
-                  duration: const Duration(milliseconds: 1000))
-            },
-      },
-      {
-        'title': 'Alternative Family Care',
-        'onTap': () => {
-              Get.off(() => const AlternativeFamilyCare(),
-                  transition: Transition.cupertino,
-                  duration: const Duration(milliseconds: 1000))
-            },
-      },
-      {
-        'title': 'School and Bursary',
-        'onTap': () => {
-              Get.off(() => const SchoolBursary(),
-                  transition: Transition.cupertino,
-                  duration: const Duration(milliseconds: 1000))
-            },
-      },
-      {
-        'title': 'Follow-ups',
-        'onTap': () => {
-              Get.off(() => const FollowUps(),
-                  transition: Transition.cupertino,
-                  duration: const Duration(milliseconds: 1000))
-            },
-      },
-      {
-        'title': 'Documents Manager',
-        'onTap': () => {
-              Get.off(() => const DocumentsManager(),
-                  transition: Transition.cupertino,
-                  duration: const Duration(milliseconds: 1000))
-            },
-      },
+      // {
+      //   'title': 'Institutional Placement',
+      //   'onTap': () => {
+      //         Get.off(() => const InstitutionalPlacement(),
+      //             transition: Transition.cupertino,
+      //             duration: const Duration(milliseconds: 1000))
+      //       },
+      // },
+      // {
+      //   'title': 'Alternative Family Care',
+      //   'onTap': () => {
+      //         Get.off(() => const AlternativeFamilyCare(),
+      //             transition: Transition.cupertino,
+      //             duration: const Duration(milliseconds: 1000))
+      //       },
+      // },
+      // {
+      //   'title': 'School and Bursary',
+      //   'onTap': () => {
+      //         Get.off(() => const SchoolBursary(),
+      //             transition: Transition.cupertino,
+      //             duration: const Duration(milliseconds: 1000))
+      //       },
+      // },
+      // {
+      //   'title': 'Follow-ups',
+      //   'onTap': () => {
+      //         Get.off(() => const FollowUps(),
+      //             transition: Transition.cupertino,
+      //             duration: const Duration(milliseconds: 1000))
+      //       },
+      // },
+      // {
+      //   'title': 'Documents Manager',
+      //   'onTap': () => {
+      //         Get.off(() => const DocumentsManager(),
+      //             transition: Transition.cupertino,
+      //             duration: const Duration(milliseconds: 1000))
+      //       },
+      // },
       {
         'title': 'OVC Care(Comp)',
         'onTap': () => {
@@ -147,149 +149,149 @@ List<Map<String, dynamic>> drawerOptions = [
                   duration: const Duration(milliseconds: 1000))
             },
       },
-      {
-        'title': 'Preventive and Family Support)',
-        'onTap': () => {},
-      },
-      {
-        'title': 'PMTCT',
-        'onTap': () => {},
-      },
-      {
-        'title': 'DREAMS',
-        'onTap': () => {},
-      }
+      // {
+      //   'title': 'Preventive and Family Support)',
+      //   'onTap': () => {},
+      // },
+      // {
+      //   'title': 'PMTCT',
+      //   'onTap': () => {},
+      // },
+      // {
+      //   'title': 'DREAMS',
+      //   'onTap': () => {},
+      // }
     ]
   },
-  {
-    'title': 'Reports',
-    'icon': FontAwesomeIcons.fileLines,
-    'children': [
-      {
-        'title': 'Case Load Report',
-        'onTap': () => {
-              Get.off(() => const CaseLoadReport(),
-                  transition: Transition.cupertino,
-                  duration: const Duration(milliseconds: 1000))
-            },
-      },
-      {
-        'title': 'KNBS Report',
-        'onTap': () => {},
-      },
-      {
-        'title': 'Institutions Population Returns Report',
-        'onTap': () => {},
-      },
-      {
-        'title': 'Health Report',
-        'onTap': () => {},
-      },
-      {
-        'title': 'Bursary Report',
-        'onTap': () => {},
-      },
-      {
-        'title': 'Ad Hoc Report',
-        'onTap': () => {},
-      },
-      {
-        'title': 'Ad Hoc Pivot Report',
-        'onTap': () => {},
-      },
-      {
-        'title': 'Document Templates',
-        'onTap': () => {},
-      },
-    ]
-  },
-  {
-    'title': 'Maintenance',
-    'icon': FontAwesomeIcons.gears,
-    'children': [
-      {
-        'title': 'Reports',
-        'onTap': () => {},
-      },
-      {
-        'title': 'Schools',
-        'onTap': () => {},
-      },
-      {
-        'title': 'Facilities',
-        'onTap': () => {},
-      },
-      {
-        'title': 'Raw data',
-        'onTap': () => {},
-      },
-      {
-        'title': 'System Settings',
-        'onTap': () => {},
-      },
-    ]
-  },
-  {
-    'title': 'GIS Module',
-    'icon': FontAwesomeIcons.mapLocationDot,
-    'children': [
-      {
-        'title': 'Map',
-        'onTap': () => {},
-      }
-    ]
-  },
-  {
-    'title': 'Gallery',
-    'icon': FontAwesomeIcons.camera,
-    'children': [
-      {
-        'title': 'Gallery One',
-        'onTap': () => {},
-      },
-      {
-        'title': 'Gallery Two',
-        'onTap': () => {},
-      }
-    ]
-  },
-  {
-    'title': 'Data Quality',
-    'icon': FontAwesomeIcons.filter,
-    'children': [
-      {
-        'title': 'Age & Services',
-        'onTap': () => {},
-      },
-      {
-        'title': 'Age & Case plan',
-        'onTap': () => {},
-      },
-    ]
-  },
-  {
-    'title': 'Help & Documentation',
-    'icon': FontAwesomeIcons.briefcaseMedical,
-    'children': [
-      {
-        'title': 'Change Notes',
-        'onTap': () => {
-              Get.off(() => const ChangeNotesScreen(),
-                  transition: Transition.cupertino,
-                  duration: const Duration(milliseconds: 1000))
-            },
-      },
-      {
-        'title': 'Documentation',
-        'onTap': () => {},
-      }
-    ]
-  },
-  {
-    'title': 'OVC Dashboards',
-    'icon': FontAwesomeIcons.chartLine,
-    'children': []
-  }
+  // {
+  //   'title': 'Reports',
+  //   'icon': FontAwesomeIcons.fileLines,
+  //   'children': [
+  //     {
+  //       'title': 'Case Load Report',
+  //       'onTap': () => {
+  //             Get.off(() => const CaseLoadReport(),
+  //                 transition: Transition.cupertino,
+  //                 duration: const Duration(milliseconds: 1000))
+  //           },
+  //     },
+  //     {
+  //       'title': 'KNBS Report',
+  //       'onTap': () => {},
+  //     },
+  //     {
+  //       'title': 'Institutions Population Returns Report',
+  //       'onTap': () => {},
+  //     },
+  //     {
+  //       'title': 'Health Report',
+  //       'onTap': () => {},
+  //     },
+  //     {
+  //       'title': 'Bursary Report',
+  //       'onTap': () => {},
+  //     },
+  //     {
+  //       'title': 'Ad Hoc Report',
+  //       'onTap': () => {},
+  //     },
+  //     {
+  //       'title': 'Ad Hoc Pivot Report',
+  //       'onTap': () => {},
+  //     },
+  //     {
+  //       'title': 'Document Templates',
+  //       'onTap': () => {},
+  //     },
+  //   ]
+  // },
+  // {
+  //   'title': 'Maintenance',
+  //   'icon': FontAwesomeIcons.gears,
+  //   'children': [
+  //     {
+  //       'title': 'Reports',
+  //       'onTap': () => {},
+  //     },
+  //     {
+  //       'title': 'Schools',
+  //       'onTap': () => {},
+  //     },
+  //     {
+  //       'title': 'Facilities',
+  //       'onTap': () => {},
+  //     },
+  //     {
+  //       'title': 'Raw data',
+  //       'onTap': () => {},
+  //     },
+  //     {
+  //       'title': 'System Settings',
+  //       'onTap': () => {},
+  //     },
+  //   ]
+  // },
+  // {
+  //   'title': 'GIS Module',
+  //   'icon': FontAwesomeIcons.mapLocationDot,
+  //   'children': [
+  //     {
+  //       'title': 'Map',
+  //       'onTap': () => {},
+  //     }
+  //   ]
+  // },
+  // {
+  //   'title': 'Gallery',
+  //   'icon': FontAwesomeIcons.camera,
+  //   'children': [
+  //     {
+  //       'title': 'Gallery One',
+  //       'onTap': () => {},
+  //     },
+  //     {
+  //       'title': 'Gallery Two',
+  //       'onTap': () => {},
+  //     }
+  //   ]
+  // },
+  // {
+  //   'title': 'Data Quality',
+  //   'icon': FontAwesomeIcons.filter,
+  //   'children': [
+  //     {
+  //       'title': 'Age & Services',
+  //       'onTap': () => {},
+  //     },
+  //     {
+  //       'title': 'Age & Case plan',
+  //       'onTap': () => {},
+  //     },
+  //   ]
+  // },
+  // {
+  //   'title': 'Help & Documentation',
+  //   'icon': FontAwesomeIcons.briefcaseMedical,
+  //   'children': [
+  //     {
+  //       'title': 'Change Notes',
+  //       'onTap': () => {
+  //             Get.off(() => const ChangeNotesScreen(),
+  //                 transition: Transition.cupertino,
+  //                 duration: const Duration(milliseconds: 1000))
+  //           },
+  //     },
+  //     {
+  //       'title': 'Documentation',
+  //       'onTap': () => {},
+  //     }
+  //   ]
+  // },
+  // {
+  //   'title': 'OVC Dashboards',
+  //   'icon': FontAwesomeIcons.chartLine,
+  //   'children': []
+  // }
 ];
 
 List<String> graphTitles = [
@@ -351,12 +353,20 @@ List<Map<String, dynamic>> personRegistryStepper = [
   },
 ];
 
-const String cpims_api_url = "http://192.168.215.50:8000/api/";
+const String cpims_api_url = "http://10.21.44.216:8001/api/";
 const Map<String, String> headers = {"Content-Type": "application/json"};
 
 errorSnackBar(BuildContext context, message) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     backgroundColor: Colors.red,
+    content: Text(message),
+    duration: const Duration(seconds: 1),
+  ));
+}
+
+successSnackBar(BuildContext context, message) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    backgroundColor: Colors.green,
     content: Text(message),
     duration: const Duration(seconds: 1),
   ));

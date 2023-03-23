@@ -36,11 +36,11 @@ class Homepage extends StatelessWidget {
               data: homeCardsTitles[index],
             ),
           ),
-          ...List.generate(
-              5,
-              (index) => GraphWidget(
-                    title: graphTitles[index],
-                  )),
+          // ...List.generate(
+          //     5,
+          //     (index) => GraphWidget(
+          //           title: graphTitles[index],
+          //         )),
         ],
       ),
     );

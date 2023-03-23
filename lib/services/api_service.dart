@@ -1,8 +1,8 @@
 import 'dart:convert';
 
+import 'package:cpims_mobile/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-import 'package:kabarak_attendance/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
@@ -27,10 +27,11 @@ class ApiService {
     var fullUrl = _url + apiUrl + await _getToken();
     return await http.get(Uri.parse(fullUrl), headers: _setHeaders());
   }
-  
-  getData(apiUrl) async {
+
+  getSecureData(apiUrl) async {
     var fullUrl = _url + apiUrl + await _getToken();
-    return await http.get(Uri.parse(fullUrl), headers: _setAuthHeaders(_getToken()));
+    return await http.get(Uri.parse(fullUrl),
+        headers: _setAuthHeaders(_getToken()));
   }
 
   _setHeaders() => {
@@ -80,5 +81,4 @@ class ApiService {
       return null;
     }
   }
-
 }

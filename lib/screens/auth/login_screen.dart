@@ -1,6 +1,8 @@
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/screens/Dashboard/dash_service.dart';
 import 'package:cpims_mobile/screens/auth/widgets/important_links_widget.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
+import 'package:cpims_mobile/services/api_service.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
@@ -14,9 +16,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoginScreen extends StatefulWidget {
-
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
@@ -27,39 +29,59 @@ class _LoginScreenState extends State<LoginScreen> {
   String _username = "";
   String _password = "";
   bool _isObscure = true;
-
+  bool _isloading = false;
 
   loginuser() async {
+    setState(() {
+      _isloading = true;
+    });
+
     // var box = await Hive.openBox("cpims");
     // Obtain shared preferences.
     final prefs = await SharedPreferences.getInstance();
 
-
     // print(_username+"\n"+_password);
-    if(_username.isEmpty) {
+    if (_username.isEmpty) {
       errorSnackBar(context, "User name cannot be empty.");
-    }else if(_password.isEmpty) {
+      setState(() {
+        _isloading = false;
+      });
+    } else if (_password.isEmpty) {
       errorSnackBar(context, "Password cannot be empty.");
-    }else{
+      setState(() {
+        _isloading = false;
+      });
+    } else {
       http.Response response = await AuthService.login(_password, _username);
       Map responseMap = jsonDecode(response.body);
-      if(response.statusCode==200){
+      if (response.statusCode == 200) {
         // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Homepage()));
-        // print(responseMap["token"]);
+        print(responseMap.toString());
+
+        // print(">>>>>>>>>> dash data" + DashService().getDashData().toString());
         // Save an integer value to 'counter' key.
-        await prefs.setString('authenticated', responseMap['token']);
+        await prefs.setString('access_token', responseMap['access']);
+        await prefs.setString('refresh_token', responseMap['refresh']);
+        // await prefs.setString('dash_data', DashService().getDashData());
 
-        Get.to(() => const Homepage());
-      }
-      else{
+        Future.delayed(Duration(seconds: 3), () {
+          setState(() {
+            _isloading = false;
+          });
+
+          Get.off(() => const Homepage(),
+              transition: Transition.fadeIn, duration: Duration(seconds: 1));
+        });
+
+        successSnackBar(context, "Login was successfull");
+      } else {
         errorSnackBar(context, responseMap.values.first[0]);
+        setState(() {
+          _isloading = false;
+        });
       }
-
     }
-
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -104,13 +126,12 @@ class _LoginScreenState extends State<LoginScreen> {
             TextFormField(
               // hintText: 'Username',
               decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: kPrimaryColor),
-                ),
-                labelText: "Enter Username here..."
-              ),
-              onChanged: (value){
+                  border: OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: kPrimaryColor),
+                  ),
+                  labelText: "Enter Username here..."),
+              onChanged: (value) {
                 _username = value;
               },
             ),
@@ -120,34 +141,44 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-                TextFormField(
-                  obscureText: _isObscure,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: kPrimaryColor),
-                    ),
-                    labelText: "Enter password here...",
-                    suffixIcon: IconButton(
-                      icon: Icon( _isObscure ? Icons.visibility : Icons.visibility_off),
-                      onPressed: (){
-                        setState(() {
-                          _isObscure = !_isObscure;
-                        });
-                      },
-                    )
+            TextFormField(
+              obscureText: _isObscure,
+              decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: kPrimaryColor),
                   ),
-              onChanged: (value){
+                  labelText: "Enter password here...",
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                        _isObscure ? Icons.visibility : Icons.visibility_off),
+                    onPressed: () {
+                      setState(() {
+                        _isObscure = !_isObscure;
+                      });
+                    },
+                  )),
+              onChanged: (value) {
                 _password = value;
               },
             ),
             const SizedBox(height: 15),
-            CustomButton(
-              text: 'Sign In',
-              onTap: () {
-                loginuser();
-              },
-            ),
+            _isloading
+                ? SpinKitFadingCircle(
+                    itemBuilder: (BuildContext context, int index) {
+                      return DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: index.isEven ? Colors.red : Colors.green,
+                        ),
+                      );
+                    },
+                  )
+                : CustomButton(
+                    text: 'Sign In',
+                    onTap: () {
+                      loginuser();
+                    },
+                  ),
             const SizedBox(
               height: 20,
             ),
