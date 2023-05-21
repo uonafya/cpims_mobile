@@ -1,10 +1,10 @@
 import 'package:cpims_mobile/constants.dart';
-import 'package:cpims_mobile/screens/Dashboard/dash_service.dart';
+// import 'package:cpims_mobile/screens/Dashboard/dash_service.dart';
 import 'package:cpims_mobile/screens/auth/widgets/important_links_widget.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
-import 'package:cpims_mobile/services/api_service.dart';
+// import 'package:cpims_mobile/services/api_service.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
-import 'package:cpims_mobile/widgets/custom_text_field.dart';
+// import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import '../../services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,7 +70,8 @@ class _LoginScreenState extends State<LoginScreen> {
           });
 
           Get.off(() => const Homepage(),
-              transition: Transition.fadeIn, duration: Duration(seconds: 1));
+              transition: Transition.fadeIn,
+              duration: const Duration(seconds: 1));
         });
 
         successSnackBar(context, "Login was successfull");
@@ -104,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
             // const SizedBox(height: kToolbarHeight + 40),
             // const Divider(),
             Text(
-              'Department of Children Services (DCS)',
+              'Directorate of Children Services (DCS)',
               style: GoogleFonts.openSans(
                 fontSize: ScreenUtil().setSp(12),
                 fontWeight: FontWeight.w600,
@@ -276,7 +277,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(
               height: 15,
             ),
-            Footer(
+            const Footer(
               hasPartners: false,
             ),
           ]),

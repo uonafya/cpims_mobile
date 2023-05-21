@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  final String _url = cpims_api_url;
+  final String _url = cpimsApiUrl;
 
   //without authentication....
   postData(data, apiUrl) async {
