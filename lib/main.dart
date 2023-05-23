@@ -6,14 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
-
-import 'package:path_provider/path_provider.dart';
-import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'screens/homepage/home_page.dart';
-
-// final prefs = await SharedPreferences.getInstance();
 
 void main() async {
   runApp(const CPIMS());
@@ -40,7 +33,7 @@ class _CPIMSState extends State<CPIMS> {
     var authKey = prefs.getString('authenticated');
 
     if (authKey != null) {
-      Get.to(() => const Homepage(),
+      Get.to(() => Homepage(),
           transition: Transition.fade,
           duration: const Duration(milliseconds: 2000));
     } else {

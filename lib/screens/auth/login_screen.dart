@@ -1,22 +1,22 @@
+import 'dart:convert';
+
 import 'package:cpims_mobile/constants.dart';
-import 'package:cpims_mobile/screens/Dashboard/dash_service.dart';
+import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/widgets/important_links_widget.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
-import 'package:cpims_mobile/services/api_service.dart';
+import 'package:cpims_mobile/services/dash_board_service.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
-import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
-import '../../services/auth_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import '../../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -58,24 +58,44 @@ class _LoginScreenState extends State<LoginScreen> {
         // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Homepage()));
         print(responseMap.toString());
 
-        // print(">>>>>>>>>> dash data" + DashService().getDashData().toString());
-        // Save an integer value to 'counter' key.
-        await prefs.setString('access_token', responseMap['access']);
-        await prefs.setString('refresh_token', responseMap['refresh']);
+        print(">>>>>>>>>> api " + responseMap['access']);
+        print(">>>>>>>>>> refresh" + responseMap['refresh']);
+
+        // Save access & refresh.
+        await prefs.setString('access', responseMap['access']);
+        await prefs.setString('refresh', responseMap['refresh']);
         // await prefs.setString('dash_data', DashService().getDashData());
 
-        Future.delayed(Duration(seconds: 3), () {
+        print(">>>>>>>>>> api post " + prefs.getString('access').toString());
+
+        Future.delayed(Duration(seconds: 3), () async {
           setState(() {
             _isloading = false;
           });
+          try {
+            // pre-load dash data
+            print(
+                " ================= dash board resp ========================");
+            var dash_resp =
+                await DashBoardService().dashBoard(responseMap['access']);
 
-          Get.off(() => const Homepage(),
+            context.read<UIProvider>().setDashData(dash_resp);
+            print(dash_resp.body);
+          } catch (errMsg) {
+            print("Something went wrong");
+            print(errMsg.toString());
+          }
+
+          Get.off(() => Homepage(),
               transition: Transition.fadeIn, duration: Duration(seconds: 1));
         });
 
         successSnackBar(context, "Login was successfull");
       } else {
-        errorSnackBar(context, responseMap.values.first[0]);
+        errorSnackBar(
+            context,
+            // responseMap.values.first[0]
+            "Login was unsuccessfull, please confirm your credentials");
         setState(() {
           _isloading = false;
         });

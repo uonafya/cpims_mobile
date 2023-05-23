@@ -28,10 +28,9 @@ class ApiService {
     return await http.get(Uri.parse(fullUrl), headers: _setHeaders());
   }
 
-  getSecureData(apiUrl) async {
-    var fullUrl = _url + apiUrl + await _getToken();
-    return await http.get(Uri.parse(fullUrl),
-        headers: _setAuthHeaders(_getToken()));
+  getSecureData(apiUrl, access) async {
+    var fullUrl = _url + apiUrl;
+    return await http.get(Uri.parse(fullUrl), headers: _setAuthHeaders(access));
   }
 
   _setHeaders() => {
@@ -46,8 +45,8 @@ class ApiService {
       };
 
   _getToken() async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    var token = localStorage.getString('access_token');
+    final prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('access');
     return token;
   }
 
