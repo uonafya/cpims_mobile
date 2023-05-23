@@ -8,6 +8,12 @@ import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
+// import 'package:path_provider/path_provider.dart';
+// import 'package:hive/hive.dart';
+
+// final prefs = await SharedPreferences.getInstance();
+
 void main() async {
   runApp(const CPIMS());
 }
@@ -67,7 +73,7 @@ class _CPIMSState extends State<CPIMS> {
       },
       child:
           // const Homepage()
-          LoginScreen(),
+          const LoginScreen(),
     );
   }
 }
