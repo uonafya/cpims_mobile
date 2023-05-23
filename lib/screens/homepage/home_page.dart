@@ -17,6 +17,8 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   @override
   void initState() {
+    var access = context.read<UIProvider>().getAccess.toString();
+    print(">>>>>>>>>>>>>>>>>>> access >>>>>>>>>>>>> $access");
     // TODO: implement initState
     super.initState();
   }

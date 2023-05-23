@@ -15,6 +15,8 @@ class UIProvider with ChangeNotifier {
     print("ui provide set access state");
     print(_);
     _getAccess = _;
+
+    notifyListeners();
   }
 
   var _getDashData;
@@ -24,5 +26,7 @@ class UIProvider with ChangeNotifier {
     print("ui provide set access state");
     print(_);
     _getDashData = _;
+
+    notifyListeners();
   }
 }

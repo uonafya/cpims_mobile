@@ -2,13 +2,10 @@ import 'dart:convert';
 
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
-import 'package:cpims_mobile/screens/Dashboard/dash_service.dart';
 import 'package:cpims_mobile/screens/auth/widgets/important_links_widget.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
-import 'package:cpims_mobile/services/api_service.dart';
 import 'package:cpims_mobile/services/dash_board_service.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
-import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -57,9 +54,12 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       http.Response response = await AuthService.login(_password, _username);
       Map responseMap = jsonDecode(response.body);
+
       if (response.statusCode == 200) {
         // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Homepage()));
         print(responseMap.toString());
+
+        context.read<UIProvider>().setAuthToken(responseMap);
 
         print(">>>>>>>>>> api " + responseMap['access']);
         print(">>>>>>>>>> refresh" + responseMap['refresh']);
@@ -72,9 +72,6 @@ class _LoginScreenState extends State<LoginScreen> {
         print(">>>>>>>>>> api post " + prefs.getString('access').toString());
 
         Future.delayed(Duration(seconds: 3), () async {
-          setState(() {
-            _isloading = false;
-          });
           try {
             // pre-load dash data
             print(
@@ -83,14 +80,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 await DashBoardService().dashBoard(responseMap['access']);
 
             context.read<UIProvider>().setDashData(dash_resp);
+
             print(dash_resp.body);
           } catch (errMsg) {
             print("Something went wrong");
             print(errMsg.toString());
+            errorSnackBar(
+                context,
+                // responseMap.values.first[0]
+                "Something went wrong dash board data not pre-loaded successfully");
           }
+          setState(() {
+            _isloading = false;
+          });
 
           Get.off(() => const Homepage(),
-              transition: Transition.fadeIn, duration: Duration(seconds: 1));
+              transition: Transition.fadeIn,
+              duration: Duration(microseconds: 650));
         });
 
         successSnackBar(context, "Login was successfull");
