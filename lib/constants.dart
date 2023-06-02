@@ -1,6 +1,7 @@
 import 'package:cpims_mobile/screens/caseload/caseload.dart';
 import 'package:cpims_mobile/screens/forms/case_record_sheet.dart';
 import 'package:cpims_mobile/screens/forms/documents_manager.dart';
+import 'package:cpims_mobile/screens/forms/follow_ups.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/organisation_units.dart';
 import 'package:cpims_mobile/screens/registry/persons_registry/persons_registry.dart';
@@ -116,6 +117,14 @@ List<Map<String, dynamic>> drawerOptions = [
                   duration: const Duration(milliseconds: 1000))
             },
       },
+       {
+         'title': 'Follow-ups',
+         'onTap': () => {
+               Get.off(() => const FollowUps(),
+                   transition: Transition.cupertino,
+                   duration: const Duration(milliseconds: 1000))
+             },
+       },
       // {
       //   'title': 'Institutional Placement',
       //   'onTap': () => {

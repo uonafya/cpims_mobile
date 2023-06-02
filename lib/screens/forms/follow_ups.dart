@@ -1,3 +1,7 @@
+// ignore_for_file: unnecessary_new, prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_interpolation_to_compose_strings, avoid_print
+import 'dart:ffi';
+
+import 'package:cpims_mobile/services/api_service.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/screens/registry/persons_registry/register_new_person.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
@@ -5,22 +9,40 @@ import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
 import 'package:cpims_mobile/widgets/custom_dropdown.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
+//import 'package:cpims_mobile/widgets/dialog.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
+import 'package:provider/provider.dart';
 
 class FollowUps extends StatefulWidget {
   const FollowUps({super.key});
 
   @override
   State<FollowUps> createState() => _FollowUpsState();
+  //State<FollowUps> createDialog() => _showDialog();
 }
 
 class _FollowUpsState extends State<FollowUps> {
   String selectedCriteria = 'Please Select';
+  String searchDialogSource = "First";
+  
   bool isSearching = false;
+
+  /**followup(access) async{
+    var response = await ApiService().getData("/caseload")
+  }
+
+  @override
+  void initState() {
+    var access = context.read<ApiService>().getData.toString();
+    print(">>>>>>>>>>>>>>>>>>> access >>>>>>>>>>>>> $access");
+    super.initState();
+  }
+  List<Map> access = [];**/
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +54,7 @@ class _FollowUpsState extends State<FollowUps> {
           padding: kSystemPadding,
           children: [
             const SizedBox(height: 20),
+            _createDataTable(),
             const Text('Forms Follow-Ups',
                 style: TextStyle(
                     fontSize: 18,
@@ -71,7 +94,66 @@ class _FollowUpsState extends State<FollowUps> {
               const SizedBox(
                 height: 15,
               ),
-              CustomButton(text: 'Search', onTap: () {}),
+
+              CustomButton(text: 'Search', onTap: () {
+                showDialog(
+                  context: context, 
+                  builder: (BuildContext context){
+                    return SimpleDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          //contentPadding: EdgeInsets.fromLTRB(left, top, right, bottom)
+          contentPadding: EdgeInsets.fromLTRB(10, 16, 10, 20),
+          title: Text('Choose Form',textAlign:TextAlign.center,
+            style: TextStyle(fontSize: 20,color: Colors.blue,
+              decoration: TextDecoration.underline,
+            ),),
+          children: <Widget>[
+            new Row(
+              children: <Widget> [
+                TextButton(
+                   onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: new Icon(Icons.close),             
+                ),
+              ],
+            ),
+            SizedBox(height: 20,),
+            Row(
+              children: <Widget>[
+                Expanded(child: Text('Please select:',
+                  style: TextStyle(fontSize: 18,),)),
+                Expanded(
+                  child: DropdownButton<String>(
+                    value: searchDialogSource,
+                    items: [
+                      DropdownMenuItem(
+                        value: "First",
+                        child: Text(
+                          "Services & monitoring - Form1A",
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: "Second",
+                        child: Text(
+                          "Caregiver Assesment - Form1B",
+                        ),
+                      ),
+                    ],
+                    onChanged: (val) => setState(() {
+                      searchDialogSource = val!;
+                      print("searchSource:" + searchDialogSource);
+                    }),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      }); //showDialog
+              }),
               const SizedBox(
                 height: 10,
               )
@@ -84,4 +166,25 @@ class _FollowUpsState extends State<FollowUps> {
           ],
         ));
   }
+  _createDataTable() {
+    //return DataTable(columns: _createColumns(), rows: _createRows());
+}
+List<DataColumn> _createColumns(){
+  return[
+    DataColumn(label: Text('ID')),
+    DataColumn(label: Text('Name')),
+    DataColumn(label: Text('DOB')),
+    DataColumn(label: Text('Reg Date'))
+  ];
+}
+/**List<DataRow> _createRows(){
+  return access
+     .map((e) => DataRow(cells: [
+      DataCell(Text('#' + e['cpims_id'].toString())),
+      DataCell(Text(e['name'])),
+      DataCell(Text(e['date_of_birth'])),
+      DataCell(Text(e['registration_date']))
+     ]))
+     .toList();
+}**/
 }

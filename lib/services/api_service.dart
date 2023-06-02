@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiService {
   final String _url = cpimsApiUrl;
 
+  get getAccess => null;
+
   //without authentication....
   postData(data, apiUrl) async {
     var fullUrl = _url + apiUrl;
@@ -25,6 +27,7 @@ class ApiService {
 
   getData(apiUrl) async {
     var fullUrl = _url + apiUrl + await _getToken();
+    
     return await http.get(Uri.parse(fullUrl), headers: _setHeaders());
   }
 
