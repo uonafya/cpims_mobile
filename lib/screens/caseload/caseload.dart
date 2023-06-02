@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cpims_mobile/Models/case_load.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/services/api_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
@@ -15,33 +16,39 @@ class CaseLoad extends StatefulWidget {
 }
 
 class _CaseLoadState extends State<CaseLoad> {
+  var case_load = <CaseLoadModel>[];
 
-  var case_load;
   @override
   void initState() {
     print("caseload >>>>>>>>>>> state");
     print("get access token ..............");
     debugPrint(context.read<UIProvider>().getAccess.toString());
 
-    Future.delayed(Duration(seconds: 5), (){
+    Future.delayed(Duration(seconds: 5), () {
       _caseLoad();
       print("caseload api list");
       debugPrint(case_load.toString());
     });
 
-   
-
     super.initState();
   }
 
   _caseLoad() async {
-    var res = await ApiService().getSecureData('caseload', context.read<UIProvider>().getAccess["access"]);
-    var body = json.decode(res.body);
-    case_load = body;
+    await ApiService()
+        .getSecureData(
+            'caseload', context.read<UIProvider>().getAccess["access"])
+        .then((response) {
+      print("***************RESPONSE************");
+      // debugPrint(response.body.data.toString());
 
-    debugPrint("_caseload ${body.toString()}");
-    debugPrint("_caseload --------- API LIST${case_load.toString()}");
-    return body;
+      setState(() {
+        Iterable list = json.decode(response.body);
+
+        case_load = list.map((model) => CaseLoadModel.fromJson(model)).toList();
+        print("************ case load  ****************88");
+        debugPrint("************ ${case_load.toString()}");
+      });
+    });
   }
 
   @override
@@ -54,9 +61,10 @@ class _CaseLoadState extends State<CaseLoad> {
       body: ListView.builder(
           itemCount: case_load.length,
           itemBuilder: (BuildContext context, int index) {
-            return Text(index.toString());
+            return Text(case_load[index].cpimsId.toString() +
+                " " +
+                case_load[index].name.toString());
           }),
     );
   }
 }
-

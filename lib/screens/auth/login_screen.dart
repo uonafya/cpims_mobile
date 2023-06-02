@@ -96,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           Get.off(() => const Homepage(),
               transition: Transition.fadeIn,
-              duration: Duration(microseconds: 650));
+              duration: Duration(microseconds: 300));
         });
 
         successSnackBar(context, "Login was successfull");
