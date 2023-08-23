@@ -59,7 +59,7 @@ List<Map<String, dynamic>> homeCardsTitles = [
   }
 ];
 
-List<Map<String, dynamic>> drawerOptions = [
+List drawerOptions = [
   {
     'title': 'Home',
     'icon': FontAwesomeIcons.house,
@@ -68,8 +68,8 @@ List<Map<String, dynamic>> drawerOptions = [
               transition: Transition.fadeIn,
               duration: const Duration(milliseconds: 1000))
         },
+    'children': []
   },
-
   {
     'title': 'Caseload',
     'icon': FontAwesomeIcons.briefcase,
@@ -112,54 +112,14 @@ List<Map<String, dynamic>> drawerOptions = [
                   duration: const Duration(milliseconds: 1000))
             },
       },
-       {
-         'title': 'Follow-ups',
-         'onTap': () => {
-               Get.off(() => const FollowUps(),
-                   transition: Transition.cupertino,
-                   duration: const Duration(milliseconds: 1000))
-             },
-       },
-      // {
-      //   'title': 'Institutional Placement',
-      //   'onTap': () => {
-      //         Get.off(() => const InstitutionalPlacement(),
-      //             transition: Transition.cupertino,
-      //             duration: const Duration(milliseconds: 1000))
-      //       },
-      // },
-      // {
-      //   'title': 'Alternative Family Care',
-      //   'onTap': () => {
-      //         Get.off(() => const AlternativeFamilyCare(),
-      //             transition: Transition.cupertino,
-      //             duration: const Duration(milliseconds: 1000))
-      //       },
-      // },
-      // {
-      //   'title': 'School and Bursary',
-      //   'onTap': () => {
-      //         Get.off(() => const SchoolBursary(),
-      //             transition: Transition.cupertino,
-      //             duration: const Duration(milliseconds: 1000))
-      //       },
-      // },
-      // {
-      //   'title': 'Follow-ups',
-      //   'onTap': () => {
-      //         Get.off(() => const FollowUps(),
-      //             transition: Transition.cupertino,
-      //             duration: const Duration(milliseconds: 1000))
-      //       },
-      // },
-      // {
-      //   'title': 'Documents Manager',
-      //   'onTap': () => {
-      //         Get.off(() => const DocumentsManager(),
-      //             transition: Transition.cupertino,
-      //             duration: const Duration(milliseconds: 1000))
-      //       },
-      // },
+      {
+        'title': 'Follow-ups',
+        'onTap': () => {
+              Get.off(() => const FollowUps(),
+                  transition: Transition.cupertino,
+                  duration: const Duration(milliseconds: 1000))
+            },
+      },
       {
         'title': 'OVC Care(Comp)',
         'onTap': () => {
@@ -168,149 +128,20 @@ List<Map<String, dynamic>> drawerOptions = [
                   duration: const Duration(milliseconds: 1000))
             },
       },
-      // {
-      //   'title': 'Preventive and Family Support)',
-      //   'onTap': () => {},
-      // },
-      // {
-      //   'title': 'PMTCT',
-      //   'onTap': () => {},
-      // },
-      // {
-      //   'title': 'DREAMS',
-      //   'onTap': () => {},
-      // }
     ]
   },
-  // {
-  //   'title': 'Reports',
-  //   'icon': FontAwesomeIcons.fileLines,
-  //   'children': [
-  //     {
-  //       'title': 'Case Load Report',
-  //       'onTap': () => {
-  //             Get.off(() => const CaseLoadReport(),
-  //                 transition: Transition.cupertino,
-  //                 duration: const Duration(milliseconds: 1000))
-  //           },
-  //     },
-  //     {
-  //       'title': 'KNBS Report',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Institutions Population Returns Report',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Health Report',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Bursary Report',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Ad Hoc Report',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Ad Hoc Pivot Report',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Document Templates',
-  //       'onTap': () => {},
-  //     },
-  //   ]
-  // },
-  // {
-  //   'title': 'Maintenance',
-  //   'icon': FontAwesomeIcons.gears,
-  //   'children': [
-  //     {
-  //       'title': 'Reports',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Schools',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Facilities',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Raw data',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'System Settings',
-  //       'onTap': () => {},
-  //     },
-  //   ]
-  // },
-  // {
-  //   'title': 'GIS Module',
-  //   'icon': FontAwesomeIcons.mapLocationDot,
-  //   'children': [
-  //     {
-  //       'title': 'Map',
-  //       'onTap': () => {},
-  //     }
-  //   ]
-  // },
-  // {
-  //   'title': 'Gallery',
-  //   'icon': FontAwesomeIcons.camera,
-  //   'children': [
-  //     {
-  //       'title': 'Gallery One',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Gallery Two',
-  //       'onTap': () => {},
-  //     }
-  //   ]
-  // },
-  // {
-  //   'title': 'Data Quality',
-  //   'icon': FontAwesomeIcons.filter,
-  //   'children': [
-  //     {
-  //       'title': 'Age & Services',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Age & Case plan',
-  //       'onTap': () => {},
-  //     },
-  //   ]
-  // },
-  // {
-  //   'title': 'Help & Documentation',
-  //   'icon': FontAwesomeIcons.briefcaseMedical,
-  //   'children': [
-  //     {
-  //       'title': 'Change Notes',
-  //       'onTap': () => {
-  //             Get.off(() => const ChangeNotesScreen(),
-  //                 transition: Transition.cupertino,
-  //                 duration: const Duration(milliseconds: 1000))
-  //           },
-  //     },
-  //     {
-  //       'title': 'Documentation',
-  //       'onTap': () => {},
-  //     }
-  //   ]
-  // },
-  // {
-  //   'title': 'OVC Dashboards',
-  //   'icon': FontAwesomeIcons.chartLine,
-  //   'children': []
-  // }
+  {
+    'title': 'Sync',
+    'icon': FontAwesomeIcons.rotate,
+    'onTap': () => {},
+    'children': []
+  },
+  {
+    'title': 'Log Out',
+    'icon': FontAwesomeIcons.arrowRightFromBracket,
+    'onTap': () => {},
+    'children': []
+  },
 ];
 
 List<String> graphTitles = [
