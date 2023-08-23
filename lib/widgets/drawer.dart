@@ -39,51 +39,53 @@ class _CustomDrawerState extends State<CustomDrawer> {
       const Divider(
         height: 1,
       ),
-      ...List.generate(
-        drawerOptions.length,
-        (index) => GestureDetector(
+      ...List.generate(drawerOptions.length, (index) {
+        final option = DrawerOption.fromMap(drawerOptions[index]);
+        return GestureDetector(
           onTap: () {
             drawerProvider.changeDrawerOption(index);
           },
-          child: index == 0
-              ? homeWidget(drawerOptions[0],
-                  drawerProvider.selectedDrawerOption == index, () {
+          child: option.children.isNotEmpty
+              ? drawerOption(
+                  option, index == drawerProvider.selectedDrawerOption, (val) {
                   drawerProvider.changeDrawerOption(index);
                 })
-              : drawerOption(drawerOptions[index],
-                  index == drawerProvider.selectedDrawerOption, (val) {
-                  drawerProvider.changeDrawerOption(index);
-                }),
-        ),
-      ),
+              : homeWidget(
+                  option,
+                  drawerProvider.selectedDrawerOption == index,
+                  () {
+                    drawerProvider.changeDrawerOption(index);
+                  },
+                ),
+        );
+      }),
     ]);
   }
 
-  Widget homeWidget(
-      Map<String, dynamic> data, bool isSelected, Function onTap) {
+  Widget homeWidget(DrawerOption data, bool isSelected, Function onTap) {
     return Container(
       color: isSelected ? const Color(0xff707478) : null,
       child: ListTile(
         leading: Icon(
-          data['icon'],
+          data.icon,
           size: 18,
           color: isSelected ? Colors.white : Colors.black,
         ),
         title: Text(
-          data['title'],
+          data.title,
           style: TextStyle(
               fontSize: 14, color: isSelected ? Colors.white : Colors.black),
         ),
         onTap: () {
           onTap();
-          data['onTap']();
+          data.onTap?.call;
         },
       ),
     );
   }
 
   Widget drawerOption(
-    Map<String, dynamic> data,
+    DrawerOption data,
     bool isSelected,
     Function(bool val) onTap,
   ) {
@@ -92,7 +94,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
       child: ExpansionTile(
         iconColor: isSelected ? Colors.white : Colors.grey,
         leading: Icon(
-          data['icon'],
+          data.icon,
           size: 18,
           color: isSelected ? Colors.white : Colors.black,
         ),
@@ -101,7 +103,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           color: isSelected ? Colors.white : Colors.grey,
         ),
         title: Text(
-          data['title'],
+          data.title,
           style: TextStyle(
               fontSize: 14, color: isSelected ? Colors.white : Colors.black),
         ),
@@ -109,26 +111,53 @@ class _CustomDrawerState extends State<CustomDrawer> {
           onTap(value);
         },
         initiallyExpanded: isSelected,
-        children: List.generate(data['children'].length, (index) {
+        children: List.generate(data.children.length, (index) {
           return Container(
             color: isSelected ? Colors.grey[300] : null,
             child: ListTile(
-              leading: Container(
-                height: 40,
-                width: 5,
-                color: Colors.grey,
-              ),
-              title: Text(
-                data['children'][index]['title'],
-                style: const TextStyle(fontSize: 14, color: Colors.black),
-              ),
-              onTap: () {
-                data['children'][index]['onTap']();
-              },
-            ),
+                leading: Container(
+                  height: 40,
+                  width: 5,
+                  color: Colors.grey,
+                ),
+                title: Text(
+                  data.children[index].title,
+                  style: const TextStyle(fontSize: 14, color: Colors.black),
+                ),
+                onTap: () {
+                  data.children[index] != null
+                      ? data.children[index].onTap!()
+                      : null;
+                }),
           );
         }),
       ),
+    );
+  }
+}
+
+class DrawerOption {
+  final String title;
+  final IconData? icon;
+  final Function? onTap;
+  final List<DrawerOption> children;
+
+  DrawerOption({
+    required this.title,
+    this.icon,
+    this.onTap,
+    required this.children,
+  });
+
+  factory DrawerOption.fromMap(Map<String, dynamic> map) {
+    return DrawerOption(
+      title: map['title'],
+      icon: map['icon'],
+      onTap: map['onTap'],
+      children: map['children'] != null
+          ? List<DrawerOption>.from(
+              map['children']?.map((x) => DrawerOption.fromMap(x)))
+          : [],
     );
   }
 }

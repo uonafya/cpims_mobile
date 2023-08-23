@@ -1,114 +1,53 @@
-import 'dart:convert';
-
 import 'package:cpims_mobile/constants.dart';
-import 'package:cpims_mobile/providers/ui_provider.dart';
+import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/screens/auth/widgets/important_links_widget.dart';
-import 'package:cpims_mobile/screens/homepage/home_page.dart';
-import 'package:cpims_mobile/services/dash_board_service.dart';
+import 'package:cpims_mobile/services/auth_service.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String _username = "";
-  String _password = "";
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   bool _isObscure = true;
   bool _isloading = false;
 
-  loginuser() async {
+  final AuthService authService = AuthService(AuthProvider());
+
+  void loginuser({
+    required String username,
+    required String password,
+  }) async {
     setState(() {
       _isloading = true;
     });
 
-    // var box = await Hive.openBox("cpims");
-    // Obtain shared preferences.
-    final prefs = await SharedPreferences.getInstance();
-
-    // print(_username+"\n"+_password);
-    if (_username.isEmpty) {
-      errorSnackBar(context, "User name cannot be empty.");
+    try {
+      await authService.login(
+        context: context,
+        password: password,
+        username: username,
+      );
       setState(() {
         _isloading = false;
       });
-    } else if (_password.isEmpty) {
-      errorSnackBar(context, "Password cannot be empty.");
+    } catch (e) {
       setState(() {
         _isloading = false;
       });
-    } else {
-      http.Response response = await AuthService.login(_password, _username);
-      Map responseMap = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Homepage()));
-        print(responseMap.toString());
-
-        context.read<UIProvider>().setAuthToken(responseMap);
-
-        print(">>>>>>>>>> api " + responseMap['access']);
-        print(">>>>>>>>>> refresh" + responseMap['refresh']);
-
-        // Save access & refresh.
-        await prefs.setString('access', responseMap['access']);
-        await prefs.setString('refresh', responseMap['refresh']);
-        // await prefs.setString('dash_data', DashService().getDashData());
-
-        print(">>>>>>>>>> api post ${prefs.getString('access')}");
-
-        Future.delayed(const Duration(seconds: 3), () async {
-          try {
-            // pre-load dash data
-            print(
-                " ================= dash board resp ========================");
-            var dashResp =
-                await DashBoardService().dashBoard(responseMap['access']);
-
-            context.read<UIProvider>().setDashData(dashResp);
-
-            print(dashResp.body);
-          } catch (errMsg) {
-            print("Something went wrong");
-            print(errMsg.toString());
-            errorSnackBar(
-                context,
-                // responseMap.values.first[0]
-                "Something went wrong dash board data not pre-loaded successfully");
-          }
-          setState(() {
-            _isloading = false;
-          });
-
-          Get.off(() => const Homepage(),
-              transition: Transition.fadeIn,
-              duration: const Duration(microseconds: 300));
-        });
-
-        successSnackBar(context, "Login was successfull");
-      } else {
-        errorSnackBar(
-            context,
-            // responseMap.values.first[0]
-            "Login was unsuccessfull, please confirm your credentials");
-        setState(() {
-          _isloading = false;
-        });
-      }
     }
   }
 
@@ -130,8 +69,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 color: Colors.black,
               ),
             ),
-            // const SizedBox(height: kToolbarHeight + 40),
-            // const Divider(),
             Text(
               'Directorate of Children Services (DCS)',
               style: GoogleFonts.openSans(
@@ -153,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 10),
             TextFormField(
-              // hintText: 'Username',
+              controller: userNameController,
               decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   enabledBorder: OutlineInputBorder(
@@ -161,8 +98,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   labelText: "Enter Username here..."),
               onChanged: (value) {
-                _username = value;
+                userNameController.text = value;
               },
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.deny(
+                  RegExp(
+                    r'\s',
+                  ),
+                )
+              ],
             ),
             const SizedBox(height: 15),
             const Text(
@@ -172,23 +116,25 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 10),
             TextFormField(
               obscureText: _isObscure,
+              controller: passwordController,
               decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: kPrimaryColor),
-                  ),
-                  labelText: "Enter password here...",
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                        _isObscure ? Icons.visibility : Icons.visibility_off),
-                    onPressed: () {
-                      setState(() {
-                        _isObscure = !_isObscure;
-                      });
-                    },
-                  )),
+                border: const OutlineInputBorder(),
+                enabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: kPrimaryColor),
+                ),
+                labelText: "Enter password here...",
+                suffixIcon: IconButton(
+                  icon: Icon(
+                      _isObscure ? Icons.visibility : Icons.visibility_off),
+                  onPressed: () {
+                    setState(() {
+                      _isObscure = !_isObscure;
+                    });
+                  },
+                ),
+              ),
               onChanged: (value) {
-                _password = value;
+                passwordController.text = value;
               },
             ),
             const SizedBox(height: 15),
@@ -205,7 +151,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 : CustomButton(
                     text: 'Sign In',
                     onTap: () {
-                      loginuser();
+                      loginuser(
+                        username: userNameController.text,
+                        password: passwordController.text,
+                      );
                     },
                   ),
             const SizedBox(
@@ -213,38 +162,40 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             RichText(
               text: const TextSpan(
-                  text: 'Not registered yet? Click ',
-                  style: TextStyle(fontSize: 13, color: kTextGrey),
-                  children: [
-                    TextSpan(
-                      text: 'here',
-                      style: TextStyle(
-                        color: kPrimaryColor,
-                      ),
+                text: 'Not registered yet? Click ',
+                style: TextStyle(fontSize: 13, color: kTextGrey),
+                children: [
+                  TextSpan(
+                    text: 'here',
+                    style: TextStyle(
+                      color: kPrimaryColor,
                     ),
-                    TextSpan(
-                      text: ' to request for access',
-                    )
-                  ]),
+                  ),
+                  TextSpan(
+                    text: ' to request for access',
+                  )
+                ],
+              ),
             ),
             const SizedBox(
               height: 8,
             ),
             RichText(
               text: const TextSpan(
-                  text: 'Forgot password? Click ',
-                  style: TextStyle(fontSize: 13, color: kTextGrey),
-                  children: [
-                    TextSpan(
-                      text: 'here',
-                      style: TextStyle(
-                        color: kPrimaryColor,
-                      ),
+                text: 'Forgot password? Click ',
+                style: TextStyle(fontSize: 13, color: kTextGrey),
+                children: [
+                  TextSpan(
+                    text: 'here',
+                    style: TextStyle(
+                      color: kPrimaryColor,
                     ),
-                    TextSpan(
-                      text: ' to change password',
-                    )
-                  ]),
+                  ),
+                  TextSpan(
+                    text: ' to change password',
+                  )
+                ],
+              ),
             ),
             const SizedBox(
               height: 30,
