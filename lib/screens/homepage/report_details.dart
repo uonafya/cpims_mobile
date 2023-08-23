@@ -38,7 +38,7 @@ class ReportDetailsScreen extends StatelessWidget {
                 const SizedBox(
                   width: 15,
                 ),
-                Icon(
+                const Icon(
                   FontAwesomeIcons.solidFileExcel,
                   color: kPrimaryColor,
                 ),
