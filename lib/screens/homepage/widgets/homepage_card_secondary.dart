@@ -3,21 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 
 class HomepageCardSecondary extends StatelessWidget {
-  const HomepageCardSecondary({Key? key, required this.data}) : super(key: key);
-  final Map<String, dynamic> data;
+  const HomepageCardSecondary({Key? key, required this.value, required this.title, required this.icon, required this.color, required this.secondaryColor}) : super(key: key);
+  final int value;
+  final String title;
+  final IconData icon;
+  final Color color;
+  final Color secondaryColor;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Get.to(() => ReportDetailsScreen(
-              title: data['title'],
+              title: title,
             ));
       },
       child: Container(
         height: 120,
         width: double.infinity,
-        color: data['color'],
+        color: color,
         margin: const EdgeInsets.symmetric(vertical: 7.5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,7 +34,7 @@ class HomepageCardSecondary extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        data['title'],
+                        title,
                         style: const TextStyle(
                             fontSize: 13,
                             color: Colors.white,
@@ -40,7 +44,7 @@ class HomepageCardSecondary extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        data['value'],
+                        value.toString(),
                         style: const TextStyle(
                           fontSize: 20,
                           color: Colors.white,
@@ -50,7 +54,7 @@ class HomepageCardSecondary extends StatelessWidget {
                   ),
                 ),
                 Icon(
-                  data['icon'],
+                  icon,
                   size: 60,
                   color: Colors.white12.withOpacity(0.3),
                 )
@@ -60,7 +64,7 @@ class HomepageCardSecondary extends StatelessWidget {
             Container(
               height: 30,
               width: double.infinity,
-              color: data['s_color'],
+              color: secondaryColor,
               child: const Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

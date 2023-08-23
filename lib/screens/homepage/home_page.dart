@@ -16,13 +16,6 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  @override
-  void initState() {
-    var access = context.read<UIProvider>().getAccess.toString();
-    print(">>>>>>>>>>>>>>>>>>> access >>>>>>>>>>>>> $access");
-
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,85 +64,68 @@ class _HomepageState extends State<Homepage> {
             physics: const NeverScrollableScrollPhysics(),
             children: [
               HomepageCardSecondary(
-                data: {
-                  'title': 'Org Unit Id',
-                  'value': context
+                  title: 'Org Unit Id',
+                  value: context
                       .read<UIProvider>()
-                      .getDashData['org_unit_id']
-                      .toString(),
-                  'icon': FontAwesomeIcons.orcid,
-                  'color': Colors.black54,
-                  's_color': Colors.black87,
-                },
-                // homeCardsTitles[1],
-                // context.read<UIProvider>().homeCardsTitles[1]
+                      .getDashData['org_unit_id'] ??
+                      0,
+                  icon: FontAwesomeIcons.orcid,
+                  color: Colors.black54,
+                  secondaryColor: Colors.black87,
               ),
 
               HomepageCardSecondary(
-                data: {
-                  'title': 'OVC-ACTIVE/EVER REGISTERED',
-                  'value': context
+                  title: 'OVC-ACTIVE/EVER REGISTERED',
+                  value: context
                       .read<UIProvider>()
-                      .getDashData['caregivers']
-                      .toString() ??
-                      "null",
-                  'icon': FontAwesomeIcons.person,
-                  'color': kPrimaryColor,
-                  's_color': const Color(0xff0E6668),
-                },
-                // homeCardsTitles[1],
-                // context.read<UIProvider>().homeCardsTitles[1]
+                      .getDashData['caregivers'] ??
+                      0,
+                  icon: FontAwesomeIcons.person,
+                  color: kPrimaryColor,
+                  secondaryColor: const Color(0xff0E6668),
               ),
 
               HomepageCardSecondary(
-                data: {
-                  'title': 'CAREGIVERS/GUARDIANS',
-                  'value': context
+                  title: 'CAREGIVERS/GUARDIANS',
+                  value: context
                       .read<UIProvider>()
-                      .getDashData['caregivers']
-                      .toString() ??
-                      "null",
-                  'icon': FontAwesomeIcons.peopleGroup,
-                  'color': const Color(0xff348FE2),
-                  's_color': const Color(0xff1F5788),
-                },
+                      .getDashData['caregivers'] ??
+                      0,
+                  icon: FontAwesomeIcons.peopleGroup,
+                  color: const Color(0xff348FE2),
+                  secondaryColor: const Color(0xff1F5788),
               ),
 
               HomepageCardSecondary(
-                data: {
-                  'title': 'WORKFORCE MEMBERS',
-                  'value': context
+                  title: 'WORKFORCE MEMBERS',
+                  value: context
                       .read<UIProvider>()
-                      .getDashData['workforce_members']
-                      .toString() ??
-                      "null",
-                  'icon': Icons.people,
-                  'color': const Color(0xff727DB6),
-                  's_color': const Color(0xff454A6D),
-                },
+                      .getDashData['workforce_members'] ??
+                      0,
+                  icon: Icons.people,
+                  color: const Color(0xff727DB6),
+                  secondaryColor: const Color(0xff454A6D),
               ),
               HomepageCardSecondary(
-                data: {
-                  'title': 'ORG UNITS/CBOs',
-                  'value': context
+                  title: 'ORG UNITS/CBOs',
+                  value: context
                       .read<UIProvider>()
-                      .getDashData['org_units']
-                      .toString() ??
-                      "null",
-                  'icon': FontAwesomeIcons.landmark,
-                  'color': const Color(0xff49B6D5),
-                  's_color': const Color(0xff2C6E80),
-                },
+                      .getDashData['org_units'] ??
+                      0,
+                  icon: FontAwesomeIcons.landmark,
+                  color: const Color(0xff49B6D5),
+                  secondaryColor: const Color(0xff2C6E80),
               ),
-              HomepageCardSecondary(data: {
-                'title': 'HOUSEHOLDS',
-                'value':
-                context.read<UIProvider>().getDashData['hh_holds'].toString() ??
-                    "null",
-                'icon': FontAwesomeIcons.house,
-                'color': const Color(0xffFE5C57),
-                's_color': const Color(0xff9A3734),
-              }),
+              HomepageCardSecondary(
+                title: 'HOUSEHOLDS',
+                value: context
+                    .read<UIProvider>()
+                    .getDashData['hh_holds'] ??
+                    0,
+                icon: FontAwesomeIcons.house,
+                color: const Color(0xffFE5C57),
+                secondaryColor: const Color(0xff9A3734),
+              ),
             ],
           ),
           const SizedBox(
