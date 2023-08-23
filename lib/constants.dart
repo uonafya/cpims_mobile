@@ -392,3 +392,32 @@ successSnackBar(BuildContext context, message) {
     duration: const Duration(seconds: 1),
   ));
 }
+
+// case plan stepper data
+List<Map<String, dynamic>> cparaStepperData = [
+  {
+    'title': 'Details',
+    'subtitle': 'CPARA Base Details',
+    'onTap': () {}
+  },
+  {
+    'title': 'Healthy',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Stable',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Safe',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Schooled',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+];

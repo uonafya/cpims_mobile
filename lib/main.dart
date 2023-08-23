@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
+import 'package:cpims_mobile/screens/cpara/cpara_forms.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/theme.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class _CPIMSState extends State<CPIMS> {
   @override
   void initState() {
     super.initState();
-    _checkLogin();
+    // _checkLogin();
   }
 
   _checkLogin() async {
@@ -73,7 +74,8 @@ class _CPIMSState extends State<CPIMS> {
       },
       child:
           // const Homepage()
-          const LoginScreen(),
+          // const LoginScreen(),
+        const CparaFormsScreen()
     );
   }
 }
