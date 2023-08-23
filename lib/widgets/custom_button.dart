@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomButton extends StatelessWidget {
-  const CustomButton(
-      {Key? key, required this.text, this.onTap, this.color = kPrimaryColor})
-      : super(key: key);
+  const CustomButton({
+    Key? key,
+    required this.text,
+    this.onTap,
+    this.color = kPrimaryColor,
+  }) : super(key: key);
 
   final String text;
   final Function? onTap;
