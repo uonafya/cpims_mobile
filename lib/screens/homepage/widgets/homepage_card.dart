@@ -60,9 +60,9 @@ class HomepageCard extends StatelessWidget {
               height: 30,
               width: double.infinity,
               color: data['s_color'],
-              child: Row(
+              child: const Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: const [
+                  children: [
                     Text(
                       'View Details',
                       style: TextStyle(color: Colors.white, fontSize: 12),

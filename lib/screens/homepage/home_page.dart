@@ -19,7 +19,7 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     var access = context.read<UIProvider>().getAccess.toString();
     print(">>>>>>>>>>>>>>>>>>> access >>>>>>>>>>>>> $access");
-    // TODO: implement initState
+
     super.initState();
   }
 
@@ -49,10 +49,9 @@ class _HomepageState extends State<Homepage> {
             data: {
               'title': 'Org Unit Id',
               'value': context
-                      .read<UIProvider>()
-                      .getDashData['org_unit_id']
-                      .toString() ??
-                  "null",
+                  .read<UIProvider>()
+                  .getDashData['org_unit_id']
+                  .toString(),
               'icon': FontAwesomeIcons.orcid,
               'color': Colors.black54,
               's_color': const Color(0xff0E6668),

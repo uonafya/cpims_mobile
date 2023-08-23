@@ -15,7 +15,7 @@ class Footer extends StatelessWidget {
         ),
         const Text(
           '© 2022. All Rights Reserved. Version: 3.0.0',
-          style: const TextStyle(color: kTextGrey, fontSize: 12),
+          style: TextStyle(color: kTextGrey, fontSize: 12),
         ),
         if (hasPartners)
           const SizedBox(

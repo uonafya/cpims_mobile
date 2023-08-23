@@ -1,7 +1,9 @@
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
 import 'package:cpims_mobile/screens/forms/form1a/form_1A.dart';
+import 'package:cpims_mobile/screens/forms/form1b/form_1B.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
+import 'package:cpims_mobile/screens/registry/organisation_units/register_new_organisation.dart';
 import 'package:cpims_mobile/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,7 +41,7 @@ class _CPIMSState extends State<CPIMS> {
     var authKey = prefs.getString('authenticated');
 
     if (authKey != null) {
-      Get.to(() => Homepage(),
+      Get.to(() => const Homepage(),
           transition: Transition.fade,
           duration: const Duration(milliseconds: 2000));
     } else {

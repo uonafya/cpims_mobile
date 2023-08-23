@@ -24,7 +24,7 @@ class _CaseLoadState extends State<CaseLoad> {
     print("get access token ..............");
     debugPrint(context.read<UIProvider>().getAccess.toString());
 
-    Future.delayed(Duration(seconds: 5), () {
+    Future.delayed(const Duration(seconds: 5), () {
       _caseLoad();
       print("caseload api list");
       debugPrint(case_load.toString());
@@ -61,9 +61,7 @@ class _CaseLoadState extends State<CaseLoad> {
       body: ListView.builder(
           itemCount: case_load.length,
           itemBuilder: (BuildContext context, int index) {
-            return Text(case_load[index].cpimsId.toString() +
-                " " +
-                case_load[index].name.toString());
+            return Text("${case_load[index].cpimsId} ${case_load[index].name}");
           }),
     );
   }

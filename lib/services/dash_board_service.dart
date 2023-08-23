@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:cpims_mobile/services/api_service.dart';
-import 'package:http/http.dart' as http;
 
 class DashBoardService {
   dashBoard(access) async {

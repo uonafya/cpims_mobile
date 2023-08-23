@@ -15,11 +15,11 @@ class CaseLoadModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['cpims_id'] = this.cpimsId;
-    data['name'] = this.name;
-    data['date_of_birth'] = this.dateOfBirth;
-    data['registration_date'] = this.registrationDate;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['cpims_id'] = cpimsId;
+    data['name'] = name;
+    data['date_of_birth'] = dateOfBirth;
+    data['registration_date'] = registrationDate;
     return data;
   }
 }
