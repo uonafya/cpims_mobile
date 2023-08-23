@@ -20,3 +20,60 @@ List<Map<String, dynamic>> form1bsStepper = [
     'onTap': () => {},
   },
 ];
+
+List<Map> careGiverHealthServices = [
+  {
+    'title': 'Healthy',
+    'subtitle': 'Caregiver health and nutrition status',
+  },
+  {
+    'title': 'Safe',
+    'subtitle': 'Caregiver protection service',
+  },
+  {
+    'title': 'Stable',
+    'subtitle': 'Caregiver household economic strengthening status',
+  },
+  {
+    'title': 'Critical Event',
+    'subtitle': 'Caregiver critical event',
+  },
+];
+
+List<Map<String, dynamic>> careGiverProtectionServices = [
+  {
+    'title': 'Healthy',
+    'subtitle': 'Caregiver health and nutrition status',
+  },
+  {
+    'title': 'Safe',
+    'subtitle': 'Caregiver protection service',
+  },
+  {
+    'title': 'Stable',
+    'subtitle': 'Caregiver household economic strengthening status',
+  },
+  {
+    'title': 'Critical Event',
+    'subtitle': 'Caregiver critical event',
+  },
+];
+
+List<Map<String, dynamic>> careGiverEconomicServices = [
+  {
+    'title': 'Healthy',
+    'subtitle': 'Caregiver health and nutrition status',
+  },
+  {
+    'title': 'Safe',
+    'subtitle': 'Caregiver protection service',
+  },
+  {
+    'title': 'Stable',
+    'subtitle': 'Caregiver household economic strengthening status',
+  },
+  {
+    'title': 'Critical Event',
+    'subtitle': 'Caregiver critical event',
+  },
+];
