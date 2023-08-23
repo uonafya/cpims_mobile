@@ -27,6 +27,14 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   RadioButtonOptions? q2_7;
   RadioButtonOptions? q2_8;
   RadioButtonOptions? q2_9;
+  RadioButtonOptions? group1Final;
+  RadioButtonOptions? group2Final;
+  RadioButtonOptions? group3Final;
+  RadioButtonOptions? group3Initial;
+  RadioButtonOptions? group2Initial;
+  RadioButtonOptions? initial2_1;
+  RadioButtonOptions? initial2_4;
+  RadioButtonOptions? initial2_7;
 
   // Update the state of the questions
   void updateQuestion(String question, RadioButtonOptions? value) {
@@ -101,10 +109,37 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           q2_9 = value;
         });
         break;
+      case "initial_3":
+        setState(() {
+          group3Initial = value;
+        });
+        break;
+      case "initial_2":
+        setState(() {
+          group2Initial = value;
+        });
+        break;
+      case "initial2_1":
+        setState(() {
+          initial2_1 = value;
+        });
+        break;
+      case "initial2_4":
+        setState(() {
+          initial2_4 = value;
+        });
+        break;
+      case "initial2_7":
+        setState(() {
+          initial2_7 = value;
+        });
+        break;
       default:
         break;
     }
   }
+
+  void noChangeToRadio(RadioButtonOptions? val) {}
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +148,11 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
       children: [
         // Healthy Goal 1
         HealthyGoalBlock(
+          doesSectionDependOnInitialAnswer: false,
+          updateFinalFormRadio: noChangeToRadio,
+          showNAInFinalResult: false,
+          finalBlockQuestion: "Has the household achieved this benchmark?",
+          finalResult: group1Final,
           descriptionHeading:
               "Healthy: Goal 1: Increase diagnosis of HIV infection",
           descriptionText:
@@ -122,6 +162,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           sections: [
             // Section 1.1 and 1.2
             QuestionsSection(
+              doesSectionDependOnInitialAnswer: false,
               isTopDividerThere: false,
               title: "HIV diagnosis for children",
               questions: [
@@ -150,6 +191,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
             // Section 1.3
             QuestionsSection(
+              doesSectionDependOnInitialAnswer: false,
               isTopDividerThere: false,
               title: "Early Infant Diagnosis",
               questions: [
@@ -168,6 +210,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
             // Question 1.4 and 1.5
             QuestionsSection(
+              doesSectionDependOnInitialAnswer: false,
               isTopDividerThere: false,
               title: "HIV diagnosis for caregiver",
               questions: [
@@ -200,6 +243,17 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
         // Healthy Goal 2
         HealthyGoalBlock(
+          doesSectionDependOnInitialAnswer: true,
+          initalQuestion:
+              "Is there anyone who is HIV positive in the Household ?",
+          isNAInIntial: false,
+          initalQuestionValue: group2Initial,
+          updateInitialQuestion: (RadioButtonOptions? val) =>
+              updateQuestion("initial_2", val),
+          finalBlockQuestion: "Has the household achieved this benchmark?",
+          showNAInFinalResult: false,
+          finalResult: group2Final,
+          updateFinalFormRadio: noChangeToRadio,
           descriptionHeading:
               "Healthy: Goal 2: Increase HIV treatment adherence, continuity of treatment and viral suppression",
           descriptionText:
@@ -209,6 +263,13 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           sections: [
             // Section 2.1 - 2.3
             QuestionsSection(
+              doesSectionDependOnInitialAnswer: true,
+              initalQuestion:
+                  "Is there a child 0 - 12 years who is HIV positive ?",
+              initalQuestionValue: initial2_1,
+              updateInitialQuestion: (RadioButtonOptions? val) =>
+                  updateQuestion("initial2_1", val),
+              isNAInIntial: false,
               isTopDividerThere: false,
               title: "Children 0-12",
               questions: [
@@ -233,7 +294,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                       updateQuestion("q2_2", val),
                 ),
                 QuestionBlock(
-                  isTopDividerThere: true,
+                  isTopDividerThere: false,
                   isOptional: false,
                   groupValue: q2_3,
                   question:
@@ -247,6 +308,13 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
             // Section 2.4 - 2.6
             QuestionsSection(
+              doesSectionDependOnInitialAnswer: true,
+              updateInitialQuestion: (RadioButtonOptions? value) =>
+                  updateQuestion("initial2_4", value),
+              isNAInIntial: false,
+              initalQuestion:
+                  "Is there an adolescents or a child above 12 years who is HIV positive ? ",
+              initalQuestionValue: initial2_4,
               isTopDividerThere: false,
               title: "Adolescents and children above 12 years",
               questions: [
@@ -285,6 +353,12 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
             // Question 2.7 to 2.9
             QuestionsSection(
+              doesSectionDependOnInitialAnswer: true,
+              initalQuestion: "Is the caregiver HIV positive ? ",
+              initalQuestionValue: initial2_7,
+              updateInitialQuestion: (RadioButtonOptions? value) =>
+                  updateQuestion("initial2_7", value),
+              isNAInIntial: false,
               isTopDividerThere: false,
               title: "Caregiver",
               questions: [
@@ -296,22 +370,52 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                       "2.7 Have all HIV positive caregivers on treatment with documented viral load results been suppressed in the past 12 months?",
                   isNAAvailable: false,
                   updateRadioButton: (RadioButtonOptions? val) =>
-                      updateQuestion("q1_4", val),
+                      updateQuestion("q2_7", val),
                 ),
                 QuestionBlock(
                   isTopDividerThere: false,
-                  groupValue: q1_5,
+                  groupValue: q2_8,
                   isOptional: false,
                   question:
                       "2.8 For those with no documented viral load results; Have the caregiver living with HIV been attending their appointments regularly for the past 12 months (check CCC card to confirm adherence to treatment)",
                   isNAAvailable: false,
                   updateRadioButton: (RadioButtonOptions? val) =>
-                      updateQuestion("q1_5", val),
+                      updateQuestion("q2_8", val),
+                ),
+                QuestionBlock(
+                  isTopDividerThere: false,
+                  groupValue: q2_9,
+                  isOptional: false,
+                  question:
+                      "2.9 Have all HIV+ caregivers been regularly taking medication without missing doses for the past 12 months? (Caregiver self-reported).",
+                  isNAAvailable: false,
+                  updateRadioButton: (RadioButtonOptions? val) =>
+                      updateQuestion("q2_9", val),
                 ),
               ],
             ),
           ],
           instructions: "",
+        ),
+
+        // Healthy Block 3
+        HealthyGoalBlock(
+          doesSectionDependOnInitialAnswer: true,
+          initalQuestionValue: group3Initial,
+          updateInitialQuestion: (RadioButtonOptions? val) =>
+              updateQuestion("initial_3", val),
+          isNAInIntial: false,
+          initalQuestion: "Healthy: Goal 3: Reduce Risk of HIV Infection",
+          finalBlockQuestion: "",
+          showNAInFinalResult: false,
+          finalResult: group3Final,
+          updateFinalFormRadio: noChangeToRadio,
+          sections: [],
+          descriptionHeading: "Healthy: Goal 3: Reduce Risk of HIV Infection",
+          descriptionText:
+              "Benchmark3: All adolescents 10-17 years of age in the household have key knowledge about preventing HIV infection Adolescents aged 10-17 can describe at least two HIV infection risks in their local community, can provide at least one example of how they can protect themselves against HIV risk, and can correctly describe the location of at least one place where HIV prevention support is available.",
+          descriptionSubText:
+              "Note: For HHs with no adolescent girls and boys, skip questions below and select “N/A” for “Achievement of this benchmark.”",
         ),
       ],
     );
@@ -328,6 +432,51 @@ const smallSpacing = SizedBox(
   height: smallSpacingAmount,
 );
 
+// The grey box that shows the final result of the section
+class FinalResultBox extends StatelessWidget {
+  final RadioButtonOptions? result; // The computed result
+  final String question; // Question to show
+  final bool isTopDividerThere;
+  final bool isNAAvailable; // Whether to show NA as option
+  final UpdateRadioButton updateRadioButton;
+
+  const FinalResultBox(
+      {required this.isTopDividerThere,
+      required this.isNAAvailable,
+      required this.result,
+      required this.question,
+      required this.updateRadioButton,
+      super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: ((context, constraints) {
+        return Container(
+          padding: const EdgeInsets.all(smallSpacingAmount),
+          width: constraints.maxWidth * 0.75,
+          decoration: const BoxDecoration(
+              color: finalResultGrey,
+              border: Border(
+                  left: BorderSide(color: finalResultDarkGrey, width: 2.0))),
+          child: Center(
+            child: QuestionBlock(
+              isBigAndBold: false,
+              tempFix: true,
+              groupValue: result,
+              isTopDividerThere: isTopDividerThere,
+              isOptional: false,
+              question: question,
+              isNAAvailable: isNAAvailable,
+              updateRadioButton: updateRadioButton,
+            ),
+          ),
+        );
+      }),
+    );
+  }
+}
+
 // An entire goal of the health section e.g health goal 1
 class HealthyGoalBlock extends StatelessWidget {
   final String instructions; // Instructions after blue box
@@ -335,13 +484,33 @@ class HealthyGoalBlock extends StatelessWidget {
   final String descriptionHeading; // Heading in blue description
   final String descriptionText; // Description of blue box
   final String descriptionSubText; // Sub text of description in blue box
+  final bool showNAInFinalResult;
+  final RadioButtonOptions? finalResult;
+  final String
+      finalBlockQuestion; // Question to show at grey box at bottom of group
+  final UpdateRadioButton updateFinalFormRadio;
+  final bool
+      doesSectionDependOnInitialAnswer; // Whehter the section depends on initial answer
+  final RadioButtonOptions? initalQuestionValue;
+  final String initalQuestion; // Question to ask
+  final UpdateRadioButton? updateInitialQuestion;
+  final bool isNAInIntial;
 
   const HealthyGoalBlock(
       {required this.sections,
-      required this.instructions,
+      this.instructions = "",
+      required this.doesSectionDependOnInitialAnswer,
       required this.descriptionHeading,
       required this.descriptionText,
       required this.descriptionSubText,
+      required this.showNAInFinalResult,
+      required this.finalResult,
+      required this.finalBlockQuestion,
+      required this.updateFinalFormRadio,
+      this.initalQuestionValue = RadioButtonOptions.yes,
+      this.initalQuestion = "",
+      this.updateInitialQuestion,
+      this.isNAInIntial = false,
       super.key});
 
   @override
@@ -354,14 +523,75 @@ class HealthyGoalBlock extends StatelessWidget {
             body: descriptionText,
             subBody: descriptionSubText),
         smallSpacing,
-        // Instructions
-        HealthInstructions(
-          description: instructions,
-          isTopDividerThere: true,
-        ),
+        // Initial Section
+        if (doesSectionDependOnInitialAnswer == true)
+          Padding(
+            padding: const EdgeInsets.all(smallSpacingAmount),
+            child: HealthInitialQuestion(
+              groupVal: initalQuestionValue,
+              isTopDividerThere: false,
+              question: initalQuestion,
+              updateRadioButton: updateInitialQuestion!,
+              isNAAvailable: isNAInIntial,
+            ),
+          ),
+        if (instructions.isNotEmpty)
+          // Instructions
+          HealthInstructions(
+            description: instructions,
+            isTopDividerThere: true,
+          ),
         // Questions
-        for (var i in sections) i
+        for (var i in sections) i,
+        smallSpacing,
+
+        // Final Result that is determined by all other results
+        FinalResultBox(
+          isTopDividerThere: false,
+          isNAAvailable: showNAInFinalResult,
+          result: finalResult,
+          question: finalBlockQuestion,
+          updateRadioButton: updateFinalFormRadio,
+        ),
       ],
+    );
+  }
+}
+
+// The initial question that is asked that determines whether or not to display questions
+class HealthInitialQuestion extends StatelessWidget {
+  final RadioButtonOptions? groupVal;
+  final bool isTopDividerThere;
+  final String question;
+  final bool isNAAvailable;
+  final UpdateRadioButton updateRadioButton;
+
+  const HealthInitialQuestion(
+      {required this.groupVal,
+      required this.isTopDividerThere,
+      required this.question,
+      required this.updateRadioButton,
+      required this.isNAAvailable,
+      super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: ((context, constraints) {
+        return Container(
+          width: constraints.maxWidth * 0.9,
+          color: darkBlue,
+          child: QuestionBlock(
+            isBigAndBold: true,
+            groupValue: groupVal,
+            isTopDividerThere: isTopDividerThere,
+            isOptional: true,
+            question: question,
+            isNAAvailable: isNAAvailable,
+            updateRadioButton: updateRadioButton,
+          ),
+        );
+      }),
     );
   }
 }
@@ -389,6 +619,9 @@ class SqueezedBetweenDivider extends StatelessWidget {
 }
 
 const lightBlue = Color.fromRGBO(217, 237, 247, 1);
+const finalResultGrey = Color.fromRGBO(219, 219, 219, 1);
+const finalResultDarkGrey = Color.fromRGBO(59, 59, 59, 1);
+const darkBlue = Color.fromRGBO(190, 226, 239, 1);
 
 class HealthDescription extends StatelessWidget {
   final String heading; // The heading of the description
@@ -463,19 +696,27 @@ const notOptionalStar = TextSpan(
 class QuestionText extends StatelessWidget {
   final String text;
   final bool isOptional; // Whether question is optional or not
+  final bool isBigAndBold;
 
-  const QuestionText({required this.text, required this.isOptional, super.key});
+  const QuestionText(
+      {required this.text,
+      required this.isOptional,
+      required this.isBigAndBold,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
+    var normalTheme = Theme.of(context)
+        .textTheme
+        .bodyMedium!
+        .copyWith(fontWeight: FontWeight.bold);
+    var bigAndBold = const TextStyle(
+        fontSize: 17.0, fontWeight: FontWeight.bold, color: Colors.black);
     // Bold text that shows the question
     return RichText(
       text: TextSpan(
           text: text,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium!
-              .copyWith(fontWeight: FontWeight.bold),
+          style: isBigAndBold == true ? bigAndBold : normalTheme,
           children: [if (isOptional == false) notOptionalStar]),
     );
   }
@@ -492,6 +733,8 @@ class QuestionBlock extends StatelessWidget {
   final bool isNAAvailable; // Whether to show the NA option or not
   final bool isOptional; // Whether or not the question is optional
   final bool isTopDividerThere;
+  final bool tempFix; // To be removed
+  final bool isBigAndBold; // Whether to make the question text big and bold
 
   const QuestionBlock(
       {required this.groupValue,
@@ -499,26 +742,91 @@ class QuestionBlock extends StatelessWidget {
       required this.isOptional,
       required this.question,
       required this.isNAAvailable,
+      this.isBigAndBold = false,
       required this.updateRadioButton,
+      this.tempFix = false,
       super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SqueezedBetweenDivider(
-      widget: Column(
-        children: [
-          // Text For The Question
-          QuestionText(
-            text: question,
-            isOptional: isOptional,
-          ),
-          smallSpacing,
-          // The Options To Display
-          CustomRadioButton(
-              isNaAvailable: isNAAvailable, optionSelected: updateRadioButton)
-        ],
-      ),
-      isTopSpacingThere: isTopDividerThere,
+    if (tempFix == false) {
+      return SqueezedBetweenDivider(
+        widget: Column(
+          children: [
+            // Text For The Question
+            QuestionText(
+              isBigAndBold: isBigAndBold,
+              text: question,
+              isOptional: isOptional,
+            ),
+            smallSpacing,
+            // The Options To Display
+            CustomRadioButton(
+                isNaAvailable: isNAAvailable, optionSelected: updateRadioButton)
+          ],
+        ),
+        isTopSpacingThere: isTopDividerThere,
+      );
+    } else {
+      return SqueezedBetweenDivider(
+        widget: Column(
+          children: [
+            // Text For The Question
+            QuestionText(
+              isBigAndBold: isBigAndBold,
+              text: question,
+              isOptional: isOptional,
+            ),
+            smallSpacing,
+            // The Options To Display
+            MyCustomRadioListTileColumn(
+                isNaAvailable: isNAAvailable,
+                updateRadioButton: updateRadioButton,
+                groupValue: groupValue)
+          ],
+        ),
+        isTopSpacingThere: isTopDividerThere,
+      );
+    }
+  }
+}
+
+class MyCustomRadioListTileColumn extends StatelessWidget {
+  final bool isNaAvailable;
+  final UpdateRadioButton updateRadioButton;
+  final RadioButtonOptions? groupValue;
+
+  const MyCustomRadioListTileColumn(
+      {required this.isNaAvailable,
+      required this.updateRadioButton,
+      required this.groupValue,
+      super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        RadioListTile<RadioButtonOptions>(
+            title: const Text('Yes'),
+            value: RadioButtonOptions.yes,
+            groupValue: groupValue,
+            onChanged: updateRadioButton),
+        RadioListTile<RadioButtonOptions>(
+            title: const Text('No'),
+            value: RadioButtonOptions.no,
+            groupValue: groupValue,
+            onChanged: updateRadioButton),
+        isNaAvailable
+            ? RadioListTile<RadioButtonOptions>(
+                title: const Text('N/A'),
+                value: RadioButtonOptions.na,
+                groupValue: groupValue,
+                onChanged: updateRadioButton)
+            : const SizedBox.shrink(),
+      ],
     );
   }
 }
@@ -563,11 +871,22 @@ class QuestionsSection extends StatelessWidget {
   final String title;
   final List<QuestionBlock> questions;
   final bool isTopDividerThere;
+  final bool
+      doesSectionDependOnInitialAnswer; // Whehter the section depends on initial answer
+  final RadioButtonOptions? initalQuestionValue;
+  final String initalQuestion; // Question to ask
+  final UpdateRadioButton? updateInitialQuestion;
+  final bool isNAInIntial;
 
   const QuestionsSection(
       {required this.title,
       required this.questions,
       required this.isTopDividerThere,
+      required this.doesSectionDependOnInitialAnswer,
+      this.initalQuestionValue = RadioButtonOptions.yes,
+      this.initalQuestion = "",
+      this.updateInitialQuestion,
+      this.isNAInIntial = false,
       super.key});
 
   @override
@@ -579,6 +898,19 @@ class QuestionsSection extends StatelessWidget {
           title: title,
           isTopDividerThere: isTopDividerThere,
         ),
+
+        // Depend on intial question
+        if (doesSectionDependOnInitialAnswer == true)
+          Padding(
+            padding: const EdgeInsets.all(smallSpacingAmount),
+            child: HealthInitialQuestion(
+                groupVal: initalQuestionValue,
+                isTopDividerThere: false,
+                question: initalQuestion,
+                updateRadioButton: updateInitialQuestion!,
+                isNAAvailable: isNAInIntial),
+          ),
+
         // The questions to display
         for (var i in questions) i
       ],
