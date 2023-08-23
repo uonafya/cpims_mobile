@@ -11,6 +11,17 @@ class CparaHealthyWidget extends StatefulWidget {
   State<CparaHealthyWidget> createState() => _CparaHealthyWidgetState();
 }
 
+class Children {
+  final String name;
+  final UpdateRadioButton updateRadioButton;
+  final RadioButtonOptions? groupValue;
+
+  const Children(
+      {required this.updateRadioButton,
+      required this.groupValue,
+      required this.name});
+}
+
 class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   // State of the questions
   RadioButtonOptions? q1_1;
@@ -30,11 +41,29 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   RadioButtonOptions? group1Final;
   RadioButtonOptions? group2Final;
   RadioButtonOptions? group3Final;
+  RadioButtonOptions? group4Final;
   RadioButtonOptions? group3Initial;
   RadioButtonOptions? group2Initial;
   RadioButtonOptions? initial2_1;
   RadioButtonOptions? initial2_4;
   RadioButtonOptions? initial2_7;
+  RadioButtonOptions? group4Initial;
+  RadioButtonOptions? q4_1;
+  RadioButtonOptions? q4_2;
+  RadioButtonOptions? q4_3;
+  RadioButtonOptions? q4_4;
+
+  // Children state
+  final children = [
+    Children(
+        name: "FELIX OUMA",
+        groupValue: RadioButtonOptions.no,
+        updateRadioButton: (RadioButtonOptions? value) {}),
+    Children(
+        name: "EDWINE OUMA",
+        groupValue: RadioButtonOptions.no,
+        updateRadioButton: (RadioButtonOptions? value) {})
+  ];
 
   // Update the state of the questions
   void updateQuestion(String question, RadioButtonOptions? value) {
@@ -109,9 +138,34 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           q2_9 = value;
         });
         break;
+      case "q4_1":
+        setState(() {
+          q4_1 = value;
+        });
+        break;
+      case "q4_2":
+        setState(() {
+          q4_2 = value;
+        });
+        break;
+      case "q4_3":
+        setState(() {
+          q4_3 = value;
+        });
+        break;
+      case "q4_4":
+        setState(() {
+          q4_4 = value;
+        });
+        break;
       case "initial_3":
         setState(() {
           group3Initial = value;
+        });
+        break;
+      case "initial_4":
+        setState(() {
+          group4Initial = value;
         });
         break;
       case "initial_2":
@@ -405,7 +459,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           updateInitialQuestion: (RadioButtonOptions? val) =>
               updateQuestion("initial_3", val),
           isNAInIntial: false,
-          initalQuestion: "Healthy: Goal 3: Reduce Risk of HIV Infection",
+          initalQuestion: "Does the household have adolescent girls and boys ?",
           finalBlockQuestion: "",
           showNAInFinalResult: false,
           finalResult: group3Final,
@@ -416,6 +470,126 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
               "Benchmark3: All adolescents 10-17 years of age in the household have key knowledge about preventing HIV infection Adolescents aged 10-17 can describe at least two HIV infection risks in their local community, can provide at least one example of how they can protect themselves against HIV risk, and can correctly describe the location of at least one place where HIV prevention support is available.",
           descriptionSubText:
               "Note: For HHs with no adolescent girls and boys, skip questions below and select “N/A” for “Achievement of this benchmark.”",
+        ),
+
+        // Table
+        smallSpacing,
+        HealthTable(
+          healthCards: [
+            for (var i in children)
+              HealthCard(
+                childName: i.name,
+                questions: [
+                  QuestionBlock(
+                    groupValue: i.groupValue,
+                    isTopDividerThere: false,
+                    isOptional: true,
+                    question:
+                        "3.1 Can you tell me two behaviors that increase risk of HIV infection?",
+                    isNAAvailable: false,
+                    updateRadioButton: i.updateRadioButton,
+                  ),
+                  QuestionBlock(
+                    groupValue: i.groupValue,
+                    isTopDividerThere: false,
+                    isOptional: true,
+                    question:
+                        "3.2 Can you tell me two ways you can protect yourself/ others against HIV?",
+                    isNAAvailable: false,
+                    updateRadioButton: i.updateRadioButton,
+                  ),
+                  QuestionBlock(
+                    groupValue: i.groupValue,
+                    isTopDividerThere: false,
+                    isOptional: true,
+                    question:
+                        "3.3 Can you name two places in the community where you can access HIV prevention services?",
+                    isNAAvailable: false,
+                    updateRadioButton: i.updateRadioButton,
+                  ),
+                ],
+                isTopDividerThere: false,
+              ),
+          ],
+        ),
+
+        // Healthy Block 4
+        HealthyGoalBlock(
+          doesSectionDependOnInitialAnswer: true,
+          initalQuestionValue: group4Initial,
+          updateInitialQuestion: (RadioButtonOptions? value) =>
+              updateQuestion("initial_4", value),
+          isNAInIntial: false,
+          initalQuestion: "Is there child < 5 years in the household ?",
+          finalBlockQuestion: "Has the household achieved this benchmarks?",
+          showNAInFinalResult: false,
+          finalResult: group4Final,
+          updateFinalFormRadio: noChangeToRadio,
+          sections: [
+            // Question 4.1 to 4.3
+            QuestionsSection(
+              doesSectionDependOnInitialAnswer: false,
+              isTopDividerThere: false,
+              title: "",
+              questions: [
+                QuestionBlock(
+                  isTopDividerThere: false,
+                  isOptional: false,
+                  groupValue: q4_1,
+                  question:
+                      "4.1 Have all children below the age of five been assessed using MUAC and scored green?",
+                  isNAAvailable: false,
+                  updateRadioButton: (RadioButtonOptions? value) =>
+                      updateQuestion("q4_1", value),
+                ),
+                QuestionBlock(
+                  isTopDividerThere: true,
+                  groupValue: q4_2,
+                  isOptional: false,
+                  question:
+                      "4.2 Have all the children below five years showed no signs of bipedal edema (e.g. Pressure applied on top of both feet for three seconds and did not leave a pit)?",
+                  isNAAvailable: false,
+                  updateRadioButton: (RadioButtonOptions? value) =>
+                      updateQuestion("q4_2", value),
+                ),
+                QuestionBlock(
+                  isTopDividerThere: false,
+                  groupValue: q4_3,
+                  isOptional: false,
+                  question:
+                      "4.3 Have all the children previously identified as malnourished been treated and has a Z score of >-2? (Confirm with clinical as appropriate)",
+                  isNAAvailable: false,
+                  updateRadioButton: (RadioButtonOptions? value) =>
+                      updateQuestion("q4_3", value),
+                ),
+              ],
+            ),
+
+            // Question 4.4
+            QuestionsSection(
+              doesSectionDependOnInitialAnswer: false,
+              isTopDividerThere: false,
+              title: "",
+              questions: [
+                QuestionBlock(
+                  isTopDividerThere: false,
+                  isOptional: false,
+                  groupValue: q4_4,
+                  question:
+                      "4.4 If there is a child under 2 years in the household, Is the infant’s immunization on schedule? (Check mother baby booklet pages 33-35) ",
+                  isNAAvailable: false,
+                  updateRadioButton: (RadioButtonOptions? value) =>
+                      updateQuestion("q4_4", value),
+                ),
+              ],
+            ),
+          ],
+          descriptionHeading:
+              "Healthy: Goal 4: Improve Development for Children <5 Years (Particularly HIV Exposed and Infected Infants/Young Children)",
+          descriptionText:
+              "Benchmark 4: No children < 5 years in the household are undernourished",
+          descriptionSubText:
+              "Note: If none of the children in the household is <5 years) select “N/A” and move to the stale domain",
         ),
       ],
     );
@@ -431,6 +605,78 @@ const headingSpacing = SizedBox(
 const smallSpacing = SizedBox(
   height: smallSpacingAmount,
 );
+
+class HealthCardDetails extends StatelessWidget {
+  final String childName;
+
+  const HealthCardDetails({required this.childName, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Text(
+              "Child Name",
+              style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 12.0),
+            ),
+            Text(
+              childName,
+              style: const TextStyle(
+                  color: Colors.blue,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16.0),
+            )
+          ],
+        )
+      ],
+    );
+  }
+}
+
+class HealthCard extends StatelessWidget {
+  final String childName;
+  final List<QuestionBlock> questions;
+  final bool isTopDividerThere;
+
+  const HealthCard(
+      {required this.childName,
+      required this.questions,
+      required this.isTopDividerThere,
+      super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+        child: Column(
+      children: [
+        // Children Details Row
+        HealthCardDetails(childName: childName),
+
+        // Question
+        for (var i in questions) i
+      ],
+    ));
+  }
+}
+
+class HealthTable extends StatelessWidget {
+  final List<HealthCard> healthCards;
+
+  const HealthTable({required this.healthCards, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [for (var i in healthCards) i],
+    );
+  }
+}
 
 // The grey box that shows the final result of the section
 class FinalResultBox extends StatelessWidget {
@@ -841,28 +1087,32 @@ class QuestionSectionHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SqueezedBetweenDivider(
-        isTopSpacingThere: isTopDividerThere,
-        widget: Padding(
-          padding: const EdgeInsets.all(smallSpacingAmount),
-          child: LayoutBuilder(builder: (context, constraints) {
-            return Container(
-              width: constraints.maxHeight * 0.75,
-              color: kPrimaryColor,
-              child: Center(
-                  child: Padding(
-                padding: const EdgeInsets.all(headingPaddingAmount),
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0),
-                ),
-              )),
-            );
-          }),
-        ));
+    if (title.isEmpty) {
+      return const SizedBox.shrink();
+    } else {
+      return SqueezedBetweenDivider(
+          isTopSpacingThere: isTopDividerThere,
+          widget: Padding(
+            padding: const EdgeInsets.all(smallSpacingAmount),
+            child: LayoutBuilder(builder: (context, constraints) {
+              return Container(
+                width: constraints.maxHeight * 0.75,
+                color: kPrimaryColor,
+                child: Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(headingPaddingAmount),
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18.0),
+                  ),
+                )),
+              );
+            }),
+          ));
+    }
   }
 }
 
