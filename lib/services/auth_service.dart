@@ -61,8 +61,6 @@ class AuthService {
             refreshToken: responseData['refresh'],
           );
 
-          print(userModel);
-
           if (context.mounted) {
             Provider.of<AuthProvider>(context, listen: false)
                 .setUser(userModel);
@@ -73,6 +71,69 @@ class AuthService {
               duration: const Duration(microseconds: 300));
         },
       );
+    }
+  }
+
+  // check token validity
+  Future<bool> verifyToken({
+    required BuildContext context,
+  }) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      final AuthProvider authProvider = AuthProvider();
+
+      String? refreshToken = prefs.getString('refresh');
+
+      int? authTokenTimestamp = prefs.getInt('authTokenTimestamp');
+
+      if (refreshToken != null && authTokenTimestamp != null) {
+        int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
+        int tokenExpiryDuration =
+            1800 * 1000; // Token expires after 1 hour (in milliseconds)
+
+        if (currentTimestamp - authTokenTimestamp > tokenExpiryDuration) {
+          // Token has expired -- refresh token
+
+          // get new token
+          final http.Response response = await http.post(
+            Uri.parse(
+              '${cpimsApiUrl}token/refresh/',
+            ),
+            body: {
+              'refresh': refreshToken,
+            },
+          );
+
+          if (context.mounted) {
+            httpReponseHandler(
+              response: response,
+              context: context,
+              onSuccess: () async {
+                final responseData = json.decode(response.body);
+                await prefs.remove('access');
+                await prefs.setString('access', responseData['access']);
+
+                if (context.mounted) {
+                  authProvider.setUser(UserModel(
+                    username: authProvider.user!.username,
+                    accessToken: responseData['access'],
+                    refreshToken: refreshToken,
+                  ));
+                }
+              },
+            );
+          }
+          return false;
+        } else {
+          // Token is still valid, set the token
+          authProvider.setAccessToken(refreshToken);
+          return true;
+        }
+      }
+      return false;
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 
