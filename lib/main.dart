@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
+import 'package:cpims_mobile/screens/forms/caseplan/case_plan.dart';
 import 'package:cpims_mobile/screens/forms/form1a/form_1A.dart';
 import 'package:cpims_mobile/screens/forms/form1b/form_1B.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
@@ -75,7 +76,7 @@ class _CPIMSState extends State<CPIMS> {
       },
       child:
           // const Homepage()
-          const Form1AScreen(),
+          const CasePlanScreen(),
     );
   }
 }

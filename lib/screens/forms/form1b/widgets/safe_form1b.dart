@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
+import 'package:cpims_mobile/widgets/custom_date_picker.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -11,104 +12,21 @@ class SafeForm1b extends StatelessWidget {
       title: 'Caregiver protection service',
       children: [
         Text(
-          'Contact person',
+          'Service(s)',
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
         CustomTextField(
-          hintText: '',
-        ),
-        SizedBox(
-          height: 15,
+          hintText: 'Select service',
         ),
         Text(
-          'Email address',
+          'Date of Service(s) / Event',
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
-        CustomTextField(
-          hintText: '',
-        ),
-        SizedBox(
-          height: 15,
-        ),
-        Text(
-          'Latitude',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        CustomTextField(
-          hintText: '',
-        ),
-        SizedBox(
-          height: 15,
-        ),
-        Text(
-          'Longitude',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        CustomTextField(
-          hintText: '',
-        ),
-        SizedBox(
-          height: 15,
-        ),
-        Text(
-          'Phone number - landline',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        CustomTextField(
-          hintText: '',
-        ),
-        SizedBox(
-          height: 15,
-        ),
-        Text(
-          'Phone number - mobile',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        CustomTextField(
-          hintText: '',
-        ),
-        SizedBox(
-          height: 15,
-        ),
-        Text(
-          'Physical address',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        CustomTextField(
-          hintText: '',
-        ),
-        SizedBox(
-          height: 15,
-        ),
-        Text(
-          'Postal address',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        CustomTextField(
-          hintText: '',
-        ),
-        SizedBox(
-          height: 15,
-        ),
-        Text(
-          'Website',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        CustomTextField(
-          hintText: '',
-        ),
-        SizedBox(
-          height: 15,
-        ),
+        CustomDatePicker(
+          hintText: 'Select date',
+        )
       ],
     );
   }

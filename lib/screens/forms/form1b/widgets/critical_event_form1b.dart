@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
+import 'package:cpims_mobile/widgets/custom_date_picker.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -8,53 +9,28 @@ class CriticalEventForm1b extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const StepsWrapper(
-      title: 'Caregiver critical event',
+      title: 'Caregiver critical events',
       children: [
         Text(
-          'Type and sub-type of organisation unit',
+          'Critical Event(s)',
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
         CustomTextField(
-          hintText: 'Select unit type',
+          hintText: 'Select event',
         ),
+
         SizedBox(height: 15),
-        CustomTextField(
-          hintText: 'Select sub type',
-        ),
-        SizedBox(
-          height: 15,
-        ),
+
         Text(
-          'Legal registration type',
+          'Date of Service(s) / Event',
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
-        CustomTextField(
-          hintText: 'Select registration type',
-        ),
-        SizedBox(
-          height: 15,
-        ),
-        Text(
-          'Legal registration number',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        CustomTextField(
-          hintText: 'Registration No.',
-        ),
-        SizedBox(
-          height: 15,
-        ),
-        Text(
-          'Parent Unit',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        CustomTextField(
-          hintText: '1 Selected',
-        ),
+        CustomDatePicker(
+          hintText: 'Select date',
+        )
+
       ],
     );
   }

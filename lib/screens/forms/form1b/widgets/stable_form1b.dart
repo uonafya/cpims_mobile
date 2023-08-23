@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
+import 'package:cpims_mobile/widgets/custom_date_picker.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -11,35 +12,21 @@ class StableForm1b extends StatelessWidget {
       title: 'Caregiver household economic strengthening status',
       children: [
         Text(
-          'County',
+          'Service(s)',
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
         CustomTextField(
-          hintText: 'Please select',
-        ),
-        SizedBox(
-          height: 15,
+          hintText: 'Select service',
         ),
         Text(
-          'Sub-county',
+          'Date of Service(s) / Event',
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
-        CustomTextField(
-          hintText: 'Please select',
-        ),
-        SizedBox(
-          height: 15,
-        ),
-        Text(
-          'Wards',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        CustomTextField(
-          hintText: 'Please select',
-        ),
+        CustomDatePicker(
+          hintText: 'Select date',
+        )
       ],
     );
   }
