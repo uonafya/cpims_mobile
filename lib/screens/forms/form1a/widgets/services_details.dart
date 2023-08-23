@@ -55,9 +55,7 @@ class _ServicesDetailsState extends State<ServicesDetails> {
           dropdownHeight: 300,
           optionTextStyle: const TextStyle(fontSize: 16),
           selectedOptionIcon: const Icon(Icons.check_circle),
-          borderRadius: BorderRadius.circular(5.w)
-              .topLeft
-              .x, // Set the desired border radius value
+          borderRadius: BorderRadius.circular(5.w).topLeft.x,
         ),
         const SizedBox(height: 10),
         const Text(
