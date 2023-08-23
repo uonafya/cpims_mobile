@@ -3,21 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 
 class HomepageCardPrimary extends StatelessWidget {
-  const HomepageCardPrimary({Key? key, required this.data}) : super(key: key);
-  final Map<String, dynamic> data;
+  const HomepageCardPrimary({Key? key, required this.title, required this.icon, required this.color, required this.secondaryColor, required this.form1ACount, required this.form1BCount, required this.cpaCount, required this.cparaCount}) : super(key: key);
+  final String title;
+  final IconData icon;
+  final Color color;
+  final Color secondaryColor;
+  final int form1ACount;
+  final int form1BCount;
+  final int cpaCount;
+  final int cparaCount;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Get.to(() => ReportDetailsScreen(
-              title: data['title'],
+              title: title,
             ));
       },
       child: Container(
         height: 190,
         width: double.infinity,
-        color: data['color'],
+        color: color,
         margin: const EdgeInsets.symmetric(vertical: 7.5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,7 +37,7 @@ class HomepageCardPrimary extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        data['title'],
+                        title,
                         style: const TextStyle(
                             fontSize: 16,
                             color: Colors.white,
@@ -40,7 +47,7 @@ class HomepageCardPrimary extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        data['value'],
+                        (form1ACount + form1BCount + cpaCount + cparaCount).toString(),
                         style: const TextStyle(
                           fontSize: 24,
                           color: Colors.white,
@@ -49,50 +56,50 @@ class HomepageCardPrimary extends StatelessWidget {
                       const SizedBox(
                         height: 10,
                       ),
-                      const Row(children: [
+                      Row(children: [
                         Text(
-                          "Form 1a (3)",
-                          style: TextStyle(
+                          "Form 1a ($form1ACount)",
+                          style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,
                               fontWeight: FontWeight.w600),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Text(
-                          "CPARA (2)",
-                          style: TextStyle(
+                          "CPARA ($cparaCount)",
+                          style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,
                               fontWeight: FontWeight.w600),
                         ),
-                        Spacer(),
+                        const Spacer(),
                       ]),
                       const SizedBox(
                         height: 10,
                       ),
-                      const Row(children: [
+                      Row(children: [
                         Text(
-                          "Form 1b (1)",
-                          style: TextStyle(
+                          "Form 1b ($form1BCount)",
+                          style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,
                               fontWeight: FontWeight.w600),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Text(
-                          "CPA (6)",
-                          style: TextStyle(
+                          "CPA ($cpaCount)",
+                          style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,
                               fontWeight: FontWeight.w600),
                         ),
-                        Spacer(),
+                        const Spacer(),
                       ])
                     ],
                   ),
                 ),
                 Icon(
-                  data['icon'],
+                  icon,
                   size: 60,
                   color: Colors.white12.withOpacity(0.3),
                 )
@@ -102,7 +109,7 @@ class HomepageCardPrimary extends StatelessWidget {
             Container(
               height: 35,
               width: double.infinity,
-              color: data['s_color'],
+              color: secondaryColor,
               child: const Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

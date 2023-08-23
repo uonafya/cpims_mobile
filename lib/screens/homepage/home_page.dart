@@ -46,29 +46,25 @@ class _HomepageState extends State<Homepage> {
             style: TextStyle(color: kTextGrey),
           ),
           const HomepageCardPrimary(
-            data: {
-              'title': 'UNAPPROVED RECORDS',
-              'value': '0',
-              'icon': FontAwesomeIcons.fileCircleXmark,
-              'color': Color(0xff0ca651),
-              's_color': Color(0xff004a21),
-            },
-            // homeCardsTitles[1],
-            // context.read<UIProvider>().homeCardsTitles[1]
+            title : 'UNSYNCED RECORDS',
+            icon : FontAwesomeIcons.arrowsRotate,
+            color : Color(0xffa10036),
+            secondaryColor : Color(0xff630122),
+            form1ACount: 4,
+            form1BCount: 3,
+            cpaCount: 2,
+            cparaCount: 1,
           ),
-
           const HomepageCardPrimary(
-            data: {
-              'title': 'UNSYNCED RECORDS',
-              'value': '0',
-              'icon': FontAwesomeIcons.arrowsRotate,
-              'color': Color(0xffa10036),
-              's_color': Color(0xff630122),
-            },
-            // homeCardsTitles[1],
-            // context.read<UIProvider>().homeCardsTitles[1]
+            title: 'UNAPPROVED RECORDS',
+            icon: FontAwesomeIcons.fileCircleXmark,
+            color: Color(0xff947901),
+            secondaryColor: Color(0xff524300),
+            form1ACount: 4,
+            form1BCount: 3,
+            cpaCount: 2,
+            cparaCount: 1,
           ),
-
           GridView.count(
             crossAxisCount: 2,
             shrinkWrap: true,
