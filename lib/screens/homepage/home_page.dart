@@ -1,7 +1,7 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/homepage_card_primary.dart';
-import 'package:cpims_mobile/screens/homepage/widgets/homepage_card_secondary.dart';
+import 'package:cpims_mobile/screens/homepage/widgets/statistics_gridItem.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
@@ -65,7 +65,7 @@ class _HomepageState extends State<Homepage> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  HomepageCardSecondary(
+                  StatisticsGridItem(
                     title: 'Org Unit Id',
                     value:
                         context.read<UIProvider>().getDashData['org_unit_id'] ??
@@ -74,7 +74,7 @@ class _HomepageState extends State<Homepage> {
                     color: Colors.black54,
                     secondaryColor: Colors.black87,
                   ),
-                  HomepageCardSecondary(
+                  StatisticsGridItem(
                     title: 'OVC-ACTIVE/EVER REGISTERED',
                     value:
                         context.read<UIProvider>().getDashData['caregivers'] ??
@@ -83,7 +83,7 @@ class _HomepageState extends State<Homepage> {
                     color: kPrimaryColor,
                     secondaryColor: const Color(0xff0E6668),
                   ),
-                  HomepageCardSecondary(
+                  StatisticsGridItem(
                     title: 'CAREGIVERS/GUARDIANS',
                     value:
                         context.read<UIProvider>().getDashData['caregivers'] ??
@@ -92,7 +92,7 @@ class _HomepageState extends State<Homepage> {
                     color: const Color(0xff348FE2),
                     secondaryColor: const Color(0xff1F5788),
                   ),
-                  HomepageCardSecondary(
+                  StatisticsGridItem(
                     title: 'WORKFORCE MEMBERS',
                     value: context
                             .read<UIProvider>()
@@ -102,7 +102,7 @@ class _HomepageState extends State<Homepage> {
                     color: const Color(0xff727DB6),
                     secondaryColor: const Color(0xff454A6D),
                   ),
-                  HomepageCardSecondary(
+                  StatisticsGridItem(
                     title: 'ORG UNITS/CBOs',
                     value:
                         context.read<UIProvider>().getDashData['org_units'] ??
@@ -111,7 +111,7 @@ class _HomepageState extends State<Homepage> {
                     color: const Color(0xff49B6D5),
                     secondaryColor: const Color(0xff2C6E80),
                   ),
-                  HomepageCardSecondary(
+                  StatisticsGridItem(
                     title: 'HOUSEHOLDS',
                     value:
                         context.read<UIProvider>().getDashData['hh_holds'] ?? 0,
