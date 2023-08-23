@@ -9,6 +9,10 @@ class CustomTextField extends StatelessWidget {
       this.prefixIcon,
       this.textInputAction,
       this.suffixIcon,
+      this.initialValue,
+      this.controller,
+      this.validator,
+      this.enabled,
       this.hintText})
       : super(key: key);
 
@@ -18,6 +22,10 @@ class CustomTextField extends StatelessWidget {
   final IconData? prefixIcon;
   final IconData? suffixIcon;
   final TextInputAction? textInputAction;
+  final String? Function(String? val)? validator;
+  final bool? enabled;
+  final String? initialValue;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +35,10 @@ class CustomTextField extends StatelessWidget {
           onChanged!(val);
         }
       },
+      validator: validator,
+      controller: controller,
+      enabled: enabled,
+      initialValue: initialValue,
       cursorColor: kPrimaryColor,
       textInputAction: textInputAction,
       textAlignVertical: TextAlignVertical.center,

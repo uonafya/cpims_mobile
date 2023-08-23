@@ -41,7 +41,7 @@ class _CPIMSState extends State<CPIMS> {
     var authKey = prefs.getString('authenticated');
 
     if (authKey != null) {
-      Get.to(() => Homepage(),
+      Get.to(() => const Homepage(),
           transition: Transition.fade,
           duration: const Duration(milliseconds: 2000));
     } else {

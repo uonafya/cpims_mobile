@@ -59,9 +59,9 @@ class ApiService {
       SharedPreferences pref = await SharedPreferences.getInstance();
       var access = pref.getString('access');
       var refresh = pref.getString('refresh');
-      String _url = this._url + apiUrl;
+      String url = _url + apiUrl;
 
-      http.Response response = await http.get(Uri.parse(_url), headers: {
+      http.Response response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Bearer $refresh',

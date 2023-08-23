@@ -69,19 +69,19 @@ class _LoginScreenState extends State<LoginScreen> {
         await prefs.setString('refresh', responseMap['refresh']);
         // await prefs.setString('dash_data', DashService().getDashData());
 
-        print(">>>>>>>>>> api post " + prefs.getString('access').toString());
+        print(">>>>>>>>>> api post ${prefs.getString('access')}");
 
-        Future.delayed(Duration(seconds: 3), () async {
+        Future.delayed(const Duration(seconds: 3), () async {
           try {
             // pre-load dash data
             print(
                 " ================= dash board resp ========================");
-            var dash_resp =
+            var dashResp =
                 await DashBoardService().dashBoard(responseMap['access']);
 
-            context.read<UIProvider>().setDashData(dash_resp);
+            context.read<UIProvider>().setDashData(dashResp);
 
-            print(dash_resp.body);
+            print(dashResp.body);
           } catch (errMsg) {
             print("Something went wrong");
             print(errMsg.toString());
@@ -96,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           Get.off(() => const Homepage(),
               transition: Transition.fadeIn,
-              duration: Duration(microseconds: 300));
+              duration: const Duration(microseconds: 300));
         });
 
         successSnackBar(context, "Login was successfull");
@@ -258,9 +258,9 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(
               height: 15,
             ),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const [
+              children: [
                 ImportantLinksWidget(
                   title: 'Status Page',
                   assetLink: 'assets/images/statuspage.jpg',
