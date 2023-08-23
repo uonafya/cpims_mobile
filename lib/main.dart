@@ -2,12 +2,13 @@ import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
+import 'package:cpims_mobile/screens/splash_screen.dart';
+import 'package:cpims_mobile/services/auth_service.dart';
 import 'package:cpims_mobile/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   runApp(
@@ -36,32 +37,9 @@ class _CPIMSState extends State<CPIMS> {
   @override
   void initState() {
     super.initState();
-    _checkLogin();
   }
 
-  _checkLogin() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    final AuthProvider authProvider = AuthProvider();
-
-    String? refreshToken = prefs.getString('refresh');
-
-    int? authTokenTimestamp = prefs.getInt('authTokenTimestamp');
-
-    if (refreshToken != null && authTokenTimestamp != null) {
-      int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
-      int tokenExpiryDuration =
-          3600 * 1000; // Token expires after 1 hour (in milliseconds)
-
-      if (currentTimestamp - authTokenTimestamp > tokenExpiryDuration) {
-        // Token has expired logout or refresh token
-        authProvider.clearUser(); // Clear user data
-      } else {
-        // Token is still valid, set the token
-        authProvider.setAccessToken(refreshToken);
-      }
-    }
-  }
+  final AuthService authService = AuthService(AuthProvider());
 
   // This widget is the root of your application.
   @override
@@ -75,9 +53,24 @@ class _CPIMSState extends State<CPIMS> {
           title: 'CPIMS',
           debugShowCheckedModeBanner: false,
           theme: appTheme(),
-          home: Provider.of<AuthProvider>(context).user!.accessToken.isNotEmpty
-              ? const Homepage()
-              : const LoginScreen(),
+          home: Builder(
+            builder: (context) {
+              return FutureBuilder(
+                future: authService.verifyToken(context: context),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return Provider.of<AuthProvider>(context, listen: false)
+                            .user!
+                            .accessToken
+                            .isNotEmpty
+                        ? const Homepage()
+                        : const LoginScreen();
+                  }
+                  return const SplashScreen();
+                },
+              );
+            },
+          ),
         );
       },
     );
