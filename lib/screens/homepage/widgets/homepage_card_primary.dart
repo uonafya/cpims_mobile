@@ -87,7 +87,7 @@ class HomepageCardPrimary extends StatelessWidget {
                         ),
                         const Spacer(),
                         Text(
-                          "CPA ($cpaCount)",
+                          "CPT ($cpaCount)",
                           style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,
