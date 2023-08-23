@@ -1,6 +1,6 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
-import 'package:cpims_mobile/screens/homepage/widgets/homepage_card.dart';
+import 'package:cpims_mobile/screens/homepage/widgets/homepage_card_primary.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
@@ -44,8 +44,31 @@ class _HomepageState extends State<Homepage> {
             'Application data and usage summary',
             style: TextStyle(color: kTextGrey),
           ),
+          const HomepageCardPrimary(
+            data: {
+              'title': 'UNAPPROVED RECORDS',
+              'value': '0',
+              'icon': FontAwesomeIcons.fileCircleXmark,
+              'color': Color(0xff0ca651),
+              's_color': Color(0xff004a21),
+            },
+            // homeCardsTitles[1],
+            // context.read<UIProvider>().homeCardsTitles[1]
+          ),
 
-          HomepageCard(
+          const HomepageCardPrimary(
+            data: {
+              'title': 'UNSYNCED RECORDS',
+              'value': '0',
+              'icon': FontAwesomeIcons.arrowsRotate,
+              'color': Color(0xffa10036),
+              's_color': Color(0xff630122),
+            },
+            // homeCardsTitles[1],
+            // context.read<UIProvider>().homeCardsTitles[1]
+          ),
+
+          HomepageCardPrimary(
             data: {
               'title': 'Org Unit Id',
               'value': context
@@ -60,7 +83,7 @@ class _HomepageState extends State<Homepage> {
             // context.read<UIProvider>().homeCardsTitles[1]
           ),
 
-          HomepageCard(
+          HomepageCardPrimary(
             data: {
               'title': 'OVC-ACTIVE/EVER REGISTERED',
               'value': context
@@ -76,7 +99,7 @@ class _HomepageState extends State<Homepage> {
             // context.read<UIProvider>().homeCardsTitles[1]
           ),
 
-          HomepageCard(
+          HomepageCardPrimary(
             data: {
               'title': 'CAREGIVERS/GUARDIANS',
               'value': context
@@ -90,7 +113,7 @@ class _HomepageState extends State<Homepage> {
             },
           ),
 
-          HomepageCard(
+          HomepageCardPrimary(
             data: {
               'title': 'WORKFORCE MEMBERS',
               'value': context
@@ -103,7 +126,7 @@ class _HomepageState extends State<Homepage> {
               's_color': const Color(0xff454A6D),
             },
           ),
-          HomepageCard(
+          HomepageCardPrimary(
             data: {
               'title': 'ORG UNITS/CBOs',
               'value': context
@@ -116,7 +139,7 @@ class _HomepageState extends State<Homepage> {
               's_color': const Color(0xff2C6E80),
             },
           ),
-          HomepageCard(data: {
+          HomepageCardPrimary(data: {
             'title': 'HOUSEHOLDS',
             'value':
                 context.read<UIProvider>().getDashData['hh_holds'].toString() ??
@@ -125,20 +148,6 @@ class _HomepageState extends State<Homepage> {
             'color': const Color(0xffFE5C57),
             's_color': const Color(0xff9A3734),
           }),
-
-          // const SizedBox(height: 10),
-          // ...List.generate(
-          //   context.read<UIProvider>().homeCardsTitles.length,
-          //   (index) => HomepageCard(
-          //       data: context.read<UIProvider>().homeCardsTitles[index]
-          //       // homeCardsTitles[index],
-          //       ),
-          // ),
-          // ...List.generate(
-          //     5,
-          //     (index) => GraphWidget(
-          //           title: graphTitles[index],
-          //         )),
         ],
       ),
     );
