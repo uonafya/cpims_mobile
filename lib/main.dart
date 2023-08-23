@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
@@ -8,14 +9,20 @@ import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-// import 'package:path_provider/path_provider.dart';
-// import 'package:hive/hive.dart';
-
-// final prefs = await SharedPreferences.getInstance();
-
 void main() async {
-  runApp(const CPIMS());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => AuthProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => UIProvider(),
+        ),
+      ],
+      child: const CPIMS(),
+    ),
+  );
 }
 
 class CPIMS extends StatefulWidget {
@@ -34,21 +41,26 @@ class _CPIMSState extends State<CPIMS> {
 
   _checkLogin() async {
     final prefs = await SharedPreferences.getInstance();
-    // await prefs.remove('authenticated');
 
-    var authKey = prefs.getString('authenticated');
+    final AuthProvider authProvider = AuthProvider();
 
-    if (authKey != null) {
-      Get.to(() => const Homepage(),
-          transition: Transition.fade,
-          duration: const Duration(milliseconds: 2000));
-    } else {
-      Get.to(() => const LoginScreen(),
-          transition: Transition.fade,
-          duration: const Duration(milliseconds: 1000));
+    String? refreshToken = prefs.getString('refresh');
+
+    int? authTokenTimestamp = prefs.getInt('authTokenTimestamp');
+
+    if (refreshToken != null && authTokenTimestamp != null) {
+      int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
+      int tokenExpiryDuration =
+          3600 * 1000; // Token expires after 1 hour (in milliseconds)
+
+      if (currentTimestamp - authTokenTimestamp > tokenExpiryDuration) {
+        // Token has expired logout or refresh token
+        authProvider.clearUser(); // Clear user data
+      } else {
+        // Token is still valid, set the token
+        authProvider.setAccessToken(refreshToken);
+      }
     }
-
-    return prefs.getString('authenticated');
   }
 
   // This widget is the root of your application.
@@ -59,21 +71,15 @@ class _CPIMSState extends State<CPIMS> {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => UIProvider()),
-          ],
-          child: GetMaterialApp(
-            title: 'CPIMS',
-            debugShowCheckedModeBanner: false,
-            theme: appTheme(),
-            home: child,
-          ),
+        return GetMaterialApp(
+          title: 'CPIMS',
+          debugShowCheckedModeBanner: false,
+          theme: appTheme(),
+          home: Provider.of<AuthProvider>(context).user!.accessToken.isNotEmpty
+              ? const Homepage()
+              : const LoginScreen(),
         );
       },
-      child:
-          // const Homepage()
-          const LoginScreen(),
     );
   }
 }
