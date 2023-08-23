@@ -1,9 +1,6 @@
 // ignore_for_file: unnecessary_new, prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_interpolation_to_compose_strings, avoid_print
-import 'dart:ffi';
 
-import 'package:cpims_mobile/services/api_service.dart';
 import 'package:cpims_mobile/constants.dart';
-import 'package:cpims_mobile/screens/registry/persons_registry/register_new_person.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
@@ -14,8 +11,6 @@ import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/route_manager.dart';
-import 'package:provider/provider.dart';
 
 class FollowUps extends StatefulWidget {
   const FollowUps({super.key});
