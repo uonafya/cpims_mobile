@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
+import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
@@ -20,7 +21,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
   static const darkBlue = Color.fromRGBO(190, 226, 239, 1);
   static const green = Color.fromRGBO(0, 172, 172, 1);
   static const grey = Color.fromRGBO(219, 219, 219, 1);
-  static const greyMargin = Color.fromRGBO(59, 9, 9, 1);
+  // static const greyBorder = Color.fromRGBO(59, 9, 9, 1);
   static const lightTextColor = Colors.white;
   // static const darkTextColor = Colors.black;
 
@@ -454,6 +455,12 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                 decoration: BoxDecoration(
                   color: grey,
                   borderRadius: BorderRadius.circular(5),
+                  // border:  const Border(
+                  //   left: BorderSide(
+                  //   color: greyBorder,
+                  //   width: 2,
+                  //   ),
+                  // ),
                 ),
                 child: Column(children: [
                   const Text(
@@ -548,6 +555,10 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
               ),
             ],
           ),
+          const SizedBox(height: 20),
+          CustomButton(text: "Cancel", onTap: () {}, color: grey),
+          const SizedBox(height: 20),
+          CustomButton(text: "Submit", onTap: () {}, color: green),          
         ],
       ),
     );
