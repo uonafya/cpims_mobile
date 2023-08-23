@@ -16,7 +16,7 @@ class Form1AScreen extends StatefulWidget {
 }
 
 class _Form1AScreenState extends State<Form1AScreen> {
-  int selectedStep = 1;
+  int selectedStep = 0;
 
   List<Widget> steps = [const CriticalEventsScreen(), const ServicesDetails()];
 
@@ -66,10 +66,12 @@ class _Form1AScreenState extends State<Form1AScreen> {
                     child: Column(
                       children: [
                         CustomStepperWidget(
-                            data: form1AStepper,
                             onTap: (index) {
-                              selectedStep = index;
+                              setState(() {
+                                selectedStep = index;
+                              });
                             },
+                            data: form1AStepper,
                             selectedIndex: selectedStep),
                         const SizedBox(
                           height: 25,
@@ -82,7 +84,7 @@ class _Form1AScreenState extends State<Form1AScreen> {
                           children: [
                             Expanded(
                               child: CustomButton(
-                                text: selectedStep <= 0 ? 'Cancel' : 'Previous',
+                                text: selectedStep <= 0 ? 'Cancel' : 'Back',
                                 onTap: () {
                                   if (selectedStep == 0) {
                                     Navigator.pop(context);
