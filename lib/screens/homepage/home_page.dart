@@ -1,6 +1,7 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/homepage_card_primary.dart';
+import 'package:cpims_mobile/screens/homepage/widgets/homepage_card_secondary.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
@@ -68,86 +69,96 @@ class _HomepageState extends State<Homepage> {
             // context.read<UIProvider>().homeCardsTitles[1]
           ),
 
-          HomepageCardPrimary(
-            data: {
-              'title': 'Org Unit Id',
-              'value': context
-                  .read<UIProvider>()
-                  .getDashData['org_unit_id']
-                  .toString(),
-              'icon': FontAwesomeIcons.orcid,
-              'color': Colors.black54,
-              's_color': const Color(0xff0E6668),
-            },
-            // homeCardsTitles[1],
-            // context.read<UIProvider>().homeCardsTitles[1]
-          ),
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              HomepageCardSecondary(
+                data: {
+                  'title': 'Org Unit Id',
+                  'value': context
+                      .read<UIProvider>()
+                      .getDashData['org_unit_id']
+                      .toString(),
+                  'icon': FontAwesomeIcons.orcid,
+                  'color': Colors.black54,
+                  's_color': Colors.black87,
+                },
+                // homeCardsTitles[1],
+                // context.read<UIProvider>().homeCardsTitles[1]
+              ),
 
-          HomepageCardPrimary(
-            data: {
-              'title': 'OVC-ACTIVE/EVER REGISTERED',
-              'value': context
+              HomepageCardSecondary(
+                data: {
+                  'title': 'OVC-ACTIVE/EVER REGISTERED',
+                  'value': context
                       .read<UIProvider>()
                       .getDashData['caregivers']
                       .toString() ??
-                  "null",
-              'icon': FontAwesomeIcons.person,
-              'color': kPrimaryColor,
-              's_color': const Color(0xff0E6668),
-            },
-            // homeCardsTitles[1],
-            // context.read<UIProvider>().homeCardsTitles[1]
-          ),
+                      "null",
+                  'icon': FontAwesomeIcons.person,
+                  'color': kPrimaryColor,
+                  's_color': const Color(0xff0E6668),
+                },
+                // homeCardsTitles[1],
+                // context.read<UIProvider>().homeCardsTitles[1]
+              ),
 
-          HomepageCardPrimary(
-            data: {
-              'title': 'CAREGIVERS/GUARDIANS',
-              'value': context
+              HomepageCardSecondary(
+                data: {
+                  'title': 'CAREGIVERS/GUARDIANS',
+                  'value': context
                       .read<UIProvider>()
                       .getDashData['caregivers']
                       .toString() ??
-                  "null",
-              'icon': FontAwesomeIcons.peopleGroup,
-              'color': const Color(0xff348FE2),
-              's_color': const Color(0xff1F5788),
-            },
-          ),
+                      "null",
+                  'icon': FontAwesomeIcons.peopleGroup,
+                  'color': const Color(0xff348FE2),
+                  's_color': const Color(0xff1F5788),
+                },
+              ),
 
-          HomepageCardPrimary(
-            data: {
-              'title': 'WORKFORCE MEMBERS',
-              'value': context
+              HomepageCardSecondary(
+                data: {
+                  'title': 'WORKFORCE MEMBERS',
+                  'value': context
                       .read<UIProvider>()
                       .getDashData['workforce_members']
                       .toString() ??
-                  "null",
-              'icon': Icons.people,
-              'color': const Color(0xff727DB6),
-              's_color': const Color(0xff454A6D),
-            },
-          ),
-          HomepageCardPrimary(
-            data: {
-              'title': 'ORG UNITS/CBOs',
-              'value': context
+                      "null",
+                  'icon': Icons.people,
+                  'color': const Color(0xff727DB6),
+                  's_color': const Color(0xff454A6D),
+                },
+              ),
+              HomepageCardSecondary(
+                data: {
+                  'title': 'ORG UNITS/CBOs',
+                  'value': context
                       .read<UIProvider>()
                       .getDashData['org_units']
                       .toString() ??
-                  "null",
-              'icon': FontAwesomeIcons.landmark,
-              'color': const Color(0xff49B6D5),
-              's_color': const Color(0xff2C6E80),
-            },
-          ),
-          HomepageCardPrimary(data: {
-            'title': 'HOUSEHOLDS',
-            'value':
+                      "null",
+                  'icon': FontAwesomeIcons.landmark,
+                  'color': const Color(0xff49B6D5),
+                  's_color': const Color(0xff2C6E80),
+                },
+              ),
+              HomepageCardSecondary(data: {
+                'title': 'HOUSEHOLDS',
+                'value':
                 context.read<UIProvider>().getDashData['hh_holds'].toString() ??
                     "null",
-            'icon': FontAwesomeIcons.house,
-            'color': const Color(0xffFE5C57),
-            's_color': const Color(0xff9A3734),
-          }),
+                'icon': FontAwesomeIcons.house,
+                'color': const Color(0xffFE5C57),
+                's_color': const Color(0xff9A3734),
+              }),
+            ],
+          ),
+          const SizedBox(
+            height: 40,
+          )
         ],
       ),
     );
