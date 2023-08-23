@@ -7,7 +7,12 @@ import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/routes/transitions_type.dart';
+import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
+
+import '../forms/documents_manager.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -128,11 +133,23 @@ class _HomepageState extends State<Homepage> {
           ),
         ),
         Positioned(
-          bottom: 20,
-          right: 20,
-          left: 200,
-          child: CustomButton(onTap: () {}, text: "New OVC"),
-        )
+            bottom: 30,
+            right: 30,
+            left: 20,
+            child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              SizedBox(
+                width: 140,
+                child: CustomButton(
+                  onTap: () {
+                    Get.to(() => const DocumentsManager(),
+                        transition: Transition.cupertino,
+                        duration: const Duration(milliseconds: 200));
+                  },
+                  text: "OVC Care",
+                  color: Colors.green,
+                ),
+              ),
+            ]))
       ]),
     );
   }
