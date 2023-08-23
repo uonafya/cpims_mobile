@@ -131,6 +131,12 @@ List drawerOptions = [
     ]
   },
   {
+    'title': 'Sync',
+    'icon': FontAwesomeIcons.rotate,
+    'onTap': () => {},
+    'children': []
+  },
+  {
     'title': 'Log Out',
     'icon': FontAwesomeIcons.arrowRightFromBracket,
     'onTap': () => {},
