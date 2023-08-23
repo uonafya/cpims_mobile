@@ -117,14 +117,14 @@ List<Map<String, dynamic>> drawerOptions = [
                   duration: const Duration(milliseconds: 1000))
             },
       },
-       {
-         'title': 'Follow-ups',
-         'onTap': () => {
-               Get.off(() => const FollowUps(),
-                   transition: Transition.cupertino,
-                   duration: const Duration(milliseconds: 1000))
-             },
-       },
+      {
+        'title': 'Follow-ups',
+        'onTap': () => {
+              Get.off(() => const FollowUps(),
+                  transition: Transition.cupertino,
+                  duration: const Duration(milliseconds: 1000))
+            },
+      },
       // {
       //   'title': 'Institutional Placement',
       //   'onTap': () => {
@@ -324,6 +324,18 @@ List<String> graphTitles = [
   'HIV Status',
   'ART Status',
   'Cacade 90-90-90'
+];
+List<Map<String, dynamic>> form1AStepper = [
+  {
+    'title': 'Critical Event(s)',
+    'subtitle': 'Critical events details',
+    'onTap': () {}
+  },
+  {
+    'title': 'Services',
+    'subtitle': 'Services Details',
+    'onTap': () => {},
+  },
 ];
 
 List<Map<String, dynamic>> organisationRegistryStepper = [
