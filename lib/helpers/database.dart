@@ -1,4 +1,3 @@
-import 'package:cpims_mobile/Models/form_1a.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -16,6 +15,8 @@ class DatabaseHelper {
   static const columnId = '_id';
   static const columnOvcCpimsId = 'ovc_cpims_id';
   static const columnDateOfEvent = 'date_of_event';
+  static const columnEventId = 'event_id';
+  static const columnEventDate = 'event_date';
 
   late Database _db;
 
@@ -64,8 +65,8 @@ class DatabaseHelper {
         CREATE TABLE $childTableCriticalEvents (
           id INTEGER PRIMARY KEY,
           form_id INTEGER NOT NULL,
-          domain_id TEXT,
-          service_id,
+          $columnEventId TEXT,
+          $columnEventDate TEXT,
           FOREIGN KEY (form_id) REFERENCES $tableForm1A($columnId)
         )
 
