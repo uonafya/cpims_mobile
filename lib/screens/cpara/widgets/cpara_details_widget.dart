@@ -51,7 +51,8 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
     String formattedDateOfAssessment = dateOfAssessment != null
         ? DateFormat('yyyy-MM-dd').format(dateOfAssessment)
         : '';
-    print('Date of assessment: $formattedDateOfAssessment'); //am not able to get the date of assessment
+    print(
+        'Date of assessment: $formattedDateOfAssessment'); //am not able to get the date of assessment
 
     DateTime? dateOfPreviousAssessment =
         _dateTextFieldPreviousKey.currentState?.getSelectedDate();
@@ -317,7 +318,14 @@ class ChildCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ReusableTitleText(title: 'Name'),
-                ReusableTitleText(title: 'Registered in this OVC Program'),
+                SizedBox(
+                  width: 10.0,
+                ),
+                Expanded(
+                  child: FittedBox(
+                      child: ReusableTitleText(
+                          title: 'Registered in this OVC Program')),
+                ),
               ],
             ),
             const SizedBox(height: 8),
