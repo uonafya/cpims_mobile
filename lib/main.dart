@@ -1,6 +1,7 @@
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
 import 'package:cpims_mobile/screens/cpara/cpara_forms.dart';
+import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/theme.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +64,7 @@ class _CPIMSState extends State<CPIMS> {
         return MultiProvider(
           providers: [
             ChangeNotifierProvider(create: (_) => UIProvider()),
+            ChangeNotifierProvider(create: (_) => CparaProvider()),
           ],
           child: GetMaterialApp(
             title: 'CPIMS',

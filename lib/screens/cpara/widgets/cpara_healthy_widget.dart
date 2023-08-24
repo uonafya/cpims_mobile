@@ -13,12 +13,15 @@ class CparaHealthyWidget extends StatefulWidget {
 
 class Children {
   final String name;
-  final UpdateRadioButton updateRadioButton;
-  final RadioButtonOptions? groupValue;
+  // final UpdateRadioButton updateRadioButton;
+  RadioButtonOptions? hivRiskGroupValue;
+  RadioButtonOptions? protectHIVGroupvalue;
+  RadioButtonOptions? preventHIVGroupvalue;
 
-  const Children(
-      {required this.updateRadioButton,
-      required this.groupValue,
+  Children(
+      {this.hivRiskGroupValue = RadioButtonOptions.na,
+      this.protectHIVGroupvalue = RadioButtonOptions.na,
+      this.preventHIVGroupvalue = RadioButtonOptions.na,
       required this.name});
 }
 
@@ -52,18 +55,12 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   RadioButtonOptions? q4_2Below5BipedalEdema;
   RadioButtonOptions? q4_3MalnourishedTreated;
   RadioButtonOptions? q4_4Under2Immunized;
+  RadioButtonOptions? set3_1final;
+  RadioButtonOptions? set3_2final;
+  RadioButtonOptions? set3_3final;
 
   // Children state
-  final children = [
-    Children(
-        name: "FELIX OUMA",
-        groupValue: RadioButtonOptions.no,
-        updateRadioButton: (RadioButtonOptions? value) {}),
-    Children(
-        name: "EDWINE OUMA",
-        groupValue: RadioButtonOptions.no,
-        updateRadioButton: (RadioButtonOptions? value) {})
-  ];
+  var children = [Children(name: "FELIX OUMA"), Children(name: "EDWINE OUMA")];
 
   // Update the state of the questions
   void updateQuestion(String question, RadioButtonOptions? value) {
@@ -193,6 +190,42 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           childLessThan2Initial = value;
         });
         break;
+      // case "set3_1final":
+      //   List<Children> newChildren = List.from(children);
+
+      //   for (var i in newChildren) {
+      //     i.hivRiskGroupValue = value;
+      //   }
+
+      //   setState(() {
+      //     set3_1final = value;
+      //     children = newChildren;
+      //   });
+      //   break;
+      // case "set3_2final":
+      //   List<Children> newChildren = List.from(children);
+
+      //   for (var i in newChildren) {
+      //     i.protectHIVGroupvalue = value;
+      //   }
+
+      //   setState(() {
+      //     set3_2final = value;
+      //     children = newChildren;
+      //   });
+      //   break;
+      // case "set3_3final":
+      //   List<Children> newChildren = List.from(children);
+
+      //   for (var i in newChildren) {
+      //     i.preventHIVGroupvalue = value;
+      //   }
+
+      //   setState(() {
+      //     set3_3final = value;
+      //     children = newChildren;
+      //   });
+      //   break;
       default:
         break;
     }
@@ -201,11 +234,14 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   void noChangeToRadio(RadioButtonOptions? val) {}
 
   // A function that computes whether the final result of a section is yes or no given the values of the members
-  RadioButtonOptions allShouldBeYes(List<RadioButtonOptions?> members) {
+  RadioButtonOptions allShouldBeYes(
+      List<RadioButtonOptions?> members, String message) {
+    debugPrint(members.toString() + message);
     // If all the values are yes return RadioButtonOptions.yes, if not return RadioButtonOptions.no
     if (members.isEmpty) {
       return RadioButtonOptions.no;
-    } else if (members.any((element) => element != RadioButtonOptions.yes)) {
+    } else if (members.any(
+        (element) => element != RadioButtonOptions.yes || element == null)) {
       return RadioButtonOptions.no;
     } else {
       return RadioButtonOptions.yes;
@@ -226,6 +262,14 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
     }
   }
 
+  void setAllToASingleValue(
+      List<String> answersToChange, RadioButtonOptions? val) {
+    // Seta all the values to val
+    for (var i in answersToChange) {
+      updateQuestion(i, val);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return StepsWrapper(
@@ -243,7 +287,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
             q1_3InfantExposedHIV,
             q1_4HivCaregiverUnknown,
             q1_5CaregiverSceened
-          ]), // final result is yes if the values of question 1 to 4 is yes
+          ], "Goal 1"), // final result is yes if the values of question 1 to 4 is yes
           descriptionHeading:
               "Healthy: Goal 1: Increase diagnosis of HIV infection",
           descriptionText:
@@ -368,7 +412,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
             q2_7HIVCaregiverSuppress,
             q2_8NoDocumentCaregiverAppointment,
             q2_9CaregiverRegularlyMedicate
-          ]), // The final value is yes if all the answers are yes for questions 2.1 to 2.9
+          ], "Goal 2"), // The final value is yes if all the answers are yes for questions 2.1 to 2.9
           updateFinalFormRadio: noChangeToRadio,
           descriptionHeading:
               "Healthy: Goal 2: Increase HIV treatment adherence, continuity of treatment and viral suppression",
@@ -542,37 +586,105 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           descriptionSubText:
               "Note: For HHs with no adolescent girls and boys, skip questions below and select “N/A” for “Achievement of this benchmark.”",
           table: HealthTable(
+            finalTableRow: FinalTableRow(
+              isTopDividerThere: false,
+              question: "Tick Yes if YES for all children",
+              questions: [
+                QuestionBlock(
+                  groupValue: allShouldBeYes(
+                      children.map((e) => e.hivRiskGroupValue).toList(),
+                      "Tick yes if all q1"), // All hivRiskGroupValues should be yes
+                  isTopDividerThere: false,
+                  isOptional: false,
+                  question:
+                      "Can you tell me two behaviors that increase risk of HIV infection?",
+                  isNAAvailable: false,
+                  canNotBeEdited: true,
+                  updateRadioButton: (RadioButtonOptions? val) {
+                    debugPrint(val.toString() + " tick if all true q1 form");
+                  },
+                ),
+                QuestionBlock(
+                  groupValue: allShouldBeYes(
+                      children.map((e) => e.protectHIVGroupvalue).toList(),
+                      "Tick Yes if all q2"),
+                  isTopDividerThere: false,
+                  isOptional: false,
+                  question:
+                      "Can you tell me two ways you can protect yourself/ others against HIV?",
+                  isNAAvailable: false,
+                  updateRadioButton: (RadioButtonOptions? val) {},
+                  canNotBeEdited: true,
+                ),
+                QuestionBlock(
+                  groupValue: allShouldBeYes(
+                      children.map((e) => e.preventHIVGroupvalue).toList(),
+                      "Tick yes if all q3"),
+                  isTopDividerThere: false,
+                  isOptional: false,
+                  question:
+                      "Can you name two places in the community where you can access HIV prevention services?",
+                  isNAAvailable: false,
+                  updateRadioButton: (RadioButtonOptions? val) {},
+                  canNotBeEdited: true,
+                ),
+              ],
+            ),
             healthCards: [
-              for (var i in children)
+              for (var i = 0; i < children.length; i++)
                 HealthCard(
-                  childName: i.name,
+                  childName: children[i].name,
                   questions: [
                     QuestionBlock(
-                      groupValue: i.groupValue,
+                      groupValue: children[i].hivRiskGroupValue,
                       isTopDividerThere: false,
                       isOptional: true,
                       question:
                           "3.1 Can you tell me two behaviors that increase risk of HIV infection?",
                       isNAAvailable: false,
-                      updateRadioButton: i.updateRadioButton,
+                      updateRadioButton: (RadioButtonOptions? val) {
+                        List<Children> newChildren = List.from(children);
+
+                        newChildren[i].hivRiskGroupValue = val;
+
+                        setState(() {
+                          children = newChildren;
+                        });
+                      },
                     ),
                     QuestionBlock(
-                      groupValue: i.groupValue,
+                      groupValue: children[i].protectHIVGroupvalue,
                       isTopDividerThere: false,
                       isOptional: true,
                       question:
                           "3.2 Can you tell me two ways you can protect yourself/ others against HIV?",
                       isNAAvailable: false,
-                      updateRadioButton: i.updateRadioButton,
+                      updateRadioButton: (RadioButtonOptions? val) {
+                        List<Children> newChildren = List.from(children);
+
+                        newChildren[i].protectHIVGroupvalue = val;
+
+                        setState(() {
+                          children = newChildren;
+                        });
+                      },
                     ),
                     QuestionBlock(
-                      groupValue: i.groupValue,
+                      groupValue: children[i].preventHIVGroupvalue,
                       isTopDividerThere: false,
                       isOptional: true,
                       question:
                           "3.3 Can you name two places in the community where you can access HIV prevention services?",
                       isNAAvailable: false,
-                      updateRadioButton: i.updateRadioButton,
+                      updateRadioButton: (RadioButtonOptions? val) {
+                        List<Children> newChildren = List.from(children);
+
+                        newChildren[i].preventHIVGroupvalue = val;
+
+                        setState(() {
+                          children = newChildren;
+                        });
+                      },
                     ),
                   ],
                   isTopDividerThere: false,
@@ -601,7 +713,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
             q4_2Below5BipedalEdema,
             q4_3MalnourishedTreated,
             q4_4Under2Immunized
-          ]), // final answer should be yes if all questions from 4.1 to 4.4 are yes
+          ], "Group 4"), // final answer should be yes if all questions from 4.1 to 4.4 are yes
           updateFinalFormRadio: noChangeToRadio,
           sections: [
             // Question 4.1 to 4.3
@@ -744,8 +856,7 @@ class HealthCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        child: Column(
+    return Column(
       children: [
         // Children Details Row
         HealthCardDetails(childName: childName),
@@ -753,20 +864,42 @@ class HealthCard extends StatelessWidget {
         // Question
         for (var i in questions) i
       ],
-    ));
+    );
+  }
+}
+
+class FinalTableRow extends StatelessWidget {
+  final String question; // The question to show at the top
+  final List<QuestionBlock> questions; // The questions to show
+  final bool isTopDividerThere;
+
+  const FinalTableRow(
+      {required this.question,
+      required this.questions,
+      required this.isTopDividerThere,
+      super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [Text(question), smallSpacing, for (var i in questions) i],
+    );
   }
 }
 
 class HealthTable extends StatelessWidget {
   final List<HealthCard> healthCards;
+  final FinalTableRow finalTableRow;
 
-  const HealthTable({required this.healthCards, super.key});
+  const HealthTable(
+      {required this.healthCards, required this.finalTableRow, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [for (var i in healthCards) i],
-    );
+    return Card(
+        child: Column(
+      children: [finalTableRow, for (var i in healthCards) i],
+    ));
   }
 }
 
@@ -800,7 +933,7 @@ class FinalResultBox extends StatelessWidget {
           child: Center(
             child: QuestionBlock(
               isBigAndBold: false,
-              tempFix: true,
+              canNotBeEdited: true,
               groupValue: result,
               isTopDividerThere: isTopDividerThere,
               isOptional: false,
@@ -1117,7 +1250,7 @@ class QuestionBlock extends StatelessWidget {
   final bool isNAAvailable; // Whether to show the NA option or not
   final bool isOptional; // Whether or not the question is optional
   final bool isTopDividerThere;
-  final bool tempFix; // To be removed
+  final bool canNotBeEdited; // To be removed
   final bool isBigAndBold; // Whether to make the question text big and bold
   final String
       warningText; // Text that is in red and used as a warning or a caution
@@ -1130,13 +1263,13 @@ class QuestionBlock extends StatelessWidget {
       required this.isNAAvailable,
       this.isBigAndBold = false,
       required this.updateRadioButton,
-      this.tempFix = false,
+      this.canNotBeEdited = false,
       this.warningText = "",
       super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (tempFix == false) {
+    if (canNotBeEdited == false) {
       return SqueezedBetweenDivider(
         widget: Column(
           children: [

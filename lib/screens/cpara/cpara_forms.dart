@@ -1,4 +1,11 @@
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
+import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
+import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
+import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
+import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
+import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
+import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_healthy_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_safe_widget.dart';
@@ -10,6 +17,7 @@ import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CparaFormsScreen extends StatefulWidget {
   const CparaFormsScreen({super.key});
@@ -40,18 +48,6 @@ class _CparaFormsScreenState
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         children: [
-          const SizedBox(height: 20),
-          const Text('CPARA',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black)),
-          const SizedBox(height: 5),
-          const Text(
-            '',
-            style: TextStyle(color: kTextGrey),
-          ),
-          const SizedBox(height: 30),
           Container(
               decoration: BoxDecoration(color: Colors.white, boxShadow: [
                 BoxShadow(
@@ -118,6 +114,45 @@ class _CparaFormsScreenState
                                     ? 'Submit'
                                     : 'Next',
                                 onTap: () {
+
+                                  if(selectedStep == steps.length - 1){
+                                    // display collected data
+                                    DetailModel? detailModel = context.read<CparaProvider>().detailModel;
+                                    HealthModel? healthModel = context.read<CparaProvider>().healthModel;
+                                    StableModel? stableModel = context.read<CparaProvider>().stableModel;
+                                    SafeModel? safeModel = context.read<CparaProvider>().safeModel;
+                                    SchooledModel? schooledModel = context.read<CparaProvider>().schooledModel;
+                                    CparaModel? cparaModel = context.read<CparaProvider>().cparaModel;
+
+                                    showDialog(context: context, builder: (_) => AlertDialog(
+                                      title: const Text('Collected Data'),
+                                      content: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text("Stable Model:"),
+                                          Row(
+                                            children: [
+                                              Text("Question: 1"),
+                                              Text("Answer: ${stableModel?.question1}"),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Text("Question: 2"),
+                                              Text(" || Answer: ${stableModel?.question2}"),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Text("Question: 3"),
+                                              Text(" || Answer: ${stableModel?.question3}"),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ));
+                                  }
+
                                   setState(() {
                                     if (selectedStep < steps.length - 1) {
                                       selectedStep++;
