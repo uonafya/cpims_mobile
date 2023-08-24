@@ -2,22 +2,26 @@ import 'package:cpims_mobile/screens/homepage/report_details.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 
-class HomepageCard extends StatelessWidget {
-  const HomepageCard({Key? key, required this.data}) : super(key: key);
-  final Map<String, dynamic> data;
+class StatisticsGridItem extends StatelessWidget {
+  const StatisticsGridItem({Key? key, required this.value, required this.title, required this.icon, required this.color, required this.secondaryColor}) : super(key: key);
+  final int value;
+  final String title;
+  final IconData icon;
+  final Color color;
+  final Color secondaryColor;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Get.to(() => ReportDetailsScreen(
-              title: data['title'],
+              title: title,
             ));
       },
       child: Container(
-        height: 130,
+        height: 120,
         width: double.infinity,
-        color: data['color'],
+        color: color,
         margin: const EdgeInsets.symmetric(vertical: 7.5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,31 +29,32 @@ class HomepageCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(15),
               child: Row(children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data['title'],
-                      style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      data['value'],
-                      style: const TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600),
                       ),
-                    ),
-                  ],
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        value.toString(),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                const Spacer(),
                 Icon(
-                  data['icon'],
+                  icon,
                   size: 60,
                   color: Colors.white12.withOpacity(0.3),
                 )
@@ -59,7 +64,7 @@ class HomepageCard extends StatelessWidget {
             Container(
               height: 30,
               width: double.infinity,
-              color: data['s_color'],
+              color: secondaryColor,
               child: const Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
