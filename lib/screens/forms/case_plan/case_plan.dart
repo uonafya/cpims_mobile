@@ -91,8 +91,8 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        const CustomDatePicker(
-                          hintText: 'Please select the Date',
+                        CustomDatePicker(
+                          hintText: 'Please select the Date', onChanged: (String val) {  },
                         ),
                         const SizedBox(height: 10),
                         const Row(
@@ -412,8 +412,9 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        const CustomDatePicker(
+                        CustomDatePicker(
                           hintText: 'Select the date',
+                          onChanged: (String val) {  },
                         ),
                         const SizedBox(height: 10),
                         const Row(
