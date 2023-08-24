@@ -74,6 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final username = prefs.getString('username');
     final password = prefs.getString('password');
+    final accessToken = prefs.getString('access');
 
     if (username != null && password != null) {
       loginuser(username: username, password: password);

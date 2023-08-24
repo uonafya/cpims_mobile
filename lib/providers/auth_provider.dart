@@ -104,10 +104,10 @@ class AuthProvider with ChangeNotifier {
       SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();
 
-      await sharedPreferences.clear();
+      await sharedPreferences.remove('access');
+      await sharedPreferences.remove('refresh');
 
       clearUser();
-      print('stated');
 
       Get.off(
         () => const LoginScreen(),
