@@ -841,13 +841,51 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
         HealthyGoalBlock(
           doesSectionDependOnInitialAnswer: true,
           initalQuestionValue: goal3InitialAnswer,
-          updateInitialQuestion: (RadioButtonOptions? val) =>
-              updateQuestion("initial_3", val),
+          updateInitialQuestion: (RadioButtonOptions? val) {
+            updateQuestion("initial_3", val);
+            // if val is yes set everything to null
+            if (val == RadioButtonOptions.yes) {
+              List<Children> newChildren = List.from(children);
+              for (var i in newChildren) {
+                i.hivRiskGroupValue = null;
+                i.preventHIVGroupvalue = null;
+                i.protectHIVGroupvalue = null;
+              }
+
+              setState(() {
+                children = newChildren;
+                set3_1final = null;
+                set3_2final = null;
+                set3_3final = null;
+              });
+            }
+            // if val is no set all children to yes
+            if (val == RadioButtonOptions.no) {
+              List<Children> newChildren = List.from(children);
+              for (var i in newChildren) {
+                i.hivRiskGroupValue = RadioButtonOptions.yes;
+                i.preventHIVGroupvalue = RadioButtonOptions.yes;
+                i.protectHIVGroupvalue = RadioButtonOptions.yes;
+              }
+
+              setState(() {
+                children = newChildren;
+              });
+            }
+          },
           isNAInIntial: false,
           initalQuestion: "Does the household have adolescent girls and boys ?",
           finalBlockQuestion: "Has the household achieved this benchmarks?",
           showNAInFinalResult: false,
-          finalResult: goal3Summary,
+          finalResult: allShouldBeYes(
+              children
+                  .map((e) => e.hivRiskGroupValue == RadioButtonOptions.yes &&
+                          e.preventHIVGroupvalue == RadioButtonOptions.yes &&
+                          e.protectHIVGroupvalue == RadioButtonOptions.yes
+                      ? RadioButtonOptions.yes
+                      : RadioButtonOptions.no)
+                  .toList(), // for every child hivRisk, prevent and protect should be yes
+              "Children Table"),
           updateFinalFormRadio: noChangeToRadio,
           sections: [],
           descriptionHeading: "Healthy: Goal 3: Reduce Risk of HIV Infection",
