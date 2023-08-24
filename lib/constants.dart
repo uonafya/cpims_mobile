@@ -6,12 +6,6 @@ import 'package:cpims_mobile/screens/forms/follow_ups.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/organisation_units.dart';
 import 'package:cpims_mobile/screens/registry/persons_registry/persons_registry.dart';
-// import 'package:cpims_mobile/screens/forms/alternative_family_care.dart';
-// import 'package:cpims_mobile/screens/forms/follow_ups.dart';
-// import 'package:cpims_mobile/screens/forms/institutional_placement.dart';
-// import 'package:cpims_mobile/screens/forms/school_bursary.dart';
-// import 'package:cpims_mobile/screens/help_documentation/change_notes.dart';
-// import 'package:cpims_mobile/screens/reports/case_load_report.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
@@ -218,7 +212,7 @@ errorSnackBar(BuildContext context, message) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     backgroundColor: Colors.red,
     content: Text(message),
-    duration: const Duration(seconds: 1),
+    duration: const Duration(seconds: 8),
   ));
 }
 
