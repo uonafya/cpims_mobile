@@ -33,7 +33,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
     return ValueItem(label: "- ${service['subtitle']}", value: service['title']);
   }).toList();
 
-  List<String> selectedCareGiverServices = [];
+  List selectedCareGiverServices = [];
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +51,11 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
-            form1bProvider.setSelectedServices(['Service 1', 'Service 2']);
+            selectedCareGiverServices = selectedServices;
+            form1bProvider.setSelectedServices(selectedCareGiverServices);
             // selectedCareGiverServices = selectedServices.cast<String>().toList();
-            //   form1bProvider.setSelectedServices(selectedCareGiverServices);
-            CustomToastWidget.showToast("hii");
+            //   form1bProvider.setSelectedServices(selectedServices.cast<String>());
+            CustomToastWidget.showToast("hii${form1bProvider.formData.selectedServices}");
 
           },
           options: caregiverHealthServiceItems,

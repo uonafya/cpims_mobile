@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets/custom_toast.dart';
 
 class HealthFormData {
-  late final List<String> selectedServices;
+  late final List selectedServices;
   late final DateTime selectedDate;
 
   HealthFormData({required this.selectedServices, required this.selectedDate});
@@ -17,7 +17,8 @@ class Form1bProvider extends ChangeNotifier {
 
   HealthFormData get formData => _formData;
 
-  void setSelectedServices(List<String> selectedServices) {
+  void setSelectedServices(List selectedServices) {
+    _formData.selectedServices.clear(); // Clear the current list
     _formData.selectedServices.addAll(selectedServices);
     notifyListeners();
   }
