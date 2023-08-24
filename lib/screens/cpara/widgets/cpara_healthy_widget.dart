@@ -599,8 +599,9 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   question:
                       "Can you tell me two behaviors that increase risk of HIV infection?",
                   isNAAvailable: false,
+                  tempFix: true,
                   updateRadioButton: (RadioButtonOptions? val) {
-                    debugPrint(val.toString());
+                    debugPrint(val.toString() + " tick if all true q1 form");
                   },
                 ),
                 QuestionBlock(
@@ -613,6 +614,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                       "Can you tell me two ways you can protect yourself/ others against HIV?",
                   isNAAvailable: false,
                   updateRadioButton: (RadioButtonOptions? val) {},
+                  tempFix: true,
                 ),
                 QuestionBlock(
                   groupValue: allShouldBeYes(
@@ -624,6 +626,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                       "Can you name two places in the community where you can access HIV prevention services?",
                   isNAAvailable: false,
                   updateRadioButton: (RadioButtonOptions? val) {},
+                  tempFix: true,
                 ),
               ],
             ),
