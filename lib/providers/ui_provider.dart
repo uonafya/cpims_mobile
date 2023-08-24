@@ -8,17 +8,6 @@ class UIProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  var _getAccess;
-  get getAccess => _getAccess;
-
-  setAuthToken(_) {
-    print("ui provide set access state");
-    print(_);
-    _getAccess = _;
-
-    notifyListeners();
-  }
-
   var _getDashData;
   get getDashData => _getDashData;
 
