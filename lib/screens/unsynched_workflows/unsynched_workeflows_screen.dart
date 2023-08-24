@@ -37,41 +37,48 @@ class _UnsyncedWorkflowsPageState extends State<UnsyncedWorkflowsPage> {
             padding: kSystemPadding,
             child: CustomCard(title: "Unsynchronized Data", children: [
               Table(
+                border: TableBorder.symmetric(
+                  inside: BorderSide(color: Colors.grey.withOpacity(0.5)),
+                ),
                 children: [
                   const TableRow(children: [
-                    Text(
-                      "Name",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        "Name",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
-                    Text(
-                      "Workflow",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        "Workflow",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ]),
                   ...fixedLengthList
                       .map((e) => const TableRow(children: [
-                            Text(
-                              "Name",
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
+                              child: Text(
+                                "Name",
+                              ),
                             ),
-                            Text(
-                              "Workflow",
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                "Workflow",
+                              ),
                             ),
                           ]))
                       .toList(),
-                  const TableRow(children: [
-                    Text(
-                      "Name",
-                    ),
-                    Text(
-                      "Workflow",
-                    ),
-                  ])
                 ],
               )
             ]),
