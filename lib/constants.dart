@@ -6,6 +6,7 @@ import 'package:cpims_mobile/screens/forms/follow_ups.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/organisation_units.dart';
 import 'package:cpims_mobile/screens/registry/persons_registry/persons_registry.dart';
+import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
@@ -141,6 +142,14 @@ List drawerOptions(BuildContext context) {
           },
       'children': []
     },
+    {
+      'title': 'Unapproved',
+      'icon': FontAwesomeIcons.hackerNews,
+      'onTap': () => {
+            Get.to(() => const UnapprovedRecordsScreens()),
+          },
+      'children': []
+    },
   ];
 }
 
@@ -223,3 +232,38 @@ successSnackBar(BuildContext context, message) {
     duration: const Duration(seconds: 1),
   ));
 }
+
+List<Map<String, dynamic>> unapprovedItems = [
+  {
+    'title': 'Form 1A',
+    'eventType': 'SERVICES',
+    'details': 'OVC Registration',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'Form 1B',
+    'eventType': 'SERVICES',
+    'details': 'OVC Registration',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'CPARA',
+    'eventType': 'SERVICES',
+    'details': 'OVC Registration',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'CPA',
+    'eventType': 'SERVICES',
+    'details': 'OVC Registration',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+];
