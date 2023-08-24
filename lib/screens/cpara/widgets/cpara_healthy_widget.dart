@@ -599,7 +599,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   question:
                       "Can you tell me two behaviors that increase risk of HIV infection?",
                   isNAAvailable: false,
-                  tempFix: true,
+                  canNotBeEdited: true,
                   updateRadioButton: (RadioButtonOptions? val) {
                     debugPrint(val.toString() + " tick if all true q1 form");
                   },
@@ -614,7 +614,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                       "Can you tell me two ways you can protect yourself/ others against HIV?",
                   isNAAvailable: false,
                   updateRadioButton: (RadioButtonOptions? val) {},
-                  tempFix: true,
+                  canNotBeEdited: true,
                 ),
                 QuestionBlock(
                   groupValue: allShouldBeYes(
@@ -626,7 +626,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                       "Can you name two places in the community where you can access HIV prevention services?",
                   isNAAvailable: false,
                   updateRadioButton: (RadioButtonOptions? val) {},
-                  tempFix: true,
+                  canNotBeEdited: true,
                 ),
               ],
             ),
@@ -933,7 +933,7 @@ class FinalResultBox extends StatelessWidget {
           child: Center(
             child: QuestionBlock(
               isBigAndBold: false,
-              tempFix: true,
+              canNotBeEdited: true,
               groupValue: result,
               isTopDividerThere: isTopDividerThere,
               isOptional: false,
@@ -1250,7 +1250,7 @@ class QuestionBlock extends StatelessWidget {
   final bool isNAAvailable; // Whether to show the NA option or not
   final bool isOptional; // Whether or not the question is optional
   final bool isTopDividerThere;
-  final bool tempFix; // To be removed
+  final bool canNotBeEdited; // To be removed
   final bool isBigAndBold; // Whether to make the question text big and bold
   final String
       warningText; // Text that is in red and used as a warning or a caution
@@ -1263,13 +1263,13 @@ class QuestionBlock extends StatelessWidget {
       required this.isNAAvailable,
       this.isBigAndBold = false,
       required this.updateRadioButton,
-      this.tempFix = false,
+      this.canNotBeEdited = false,
       this.warningText = "",
       super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (tempFix == false) {
+    if (canNotBeEdited == false) {
       return SqueezedBetweenDivider(
         widget: Column(
           children: [
