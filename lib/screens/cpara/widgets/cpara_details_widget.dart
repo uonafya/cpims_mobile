@@ -318,7 +318,14 @@ class ChildCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ReusableTitleText(title: 'Name'),
-                ReusableTitleText(title: 'Registered in this OVC Program'),
+                SizedBox(
+                  width: 10.0,
+                ),
+                Expanded(
+                  child: FittedBox(
+                      child: ReusableTitleText(
+                          title: 'Registered in this OVC Program')),
+                ),
               ],
             ),
             const SizedBox(height: 8),
