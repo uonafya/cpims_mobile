@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
 import 'package:flutter/material.dart';
 
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
@@ -56,7 +57,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
         const SizedBox(height: 20),
         const ReusableTitleText(
             title:
-                'Details of all children below 18 years currently living in the household.'),
+            'Details of all children below 18 years currently living in the household.'),
         ListView.builder(
           shrinkWrap: true,
           itemCount: children.length,
@@ -90,6 +91,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
                 selected = value;
               });
             }),
+        // CheckboxForm(),
       ],
     );
   }
