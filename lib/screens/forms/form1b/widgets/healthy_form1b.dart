@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 
 import '../../../../widgets/custom_date_picker.dart';
+import '../model/health_form1b_model.dart';
 import '../utils/form1bConstants.dart';
 
 class HealthyForm1b extends StatefulWidget {
@@ -18,6 +19,7 @@ class HealthyForm1b extends StatefulWidget {
 }
 
 class _HealthyForm1bState extends State<HealthyForm1b> {
+  HealthFormData formData = HealthFormData(selectedServices: [], selectedDate: DateTime.now());
 
   List<Map> careGiverServices = careGiverHealthServices;
   List<ValueItem> caregiverHealthServiceItems = careGiverHealthServices.map((service) {
@@ -42,6 +44,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           onOptionSelected: (selectedServices) {
             setState(() {
               selectedCareGiverServices = selectedServices.cast<String>().toList();
+              formData.selectedServices = selectedServices.cast<String>().toList();
             });
           },
           options: caregiverHealthServiceItems,
@@ -66,6 +69,11 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
         const SizedBox(height: 10),
         const CustomDatePicker(
           hintText: 'Select the date',
+          // onDateSelected: (selectedDate) {
+          //   setState(() {
+          //     formData.selectedDate = selectedDate;
+          //   });
+          // },
         ),
       ],
     );
