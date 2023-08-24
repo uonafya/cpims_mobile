@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/providers/form1b_provider.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
@@ -8,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../widgets/custom_date_picker.dart';
 import '../../../../widgets/custom_forms_date_picker.dart';
@@ -22,7 +24,8 @@ class HealthyForm1b extends StatefulWidget {
 }
 
 class _HealthyForm1bState extends State<HealthyForm1b> {
-  HealthFormData formData = HealthFormData(selectedServices: [], selectedDate: DateTime.now());
+
+  // HealthFormData formData = HealthFormData(selectedServices: [], selectedDate: DateTime.now());
 
   List<Map> careGiverServices = careGiverHealthServices;
   List<ValueItem> caregiverHealthServiceItems = careGiverHealthServices.map((service) {
@@ -33,6 +36,8 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
 
   @override
   Widget build(BuildContext context) {
+    Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
+
     return StepsWrapper(
       title: 'Caregiver health and nutrition status',
       children: [
@@ -47,7 +52,9 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           onOptionSelected: (selectedServices) {
             setState(() {
               selectedCareGiverServices = selectedServices.cast<String>().toList();
-              formData.selectedServices = selectedServices.cast<String>().toList();
+              // formData.selectedServices = selectedServices.cast<String>().toList();
+              form1bProvider.setSelectedServices(selectedServices.cast<String>().toList());
+
             });
             print('Selected services: ${selectedCareGiverServices}');
 
@@ -85,7 +92,8 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           hintText: 'Select the date',
           onDateSelected: (selectedDate) {
             setState(() {
-              formData.selectedDate = selectedDate; // Update your selected date in your form data
+              form1bProvider.setSelectedDate(selectedDate);
+              // form1bProvider.selectedDate = selectedDate; // Update your selected date in your form data
             });
             // Display a toast message for selected date
             Fluttertoast.showToast(

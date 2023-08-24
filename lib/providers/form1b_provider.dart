@@ -8,7 +8,10 @@ class HealthFormData {
 }
 
 class Form1bProvider extends ChangeNotifier {
-  final HealthFormData _formData = HealthFormData(selectedServices: [], selectedDate: DateTime.now());
+  final HealthFormData _formData = HealthFormData(
+      selectedServices: [],
+      selectedDate: DateTime.now()
+  );
 
   HealthFormData get formData => _formData;
 
