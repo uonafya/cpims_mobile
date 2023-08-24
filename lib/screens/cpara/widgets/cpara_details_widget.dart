@@ -1,6 +1,7 @@
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
-import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
 
@@ -13,6 +14,11 @@ class CparaDetailsWidget extends StatefulWidget {
 
 class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
   RadioButtonOptions? selected;
+  RadioButtonOptions? isFirstAssessment;
+  RadioButtonOptions? isChildHeaded;
+  RadioButtonOptions? hasHivExposedInfant;
+  RadioButtonOptions? hasPregnantOrBreastfeedingWoman;
+
   final List<ChildDetails> children = [
     ChildDetails(
       name: 'John Doe',
@@ -32,11 +38,18 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
     ),
   ];
 
+  void _getDataAndMoveToNext() {
+    print('Is first assessment: $isFirstAssessment');
+    print('Is child headed: $isChildHeaded');
+    print('Has HIV exposed infant: $hasHivExposedInfant');
+    print(
+        'Has pregnant or breastfeeding woman: $hasPregnantOrBreastfeedingWoman');
+  }
+
   @override
   Widget build(BuildContext context) {
-    RadioButtonOptions? selected;
     return StepsWrapper(
-      title: 'CPARA details widget',
+      title: 'CPARA Details',
       children: [
         const DateTextField(),
         const Divider(
@@ -50,14 +63,14 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             isNaAvailable: false,
             optionSelected: (value) {
               setState(() {
-                selected = value;
+                isFirstAssessment = value;
               });
             }),
         const DateTextField(),
         const SizedBox(height: 20),
         const ReusableTitleText(
             title:
-            'Details of all children below 18 years currently living in the household.'),
+                'Details of all children below 18 years currently living in the household.'),
         ListView.builder(
           shrinkWrap: true,
           itemCount: children.length,
@@ -71,7 +84,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             isNaAvailable: false,
             optionSelected: (value) {
               setState(() {
-                selected = value;
+                isChildHeaded = value;
               });
             }),
         const Text('Does this HH have HIV exposed infant?'),
@@ -79,7 +92,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             isNaAvailable: false,
             optionSelected: (value) {
               setState(() {
-                selected = value;
+                hasHivExposedInfant = value;
               });
             }),
         const Text(
@@ -88,9 +101,14 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             isNaAvailable: false,
             optionSelected: (value) {
               setState(() {
-                selected = value;
+                hasPregnantOrBreastfeedingWoman = value;
               });
             }),
+        const SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: _getDataAndMoveToNext,
+          child: const Text('Next'),
+        ),
         // CheckboxForm(),
       ],
     );
@@ -120,64 +138,91 @@ class DateTextField extends StatelessWidget {
   }
 }
 
-class TextViewsColumn extends StatelessWidget {
+// class class TextViewsColumn
+class TextViewsColumn extends StatefulWidget {
   const TextViewsColumn({super.key});
 
   @override
+  _TextViewsColumnState createState() => _TextViewsColumnState();
+}
+
+class _TextViewsColumnState extends State<TextViewsColumn> {
+  late Future<CparaOvcDetails> _ovcDetails;
+
+  @override
+  void initState() {
+    super.initState();
+    _ovcDetails = ApiService.fetchOvcDetails(
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkyODcxNTM2LCJpYXQiOjE2OTI4Njc5MzYsImp0aSI6ImMxYzQxYzE2YmU1OTQzMGVhMDVhMzIwNDhmMTBkM2Q2IiwidXNlcl9pZCI6ODg4fQ.__r5tgvnqXHBIOhkGuQUELr18NE98IF4AhRPvqybOqo',
+        '2457100');
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ReusableTitleText(title: 'Name of Organisation(LIP)'),
-        SizedBox(height: 10),
-        Text(
-          'REDEEMED INTEGRATED DEVELOPMENT AGENCY (RIDA)',
-        ),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Date enrolled in the project'),
-        SizedBox(height: 10),
-        Text('August 21, 2021'),
-        SizedBox(height: 10),
-        ReusableTitleText(title: "County"),
-        SizedBox(height: 10),
-        Text('Nairobi'),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Sub County'),
-        SizedBox(height: 10),
-        Text('Kasarani'),
-        SizedBox(height: 10),
-        ReusableTitleText(
-            title: 'Name of caseworker/CHV conducting assessment'),
-        SizedBox(height: 10),
-        Text('John Doe'),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Name of SDP staff/Case Manager'),
-        SizedBox(height: 10),
-        Text('REDEEMED INTEGRATED DEVELOPMENT AGENCY (RIDA)'),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Name of Caregiver'),
-        SizedBox(height: 10),
-        Text('Jane Jane'),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Caregiver ID Number'),
-        SizedBox(height: 10),
-        Text('123456789'),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Caregiver Gender'),
-        SizedBox(height: 10),
-        Text('Male'),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Caregiver DOB'),
-        SizedBox(height: 10),
-        Text('August 21, 1973'),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Caregiver Phone Number'),
-        SizedBox(height: 10),
-        Text('708568702'),
-        SizedBox(height: 10),
-        Divider(height: 20, thickness: 2),
-        SizedBox(height: 20),
-      ],
+    return FutureBuilder<CparaOvcDetails>(
+      future: _ovcDetails,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator(); // or any loading widget
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          final details = snapshot.data!;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ReusableTitleText(title: 'Name of Organisation(LIP)'),
+              const SizedBox(height: 10),
+              Text(details.cboName),
+              const SizedBox(height: 10),
+              const ReusableTitleText(title: 'Date enrolled in the project'),
+              const SizedBox(height: 10),
+              Text(details.ovcEnrollmentDate),
+              const SizedBox(height: 10),
+              const ReusableTitleText(title: "County"),
+              const SizedBox(height: 10),
+              Text(details.wardName),
+              const SizedBox(height: 10),
+              const ReusableTitleText(title: 'Sub County'),
+              const SizedBox(height: 10),
+              Text(details.wardName),
+              const SizedBox(height: 10),
+              const ReusableTitleText(
+                  title: 'Name of caseworker/CHV conducting assessment'),
+              const SizedBox(height: 10),
+              Text(details.chvNames),
+              const SizedBox(height: 10),
+              const ReusableTitleText(title: 'Name of SDP staff/Case Manager'),
+              const SizedBox(height: 10),
+              Text(details.cboName),
+              const SizedBox(height: 10),
+              const ReusableTitleText(title: 'Name of Caregiver'),
+              const SizedBox(height: 10),
+              Text(details.caregiverNames),
+              const SizedBox(height: 10),
+              const ReusableTitleText(title: 'Caregiver ID Number'),
+              const SizedBox(height: 10),
+              Text(details.caregiverCpimsId.toString()),
+              const SizedBox(height: 10),
+              const SizedBox(height: 10),
+              const ReusableTitleText(title: 'Caregiver Gender'),
+              const SizedBox(height: 10),
+              const Text("Female"),
+              const SizedBox(height: 10),
+              const ReusableTitleText(title: 'Caregiver DOB'),
+              const SizedBox(height: 10),
+              const Text('August 21, 1973'),
+              const SizedBox(height: 10),
+              const ReusableTitleText(title: 'Caregiver Phone Number'),
+              const SizedBox(height: 10),
+              const Text('708568702'),
+              const SizedBox(height: 10),
+              const Divider(height: 20, thickness: 2),
+              const SizedBox(height: 20),
+            ],
+          );
+        }
+      },
     );
   }
 }
@@ -281,4 +326,75 @@ class ChildDetails {
     required this.schoolLevel,
     required this.registeredInProgram,
   });
+}
+
+class CparaOvcDetails {
+  final String ovcCpimsId;
+  final String ovcNames;
+  final String dateOfBirth;
+  final String ovcEnrollmentDate;
+  final String exitStatus;
+  final String exitDate;
+  final int cboId;
+  final String cboName;
+  final int chvCpimsId;
+  final String chvNames;
+  final int caregiverCpimsId;
+  final String caregiverNames;
+  final String wardCode;
+  final String wardName;
+
+  CparaOvcDetails({
+    required this.ovcCpimsId,
+    required this.ovcNames,
+    required this.dateOfBirth,
+    required this.ovcEnrollmentDate,
+    required this.exitStatus,
+    required this.exitDate,
+    required this.cboId,
+    required this.cboName,
+    required this.chvCpimsId,
+    required this.chvNames,
+    required this.caregiverCpimsId,
+    required this.caregiverNames,
+    required this.wardCode,
+    required this.wardName,
+  });
+
+  factory CparaOvcDetails.fromJson(Map<String, dynamic> json) {
+    return CparaOvcDetails(
+      ovcCpimsId: json['ovc_cpims_id'],
+      ovcNames: json['ovc_names'],
+      dateOfBirth: json['date_of_birth'],
+      ovcEnrollmentDate: json['ovc_enrollment_date'],
+      exitStatus: json['exit_status'],
+      exitDate: json['exit_date'],
+      cboId: json['cbo_id'],
+      cboName: json['cbo_name'],
+      chvCpimsId: json['chv_cpims_id'],
+      chvNames: json['chv_names'],
+      caregiverCpimsId: json['caregiver_cpims_id'],
+      caregiverNames: json['caregiver_names'],
+      wardCode: json['ward']['code'],
+      wardName: json['ward']['name'],
+    );
+  }
+}
+
+class ApiService {
+  static Future<CparaOvcDetails> fetchOvcDetails(
+      String token, String ovcCpimsId) async {
+    final response = await http.get(
+      Uri.parse('https://dev.cpims.net/api/form/CPR/?ovc_cpims_id=$ovcCpimsId'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      final Map<String, dynamic> jsonData = json.decode(response.body);
+      return CparaOvcDetails.fromJson(jsonData);
+    } else {
+      throw Exception('Failed to load OVC details');
+    }
+  }
 }
