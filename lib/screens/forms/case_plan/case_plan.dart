@@ -6,6 +6,7 @@ import 'package:cpims_mobile/widgets/custom_dropdown_multiselect.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -426,7 +427,9 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        const CustomTextField(),
+                        const CustomTextField(
+                          hintText: 'Please Write the Reasons',
+                        ),
                       ],
                     ),
                   ),
@@ -457,11 +460,61 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
+                  const SizedBox(
+                      width: 300, // Adjust the width value as needed
+                      child: HistoryAssessmentListWidget()),
                 ],
               )),
           const Footer(),
         ],
       ),
+    );
+  }
+}
+
+class HistoryAssessmentListWidget extends StatelessWidget {
+  const HistoryAssessmentListWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 4,
+        itemBuilder: (context, index) {
+          return const AssessmentItemWidget();
+        });
+  }
+}
+
+class AssessmentItemWidget extends StatelessWidget {
+  const AssessmentItemWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        Expanded(
+          child: Text(
+            'Child not Adhering to ARVs',
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+        ),
+        SizedBox(
+          height: 50,
+        ),
+        Expanded(
+          child: Text(
+            '28-Aug-2023',
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+        ),
+        SizedBox(width: 10),
+        Icon(
+          CupertinoIcons.delete,
+          color: Colors.red,
+        )
+      ],
     );
   }
 }
