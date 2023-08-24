@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/form1a_provider.dart';
+import 'package:cpims_mobile/screens/forms/form1a/utils/form_1a_options.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_date_picker.dart';
@@ -16,9 +17,9 @@ class CriticalEventsScreen extends StatefulWidget {
 }
 
 class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
-    List<Map> careGiverServices = careGiverHealthServices;
+    List<Map> careGiverServices = optionsEvents;
 
-   List<ValueItem> caregiverHealthServiceItems = careGiverHealthServices.map((service) {
+   List<ValueItem> caregiverHealthServiceItems = optionsEvents.map((service) {
     return ValueItem(label: "- ${service['subtitle']}", value: service['title']);
   }).toList();
     List<ValueItem> selectedEvents = [];
