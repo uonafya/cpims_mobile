@@ -2,6 +2,7 @@ import 'package:cpims_mobile/providers/form1b_provider.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
+import 'package:cpims_mobile/widgets/custom_toast.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -50,23 +51,11 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
-            setState(() {
-              selectedCareGiverServices = selectedServices.cast<String>().toList();
-              // formData.selectedServices = selectedServices.cast<String>().toList();
-              form1bProvider.setSelectedServices(selectedServices.cast<String>().toList());
+            form1bProvider.setSelectedServices(['Service 1', 'Service 2']);
+            // selectedCareGiverServices = selectedServices.cast<String>().toList();
+            //   form1bProvider.setSelectedServices(selectedCareGiverServices);
+            CustomToastWidget.showToast("hii");
 
-            });
-            print('Selected services: ${selectedCareGiverServices}');
-
-            Fluttertoast.showToast(
-              msg: 'Selected services: ${selectedCareGiverServices.join(", ")}',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.black87,
-              textColor: Colors.white,
-              fontSize: 16.0,
-            );
           },
           options: caregiverHealthServiceItems,
           maxItems: 13,
@@ -91,20 +80,9 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
         CustomFormsDatePicker(
           hintText: 'Select the date',
           onDateSelected: (selectedDate) {
-            setState(() {
-              form1bProvider.setSelectedDate(selectedDate);
-              // form1bProvider.selectedDate = selectedDate; // Update your selected date in your form data
-            });
-            // Display a toast message for selected date
-            Fluttertoast.showToast(
-              msg: 'Selected date: ${DateFormat('dd/MM/yyyy').format(selectedDate)}',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.black87,
-              textColor: Colors.white,
-              fontSize: 16.0,
-            );
+            print("object for testing");
+            form1bProvider.setSelectedDate(selectedDate);
+
           },
         ),
       ],

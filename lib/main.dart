@@ -64,9 +64,7 @@ class _CPIMSState extends State<CPIMS> {
       builder: (context, child) {
         return MultiProvider(
           providers: [
-            ChangeNotifierProvider(
-                create: (_) => UIProvider()
-            ),
+            ChangeNotifierProvider(create: (_) => UIProvider()),
             ChangeNotifierProvider(create: (_) => Form1bProvider()),
 
           ],

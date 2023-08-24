@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/custom_toast.dart';
+
 class HealthFormData {
   late final List<String> selectedServices;
   late final DateTime selectedDate;
@@ -16,7 +18,7 @@ class Form1bProvider extends ChangeNotifier {
   HealthFormData get formData => _formData;
 
   void setSelectedServices(List<String> selectedServices) {
-    _formData.selectedServices = selectedServices;
+    _formData.selectedServices.addAll(selectedServices);
     notifyListeners();
   }
 
@@ -24,4 +26,17 @@ class Form1bProvider extends ChangeNotifier {
     _formData.selectedDate = selectedDate;
     notifyListeners();
   }
+
+
+  bool _showToast = false;
+
+  bool get showToast => _showToast;
+
+  void saveData(String toastData) {
+    // Save data logic
+    CustomToastWidget.showToast('Data saved successfully!${toastData}');
+    notifyListeners();
+  }
+
+
 }

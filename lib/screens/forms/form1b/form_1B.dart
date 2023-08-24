@@ -15,6 +15,10 @@ import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../providers/form1b_provider.dart';
+import '../../../widgets/custom_toast.dart';
 
 class Form1BScreen extends StatefulWidget {
   const Form1BScreen({super.key});
@@ -35,6 +39,8 @@ class _Form1BScreen extends State<Form1BScreen> {
   ];
   @override
   Widget build(BuildContext context) {
+    Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -131,6 +137,23 @@ class _Form1BScreen extends State<Form1BScreen> {
                             )
                           ],
                         ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomButton(
+                                text: "Submit",
+                                onTap: () {
+                                  // form1bProvider.setSelectedServices(['Service 1', 'Service 2']);
+                                  // form1bProvider.setSelectedDate(DateTime.now());
+                                  form1bProvider.saveData(form1bProvider.formData.selectedServices.toString());
+                                },
+                              ),
+                            )
+                          ]
+                        )
                       ],
                     ),
                   ),

@@ -21,6 +21,31 @@ List<Map<String, dynamic>> form1bsStepper = [
   },
 ];
 
+List<Map<String, dynamic>> ServiceDomains = [
+  {
+    'title': 'Healthy',
+    'id': 'c3434',
+  },
+  {
+    'title': 'Safe',
+    'id': 'd5656',
+  },
+  {
+    'title': 'Stable',
+    'id': 'e7878',
+  },
+
+];
+
+
+// List<Map<String, dynamic>> criticalEventsSection = [
+//   {
+//     'title': 'Healthy',
+//     'subtitle': 'Caregiver health and nutrition status',
+//     'onTap': () {}
+//   }
+// ];
+
 List<Map> careGiverHealthServices = [
   {
     'title': 'CP11HEGs',
