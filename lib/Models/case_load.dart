@@ -18,7 +18,7 @@ class CaseLoadModel {
   });
 
   CaseLoadModel.fromJson(Map<String, dynamic> json) {
-    cpimsId = json['cbo_id'];
+    cpimsId = json['cbo_id'].toString();
     ovc_first_name = json['ovc_first_name'];
     ovc_surname = json['ovc_surname'];
     date_of_birth = json['date_of_birth'];

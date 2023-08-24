@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
+import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:cpims_mobile/services/dash_board_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
@@ -24,6 +25,11 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
         final accessToken = prefs.getString('access');
         var dashResp = await DashBoardService().dashBoard(accessToken);
         Provider.of<UIProvider>(context, listen: false).setDashData(dashResp);
+        final CaseLoadService caseLoadService = CaseLoadService();
+
+        await caseLoadService.fetchCaseLoadData(context: context);
+        await Provider.of<UIProvider>(context, listen: false).setCaseLoadData();
+
         Get.off(() => const Homepage());
       },
     );
