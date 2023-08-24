@@ -144,26 +144,4 @@ class AuthService {
       }
     }
   }
-
-  // logout
-  void logOut(BuildContext context) async {
-    try {
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-
-      await sharedPreferences.clear();
-
-      authProvider.clearUser();
-
-      Get.off(
-        () => const LoginScreen(),
-        transition: Transition.fadeIn,
-        duration: const Duration(microseconds: 300),
-      );
-    } catch (e) {
-      if (context.mounted) {
-        errorSnackBar(context, e.toString());
-      }
-    }
-  }
 }
