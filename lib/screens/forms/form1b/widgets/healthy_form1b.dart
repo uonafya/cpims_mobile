@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 
 import '../../../../widgets/custom_date_picker.dart';
+import '../utils/form1bConstants.dart';
 
 class HealthyForm1b extends StatefulWidget {
   const HealthyForm1b({Key? key}) : super(key: key);
@@ -18,15 +19,12 @@ class HealthyForm1b extends StatefulWidget {
 
 class _HealthyForm1bState extends State<HealthyForm1b> {
 
+  List<Map> careGiverServices = careGiverHealthServices;
+  List<ValueItem> caregiverHealthServiceItems = careGiverHealthServices.map((service) {
+    return ValueItem(label: "- ${service['subtitle']}", value: service['title']);
+  }).toList();
 
-  List<String> typeOfEvents = [
-    'OCE1 - Child Pregnant',
-    'OCE2 - Child not Adhering to ARVs',
-    'OCE3 - Child Malnourished',
-    'OCE4 - Child HIV status Changed',
-    'OCE5 - Child Acquired Opportunistic Infection'
-  ];
-  List<String> selectedEvents = [];
+  List<String> selectedCareGiverServices = [];
 
   @override
   Widget build(BuildContext context) {
@@ -34,26 +32,19 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
       title: 'Caregiver health and nutrition status',
       children: [
         const Text(
-          'Name of organisation unit',
+          'Service(s)',
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
           showClearIcon: true,
           hint: 'Services(s)',
-          onOptionSelected: (selectedEvents) {
+          onOptionSelected: (selectedServices) {
             setState(() {
-              this.selectedEvents = selectedEvents.cast<String>().toList();
+              selectedCareGiverServices = selectedServices.cast<String>().toList();
             });
           },
-          options: const <ValueItem>[
-            ValueItem(label: 'Child Pregnant', value: '1'),
-            ValueItem(label: 'Child not Adhering to ARVs', value: '2'),
-            ValueItem(label: 'Child Malnourished', value: '3'),
-            ValueItem(label: 'Child HIV status Changed', value: '4'),
-            ValueItem(
-                label: 'Child Acquired Opportunistic Infection', value: '5'),
-          ],
+          options: caregiverHealthServiceItems,
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,

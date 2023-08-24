@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/screens/forms/form1b/utils/form1bConstants.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:cpims_mobile/widgets/custom_date_picker.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
@@ -15,14 +16,12 @@ class StableForm1b extends StatefulWidget {
 
 class _StableForm1bState extends State<StableForm1b> {
 
-  List<String> typeOfEvents = [
-    'OCE1 - Child Pregnant',
-    'OCE2 - Child not Adhering to ARVs',
-    'OCE3 - Child Malnourished',
-    'OCE4 - Child HIV status Changed',
-    'OCE5 - Child Acquired Opportunistic Infection'
-  ];
-  List<String> selectedEvents = [];
+  List<Map> careGiverServices = careGiverEconomicServices;
+  List<ValueItem> caregiverEconomicItems = careGiverEconomicServices.map((service) {
+    return ValueItem(label: "- ${service['subtitle']}", value: service['title']);
+  }).toList();
+
+  List<String> selectedCareGiverServices = [];
 
   @override
   Widget build(BuildContext context) {
@@ -37,20 +36,13 @@ class _StableForm1bState extends State<StableForm1b> {
         MultiSelectDropDown(
           showClearIcon: true,
           hint: 'Services(s)',
-          onOptionSelected: (selectedEvents) {
+          onOptionSelected: (selectedServices) {
             setState(() {
-              this.selectedEvents = selectedEvents.cast<String>().toList();
+              selectedCareGiverServices = selectedServices.cast<String>().toList();
             });
           },
-          options: const <ValueItem>[
-            ValueItem(label: 'Child Pregnant', value: '1'),
-            ValueItem(label: 'Child not Adhering to ARVs', value: '2'),
-            ValueItem(label: 'Child Malnourished', value: '3'),
-            ValueItem(label: 'Child HIV status Changed', value: '4'),
-            ValueItem(
-                label: 'Child Acquired Opportunistic Infection', value: '5'),
-          ],
-          maxItems: 13,
+          options: caregiverEconomicItems,
+          maxItems: 50,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
           chipConfig: const ChipConfig(wrapType: WrapType.wrap),
