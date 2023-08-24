@@ -34,7 +34,7 @@ class _CaseLoadState extends State<CaseLoad> {
         child: CustomDrawer(),
       ),
       body: FutureBuilder(
-        future: CaseLoadDb.instance.retrieveCaseLoads(),
+        future: LocalDb.instance.retrieveCaseLoads(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();

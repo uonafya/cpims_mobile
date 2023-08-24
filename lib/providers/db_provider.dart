@@ -1,13 +1,15 @@
 
 import 'package:cpims_mobile/Models/case_load.dart';
+import 'package:cpims_mobile/Models/statistic_model.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class CaseLoadDb {
-  static final CaseLoadDb instance = CaseLoadDb._init();
+class LocalDb {
+  static final LocalDb instance = LocalDb._init();
   static Database? _database;
 
-  CaseLoadDb._init();
+  LocalDb._init();
 
   Future<Database> get database async {
     // If database exists, return database
@@ -24,15 +26,15 @@ class CaseLoadDb {
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+    return await openDatabase(path, version: 1, onCreate: _createTables);
   }
 
-  Future<void> _createDB(Database db, int version) async {
+  Future<void> _createTables(Database db, int version) async {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
 
     await db.execute('''
-      CREATE TABLE $tableOvc (
+      CREATE TABLE $caseloadTable (
         ${OvcFields.id} $idType,
         ${OvcFields.cboID} $textType,
         ${OvcFields.ovcFirstName} $textType,
@@ -43,23 +45,61 @@ class CaseLoadDb {
         ${OvcFields.sex} $textType
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE $statisticsTable (
+        ${SummaryFields.id} $idType,
+        ${SummaryFields.children} $textType,
+        ${SummaryFields.caregivers} $textType,
+        ${SummaryFields.government} $textType,
+        ${SummaryFields.ngo} $textType,
+        ${SummaryFields.caseRecords} $textType,
+        ${SummaryFields.pendingCases} $textType,
+        ${SummaryFields.orgUnits} $textType,
+        ${SummaryFields.workforceMembers} $textType,
+        ${SummaryFields.household} $textType,
+        ${SummaryFields.childrenAll} $textType,
+        ${SummaryFields.ovcSummary} $textType,
+        ${SummaryFields.ovcRegs} $textType,
+        ${SummaryFields.caseRegs} $textType,
+        ${SummaryFields.caseCats} $textType,
+        ${SummaryFields.criteria} $textType,
+        ${SummaryFields.orgUnit} $textType,
+        ${SummaryFields.orgUnitId} $textType,
+        ${SummaryFields.details} $textType
+      )
+''');
   }
 
-  Future<void> insertDoc(CaseLoadModel caseLoadModel) async {
+  Future<void> insertCaseLoad(CaseLoadModel caseLoadModel) async {
     final db = await instance.database;
 
-    await db.insert(tableOvc, caseLoadModel.toJson());
+    await db.insert(caseloadTable, caseLoadModel.toJson());
+  }
+
+  Future<void> insertStatistics(SummaryDataModel summaryModel) async {
+    final db = await instance.database;
+
+    await db.insert(statisticsTable, summaryModel.toJson());
   }
 
   Future<List<CaseLoadModel>> retrieveCaseLoads() async {
     final db = await instance.database;
-    final result = await db.query(tableOvc);
-    print('Local Model $result');
+    final result = await db.query(caseloadTable);
+    print('Local Model ${result}');
     return result.map((json) => CaseLoadModel.fromJson(json)).toList();
   }
 
+  Future<List<SummaryDataModel>> retrieveStatistics() async {
+    final db = await instance.database;
+    final result = await db.query(statisticsTable);
+    print('Local Model ${result}');
+    return result.map((json) => SummaryDataModel.fromJson(json)).toList();
+  }
+
   // table name and field names
-  static const tableOvc = 'ovcs';
+  static const caseloadTable = 'ovcs';
+  static const statisticsTable = 'statistics';
 }
 
 class OvcFields {
@@ -81,4 +121,48 @@ class OvcFields {
   static const String registationDate = 'registration_date';
   static const String caregiverNames = 'caregiver_names';
   static const String sex = 'sex';
+}
+
+class SummaryFields {
+  static final List<String> values = [
+    id,
+    children,
+    caregivers,
+    government,
+    ngo,
+    caseRecords,
+    pendingCases,
+    orgUnits,
+    workforceMembers,
+    household,
+    childrenAll,
+    ovcSummary,
+    ovcRegs,
+    caseRegs,
+    caseCats,
+    criteria,
+    orgUnit,
+    orgUnitId,
+    details
+  ];
+
+  static const String id = '_id';
+  static const String children = 'children';
+  static const String caregivers = 'caregivers';
+  static const String government = 'government';
+  static const String ngo = 'ngo';
+  static const String caseRecords = 'case_records';
+  static const String pendingCases = 'pending_cases';
+  static const String orgUnits = 'org_units';
+  static const String workforceMembers = 'workforce_members';
+  static const String household = 'household';
+  static const String childrenAll = 'children_all';
+  static const String ovcSummary = 'ovc_summary';
+  static const String ovcRegs = 'ovc_regs';
+  static const String caseRegs = 'case_regs';
+  static const String caseCats = 'case_cats';
+  static const String criteria = 'criteria';
+  static const String orgUnit = 'org_unit';
+  static const String orgUnitId = 'org_unit_id';
+  static const String details = 'details';
 }

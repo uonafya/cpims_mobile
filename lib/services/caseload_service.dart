@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cpims_mobile/Models/case_load.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,16 +37,22 @@ class CaseLoadService {
           CaseLoadModel caseLoadModel = CaseLoadModel.fromJson(
             jsonDecode(response.body)[i],
           );
-          print(caseLoadModel.caregiver_names);
-          CaseLoadDb.instance.insertDoc(caseLoadModel);
+          if (kDebugMode) {
+            print(caseLoadModel.caregiver_names);
+          }
+          LocalDb.instance.insertCaseLoad(caseLoadModel);
         }
         final int timestamp = DateTime.now().millisecondsSinceEpoch;
         await preferences.setInt('caseload_last_save', timestamp);
       } else {
-        print("We have an issue");
+        if (kDebugMode) {
+          print("We have an issue");
+        }
       }
     } catch (e) {
-      errorSnackBar(context, e.toString());
+      if (context.mounted) {
+        errorSnackBar(context, e.toString());
+      }
     }
   }
 }
