@@ -24,34 +24,34 @@ class Children {
 
 class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   // State of the questions
-  RadioButtonOptions? q1_1;
-  RadioButtonOptions? q1_2;
-  RadioButtonOptions? q1_3;
-  RadioButtonOptions? q1_4;
-  RadioButtonOptions? q1_5;
-  RadioButtonOptions? q2_1;
-  RadioButtonOptions? q2_2;
-  RadioButtonOptions? q2_3;
-  RadioButtonOptions? q2_4;
-  RadioButtonOptions? q2_5;
-  RadioButtonOptions? q2_6;
-  RadioButtonOptions? q2_7;
-  RadioButtonOptions? q2_8;
-  RadioButtonOptions? q2_9;
-  RadioButtonOptions? group1Final;
-  RadioButtonOptions? group2Final;
-  RadioButtonOptions? group3Final;
-  RadioButtonOptions? group4Final;
-  RadioButtonOptions? group3Initial;
-  RadioButtonOptions? group2Initial;
-  RadioButtonOptions? initial2_1;
-  RadioButtonOptions? initial2_4;
-  RadioButtonOptions? initial2_7;
-  RadioButtonOptions? group4Initial;
-  RadioButtonOptions? q4_1;
-  RadioButtonOptions? q4_2;
-  RadioButtonOptions? q4_3;
-  RadioButtonOptions? q4_4;
+  RadioButtonOptions? q1_1ChildrenHivTested;
+  RadioButtonOptions? q1_2childrenUnknownStatus;
+  RadioButtonOptions? q1_3InfantExposedHIV;
+  RadioButtonOptions? q1_4HivCaregiverUnknown;
+  RadioButtonOptions? q1_5CaregiverSceened;
+  RadioButtonOptions? q2_1SuppresedPast12;
+  RadioButtonOptions? q2_2ChildrenRegularAttendTreatment;
+  RadioButtonOptions? q2_3ChildrenNotMissDose;
+  RadioButtonOptions? q2_4DocumentedChildrenSuppressed;
+  RadioButtonOptions? q2_5NoDocumentAttendTreatment;
+  RadioButtonOptions? q2_6AdolocentRegularMedicate;
+  RadioButtonOptions? q2_7HIVCaregiverSuppress;
+  RadioButtonOptions? q2_8NoDocumentCaregiverAppointment;
+  RadioButtonOptions? q2_9CaregiverRegularlyMedicate;
+  RadioButtonOptions? goal2Summary;
+  RadioButtonOptions? goal3Summary;
+  RadioButtonOptions? goal4Summary;
+  RadioButtonOptions? goal3InitialAnswer;
+  RadioButtonOptions? goal2InitialAnswer;
+  RadioButtonOptions? suppresedPast12Initial;
+  RadioButtonOptions? childLessThan2Initial;
+  RadioButtonOptions? documentedChildrenSuppressedInitial;
+  RadioButtonOptions? noDocumentCaregiverAppointmentInitial;
+  RadioButtonOptions? goal4Initial;
+  RadioButtonOptions? q4_1BelowAge5MUAC;
+  RadioButtonOptions? q4_2Below5BipedalEdema;
+  RadioButtonOptions? q4_3MalnourishedTreated;
+  RadioButtonOptions? q4_4Under2Immunized;
 
   // Children state
   final children = [
@@ -70,122 +70,127 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
     switch (question) {
       case "q1_1":
         setState(() {
-          q1_1 = value;
+          q1_1ChildrenHivTested = value;
         });
         break;
       case "q1_2":
         setState(() {
-          q1_2 = value;
+          q1_2childrenUnknownStatus = value;
         });
         break;
       case "q1_3":
         setState(() {
-          q1_3 = value;
+          q1_3InfantExposedHIV = value;
         });
         break;
       case "q1_4":
         setState(() {
-          q1_4 = value;
+          q1_4HivCaregiverUnknown = value;
         });
         break;
       case "q1_5":
         setState(() {
-          q1_5 = value;
+          q1_5CaregiverSceened = value;
         });
         break;
       case "q2_1":
         setState(() {
-          q2_1 = value;
+          q2_1SuppresedPast12 = value;
         });
         break;
       case "q2_2":
         setState(() {
-          q2_2 = value;
+          q2_2ChildrenRegularAttendTreatment = value;
         });
         break;
       case "q2_3":
         setState(() {
-          q2_3 = value;
+          q2_3ChildrenNotMissDose = value;
         });
         break;
       case "q2_4":
         setState(() {
-          q2_4 = value;
+          q2_4DocumentedChildrenSuppressed = value;
         });
         break;
       case "q2_5":
         setState(() {
-          q2_5 = value;
+          q2_5NoDocumentAttendTreatment = value;
         });
         break;
       case "q2_6":
         setState(() {
-          q2_6 = value;
+          q2_6AdolocentRegularMedicate = value;
         });
         break;
       case "q2_7":
         setState(() {
-          q2_7 = value;
+          q2_7HIVCaregiverSuppress = value;
         });
         break;
       case "q2_8":
         setState(() {
-          q2_8 = value;
+          q2_8NoDocumentCaregiverAppointment = value;
         });
         break;
       case "q2_9":
         setState(() {
-          q2_9 = value;
+          q2_9CaregiverRegularlyMedicate = value;
         });
         break;
       case "q4_1":
         setState(() {
-          q4_1 = value;
+          q4_1BelowAge5MUAC = value;
         });
         break;
       case "q4_2":
         setState(() {
-          q4_2 = value;
+          q4_2Below5BipedalEdema = value;
         });
         break;
       case "q4_3":
         setState(() {
-          q4_3 = value;
+          q4_3MalnourishedTreated = value;
         });
         break;
       case "q4_4":
         setState(() {
-          q4_4 = value;
+          q4_4Under2Immunized = value;
         });
         break;
       case "initial_3":
         setState(() {
-          group3Initial = value;
+          goal3InitialAnswer = value;
         });
         break;
       case "initial_4":
         setState(() {
-          group4Initial = value;
+          goal4Initial = value;
         });
         break;
       case "initial_2":
         setState(() {
-          group2Initial = value;
+          goal2InitialAnswer = value;
         });
         break;
       case "initial2_1":
         setState(() {
-          initial2_1 = value;
+          suppresedPast12Initial = value;
         });
         break;
       case "initial2_4":
         setState(() {
-          initial2_4 = value;
+          documentedChildrenSuppressedInitial = value;
         });
         break;
       case "initial2_7":
         setState(() {
-          initial2_7 = value;
+          noDocumentCaregiverAppointmentInitial = value;
+        });
+        break;
+      case "initial4_4":
+        setState(() {
+          childLessThan2Initial = value;
         });
         break;
       default:
@@ -194,6 +199,25 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   }
 
   void noChangeToRadio(RadioButtonOptions? val) {}
+
+  // A function that computes whether the final result of a section is yes or no given the values of the members
+  RadioButtonOptions allShouldBeYes(List<RadioButtonOptions?> members) {
+    // If all the values are yes return RadioButtonOptions.yes, if not return RadioButtonOptions.no
+    if (members.isEmpty) {
+      return RadioButtonOptions.no;
+    } else if (members.any((element) => element != RadioButtonOptions.yes)) {
+      return RadioButtonOptions.no;
+    } else {
+      return RadioButtonOptions.yes;
+    }
+  }
+
+  // When you skip a section or goal the answers of the skipped questions should be set to NA
+  void updateAnswersOnSkip(List<String> answersToChange) {
+    for (var i in answersToChange) {
+      updateQuestion(i, RadioButtonOptions.na);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +230,13 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           updateFinalFormRadio: noChangeToRadio,
           showNAInFinalResult: false,
           finalBlockQuestion: "Has the household achieved this benchmark?",
-          finalResult: group1Final,
+          finalResult: allShouldBeYes([
+            q1_1ChildrenHivTested,
+            q1_2childrenUnknownStatus,
+            q1_3InfantExposedHIV,
+            q1_4HivCaregiverUnknown,
+            q1_5CaregiverSceened
+          ]), // final result is yes if the values of question 1 to 4 is yes
           descriptionHeading:
               "Healthy: Goal 1: Increase diagnosis of HIV infection",
           descriptionText:
@@ -222,7 +252,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
               questions: [
                 QuestionBlock(
                   isTopDividerThere: false,
-                  groupValue: q1_1,
+                  groupValue: q1_1ChildrenHivTested,
                   isOptional: false,
                   question:
                       "1.1 Have all your children been tested for HIV and their HIV status known (HIV negative, positive) ?",
@@ -233,10 +263,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                 QuestionBlock(
                   isTopDividerThere: false,
                   isOptional: false,
-                  groupValue: q1_2,
+                  groupValue: q1_2childrenUnknownStatus,
                   question:
                       "1.2 For those with unknown HIV status, have they been screened for HIV risk and results showed test not required ?",
-                  isNAAvailable: false,
+                  isNAAvailable: true,
                   updateRadioButton: (RadioButtonOptions? val) =>
                       updateQuestion("q1_2", val),
                 ),
@@ -252,10 +282,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                 QuestionBlock(
                   isTopDividerThere: false,
                   isOptional: false,
-                  groupValue: q1_3,
+                  groupValue: q1_3InfantExposedHIV,
                   question:
                       "1.3 If there is an infant Exposed to HIV (HEI), has the final HIV status been confirmed at 18 months or one week after cessation of breastfeeding, whichever comes later?",
-                  isNAAvailable: false,
+                  isNAAvailable: true,
                   updateRadioButton: (RadioButtonOptions? val) =>
                       updateQuestion("q1_3", val),
                 ),
@@ -271,7 +301,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                 QuestionBlock(
                   isTopDividerThere: false,
                   isOptional: false,
-                  groupValue: q1_4,
+                  groupValue: q1_4HivCaregiverUnknown,
                   question:
                       "1.4 Is the HIV status of the caregiver known (positive, negative)?",
                   isNAAvailable: false,
@@ -280,11 +310,11 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                 ),
                 QuestionBlock(
                   isTopDividerThere: false,
-                  groupValue: q1_5,
+                  groupValue: q1_5CaregiverSceened,
                   isOptional: false,
                   question:
                       "1.5 For caregiver with unknown HIV status have they been screened for HIV risk and the results showing test not required?",
-                  isNAAvailable: false,
+                  isNAAvailable: true,
                   updateRadioButton: (RadioButtonOptions? val) =>
                       updateQuestion("q1_5", val),
                 ),
@@ -301,12 +331,37 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           initalQuestion:
               "Is there anyone who is HIV positive in the Household ?",
           isNAInIntial: false,
-          initalQuestionValue: group2Initial,
-          updateInitialQuestion: (RadioButtonOptions? val) =>
-              updateQuestion("initial_2", val),
+          initalQuestionValue: goal2InitialAnswer,
+          updateInitialQuestion: (RadioButtonOptions? val) {
+            updateQuestion(
+                "initial_2", val); // update the state of the question
+            if (val == RadioButtonOptions.no) {
+              updateAnswersOnSkip([
+                "q2_1",
+                "q2_2",
+                "q2_3",
+                "q2_4",
+                "q2_5",
+                "q2_6",
+                "q2_7",
+                "q2_8",
+                "q2_9",
+              ]); // update the other questions
+            }
+          },
           finalBlockQuestion: "Has the household achieved this benchmark?",
           showNAInFinalResult: false,
-          finalResult: group2Final,
+          finalResult: allShouldBeYes([
+            q2_1SuppresedPast12,
+            q2_2ChildrenRegularAttendTreatment,
+            q2_3ChildrenNotMissDose,
+            q2_4DocumentedChildrenSuppressed,
+            q2_5NoDocumentAttendTreatment,
+            q2_6AdolocentRegularMedicate,
+            q2_7HIVCaregiverSuppress,
+            q2_8NoDocumentCaregiverAppointment,
+            q2_9CaregiverRegularlyMedicate
+          ]), // The final value is yes if all the answers are yes for questions 2.1 to 2.9
           updateFinalFormRadio: noChangeToRadio,
           descriptionHeading:
               "Healthy: Goal 2: Increase HIV treatment adherence, continuity of treatment and viral suppression",
@@ -317,10 +372,13 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           sections: [
             // Section 2.1 - 2.3
             QuestionsSection(
+              skipSection: goal2InitialAnswer ==
+                  RadioButtonOptions
+                      .no, // skip questions when the answer to is anyone HIV postivie no
               doesSectionDependOnInitialAnswer: true,
               initalQuestion:
                   "Is there a child 0 - 12 years who is HIV positive ?",
-              initalQuestionValue: initial2_1,
+              initalQuestionValue: suppresedPast12Initial,
               updateInitialQuestion: (RadioButtonOptions? val) =>
                   updateQuestion("initial2_1", val),
               isNAInIntial: false,
@@ -329,7 +387,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
               questions: [
                 QuestionBlock(
                   isTopDividerThere: false,
-                  groupValue: q2_1,
+                  groupValue: q2_1SuppresedPast12,
                   isOptional: false,
                   question:
                       "2.1 Have all HIV positive children on treatment with documented viral load results been suppressed in the past 12 months? ",
@@ -340,17 +398,17 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                 QuestionBlock(
                   isTopDividerThere: false,
                   isOptional: false,
-                  groupValue: q2_2,
+                  groupValue: q2_2ChildrenRegularAttendTreatment,
                   question:
                       "2.2 For those with no documented viral load results; Have all the children living with HIV been attending their appointments regularly for the past 12 months (check CCC card to confirm adherence to treatment)",
-                  isNAAvailable: false,
+                  isNAAvailable: true,
                   updateRadioButton: (RadioButtonOptions? val) =>
                       updateQuestion("q2_2", val),
                 ),
                 QuestionBlock(
                   isTopDividerThere: false,
                   isOptional: false,
-                  groupValue: q2_3,
+                  groupValue: q2_3ChildrenNotMissDose,
                   question:
                       "2.3 Have all HIV+ children been regularly taking medication without missing doses for the past 12 months (reported by caregiver for the 0-12 years)?",
                   isNAAvailable: false,
@@ -362,20 +420,23 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
             // Section 2.4 - 2.6
             QuestionsSection(
+              skipSection: goal2InitialAnswer ==
+                  RadioButtonOptions
+                      .no, // skip questions when the answer to is anyone HIV postivie no
               doesSectionDependOnInitialAnswer: true,
               updateInitialQuestion: (RadioButtonOptions? value) =>
                   updateQuestion("initial2_4", value),
               isNAInIntial: false,
               initalQuestion:
                   "Is there an adolescents or a child above 12 years who is HIV positive ? ",
-              initalQuestionValue: initial2_4,
+              initalQuestionValue: documentedChildrenSuppressedInitial,
               isTopDividerThere: false,
               title: "Adolescents and children above 12 years",
               questions: [
                 QuestionBlock(
                   isTopDividerThere: false,
                   isOptional: false,
-                  groupValue: q2_4,
+                  groupValue: q2_4DocumentedChildrenSuppressed,
                   question:
                       "2.4 Have all HIV positive children and adolescents (12years and above) on treatment with documented viral load results been suppressed in the past 12 months?",
                   isNAAvailable: false,
@@ -385,17 +446,17 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                 QuestionBlock(
                   isTopDividerThere: false,
                   isOptional: false,
-                  groupValue: q2_5,
+                  groupValue: q2_5NoDocumentAttendTreatment,
                   question:
                       "2.5 For those with no documented viral load results; Have all the children and adolescents (12years and above) living with HIV been attending their appointments regularly for the past 12 months (check CCC card to confirm adherence to treatment)",
-                  isNAAvailable: false,
+                  isNAAvailable: true,
                   updateRadioButton: (RadioButtonOptions? val) =>
                       updateQuestion("q2_5", val),
                 ),
                 QuestionBlock(
                   isTopDividerThere: false,
                   isOptional: false,
-                  groupValue: q2_6,
+                  groupValue: q2_6AdolocentRegularMedicate,
                   question:
                       "2.6 Have all HIV+ adolescent been regularly taking medication without missing doses for the past 12 months? (Adolescents self-reported).",
                   isNAAvailable: false,
@@ -407,9 +468,12 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
             // Question 2.7 to 2.9
             QuestionsSection(
+              skipSection: goal2InitialAnswer ==
+                  RadioButtonOptions
+                      .no, // skip questions when the answer to is anyone HIV postivie no
               doesSectionDependOnInitialAnswer: true,
               initalQuestion: "Is the caregiver HIV positive ? ",
-              initalQuestionValue: initial2_7,
+              initalQuestionValue: noDocumentCaregiverAppointmentInitial,
               updateInitialQuestion: (RadioButtonOptions? value) =>
                   updateQuestion("initial2_7", value),
               isNAInIntial: false,
@@ -419,7 +483,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                 QuestionBlock(
                   isTopDividerThere: false,
                   isOptional: false,
-                  groupValue: q2_7,
+                  groupValue: q2_7HIVCaregiverSuppress,
                   question:
                       "2.7 Have all HIV positive caregivers on treatment with documented viral load results been suppressed in the past 12 months?",
                   isNAAvailable: false,
@@ -428,17 +492,17 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                 ),
                 QuestionBlock(
                   isTopDividerThere: false,
-                  groupValue: q2_8,
+                  groupValue: q2_8NoDocumentCaregiverAppointment,
                   isOptional: false,
                   question:
                       "2.8 For those with no documented viral load results; Have the caregiver living with HIV been attending their appointments regularly for the past 12 months (check CCC card to confirm adherence to treatment)",
-                  isNAAvailable: false,
+                  isNAAvailable: true,
                   updateRadioButton: (RadioButtonOptions? val) =>
                       updateQuestion("q2_8", val),
                 ),
                 QuestionBlock(
                   isTopDividerThere: false,
-                  groupValue: q2_9,
+                  groupValue: q2_9CaregiverRegularlyMedicate,
                   isOptional: false,
                   question:
                       "2.9 Have all HIV+ caregivers been regularly taking medication without missing doses for the past 12 months? (Caregiver self-reported).",
@@ -455,14 +519,14 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
         // Healthy Block 3
         HealthyGoalBlock(
           doesSectionDependOnInitialAnswer: true,
-          initalQuestionValue: group3Initial,
+          initalQuestionValue: goal3InitialAnswer,
           updateInitialQuestion: (RadioButtonOptions? val) =>
               updateQuestion("initial_3", val),
           isNAInIntial: false,
           initalQuestion: "Does the household have adolescent girls and boys ?",
-          finalBlockQuestion: "",
+          finalBlockQuestion: "Has the household achieved this benchmarks?",
           showNAInFinalResult: false,
-          finalResult: group3Final,
+          finalResult: goal3Summary,
           updateFinalFormRadio: noChangeToRadio,
           sections: [],
           descriptionHeading: "Healthy: Goal 3: Reduce Risk of HIV Infection",
@@ -470,72 +534,82 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
               "Benchmark3: All adolescents 10-17 years of age in the household have key knowledge about preventing HIV infection Adolescents aged 10-17 can describe at least two HIV infection risks in their local community, can provide at least one example of how they can protect themselves against HIV risk, and can correctly describe the location of at least one place where HIV prevention support is available.",
           descriptionSubText:
               "Note: For HHs with no adolescent girls and boys, skip questions below and select “N/A” for “Achievement of this benchmark.”",
-        ),
-
-        // Table
-        smallSpacing,
-        HealthTable(
-          healthCards: [
-            for (var i in children)
-              HealthCard(
-                childName: i.name,
-                questions: [
-                  QuestionBlock(
-                    groupValue: i.groupValue,
-                    isTopDividerThere: false,
-                    isOptional: true,
-                    question:
-                        "3.1 Can you tell me two behaviors that increase risk of HIV infection?",
-                    isNAAvailable: false,
-                    updateRadioButton: i.updateRadioButton,
-                  ),
-                  QuestionBlock(
-                    groupValue: i.groupValue,
-                    isTopDividerThere: false,
-                    isOptional: true,
-                    question:
-                        "3.2 Can you tell me two ways you can protect yourself/ others against HIV?",
-                    isNAAvailable: false,
-                    updateRadioButton: i.updateRadioButton,
-                  ),
-                  QuestionBlock(
-                    groupValue: i.groupValue,
-                    isTopDividerThere: false,
-                    isOptional: true,
-                    question:
-                        "3.3 Can you name two places in the community where you can access HIV prevention services?",
-                    isNAAvailable: false,
-                    updateRadioButton: i.updateRadioButton,
-                  ),
-                ],
-                isTopDividerThere: false,
-              ),
-          ],
+          table: HealthTable(
+            healthCards: [
+              for (var i in children)
+                HealthCard(
+                  childName: i.name,
+                  questions: [
+                    QuestionBlock(
+                      groupValue: i.groupValue,
+                      isTopDividerThere: false,
+                      isOptional: true,
+                      question:
+                          "3.1 Can you tell me two behaviors that increase risk of HIV infection?",
+                      isNAAvailable: false,
+                      updateRadioButton: i.updateRadioButton,
+                    ),
+                    QuestionBlock(
+                      groupValue: i.groupValue,
+                      isTopDividerThere: false,
+                      isOptional: true,
+                      question:
+                          "3.2 Can you tell me two ways you can protect yourself/ others against HIV?",
+                      isNAAvailable: false,
+                      updateRadioButton: i.updateRadioButton,
+                    ),
+                    QuestionBlock(
+                      groupValue: i.groupValue,
+                      isTopDividerThere: false,
+                      isOptional: true,
+                      question:
+                          "3.3 Can you name two places in the community where you can access HIV prevention services?",
+                      isNAAvailable: false,
+                      updateRadioButton: i.updateRadioButton,
+                    ),
+                  ],
+                  isTopDividerThere: false,
+                ),
+            ],
+          ),
         ),
 
         // Healthy Block 4
         HealthyGoalBlock(
           doesSectionDependOnInitialAnswer: true,
-          initalQuestionValue: group4Initial,
-          updateInitialQuestion: (RadioButtonOptions? value) =>
-              updateQuestion("initial_4", value),
+          initalQuestionValue: goal4Initial,
+          updateInitialQuestion: (RadioButtonOptions? value) {
+            updateQuestion("initial_4", value);
+
+            if (value == RadioButtonOptions.no) {
+              updateAnswersOnSkip(["q4_1", "q4_2", "q4_3", "q4_4"]);
+            }
+          },
           isNAInIntial: false,
           initalQuestion: "Is there child < 5 years in the household ?",
           finalBlockQuestion: "Has the household achieved this benchmarks?",
-          showNAInFinalResult: false,
-          finalResult: group4Final,
+          showNAInFinalResult: true,
+          finalResult: allShouldBeYes([
+            q4_1BelowAge5MUAC,
+            q4_2Below5BipedalEdema,
+            q4_3MalnourishedTreated,
+            q4_4Under2Immunized
+          ]), // final answer should be yes if all questions from 4.1 to 4.4 are yes
           updateFinalFormRadio: noChangeToRadio,
           sections: [
             // Question 4.1 to 4.3
             QuestionsSection(
               doesSectionDependOnInitialAnswer: false,
               isTopDividerThere: false,
+              skipSection: goal4Initial ==
+                  RadioButtonOptions
+                      .no, // skip the section when there are no children < 5 years
               title: "",
               questions: [
                 QuestionBlock(
                   isTopDividerThere: false,
                   isOptional: false,
-                  groupValue: q4_1,
+                  groupValue: q4_1BelowAge5MUAC,
                   question:
                       "4.1 Have all children below the age of five been assessed using MUAC and scored green?",
                   isNAAvailable: false,
@@ -544,7 +618,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                 ),
                 QuestionBlock(
                   isTopDividerThere: true,
-                  groupValue: q4_2,
+                  groupValue: q4_2Below5BipedalEdema,
                   isOptional: false,
                   question:
                       "4.2 Have all the children below five years showed no signs of bipedal edema (e.g. Pressure applied on top of both feet for three seconds and did not leave a pit)?",
@@ -554,11 +628,13 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                 ),
                 QuestionBlock(
                   isTopDividerThere: false,
-                  groupValue: q4_3,
+                  groupValue: q4_3MalnourishedTreated,
+                  warningText:
+                      "NB: Score YES if none in the HH has ever been previously malnourished NB-Score YES if none in the HH has ever been previously malnourished *",
                   isOptional: false,
                   question:
                       "4.3 Have all the children previously identified as malnourished been treated and has a Z score of >-2? (Confirm with clinical as appropriate)",
-                  isNAAvailable: false,
+                  isNAAvailable: true,
                   updateRadioButton: (RadioButtonOptions? value) =>
                       updateQuestion("q4_3", value),
                 ),
@@ -567,14 +643,23 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
             // Question 4.4
             QuestionsSection(
-              doesSectionDependOnInitialAnswer: false,
+              skipSection: goal4Initial == RadioButtonOptions.no ||
+                  childLessThan2Initial == RadioButtonOptions.no,
+              skipSectionButShowInitial:
+                  childLessThan2Initial == RadioButtonOptions.no,
+              doesSectionDependOnInitialAnswer: true,
+              updateInitialQuestion: (RadioButtonOptions? value) =>
+                  updateQuestion("initial4_4", value),
+              initalQuestion: "Is there child < 2 years in the household ? ",
+              isNAInIntial: false,
+              initalQuestionValue: childLessThan2Initial,
               isTopDividerThere: false,
               title: "",
               questions: [
                 QuestionBlock(
                   isTopDividerThere: false,
                   isOptional: false,
-                  groupValue: q4_4,
+                  groupValue: q4_4Under2Immunized,
                   question:
                       "4.4 If there is a child under 2 years in the household, Is the infant’s immunization on schedule? (Check mother baby booklet pages 33-35) ",
                   isNAAvailable: false,
@@ -741,6 +826,7 @@ class HealthyGoalBlock extends StatelessWidget {
   final String initalQuestion; // Question to ask
   final UpdateRadioButton? updateInitialQuestion;
   final bool isNAInIntial;
+  final HealthTable? table; // Table to show in the group
 
   const HealthyGoalBlock(
       {required this.sections,
@@ -757,6 +843,7 @@ class HealthyGoalBlock extends StatelessWidget {
       this.initalQuestion = "",
       this.updateInitialQuestion,
       this.isNAInIntial = false,
+      this.table,
       super.key});
 
   @override
@@ -791,6 +878,9 @@ class HealthyGoalBlock extends StatelessWidget {
         for (var i in sections) i,
         smallSpacing,
 
+        // Table if it is provided
+        if (table != null) table!,
+
         // Final Result that is determined by all other results
         FinalResultBox(
           isTopDividerThere: false,
@@ -811,6 +901,7 @@ class HealthInitialQuestion extends StatelessWidget {
   final String question;
   final bool isNAAvailable;
   final UpdateRadioButton updateRadioButton;
+  final bool skipQuestion;
 
   const HealthInitialQuestion(
       {required this.groupVal,
@@ -818,25 +909,33 @@ class HealthInitialQuestion extends StatelessWidget {
       required this.question,
       required this.updateRadioButton,
       required this.isNAAvailable,
+      this.skipQuestion = false,
       super.key});
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: ((context, constraints) {
-        return Container(
-          width: constraints.maxWidth * 0.9,
-          color: darkBlue,
-          child: QuestionBlock(
-            isBigAndBold: true,
-            groupValue: groupVal,
-            isTopDividerThere: isTopDividerThere,
-            isOptional: true,
-            question: question,
-            isNAAvailable: isNAAvailable,
-            updateRadioButton: updateRadioButton,
-          ),
-        );
+        if (skipQuestion == false) {
+          return Container(
+            width: constraints.maxWidth * 0.9,
+            color: darkBlue,
+            child: QuestionBlock(
+              isBigAndBold: true,
+              groupValue: groupVal,
+              isTopDividerThere: isTopDividerThere,
+              isOptional: true,
+              question: question,
+              isNAAvailable: isNAAvailable,
+              updateRadioButton: updateRadioButton,
+            ),
+          );
+        } else {
+          return Container(
+              width: constraints.maxWidth * 0.9,
+              color: darkBlue,
+              child: const SkippedText(text: skippedQuestionText));
+        }
       }),
     );
   }
@@ -937,6 +1036,38 @@ const notOptionalStar = TextSpan(
   style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
 );
 
+// The text to show when a question is skipped
+class SkippedText extends StatelessWidget {
+  final String text; // Text to show
+
+  const SkippedText({required this.text, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: TextStyle(
+          fontSize: 17.0, fontStyle: FontStyle.italic, color: Colors.grey[600]),
+    );
+  }
+}
+
+class WarningText extends StatelessWidget {
+  final String text; // Text to show
+  const WarningText({required this.text, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+          fontWeight: FontWeight.bold,
+          color: Colors.red,
+          fontStyle: FontStyle.italic),
+    );
+  }
+}
+
 // The text of the question
 // If the question is not optional a red star is shown
 class QuestionText extends StatelessWidget {
@@ -981,6 +1112,8 @@ class QuestionBlock extends StatelessWidget {
   final bool isTopDividerThere;
   final bool tempFix; // To be removed
   final bool isBigAndBold; // Whether to make the question text big and bold
+  final String
+      warningText; // Text that is in red and used as a warning or a caution
 
   const QuestionBlock(
       {required this.groupValue,
@@ -991,6 +1124,7 @@ class QuestionBlock extends StatelessWidget {
       this.isBigAndBold = false,
       required this.updateRadioButton,
       this.tempFix = false,
+      this.warningText = "",
       super.key});
 
   @override
@@ -1006,6 +1140,8 @@ class QuestionBlock extends StatelessWidget {
               isOptional: isOptional,
             ),
             smallSpacing,
+            // Show warning text if it is provided
+            if (warningText.isNotEmpty) WarningText(text: warningText),
             // The Options To Display
             CustomRadioButton(
                 isNaAvailable: isNAAvailable, optionSelected: updateRadioButton)
@@ -1116,6 +1252,8 @@ class QuestionSectionHeading extends StatelessWidget {
   }
 }
 
+const skippedQuestionText = "Skipped Question";
+
 // A specific section of questions
 class QuestionsSection extends StatelessWidget {
   final String title;
@@ -1127,6 +1265,9 @@ class QuestionsSection extends StatelessWidget {
   final String initalQuestion; // Question to ask
   final UpdateRadioButton? updateInitialQuestion;
   final bool isNAInIntial;
+  final bool skipSection; // Whether or not to skip the questions in the section
+  final bool
+      skipSectionButShowInitial; // Whether or not to skip the question but you still show the initial
 
   const QuestionsSection(
       {required this.title,
@@ -1137,17 +1278,20 @@ class QuestionsSection extends StatelessWidget {
       this.initalQuestion = "",
       this.updateInitialQuestion,
       this.isNAInIntial = false,
+      this.skipSection = false,
+      this.skipSectionButShowInitial = false,
       super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // The heading to display
-        QuestionSectionHeading(
-          title: title,
-          isTopDividerThere: isTopDividerThere,
-        ),
+        // The heading to display, should only be shown when the question is not skipped
+        if (skipSection == false)
+          QuestionSectionHeading(
+            title: title,
+            isTopDividerThere: isTopDividerThere,
+          ),
 
         // Depend on intial question
         if (doesSectionDependOnInitialAnswer == true)
@@ -1158,11 +1302,17 @@ class QuestionsSection extends StatelessWidget {
                 isTopDividerThere: false,
                 question: initalQuestion,
                 updateRadioButton: updateInitialQuestion!,
+                skipQuestion:
+                    skipSectionButShowInitial == false && skipSection == true,
                 isNAAvailable: isNAInIntial),
           ),
 
         // The questions to display
-        for (var i in questions) i
+        for (var i in questions)
+          if (skipSection == true)
+            const SkippedText(text: skippedQuestionText)
+          else
+            i
       ],
     );
   }
