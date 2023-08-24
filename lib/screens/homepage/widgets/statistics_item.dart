@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 
 class StatisticsItem extends StatelessWidget {
-  const StatisticsItem({Key? key, required this.title, required this.icon, required this.color, required this.secondaryColor, required this.form1ACount, required this.form1BCount, required this.cpaCount, required this.cparaCount}) : super(key: key);
+  const StatisticsItem({Key? key, required this.title, required this.icon, required this.color, required this.secondaryColor, required this.form1ACount, required this.form1BCount, required this.cpaCount, required this.cparaCount, required this.onClick}) : super(key: key);
   final String title;
   final IconData icon;
   final Color color;
@@ -12,14 +12,13 @@ class StatisticsItem extends StatelessWidget {
   final int form1BCount;
   final int cpaCount;
   final int cparaCount;
+  final VoidCallback onClick;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.to(() => ReportDetailsScreen(
-              title: title,
-            ));
+        onClick();
       },
       child: Container(
         height: 190,

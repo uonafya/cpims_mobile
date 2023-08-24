@@ -11,6 +11,7 @@ import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 
 import '../forms/documents_manager.dart';
+import '../unsynched_workflows/unsynched_workeflows_screen.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -43,25 +44,30 @@ class _HomepageState extends State<Homepage> {
                 'Application data and usage summary',
                 style: TextStyle(color: kTextGrey),
               ),
-              const StatisticsItem(
+              StatisticsItem(
                 title: 'UNSYNCED RECORDS',
                 icon: FontAwesomeIcons.arrowsRotate,
-                color: Color(0xffa10036),
-                secondaryColor: Color(0xff630122),
+                color: const Color(0xffa10036),
+                secondaryColor: const Color(0xff630122),
                 form1ACount: 4,
                 form1BCount: 3,
                 cpaCount: 2,
                 cparaCount: 1,
+                onClick: () {
+                  Get.to(() => const UnsyncedWorkflowsPage(
+                  ));
+                },
               ),
-              const StatisticsItem(
+              StatisticsItem(
                 title: 'UNAPPROVED RECORDS',
                 icon: FontAwesomeIcons.fileCircleXmark,
-                color: Color(0xff947901),
-                secondaryColor: Color(0xff524300),
+                color: const Color(0xff947901),
+                secondaryColor: const Color(0xff524300),
                 form1ACount: 4,
                 form1BCount: 3,
                 cpaCount: 2,
                 cparaCount: 1,
+                onClick: () {},
               ),
               GridView.count(
                 crossAxisCount: 2,
