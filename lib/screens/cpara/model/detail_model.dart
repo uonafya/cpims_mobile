@@ -1,11 +1,17 @@
-class DetailModel{
-  final String? question1;
+class DetailModel {
+  final String? isFirstAssessment;
+  final String? isChildHeaded;
+  final String? hasHivExposedInfant;
+  final String? hasPregnantOrBreastfeedingWoman;
   final List<DetailChild>? childrenQuestions;
   final String? dateOfAssessment;
   final String? dateOfLastAssessment;
 
   DetailModel({
-    this.question1,
+    this.isFirstAssessment,
+    this.isChildHeaded,
+    this.hasHivExposedInfant,
+    this.hasPregnantOrBreastfeedingWoman,
     this.childrenQuestions,
     this.dateOfAssessment,
     this.dateOfLastAssessment,
@@ -13,21 +19,32 @@ class DetailModel{
 
   factory DetailModel.fromJson(Map<String, dynamic> json) {
     return DetailModel(
-      question1: json['question1'],
-      childrenQuestions: List<DetailChild>.from(json["childrenQuestions"]!.map((x) => DetailChild.fromJson(x))),
+      isFirstAssessment: json['question1'],
+      isChildHeaded: json['question2'],
+      hasHivExposedInfant: json['question3'],
+      hasPregnantOrBreastfeedingWoman: json['question4'],
+      childrenQuestions: List<DetailChild>.from(
+          json["childrenQuestions"]!.map((x) => DetailChild.fromJson(x))),
       dateOfAssessment: json['dateOfAssessment'],
       dateOfLastAssessment: json['dateOfLastAssessment'],
     );
   }
 
   DetailModel copyWith({
-    String? question1,
+    String? isFirstAssessment,
+    String? isChildHeaded,
+    String? hasHivExposedInfant,
+    String? hasPregnantOrBreastfeedingWoman,
     List<DetailChild>? childrenQuestions,
     String? dateOfAssessment,
     String? dateOfLastAssessment,
   }) {
     return DetailModel(
-      question1: question1 ?? this.question1,
+      isFirstAssessment: isFirstAssessment ?? this.isFirstAssessment,
+      isChildHeaded: isChildHeaded ?? this.isChildHeaded,
+      hasHivExposedInfant: hasHivExposedInfant ?? this.hasHivExposedInfant,
+      hasPregnantOrBreastfeedingWoman: hasPregnantOrBreastfeedingWoman ??
+          this.hasPregnantOrBreastfeedingWoman,
       childrenQuestions: childrenQuestions ?? this.childrenQuestions,
       dateOfAssessment: dateOfAssessment ?? this.dateOfAssessment,
       dateOfLastAssessment: dateOfLastAssessment ?? this.dateOfLastAssessment,
@@ -44,7 +61,6 @@ class DetailChild {
   final String question6;
   final String question7;
   final String question8;
-
 
   DetailChild({
     required this.question1,
