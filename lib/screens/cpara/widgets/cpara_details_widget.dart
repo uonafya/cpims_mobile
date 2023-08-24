@@ -51,7 +51,8 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
     String formattedDateOfAssessment = dateOfAssessment != null
         ? DateFormat('yyyy-MM-dd').format(dateOfAssessment)
         : '';
-    print('Date of assessment: $formattedDateOfAssessment'); //am not able to get the date of assessment
+    print(
+        'Date of assessment: $formattedDateOfAssessment'); //am not able to get the date of assessment
 
     DateTime? dateOfPreviousAssessment =
         _dateTextFieldPreviousKey.currentState?.getSelectedDate();
