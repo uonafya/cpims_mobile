@@ -1,8 +1,13 @@
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
+import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
+import '../model/health_model.dart';
 
 class CparaHealthyWidget extends StatefulWidget {
   const CparaHealthyWidget({super.key});
@@ -59,6 +64,71 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   RadioButtonOptions? set3_2final;
   RadioButtonOptions? set3_3final;
 
+  // Initiallized Data
+  @override
+  void initState() {
+    super.initState();
+
+    // Get instance of model from provider
+    HealthModel healthModel =
+        context.read<CparaProvider>().healthModel ?? HealthModel();
+    // Initialize Details
+    q1_1ChildrenHivTested = healthModel.question1 == null
+        ? q1_1ChildrenHivTested
+        : convertingStringToRadioButtonOptions(healthModel.question1!);
+    q1_2childrenUnknownStatus = healthModel.question2 == null
+        ? q1_2childrenUnknownStatus
+        : convertingStringToRadioButtonOptions(healthModel.question2!);
+    q1_3InfantExposedHIV = healthModel.question3 == null
+        ? q1_3InfantExposedHIV
+        : convertingStringToRadioButtonOptions(healthModel.question3!);
+    q1_4HivCaregiverUnknown = healthModel.question4 == null
+        ? q1_4HivCaregiverUnknown
+        : convertingStringToRadioButtonOptions(healthModel.question4!);
+    q1_5CaregiverSceened = healthModel.question5 == null
+        ? q1_5CaregiverSceened
+        : convertingStringToRadioButtonOptions(healthModel.question5!);
+    q2_1SuppresedPast12 = healthModel.question6 == null
+        ? q2_1SuppresedPast12
+        : convertingStringToRadioButtonOptions(healthModel.question6!);
+    q2_2ChildrenRegularAttendTreatment = healthModel.question7 == null
+        ? q2_2ChildrenRegularAttendTreatment
+        : convertingStringToRadioButtonOptions(healthModel.question7!);
+    q2_3ChildrenNotMissDose = healthModel.question8 == null
+        ? q2_3ChildrenNotMissDose
+        : convertingStringToRadioButtonOptions(healthModel.question8!);
+    q2_4DocumentedChildrenSuppressed = healthModel.question9 == null
+        ? q2_4DocumentedChildrenSuppressed
+        : convertingStringToRadioButtonOptions(healthModel.question9!);
+    q2_5NoDocumentAttendTreatment = healthModel.question10 == null
+        ? q2_5NoDocumentAttendTreatment
+        : convertingStringToRadioButtonOptions(healthModel.question10!);
+    q2_6AdolocentRegularMedicate = healthModel.question11 == null
+        ? q2_6AdolocentRegularMedicate
+        : convertingStringToRadioButtonOptions(healthModel.question11!);
+    q2_7HIVCaregiverSuppress = healthModel.question12 == null
+        ? q2_7HIVCaregiverSuppress
+        : convertingStringToRadioButtonOptions(healthModel.question12!);
+    q2_8NoDocumentCaregiverAppointment = healthModel.question13 == null
+        ? q2_8NoDocumentCaregiverAppointment
+        : convertingStringToRadioButtonOptions(healthModel.question13!);
+    q2_9CaregiverRegularlyMedicate = healthModel.question14 == null
+        ? q2_9CaregiverRegularlyMedicate
+        : convertingStringToRadioButtonOptions(healthModel.question14!);
+    q4_1BelowAge5MUAC = healthModel.question15 == null
+        ? q4_1BelowAge5MUAC
+        : convertingStringToRadioButtonOptions(healthModel.question15!);
+    q4_2Below5BipedalEdema = healthModel.question16 == null
+        ? q4_2Below5BipedalEdema
+        : convertingStringToRadioButtonOptions(healthModel.question16!);
+    q4_3MalnourishedTreated = healthModel.question17 == null
+        ? q4_3MalnourishedTreated
+        : convertingStringToRadioButtonOptions(healthModel.question17!);
+    q4_4Under2Immunized = healthModel.question18 == null
+        ? q4_4Under2Immunized
+        : convertingStringToRadioButtonOptions(healthModel.question18!);
+  }
+
   // Children state
   var children = [Children(name: "FELIX OUMA"), Children(name: "EDWINE OUMA")];
 
@@ -68,91 +138,199 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
       case "q1_1":
         setState(() {
           q1_1ChildrenHivTested = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question1 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question1: question1));
         });
         break;
       case "q1_2":
         setState(() {
           q1_2childrenUnknownStatus = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question2 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question2: question2));
         });
         break;
       case "q1_3":
         setState(() {
           q1_3InfantExposedHIV = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question3 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question3: question3));
         });
         break;
       case "q1_4":
         setState(() {
           q1_4HivCaregiverUnknown = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question4 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question4: question4));
         });
         break;
       case "q1_5":
         setState(() {
           q1_5CaregiverSceened = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question5 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question5: question5));
         });
         break;
       case "q2_1":
         setState(() {
           q2_1SuppresedPast12 = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question6 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question6: question6));
         });
         break;
       case "q2_2":
         setState(() {
           q2_2ChildrenRegularAttendTreatment = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question7 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question7: question7));
         });
         break;
       case "q2_3":
         setState(() {
           q2_3ChildrenNotMissDose = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question8 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question8: question8));
         });
         break;
       case "q2_4":
         setState(() {
           q2_4DocumentedChildrenSuppressed = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question9 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question9: question9));
         });
         break;
       case "q2_5":
         setState(() {
           q2_5NoDocumentAttendTreatment = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question10 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question10: question10));
         });
         break;
       case "q2_6":
         setState(() {
           q2_6AdolocentRegularMedicate = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question11 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question11: question11));
         });
         break;
       case "q2_7":
         setState(() {
           q2_7HIVCaregiverSuppress = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question12 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question12: question12));
         });
         break;
       case "q2_8":
         setState(() {
           q2_8NoDocumentCaregiverAppointment = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question13 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question13: question13));
         });
         break;
       case "q2_9":
         setState(() {
           q2_9CaregiverRegularlyMedicate = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question14 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question14: question14));
         });
         break;
       case "q4_1":
         setState(() {
           q4_1BelowAge5MUAC = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question15 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question15: question15));
         });
         break;
       case "q4_2":
         setState(() {
           q4_2Below5BipedalEdema = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question16 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question16: question16));
         });
         break;
       case "q4_3":
         setState(() {
           q4_3MalnourishedTreated = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question17 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question17: question17));
         });
         break;
       case "q4_4":
         setState(() {
           q4_4Under2Immunized = value;
+          HealthModel healthmodel =
+              Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                  HealthModel();
+          String question18 = convertingRadioButtonOptionsToString(value);
+          Provider.of<CparaProvider>(context, listen: false)
+              .updateHealthModel(healthmodel.copyWith(question18: question18));
         });
         break;
       case "initial_3":
@@ -164,31 +342,123 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
         setState(() {
           goal4Initial = value;
         });
+
+        if (value == RadioButtonOptions.no) {
+          updateQuestion("q4_1", RadioButtonOptions.yes);
+          updateQuestion("q4_2", RadioButtonOptions.yes);
+          updateQuestion("q4_3", RadioButtonOptions.yes);
+          updateQuestion("q4_4", RadioButtonOptions.yes);
+          setState(() {
+            childLessThan2Initial = RadioButtonOptions.yes;
+          });
+        }
+        if (value == RadioButtonOptions.yes) {
+          updateQuestion("q4_1", null);
+          updateQuestion("q4_2", null);
+          updateQuestion("q4_3", null);
+          updateQuestion("q4_4", null);
+          setState(() {
+            childLessThan2Initial = null;
+          });
+        }
         break;
       case "initial_2":
         setState(() {
           goal2InitialAnswer = value;
         });
+        if (value == RadioButtonOptions.yes) {
+          updateQuestion("q2_1", null);
+          updateQuestion("q2_2", null);
+          updateQuestion("q2_3", null);
+          updateQuestion("q2_4", null);
+          updateQuestion("q2_5", null);
+          updateQuestion("q2_6", null);
+          updateQuestion("q2_7", null);
+          updateQuestion("q2_8", null);
+          updateQuestion("q2_9", null);
+          setState(() {
+            suppresedPast12Initial = null;
+            documentedChildrenSuppressedInitial = null;
+            noDocumentCaregiverAppointmentInitial = null;
+          });
+        }
+
+        if (value == RadioButtonOptions.no) {
+          updateQuestion("q2_1", RadioButtonOptions.yes);
+          updateQuestion("q2_2", RadioButtonOptions.yes);
+          updateQuestion("q2_3", RadioButtonOptions.yes);
+          updateQuestion("q2_4", RadioButtonOptions.yes);
+          updateQuestion("q2_5", RadioButtonOptions.yes);
+          updateQuestion("q2_6", RadioButtonOptions.yes);
+          updateQuestion("q2_7", RadioButtonOptions.yes);
+          updateQuestion("q2_8", RadioButtonOptions.yes);
+          updateQuestion("q2_9", RadioButtonOptions.yes);
+          setState(() {
+            suppresedPast12Initial = RadioButtonOptions.yes;
+            documentedChildrenSuppressedInitial = RadioButtonOptions.yes;
+            noDocumentCaregiverAppointmentInitial = RadioButtonOptions.yes;
+          });
+        }
         break;
       case "initial2_1":
         setState(() {
           suppresedPast12Initial = value;
         });
+        if (value == RadioButtonOptions.yes) {
+          updateQuestion("q2_1", null);
+          updateQuestion("q2_2", null);
+          updateQuestion("q2_3", null);
+        }
+
+        if (value == RadioButtonOptions.no) {
+          updateQuestion("q2_1", RadioButtonOptions.yes);
+          updateQuestion("q2_2", RadioButtonOptions.yes);
+          updateQuestion("q2_3", RadioButtonOptions.yes);
+        }
         break;
       case "initial2_4":
         setState(() {
           documentedChildrenSuppressedInitial = value;
         });
+        if (value == RadioButtonOptions.yes) {
+          updateQuestion("q2_4", null);
+          updateQuestion("q2_5", null);
+          updateQuestion("q2_6", null);
+        }
+
+        if (value == RadioButtonOptions.no) {
+          updateQuestion("q2_4", RadioButtonOptions.yes);
+          updateQuestion("q2_5", RadioButtonOptions.yes);
+          updateQuestion("q2_6", RadioButtonOptions.yes);
+        }
         break;
       case "initial2_7":
         setState(() {
           noDocumentCaregiverAppointmentInitial = value;
         });
+        if (value == RadioButtonOptions.yes) {
+          updateQuestion("q2_7", null);
+          updateQuestion("q2_8", null);
+          updateQuestion("q2_9", null);
+        }
+
+        if (value == RadioButtonOptions.no) {
+          updateQuestion("q2_7", RadioButtonOptions.yes);
+          updateQuestion("q2_8", RadioButtonOptions.yes);
+          updateQuestion("q2_9", RadioButtonOptions.yes);
+        }
         break;
       case "initial4_4":
         setState(() {
           childLessThan2Initial = value;
         });
+
+        if (value == RadioButtonOptions.no) {
+          updateQuestion("q4_4", RadioButtonOptions.yes);
+        }
+        if (value == RadioButtonOptions.yes) {
+          updateQuestion("q4_4", null);
+        }
         break;
       // case "set3_1final":
       //   List<Children> newChildren = List.from(children);
@@ -386,19 +656,6 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           updateInitialQuestion: (RadioButtonOptions? val) {
             updateQuestion(
                 "initial_2", val); // update the state of the question
-            if (val == RadioButtonOptions.no) {
-              updateAnswersOnSkip([
-                "q2_1",
-                "q2_2",
-                "q2_3",
-                "q2_4",
-                "q2_5",
-                "q2_6",
-                "q2_7",
-                "q2_8",
-                "q2_9",
-              ]); // update the other questions
-            }
           },
           finalBlockQuestion: "Has the household achieved this benchmark?",
           showNAInFinalResult: false,
@@ -423,9 +680,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           sections: [
             // Section 2.1 - 2.3
             QuestionsSection(
-              skipSection: goal2InitialAnswer ==
-                  RadioButtonOptions
-                      .no, // skip questions when the answer to is anyone HIV postivie no
+              skipSection: goal2InitialAnswer == RadioButtonOptions.no ||
+                  suppresedPast12Initial ==
+                      RadioButtonOptions
+                          .no, // skip questions when the answer to is anyone HIV postivie no
               doesSectionDependOnInitialAnswer: true,
               initalQuestion:
                   "Is there a child 0 - 12 years who is HIV positive ?",
@@ -435,6 +693,9 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
               isNAInIntial: false,
               isTopDividerThere: false,
               title: "Children 0-12",
+              skipSectionButShowInitial:
+                  suppresedPast12Initial == RadioButtonOptions.no &&
+                      goal2InitialAnswer == RadioButtonOptions.yes,
               questions: [
                 QuestionBlock(
                   isTopDividerThere: false,
@@ -471,9 +732,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
             // Section 2.4 - 2.6
             QuestionsSection(
-              skipSection: goal2InitialAnswer ==
-                  RadioButtonOptions
-                      .no, // skip questions when the answer to is anyone HIV postivie no
+              skipSection: goal2InitialAnswer == RadioButtonOptions.no ||
+                  documentedChildrenSuppressedInitial ==
+                      RadioButtonOptions
+                          .no, // skip questions when the answer to is anyone HIV postivie no
               doesSectionDependOnInitialAnswer: true,
               updateInitialQuestion: (RadioButtonOptions? value) =>
                   updateQuestion("initial2_4", value),
@@ -483,6 +745,9 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
               initalQuestionValue: documentedChildrenSuppressedInitial,
               isTopDividerThere: false,
               title: "Adolescents and children above 12 years",
+              skipSectionButShowInitial: documentedChildrenSuppressedInitial ==
+                      RadioButtonOptions.no &&
+                  goal2InitialAnswer == RadioButtonOptions.yes,
               questions: [
                 QuestionBlock(
                   isTopDividerThere: false,
@@ -519,9 +784,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
             // Question 2.7 to 2.9
             QuestionsSection(
-              skipSection: goal2InitialAnswer ==
-                  RadioButtonOptions
-                      .no, // skip questions when the answer to is anyone HIV postivie no
+              skipSection: goal2InitialAnswer == RadioButtonOptions.no ||
+                  noDocumentCaregiverAppointmentInitial ==
+                      RadioButtonOptions
+                          .no, // skip questions when the answer to is anyone HIV postivie no
               doesSectionDependOnInitialAnswer: true,
               initalQuestion: "Is the caregiver HIV positive ? ",
               initalQuestionValue: noDocumentCaregiverAppointmentInitial,
@@ -530,6 +796,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
               isNAInIntial: false,
               isTopDividerThere: false,
               title: "Caregiver",
+              skipSectionButShowInitial:
+                  noDocumentCaregiverAppointmentInitial ==
+                          RadioButtonOptions.no &&
+                      goal2InitialAnswer == RadioButtonOptions.yes,
               questions: [
                 QuestionBlock(
                   isTopDividerThere: false,
@@ -699,10 +969,6 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           initalQuestionValue: goal4Initial,
           updateInitialQuestion: (RadioButtonOptions? value) {
             updateQuestion("initial_4", value);
-
-            if (value == RadioButtonOptions.no) {
-              updateAnswersOnSkip(["q4_1", "q4_2", "q4_3", "q4_4"]);
-            }
           },
           isNAInIntial: false,
           initalQuestion: "Is there child < 5 years in the household ?",
@@ -1284,7 +1550,10 @@ class QuestionBlock extends StatelessWidget {
             if (warningText.isNotEmpty) WarningText(text: warningText),
             // The Options To Display
             CustomRadioButton(
-                isNaAvailable: isNAAvailable, optionSelected: updateRadioButton)
+              isNaAvailable: isNAAvailable,
+              optionSelected: updateRadioButton,
+              option: groupValue,
+            )
           ],
         ),
         isTopSpacingThere: isTopDividerThere,
@@ -1453,6 +1722,129 @@ class QuestionsSection extends StatelessWidget {
             const SkippedText(text: skippedQuestionText)
           else
             i
+      ],
+    );
+  }
+}
+
+class HealthModelCollected extends StatelessWidget {
+  const HealthModelCollected({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var healthModel =
+        Provider.of<CparaProvider>(context, listen: false).healthModel;
+    return Column(
+      children: [
+        const Text("Health Model:"),
+        Row(
+          children: [
+            Text("Question: 1"),
+            Text("Answer: ${healthModel?.question1}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 2"),
+            Text(" || Answer: ${healthModel?.question2}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 3"),
+            Text(" || Answer: ${healthModel?.question3}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 4"),
+            Text(" || Answer: ${healthModel?.question4}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 5"),
+            Text(" || Answer: ${healthModel?.question5}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 6"),
+            Text(" || Answer: ${healthModel?.question6}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 7"),
+            Text(" || Answer: ${healthModel?.question7}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 8"),
+            Text(" || Answer: ${healthModel?.question8}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 9"),
+            Text(" || Answer: ${healthModel?.question9}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 10"),
+            Text(" || Answer: ${healthModel?.question10}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 11"),
+            Text(" || Answer: ${healthModel?.question11}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 12"),
+            Text(" || Answer: ${healthModel?.question12}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 13"),
+            Text(" || Answer: ${healthModel?.question13}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 14"),
+            Text(" || Answer: ${healthModel?.question14}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 15"),
+            Text(" || Answer: ${healthModel?.question15}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 16"),
+            Text(" || Answer: ${healthModel?.question16}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 17"),
+            Text(" || Answer: ${healthModel?.question17}"),
+          ],
+        ),
+        Row(
+          children: [
+            const Text("Question: 18"),
+            Text(" || Answer: ${healthModel?.question18}"),
+          ],
+        ),
       ],
     );
   }
