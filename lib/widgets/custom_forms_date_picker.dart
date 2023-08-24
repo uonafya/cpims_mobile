@@ -12,6 +12,7 @@ class CustomFormsDatePicker extends StatefulWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.labelText,
+    this.selectedDateTime,
     required this.onDateSelected, // Add the callback here
   }) : super(key: key);
 
@@ -22,6 +23,7 @@ class CustomFormsDatePicker extends StatefulWidget {
   final String? labelText;
   final IconData? prefixIcon;
   final IconData? suffixIcon;
+  final DateTime? selectedDateTime;
   final Function(DateTime selectedDate) onDateSelected; // Define the callback function signature
 
   @override
@@ -32,10 +34,17 @@ class _CustomDatePickerState extends State<CustomFormsDatePicker> {
   DateTime selectedDate = DateTime.now(); // Track the selected date
 
   @override
+  void initState() {
+    selectedDate = widget.selectedDateTime ?? selectedDate;
+    super.initState();
+
+  }
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         showDatePicker(
+          currentDate: selectedDate,
           context: context,
           initialDate: widget.initialDate ?? DateTime.now(),
           firstDate: widget.firstDate ?? DateTime.now(),

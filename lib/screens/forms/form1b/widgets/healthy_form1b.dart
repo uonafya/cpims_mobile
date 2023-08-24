@@ -35,7 +35,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
 
   List<ValueItem> selectedCareGiverServices = [];
   List<ValueItem> selectedCareGiverServicesOptions = [];
-  String currentlySelectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  DateTime currentlySelectedDate = DateTime.now();
 
 
 
@@ -43,9 +43,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
   Widget build(BuildContext context) {
     Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
     selectedCareGiverServicesOptions = form1bProvider.formData.selectedServices;
-    // if(form1bProvider.formData.selectedServices != null){
-    //   selectedCareGiverServices = form1bProvider.formData.selectedServices;
-    // }
+    currentlySelectedDate = form1bProvider.formData.selectedDate;
     return StepsWrapper(
       title: 'Caregiver health and nutrition status',
       children: [
@@ -86,12 +84,13 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
         const SizedBox(height: 10),
         CustomFormsDatePicker(
           hintText: 'Select the date',
+          selectedDateTime: currentlySelectedDate,
           onDateSelected: (selectedDate) {
-            final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
-            currentlySelectedDate = formattedDate;
+            currentlySelectedDate = selectedDate;
+            // final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+            // currentlySelectedDate = formattedDate;
             form1bProvider.setSelectedDate(currentlySelectedDate);
-            CustomToastWidget.showToast(formattedDate);
-
+            CustomToastWidget.showToast(form1bProvider.formData.selectedDate as String);
           },
         ),
       ],

@@ -6,9 +6,8 @@ import '../widgets/custom_toast.dart';
 
 class HealthFormData {
   late List<ValueItem> selectedServices;
-  late String selectedDate;
+  late DateTime selectedDate;
   late String domainId;
-
 
   HealthFormData({required this.selectedServices, required this.selectedDate});
 }
@@ -40,7 +39,7 @@ class MasterServicesFormData {
 class Form1bProvider extends ChangeNotifier {
   final HealthFormData _formData = HealthFormData(
       selectedServices: [],
-      selectedDate: ""
+      selectedDate: DateTime.now()
   );
   final StableFormData _stableFormData = StableFormData(
       selectedServices: [],
@@ -62,7 +61,7 @@ class Form1bProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setSelectedDate(String selectedDate) {
+  void setSelectedDate(DateTime selectedDate) {
     // _formData.selectedDate = selectedDate;
     // CustomToastWidget.showToast(selectedDate);
     // final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
