@@ -48,8 +48,10 @@ dependencies:
   url_launcher: ^6.1.5
 
   multi_dropdown: ^2.0.1
+  fluttertoast: ^8.0.8
 
-  
+
+
 dev_dependencies:
   flutter_launcher_icons: "^0.10.0"
   flutter_lints: ^2.0.0
