@@ -219,6 +219,13 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
     }
   }
 
+  // When you skip set all the values to yes
+  void setAnswersToYesOnSkip(List<String> answersToChange) {
+    for (var i in answersToChange) {
+      updateQuestion(i, RadioButtonOptions.yes);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return StepsWrapper(
