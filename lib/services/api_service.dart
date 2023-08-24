@@ -36,6 +36,11 @@ class ApiService {
     return await http.get(Uri.parse(fullUrl), headers: _setAuthHeaders(access));
   }
 
+  getUnapprovedData(apiUrl, access) async {
+    var fullUrl = _url + apiUrl;
+    return await http.get(Uri.parse(fullUrl), headers: _setAuthHeaders(access));
+  }
+
   _setHeaders() => {
         'Content-type': 'application/json',
         'Accept': 'application/json',
