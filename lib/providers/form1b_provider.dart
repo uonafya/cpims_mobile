@@ -5,9 +5,9 @@ import 'package:multi_dropdown/models/value_item.dart';
 import '../widgets/custom_toast.dart';
 
 class HealthFormData {
-  late final List<ValueItem> selectedServices;
-  late final String selectedDate;
-  late final String domainId;
+  late List<ValueItem> selectedServices;
+  late String selectedDate;
+  late String domainId;
 
 
   HealthFormData({required this.selectedServices, required this.selectedDate});
@@ -62,11 +62,11 @@ class Form1bProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setSelectedDate(DateTime selectedDate) {
+  void setSelectedDate(String selectedDate) {
     // _formData.selectedDate = selectedDate;
     // CustomToastWidget.showToast(selectedDate);
-    final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
-    _formData.selectedDate = formattedDate;
+    // final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+    _formData.selectedDate = selectedDate;
     notifyListeners();
   }
 

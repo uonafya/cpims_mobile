@@ -35,6 +35,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
 
   List<ValueItem> selectedCareGiverServices = [];
   List<ValueItem> selectedCareGiverServicesOptions = [];
+  String currentlySelectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
 
 
@@ -73,7 +74,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           selectedOptionIcon: const Icon(Icons.check_circle),
           borderRadius: BorderRadius.circular(5.w)
               .topLeft
-              .x, // Set the desired border radius value
+              .x,
         ),
         const SizedBox(
           height: 15,
@@ -87,8 +88,10 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           hintText: 'Select the date',
           onDateSelected: (selectedDate) {
             final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+            currentlySelectedDate = formattedDate;
+            form1bProvider.setSelectedDate(currentlySelectedDate);
             CustomToastWidget.showToast(formattedDate);
-            form1bProvider.setSelectedDate(selectedDate);
+
           },
         ),
       ],
