@@ -2,6 +2,7 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_date_picker.dart';
+import 'package:cpims_mobile/widgets/custom_dropdown_multiselect.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
@@ -25,6 +26,8 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
     'Shelter and Care',
   ];
   List<String> selectedEvents = [];
+  List<String> selectedValues = [];
+
   List<String> typeOfEvents = [
     'OCE1 - Child Pregnant',
     'OCE2 - Child not Adhering to ARVs',
@@ -423,7 +426,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        const CustomTextField()
+                        const CustomTextField(),
                       ],
                     ),
                   ),
@@ -437,11 +440,22 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const CustomButton(text: 'Submit Critical Event(s)'),
+                  const SizedBox(
+                    width: 300, // Adjust the width value as needed
+                    child: CustomButton(
+                      text: 'Submit Critical Event(s)',
+                    ),
+                  ),
                   const SizedBox(
                     height: 15,
                   ),
-                  const CustomButton(text: 'Cancel', color: kTextGrey),
+                  const SizedBox(
+                    width: 300, // Adjust the width value as needed
+                    child: CustomButton(
+                      text: 'Submit Critical Event(s)',
+                      color: kTextGrey,
+                    ),
+                  ),
                   const SizedBox(height: 20),
                 ],
               )),
