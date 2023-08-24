@@ -2,6 +2,7 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_gridItem.dart';
+import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
@@ -139,7 +140,7 @@ class _HomepageState extends State<Homepage> {
                 width: 140,
                 child: CustomButton(
                   onTap: () {
-                    Get.to(() => const DocumentsManager(),
+                    Get.to(() => const OVCCareScreen(),
                         transition: Transition.cupertino,
                         duration: const Duration(milliseconds: 200));
                   },

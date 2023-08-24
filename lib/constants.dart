@@ -1,9 +1,9 @@
 import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/screens/caseload/caseload.dart';
 import 'package:cpims_mobile/screens/forms/case_record_sheet.dart';
-import 'package:cpims_mobile/screens/forms/documents_manager.dart';
 import 'package:cpims_mobile/screens/forms/follow_ups.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
+import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/organisation_units.dart';
 import 'package:cpims_mobile/screens/registry/persons_registry/persons_registry.dart';
 import 'package:flutter/material.dart';
@@ -120,7 +120,7 @@ List drawerOptions(BuildContext context) {
         {
           'title': 'OVC Care(Comp)',
           'onTap': () => {
-                Get.off(() => const DocumentsManager(),
+                Get.off(() => const OVCCareScreen(),
                     transition: Transition.cupertino,
                     duration: const Duration(milliseconds: 1000))
               },
