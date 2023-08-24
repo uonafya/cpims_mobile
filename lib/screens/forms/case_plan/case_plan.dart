@@ -443,7 +443,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                   const SizedBox(
                     width: 300, // Adjust the width value as needed
                     child: CustomButton(
-                      text: 'Submit Critical Event(s)',
+                      text: 'Submit Assessment(s)',
                     ),
                   ),
                   const SizedBox(
@@ -452,7 +452,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                   const SizedBox(
                     width: 300, // Adjust the width value as needed
                     child: CustomButton(
-                      text: 'Submit Critical Event(s)',
+                      text: 'Cancel',
                       color: kTextGrey,
                     ),
                   ),
