@@ -11,6 +11,7 @@ import 'package:multi_dropdown/multiselect_dropdown.dart';
 
 import '../../../../widgets/custom_date_picker.dart';
 import '../../../../widgets/custom_forms_date_picker.dart';
+import '../../../../widgets/custom_multi_selection.dart';
 import '../model/health_form1b_model.dart';
 import '../utils/form1bConstants.dart';
 
@@ -31,6 +32,9 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
 
   List<String> selectedCareGiverServices = [];
 
+  // submitForm async(List<Map> caregiverServices, DateTime selectedDate) {
+  //   //try {
+  // },
   @override
   Widget build(BuildContext context) {
     return StepsWrapper(
@@ -41,24 +45,11 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
-        MultiSelectDropDown(
+        CustomMultiSelectDropDown(
           showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
-            setState(() {
-              selectedCareGiverServices = selectedServices.cast<String>().toList();
-              formData.selectedServices = selectedServices.cast<String>().toList();
-            });
-            Fluttertoast.showToast(
-              msg: 'Selected services: ${selectedCareGiverServices.join(", ")}',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.black87,
-              textColor: Colors.white,
-              fontSize: 16.0,
-            );
-            print('Selected services: ${selectedCareGiverServices.join(", ")}');
+            // Handle selected services
           },
           options: caregiverHealthServiceItems,
           maxItems: 13,
@@ -68,10 +59,43 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           dropdownHeight: 300,
           optionTextStyle: const TextStyle(fontSize: 16),
           selectedOptionIcon: const Icon(Icons.check_circle),
-          borderRadius: BorderRadius.circular(5.w)
-              .topLeft
-              .x, // Set the desired border radius value
+          borderRadius: BorderRadius.circular(5), // Set the desired border radius value
         ),
+
+
+
+        // MultiSelectDropDown(
+        //   showClearIcon: true,
+        //   hint: 'Services(s)',
+        //   onOptionSelected: (selectedServices) {
+        //     setState(() {
+        //       selectedCareGiverServices = selectedServices.cast<String>().toList();
+        //       formData.selectedServices = selectedServices.cast<String>().toList();
+        //     });
+        //     // print('Selected services: ${selectedCareGiverServices}');
+        //
+        //     // Fluttertoast.showToast(
+        //     //   msg: 'Selected services: ${selectedCareGiverServices.join(", ")}',
+        //     //   toastLength: Toast.LENGTH_SHORT,
+        //     //   gravity: ToastGravity.BOTTOM,
+        //     //   timeInSecForIosWeb: 1,
+        //     //   backgroundColor: Colors.black87,
+        //     //   textColor: Colors.white,
+        //     //   fontSize: 16.0,
+        //     // );
+        //   },
+        //   options: caregiverHealthServiceItems,
+        //   maxItems: 13,
+        //   disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
+        //   selectionType: SelectionType.multi,
+        //   chipConfig: const ChipConfig(wrapType: WrapType.wrap),
+        //   dropdownHeight: 300,
+        //   optionTextStyle: const TextStyle(fontSize: 16),
+        //   selectedOptionIcon: const Icon(Icons.check_circle),
+        //   borderRadius: BorderRadius.circular(5.w)
+        //       .topLeft
+        //       .x, // Set the desired border radius value
+        // ),
         const SizedBox(
           height: 15,
         ),

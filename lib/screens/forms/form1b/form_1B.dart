@@ -24,8 +24,7 @@ class Form1BScreen extends StatefulWidget {
       _Form1BScreen();
 }
 
-class _Form1BScreen
-    extends State<Form1BScreen> {
+class _Form1BScreen extends State<Form1BScreen> {
   int selectedStep = 0;
 
   List<Widget> steps = [
