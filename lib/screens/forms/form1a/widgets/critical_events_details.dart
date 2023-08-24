@@ -17,13 +17,14 @@ class CriticalEventsScreen extends StatefulWidget {
 }
 
 class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
-    List<Map> careGiverServices = optionsEvents;
+  List<Map> listOfEvents = optionsEvents;
 
-   List<ValueItem> caregiverHealthServiceItems = optionsEvents.map((service) {
-    return ValueItem(label: "- ${service['subtitle']}", value: service['title']);
+  List<ValueItem> listOfCriticalEvents = optionsEvents.map((service) {
+    return ValueItem(
+        label: "${service['event_id']}", value: service['description']);
   }).toList();
-    List<ValueItem> selectedEvents = [];
-
+  List<ValueItem> selectedEvents = [];
+  List<ValueItem> selectedEventsOptions = [];
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +42,9 @@ class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
           hint: 'Please Critical Event(s)',
           onOptionSelected: (selectedEvents) {
             selectedEventsOptions = selectedEvents;
+            form1aProvider.setSelectedEvents(selectedEvents);
           },
-          options: 
+          options: listOfCriticalEvents,
           maxItems: 13,
           selectedOptions: selectedEventsOptions.cast<ValueItem>(),
           selectionType: SelectionType.multi,
