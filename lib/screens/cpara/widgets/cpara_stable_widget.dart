@@ -1,9 +1,12 @@
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
+import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/stable_widget_wrapper.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CparaStableWidget extends StatefulWidget {
   const CparaStableWidget({super.key});
@@ -13,9 +16,28 @@ class CparaStableWidget extends StatefulWidget {
 }
 
 class _CparaStableWidgetState extends State<CparaStableWidget> {
-  RadioButtonOptions? selected;
+  RadioButtonOptions? question1Option, question2Option, question3Option;
+
+  RadioButtonOptions? getOverallOption({RadioButtonOptions? question1Option, RadioButtonOptions? question2Option, RadioButtonOptions? question3Option}){
+
+    if(question1Option == null && question2Option == null && question3Option == null){
+      return null;
+    }
+    else{
+      List<RadioButtonOptions?> options = [question1Option, question2Option, question3Option];
+      for(var option in options){
+        if(option == null || option == RadioButtonOptions.no){
+          return RadioButtonOptions.no;
+        }
+      }
+    }
+
+    return RadioButtonOptions.yes;
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return StableWidgetWrapper(
       children: [
 const GoalWidget(
@@ -27,23 +49,44 @@ const GoalWidget(
         const SizedBox(height: 30,),
         QuestionWidget(
           question: "5.1 Were you able to pay school fees for the last two terms for all school going children in your household without PEPFAR support? (Confirm availability of school fees receipt, government supported cash transfer/scholarships, confirm school going children are retained in school)",
-          selectedOption: (value){},
+          selectedOption: (value){
+            setState(() {
+              question1Option = value;
+              StableModel stableModel = context.read<CparaProvider>().stableModel ?? StableModel();
+              String selectedOption = convertingRadioButtonOptionsToString(value);
+              context.read<CparaProvider>().updateStableModel(stableModel.copyWith(question1: selectedOption));
+            });
+          },
           isNaAvailable: true,
         ),
         const SizedBox(height: 30,),
         QuestionWidget(
           question: "5.2 Was anyone sick in the past six months, were you able to pay all medical costs in the past 6 months for all children in your household under the age of 18 without PEPFAR support? Medical costs include medicine and transport to medical appointments",
-          selectedOption: (value){},
+          selectedOption: (value){
+            setState(() {
+              question2Option = value;
+              StableModel stableModel = context.read<CparaProvider>().stableModel ?? StableModel();
+              String selectedOption = convertingRadioButtonOptionsToString(value);
+              context.read<CparaProvider>().updateStableModel(stableModel.copyWith(question2: selectedOption));
+            });
+          },
           isNaAvailable: true,
         ),
         const SizedBox(height: 30,),
         QuestionWidget(
           question: "5.3 In case you find yourself in a situation, are you currently able to pay for legal and other administrative fees related to guardianship, civil registration or inheritance?",
-          selectedOption: (value){},
+          selectedOption: (value){
+            setState(() {
+              question3Option = value;
+              StableModel stableModel = context.read<CparaProvider>().stableModel ?? StableModel();
+              String selectedOption = convertingRadioButtonOptionsToString(value);
+              context.read<CparaProvider>().updateStableModel(stableModel.copyWith(question3: selectedOption));
+            });
+          },
           isNaAvailable: false,
         ),
         const SizedBox(height: 30,),
-        BenchMarkAchievementWidget(text: "Has the household achieved this benchmarks?", selectedOption: (value){},),
+        BenchMarkAchievementWidget(text: "Has the household achieved this benchmarks?", benchmarkOption: getOverallOption(question1Option: question1Option, question2Option: question2Option, question3Option: question3Option),),
       ],
     );
   }
@@ -169,7 +212,7 @@ class QuestionWidget extends StatelessWidget {
             height: 10,
           ),
           CustomRadioButton(
-              isNaAvailable: false,
+              isNaAvailable: isNaAvailable,
               optionSelected: (value) => selectedOption(value))
         ],
       ),
@@ -265,14 +308,12 @@ class NotFoundWidget extends StatelessWidget {
 
 class BenchMarkAchievementWidget extends StatelessWidget {
   final String text;
-  final Function(RadioButtonOptions?) selectedOption;
-  const BenchMarkAchievementWidget({super.key, required this.text, required this.selectedOption});
+  final RadioButtonOptions? benchmarkOption;
+  const BenchMarkAchievementWidget({super.key, required this.text, required this.benchmarkOption});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      // width: double.infinity,
-      // height: 100.0,
       decoration: BoxDecoration(
           color: Colors.grey.shade300
       ),
@@ -312,7 +353,7 @@ class BenchMarkAchievementWidget extends StatelessWidget {
                   Text(text, style: const TextStyle(
                       fontWeight: FontWeight.w600, fontSize: 16
                   ),),
-                  CustomRadioButton(isNaAvailable: false, optionSelected: (value){})
+                  BenchmarkCustomRadioButtons(benchmarkOption: benchmarkOption)
                 ],
               ),
             ),
@@ -419,102 +460,18 @@ class PastCPARACardWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20,),
-            // Expanded(
-            //   child: GridView.builder(
-            //     // shrinkWrap: true,
-            //       itemCount: 2,
-            //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            //           crossAxisCount: 9,
-            //           childAspectRatio: 2/1.5,
-            //           mainAxisSpacing: 10.0,
-            //           crossAxisSpacing: 20.0),
-            //       itemBuilder: (context, index) {
-            //         return Row(
-            //           children: [
-            //             Text('Benchmark ${index + 1} ', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14.0),),
-            //             Text('(Yes)', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0),),
-            //           ],
-            //         );
-            //       }),
-            // ),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Text('Benchmark 1 ', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14.0),),
-                    Text('(Yes)', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0),),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text('Benchmark 2 ', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14.0),),
-                    Text('(Yes)', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0),),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 6,),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Text('Benchmark 3 ', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14.0),),
-                    Text('(Yes)', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0),),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text('Benchmark 4 ', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14.0),),
-                    Text('(Yes)', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0),),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 6,),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Text('Benchmark 5 ', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14.0),),
-                    Text('(Yes)', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0),),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text('Benchmark 6 ', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14.0),),
-                    Text('(No)', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0),),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 6,),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Text('Benchmark 7 ', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14.0),),
-                    Text('(No)', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0),),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text('Benchmark 8 ', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14.0),),
-                    Text('(Yes)', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0),),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 6,),
-            const Row(
-              children: [
-                Text('Benchmark 9 ', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14.0),),
-                Text('(No)', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0),),
-              ],
-            ),
+            GridView.builder(
+              shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 9,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio:8/1,
+                    mainAxisSpacing: 10.0,
+                    crossAxisSpacing: 20.0),
+                itemBuilder: (context, index) {
+                  return BenchmarkScoreWidget(index: index);
+                }),
             const SizedBox(height: 10,),
             const Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -535,6 +492,61 @@ class PastCPARACardWidget extends StatelessWidget {
   }
 }
 
+class BenchmarkScoreWidget extends StatelessWidget {
+  final int index;
+  const BenchmarkScoreWidget({super.key, required this.index});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text('Benchmark ${index + 1} ', style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14.0),),
+        const Text('(Yes)', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0),),
+      ],
+    );
+  }
+}
+
+class BenchmarkCustomRadioButtons  extends StatelessWidget {
+  final RadioButtonOptions? benchmarkOption;
+
+  const BenchmarkCustomRadioButtons(
+      {required this.benchmarkOption,
+        super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        RadioListTile<RadioButtonOptions>(
+            title: const Text('Yes'),
+            value: RadioButtonOptions.yes,
+            groupValue: benchmarkOption,
+            onChanged: null),
+        RadioListTile<RadioButtonOptions>(
+            title: const Text('No'),
+            value: RadioButtonOptions.no,
+            groupValue: benchmarkOption,
+            onChanged: null),
+      ],
+    );
+  }
+}
+
 const lightBlue = Color.fromRGBO(217, 237, 247, 1);
 
 const overallQuestionBlueColor = Color.fromRGBO(190, 226, 239, 1);
+
+String convertingRadioButtonOptionsToString(RadioButtonOptions? radioButtonOptions) {
+  switch (radioButtonOptions) {
+    case RadioButtonOptions.yes:
+      case RadioButtonOptions.na:
+      return 'Yes';
+    case RadioButtonOptions.no:
+      default:
+      return 'No';
+  }
+}
