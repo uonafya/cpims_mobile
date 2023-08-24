@@ -2,7 +2,6 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_date_picker.dart';
-import 'package:cpims_mobile/widgets/custom_dropdown_multiselect.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';

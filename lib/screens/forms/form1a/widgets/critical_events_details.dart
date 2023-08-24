@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_date_picker.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:provider/provider.dart';
 
 class CriticalEventsScreen extends StatefulWidget {
   const CriticalEventsScreen({Key? key}) : super(key: key);
@@ -16,9 +18,12 @@ class CriticalEventsScreen extends StatefulWidget {
 
 class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
   List<String> selectedCriticalEvents = [];
+  String? selectedDate;
 
   @override
   Widget build(BuildContext context) {
+    final criticalProvider =
+        Provider.of<Form1AProvider>(context, listen: false);
     return StepsWrapper(
       title: 'Events',
       children: [
@@ -60,9 +65,12 @@ class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
-        const CustomDatePicker(
-          hintText: 'Select the date',
-        ),
+        CustomDatePicker(
+            hintText: 'Select the date',
+            onChanged: ((val) {
+              final form = Form1ACritical(date: val);
+              criticalProvider.setCriticalStep(form);
+            })),
         const SizedBox(
           height: 15,
         ),

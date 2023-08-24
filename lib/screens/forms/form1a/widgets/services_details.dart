@@ -26,6 +26,7 @@ class _ServicesDetailsState extends State<ServicesDetails> {
   ];
   List<String> selectedDomain = [];
   List<String> selectedServices = [];
+  String? selectedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,7 @@ class _ServicesDetailsState extends State<ServicesDetails> {
           const SizedBox(height: 10),
           MultiSelectDropDown(
             showClearIcon: true,
-            hint: 'Select the Domains',
+            hint: 'Please select the Domains',
             onOptionSelected: (selectedDomain) {},
             options: const <ValueItem>[
               ValueItem(label: 'Education - (Schooled)', value: '1'),
@@ -69,7 +70,7 @@ class _ServicesDetailsState extends State<ServicesDetails> {
           const SizedBox(height: 10),
           MultiSelectDropDown(
             showClearIcon: true,
-            hint: 'Select the Services',
+            hint: 'Please select the Services',
             onOptionSelected: (selectedServices) {
               setState(() {});
             },
@@ -95,7 +96,6 @@ class _ServicesDetailsState extends State<ServicesDetails> {
                   value: '5'),
             ],
             maxItems: 35,
-            disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
             selectionType: SelectionType.multi,
             chipConfig: const ChipConfig(wrapType: WrapType.wrap),
             dropdownHeight: 300,
@@ -107,12 +107,17 @@ class _ServicesDetailsState extends State<ServicesDetails> {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Date Critical Event Recorded*',
+            'Date Service Recorded*',
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
-          const CustomDatePicker(
-            hintText: 'Select the date',
+          CustomDatePicker(
+            hintText: 'Please select the date',
+            onChanged: (val) {
+              setState(() {
+                selectedDate = val;
+              });
+            },
           ),
           const SizedBox(
             height: 15,
