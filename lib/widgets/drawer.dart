@@ -1,5 +1,7 @@
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
+import 'package:cpims_mobile/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -39,10 +41,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
       const Divider(
         height: 1,
       ),
-      ...List.generate(drawerOptions.length, (index) {
-        final option = DrawerOption.fromMap(drawerOptions[index]);
+      ...List.generate(drawerOptions(context).length, (index) {
+        final option = DrawerOption.fromMap(drawerOptions(context)[index]);
         return GestureDetector(
-          onTap: () {
+          onTap: () async {
+            if (option.title.toLowerCase() == 'log out') {
+              await Provider.of<AuthProvider>(context, listen: false)
+                  .logOut(context);
+            }
             drawerProvider.changeDrawerOption(index);
           },
           child: option.children.isNotEmpty
@@ -78,7 +84,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         ),
         onTap: () {
           onTap();
-          data.onTap?.call;
+          data.onTap?.call();
         },
       ),
     );
