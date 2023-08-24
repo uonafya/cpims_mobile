@@ -17,7 +17,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
   RadioButtonOptions? _experienced_violence;
   RadioButtonOptions? _child_below_12;
   RadioButtonOptions? _adolescents_older_than_12;
-  RadioButtonOptions? _exosed_to_violence;
+  RadioButtonOptions? _exposed_to_violence;
   RadioButtonOptions? _no_siblings_over_10;
   RadioButtonOptions? _referred_for_services;
   RadioButtonOptions? _received_services;
@@ -34,6 +34,17 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
       case "_children_adolecent_caregiver":
         setState(() {
           _children_adolecent_caregiver = value;
+          if (value == RadioButtonOptions.no) {
+            // Set values of radio buttons for questions 6.1 and 6.2 to yes
+            _experienced_violence = RadioButtonOptions.yes;
+            _child_below_12 = RadioButtonOptions.yes;
+            _adolescents_older_than_12 = RadioButtonOptions.yes;
+            _exposed_to_violence = RadioButtonOptions.yes;
+            _no_siblings_over_10 = RadioButtonOptions.yes;
+            _referred_for_services = RadioButtonOptions.yes;
+            _received_services = RadioButtonOptions.yes;
+            _benchmark_6 = RadioButtonOptions.yes;
+          }
         });
         break;
       case "_experienced_violence":
@@ -51,9 +62,9 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
           _adolescents_older_than_12 = value;
         });
         break;
-      case "_exosed_to_violence":
+      case "_exposed_to_violence":
         setState(() {
-          _exosed_to_violence = value;
+          _exposed_to_violence = value;
         });
         break;
       case "_no_siblings_over_10":
@@ -106,51 +117,57 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
     }
   }
 
+  void noChangeToRadio(RadioButtonOptions? val) {}
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: StepsWrapper(
-        title: 'Safe',
-        children: [
-
+    return StepsWrapper(
+      title: 'Safe',
+      children: [
+/////////////////////////////////////////////
 // Safe Goal 6
-          const SafeGoalWidget(
-              title:
-                  "Safe: Goal 6: Reduce Risk of Physical, Emotional and Psychological Injury Due to Exposure to Violence",
-              sub_title:
-                  "Benchmark 6: No children, adolescents, and caregivers in the household report experiences of violence (including physical violence, emotional violence, sexual violence, gender-based violence, and neglect) in the last six months. If there is no reported form of violence in the HH, skip all the questions and score N/A"),
+        const SafeGoalWidget(
+            title:
+                "Safe: Goal 6: Reduce Risk of Physical, Emotional and Psychological Injury Due to Exposure to Violence",
+            sub_title:
+                "Benchmark 6: No children, adolescents, and caregivers in the household report experiences of violence (including physical violence, emotional violence, sexual violence, gender-based violence, and neglect) in the last six months. If there is no reported form of violence in the HH, skip all the questions and score N/A"),
 
-          const SizedBox(
-            height: 20,
-          ),
-          const QuestionForCard(
-            text: "Question for caregiver:",
-          ),
-          const SizedBox(height: 20),
+        const SizedBox(
+          height: 20,
+        ),
+        const QuestionForCard(
+          text: "Question for caregiver:",
+        ),
+        const SizedBox(height: 20),
 
 // Question 6.1 to 6.2
 // Question Main Card
-          MainCardQuestion(
-              card_question:
-                  "Are there children, adolescents, and caregivers in the household who have experienced violence (including physical violence, emotional violence, sexual violence, gender-based violence, and neglect) in the last six months ?",
-              selectedOption: (value) {
-                // Update the state of the question
-                updateQuestion("_children_adolecent_caregiver", value);
-              }),
+        MainCardQuestion(
+            card_question:
+                "Are there children, adolescents, and caregivers in the household who have experienced violence (including physical violence, emotional violence, sexual violence, gender-based violence, and neglect) in the last six months ?",
+            selectedOption: (value) {
+              // Update the state of the question
+              updateQuestion("_children_adolecent_caregiver", value);
+              if(value ==RadioButtonOptions.no) _adolescents_older_than_12 = RadioButtonOptions.no;
+              if(value == RadioButtonOptions.no) _exposed_to_violence = RadioButtonOptions.yes;
+            }),
 
 // Question 6.1
+
+        if (_children_adolecent_caregiver == RadioButtonOptions.yes)
           OtherQuestions(
             other_question:
                 "6.1 Have you experienced violence, abuse (sexual, physical, or emotional) in the last six months?*",
             selectedOption: (value) {
               // Update the state of the question
               updateQuestion("_experienced_violence", value);
-
             },
-          ),
+          )
+        else
+          const SkipQuestion(),
 
-          // Question 6.2
+        // Question 6.2
+        if (_children_adolecent_caregiver == RadioButtonOptions.yes)
           OtherQuestions(
             other_question:
                 "6.2 Is there a child below 12 years who has been exposed to violence or abuse (sexual, physical or emotional), neglect, or exploitation in the last six months?*",
@@ -158,159 +175,222 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
               // Update the state of the question
               updateQuestion("_child_below_12", value);
             },
-          ),
+          )
+        else
+          const SkipQuestion(),
 
 // Question 6.3 to 6.2
 // Question Main Card
+        if (_children_adolecent_caregiver == RadioButtonOptions.yes)
           MainCardQuestion(
               card_question: " Is there adolescents 12 years and above ? ",
               selectedOption: (value) {
                 // Update the state of the question
                 updateQuestion("_adolescents_older_than_12", value);
-              }),
+              })
+        else
+          const SkipQuestion(),
 
-          const SizedBox(
-            height: large_height,
-          ),
+        const SizedBox(
+          height: large_height,
+        ),
 
-// Load Child Cards - For the specific household
-          const ChildCardWidget(),
+// Load Children - For the specific household
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Child Name',
+                        style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 12.0),
+                      ),
+                      Text(
+                        'JANE BOLO',
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16.0),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'OVC CPIMS ID',
+                        style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 12.0),
+                      ),
+                      Text(
+                        '1573288',
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16.0),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            if (_children_adolecent_caregiver == RadioButtonOptions.yes && _adolescents_older_than_12 == RadioButtonOptions.yes)
+              OtherQuestions(
+                other_question:
+                    "6.3 Have you been exposed to violence, abuse (sexual, physical or emotional), neglect, or exploitation in the last six months?",
+                selectedOption: (value) {
+                  // // Update the state of the question
+                  updateQuestion("_exposed_to_violence", value);
+                },
+              )
+              else
+              const SkipQuestion(),
+          ],
+        ),
 
-          const SizedBox(
-            height: large_height,
-          ),
+        const SizedBox(
+          height: large_height,
+        ),
 
 // Container showing sibling over 10 with a yellow bg
-          Container(
-            alignment: Alignment.center,
-            width: double.infinity,
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: const Color.fromRGBO(255, 238, 204, 1),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: const Text("No siblings over 10 years found.",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
-                )),
+        Container(
+          alignment: Alignment.center,
+          width: double.infinity,
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: const Color.fromRGBO(255, 238, 204, 1),
+            borderRadius: BorderRadius.circular(5),
           ),
+          child: const Text("No siblings over 10 years found.",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w400,
+              )),
+        ),
 
 // Tick yes if yes for all children
-          OtherQuestions(
-              other_question: "Tick Yes if YES for all children",
-              selectedOption: (value) {
-                // Update the state of the question
-                updateQuestion("_exosed_to_violence", value);
-              }),
+        OtherQuestions(
+            other_question: "Tick Yes if YES for all children",
+            selectedOption: (value) {
+              // Update the state of the question
+              updateQuestion("_exposed_to_violence", value);
+            }),
 
 // Label for question 6.4 to 6.5
-          const Text(
-            "If yes to any of the three questions above, answer the questions below",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
+        const Text(
+          "If yes to any of the three questions above, answer the questions below",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
           ),
+        ),
 
 // Question 6.4
-          OtherQuestions(
-              other_question:
-                  "6.4 Is there any evidence that the case has referred for services such as child protection?* ",
-              selectedOption: (value) {
-                // Update the state of the question
-                updateQuestion("_referred_for_services", value);
-              }),
+        OtherQuestions(
+            other_question:
+                "6.4 Is there any evidence that the case has referred for services such as child protection?* ",
+            selectedOption: (value) {
+              // Update the state of the question
+              updateQuestion("_referred_for_services", value);
+            }),
 
 // Question 6.5
-          OtherQuestions(
-              other_question:
-                  "6.5 Is there documentation that they received services (e,g counseling, psycho-social, legal or health services)?* ",
-              selectedOption: (value) {
-                // Update the state of the question
-                updateQuestion("_received_services", value);
-              }),
+        OtherQuestions(
+            other_question:
+                "6.5 Is there documentation that they received services (e,g counseling, psycho-social, legal or health services)?* ",
+            selectedOption: (value) {
+              // Update the state of the question
+              updateQuestion("_received_services", value);
+            }),
 
 // Benchmak 6 results
-          BenchMarkQuestion(
-              benchmark_question: "Has the household achieved this benchmarks?",
-              selectedOption: (value) {
-                // Update the state of the question
-                updateQuestion("_benchmark_6", value);
-              }),
+        BenchMarkQuestion(
+          benchmark_question: "Has the household achieved this benchmarks?",
+          selectedOption: _benchmark_6,
+          isEditable: false,
+        ),
 
-          const SizedBox(
-            height: large_height,
-          ),
+        const SizedBox(
+          height: large_height,
+        ),
 
+// Safe Goal 6 end
+
+//////////////////////////////////
 // Safe Goal 7 questions 7.1 to 7.2
-          const SafeGoalWidget(
-              title:
-                  "Safe: Goal 7: All children and adolescents in the household are under the care of a stable adult caregiver"),
+        const SafeGoalWidget(
+            title:
+                "Safe: Goal 7: All children and adolescents in the household are under the care of a stable adult caregiver"),
 
 // Question 7.1
-          OtherQuestions(
-              other_question: "7.1 Is the primary caregiver 18yrs and above?* ",
-              selectedOption: (value) {
-                // Update the state of the question
-                updateQuestion("_primary_caregiver", value);
-              }),
+        OtherQuestions(
+            other_question: "7.1 Is the primary caregiver 18yrs and above?* ",
+            selectedOption: (value) {
+              // Update the state of the question
+              updateQuestion("_primary_caregiver", value);
+            }),
 
 // Question 7.2
-          OtherQuestions(
-              other_question:
-                  "7.2 Has the caregiver cared for and lived in the same home as the child/adolescents for at least the last 12 months?*  ",
-              selectedOption: (value) {
-                // Update the state of the question
-                updateQuestion("_caregiver_lived_12_months", value);
-              }),
+        OtherQuestions(
+            other_question:
+                "7.2 Has the caregiver cared for and lived in the same home as the child/adolescents for at least the last 12 months?*  ",
+            selectedOption: (value) {
+              // Update the state of the question
+              updateQuestion("_caregiver_lived_12_months", value);
+            }),
 
 // Benchmak 7 results
-          BenchMarkQuestion(
-              benchmark_question: "Has the household achieved this benchmarks?",
-              selectedOption: (value) {
-                // Update the state of the question
-                updateQuestion("_benchmark_7", value);
-              }),
+        const BenchMarkQuestion(
+          benchmark_question: "Has the household achieved this benchmarks?",
+        ),
 
-          const SizedBox(
-            height: large_height,
-          ),
+        const SizedBox(
+          height: large_height,
+        ),
+
+///////////////////////////////////////////
 
 // Safe Goal 7 questions 8.1 to 8.2
 
-          const SafeGoalWidget(
-              title:
-                  "Safe: Goal 7: All children < 18 years have legal proof of identity"),
+        const SafeGoalWidget(
+            title:
+                "Safe: Goal 7: All children < 18 years have legal proof of identity"),
 
 // Question 8.1
-          OtherQuestions(
-              other_question:
-                  "8.1 Do all children under the age of 18 have legal documents (birth certificate)?* ",
-              selectedOption: (value) {
-                // Update the state of the question
-                updateQuestion("_legal_documents", value);
-              }),
+        OtherQuestions(
+            other_question:
+                "8.1 Do all children under the age of 18 have legal documents (birth certificate)?* ",
+            selectedOption: (value) {
+              // Update the state of the question
+              updateQuestion("_legal_documents", value);
+            }),
 
 // Benchmak 7 results
-          BenchMarkQuestion(
-              benchmark_question: "Has the household achieved this benchmarks?",
-              selectedOption: (value) {
-                // Update the state of the question
-                updateQuestion("_benchmark_8", value);
-              }),
+        const BenchMarkQuestion(
+          benchmark_question: "Has the household achieved this benchmarks?",
+        ),
 
-          const SizedBox(
-            height: large_height,
-          ),
-          CustomButton(
-              text: "Cancel",
-              onTap: () {},
-              color: Colors.black.withOpacity(0.4)),
-          const SizedBox(height: 20),
-          CustomButton(text: "Submit", onTap: () {}, color: green),
-        ],
-      ),
+/////////////////////////////////////////
+
+        const SizedBox(
+          height: large_height,
+        ),
+        CustomButton(
+            text: "Cancel", onTap: () {}, color: Colors.black.withOpacity(0.4)),
+        const SizedBox(height: 20),
+        CustomButton(text: "Submit", onTap: () {}, color: green),
+      ],
     );
   }
 }
@@ -442,12 +522,13 @@ class OtherQuestions extends StatelessWidget {
   final bool divider;
   final Function(RadioButtonOptions?) selectedOption;
 
-  const OtherQuestions(
-      {super.key,
-      required this.other_question,
-      required this.selectedOption,
-      this.divider = false,
-      this.NaAvailable = false});
+  const OtherQuestions({
+    super.key,
+    required this.other_question,
+    required this.selectedOption,
+    this.divider = false,
+    this.NaAvailable = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -481,11 +562,15 @@ class OtherQuestions extends StatelessWidget {
 
 class BenchMarkQuestion extends StatelessWidget {
   final String benchmark_question;
-  final Function(RadioButtonOptions?) selectedOption;
-  const BenchMarkQuestion(
-      {super.key,
-      required this.benchmark_question,
-      required this.selectedOption});
+  final RadioButtonOptions? selectedOption;
+  final bool isEditable;
+
+  const BenchMarkQuestion({
+    Key? key,
+    required this.benchmark_question,
+    this.selectedOption,
+    this.isEditable = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -496,12 +581,6 @@ class BenchMarkQuestion extends StatelessWidget {
           decoration: BoxDecoration(
             color: grey,
             borderRadius: BorderRadius.circular(5),
-            // border:  const Border(
-            //   left: BorderSide(
-            //   color: greyBorder,
-            //   width: 2,
-            //   ),
-            // ),
           ),
           child: Column(
             children: [
@@ -515,9 +594,21 @@ class BenchMarkQuestion extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              CustomRadioButton(
-                isNaAvailable: false,
-                optionSelected: (value) => selectedOption(value),
+              Column(
+                children: [
+                  Radio(
+                    value: RadioButtonOptions.yes,
+                    groupValue: selectedOption,
+                    onChanged: isEditable ? (_) {} : null,
+                  ),
+                  Text("Yes"),
+                  Radio(
+                    value: RadioButtonOptions.no,
+                    groupValue: selectedOption,
+                    onChanged: null, // No onChanged callback for "No"
+                  ),
+                  Text("No"),
+                ],
               ),
             ],
           ),
@@ -527,67 +618,15 @@ class BenchMarkQuestion extends StatelessWidget {
   }
 }
 
-class ChildCardWidget extends StatelessWidget {
-  const ChildCardWidget({super.key});
+class SkipQuestion extends StatelessWidget {
+  const SkipQuestion({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return const Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Child Name',
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.normal,
-                        fontSize: 12.0),
-                  ),
-                  Text(
-                    'JANE BOLO',
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16.0),
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'OVC CPIMS ID',
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.normal,
-                        fontSize: 12.0),
-                  ),
-                  Text(
-                    '1573288',
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16.0),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        OtherQuestions(
-          other_question:
-              "6.3 Have you been exposed to violence, abuse (sexual, physical or emotional), neglect, or exploitation in the last six months?",
-          selectedOption: (value) {},
-        ),
+        Text("Skipped Question"),
       ],
-    ));
+    );
   }
 }
