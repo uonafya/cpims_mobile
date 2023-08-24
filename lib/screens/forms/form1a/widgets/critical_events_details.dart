@@ -3,7 +3,6 @@ import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_date_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -17,13 +16,17 @@ class CriticalEventsScreen extends StatefulWidget {
 }
 
 class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
-  List<String> selectedCriticalEvents = [];
-  String? selectedDate;
+    List<Map> careGiverServices = careGiverHealthServices;
+
+   List<ValueItem> caregiverHealthServiceItems = careGiverHealthServices.map((service) {
+    return ValueItem(label: "- ${service['subtitle']}", value: service['title']);
+  }).toList();
+    List<ValueItem> selectedEvents = [];
+
 
   @override
   Widget build(BuildContext context) {
-    final criticalProvider =
-        Provider.of<Form1AProvider>(context, listen: false);
+    Form1AProvider form1aProvider = Provider.of<Form1AProvider>(context);
     return StepsWrapper(
       title: 'Events',
       children: [
@@ -35,27 +38,20 @@ class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
         MultiSelectDropDown(
           showClearIcon: true,
           hint: 'Please Critical Event(s)',
-          onOptionSelected: (selectedCriticalEvents) {
-            setState(() {
-              this.selectedCriticalEvents =
-                  selectedCriticalEvents.cast<String>().toList();
-            });
+          onOptionSelected: (selectedEvents) {
+            selectedEventsOptions = selectedEvents;
           },
-          options: const <ValueItem>[
-            ValueItem(label: 'Child Pregnant', value: '1'),
-            ValueItem(label: 'Child not Adhering to ARVs', value: '2'),
-            ValueItem(label: 'Child Malnourished', value: '3'),
-            ValueItem(label: 'Child HIV status Changed', value: '4'),
-            ValueItem(
-                label: 'Child Acquired Opportunistic Infection', value: '5'),
-          ],
+          options: 
           maxItems: 13,
+          selectedOptions: selectedEventsOptions.cast<ValueItem>(),
           selectionType: SelectionType.multi,
           chipConfig: const ChipConfig(wrapType: WrapType.wrap),
           dropdownHeight: 300,
           optionTextStyle: const TextStyle(fontSize: 16),
           selectedOptionIcon: const Icon(Icons.check_circle),
-          borderRadius: BorderRadius.circular(5.w).topLeft.x,
+          borderRadius: BorderRadius.circular(5.w)
+              .topLeft
+              .x, // Set the desired border radius value
         ),
         const SizedBox(
           height: 15,
@@ -65,115 +61,30 @@ class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
-        CustomDatePicker(
-            hintText: 'Select the date',
-            onChanged: ((val) {
-              final form = Form1ACritical(date: val);
-              criticalProvider.setCriticalStep(form);
-            })),
-        const SizedBox(
-          height: 15,
-        ),
-        CustomButton(
-          text: 'Submit Critical Event(s)',
-          onTap: () {},
-        ),
-        const SizedBox(
-          height: 15,
-        ),
-        CustomButton(
-          text: 'Cancel',
-          color: kTextGrey,
-          onTap: () {
-            // logic here
-          },
-        ),
-        const SizedBox(
-          height: 15,
-        ),
-        const Text(
-          'History Assessements',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        const CustomDatePicker(
+          hintText: 'Select the date',
         ),
         const SizedBox(
           height: 15,
         ),
         const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Expanded(
-              child: Text(
-                'Details',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-              ),
+              child: CustomButton(text: 'Submit Event(s)'),
+            ),
+            SizedBox(
+              width: 15,
             ),
             Expanded(
-              child: Text(
-                'Date Recorded',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(width: 10),
-            Text(
-              'Actions',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              child: CustomButton(text: 'Cancel', color: kTextGrey),
             ),
           ],
         ),
-        const Divider(),
         const SizedBox(
           height: 15,
         ),
-        const HistoryAssessmentListWidget(),
-        const SizedBox(
-          height: 15,
-        ),
-      ],
-    );
-  }
-}
-
-class HistoryAssessmentListWidget extends StatelessWidget {
-  const HistoryAssessmentListWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return const AssessmentItemWidget();
-        });
-  }
-}
-
-class AssessmentItemWidget extends StatelessWidget {
-  const AssessmentItemWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Row(
-      children: [
-        Expanded(
-          child: Text(
-            'Child not Adhering to ARVs',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-        ),
-        SizedBox(
-          height: 50,
-        ),
-        Expanded(
-          child: Text(
-            '28-Aug-2023',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-        ),
-        SizedBox(width: 10),
-        Icon(
-          CupertinoIcons.delete,
-          color: Colors.red,
-        )
+        const CustomButton(text: 'History Event(s)'),
       ],
     );
   }
