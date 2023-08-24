@@ -36,7 +36,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
         setState(() {
           _children_adolecent_caregiver = value;
           if (value == RadioButtonOptions.no) {
-            // Set values of radio buttons for questions 6.1 and 6.2 to yes
+            // Set values of radio buttons for questions 6.1 and 6.5 to yes
             _experienced_violence = RadioButtonOptions.yes;
             _child_below_12 = RadioButtonOptions.yes;
             _adolescents_older_than_12 = RadioButtonOptions.yes;
@@ -46,7 +46,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             _received_services = RadioButtonOptions.yes;
           }
           if (value == RadioButtonOptions.yes) {
-            // Set values of radio buttons for questions 6.1 and 6.2 to yes
+            // Set values of radio buttons for questions 6.1 and 6.5 to null
             _experienced_violence = null;
             _child_below_12 = null;
             _adolescents_older_than_12 = null;
@@ -344,15 +344,17 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
               }),
 
 // Benchmak 6 results
-        if (_children_adolecent_caregiver == RadioButtonOptions.no)
         BenchMarkQuestion(
-          benchmark_question: "Has the household achieved this benchmarks?",
-          selectedOption: (value) {
-            // Update the state of the question
-            updateQuestion("_benchmark_6", value);
-          }
-        ),
-
+            groupValue: allShouldBeYes([
+              _experienced_violence,
+              _child_below_12,
+              _exposed_to_violence,
+              _no_siblings_over_10,
+              _referred_for_services,
+              _received_services,
+            ], "message"),
+            benchmark_question: "Has the household achieved this benchmarks?",
+            selectedOption: (value) {}),
         const SizedBox(
           height: large_height,
         ),
@@ -386,12 +388,11 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
 // Benchmak 7 results
         BenchMarkQuestion(
-          benchmark_question: "Has the household achieved this benchmarks?",
-          selectedOption: (value) {
-            // Update the state of the question
-            updateQuestion("_benchmark_7", value);
-          }
-        ),
+            groupValue: allShouldBeYes(
+                [_caregiver_lived_12_months, _primary_caregiver],
+                "Benchmark 7"),
+            benchmark_question: "Has the household achieved this benchmarks?",
+            selectedOption: (value) {}),
 
         const SizedBox(
           height: large_height,
@@ -417,11 +418,9 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
 // Benchmak 7 results
         BenchMarkQuestion(
+          groupValue: allShouldBeYes([_legal_documents], "Benchmark mark 8"),
           benchmark_question: "Has the household achieved this benchmarks?",
-          selectedOption: (value) {
-            // Update the state of the question
-            updateQuestion("_benchmark_8", value);
-          },
+          selectedOption: (value) {},
         ),
 
 /////////////////////////////////////////
@@ -608,9 +607,12 @@ class OtherQuestions extends StatelessWidget {
 
 class BenchMarkQuestion extends StatelessWidget {
   final String benchmark_question;
+  final RadioButtonOptions? groupValue;
   final Function(RadioButtonOptions?) selectedOption;
+
   const BenchMarkQuestion(
       {super.key,
+      required this.groupValue,
       required this.benchmark_question,
       required this.selectedOption});
 
@@ -642,9 +644,10 @@ class BenchMarkQuestion extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              CustomRadioButton(
+              MyCustomRadioListTileColumn(
+                groupValue: groupValue,
                 isNaAvailable: false,
-                optionSelected: (value) => selectedOption(value),
+                updateRadioButton: (value) => selectedOption(value),
               ),
             ],
           ),
@@ -706,5 +709,20 @@ class MyCustomRadioListTileColumn extends StatelessWidget {
             : const SizedBox.shrink(),
       ],
     );
+  }
+}
+
+// A function that computes whether the final result of a section is yes or no given the values of the members
+RadioButtonOptions allShouldBeYes(
+    List<RadioButtonOptions?> members, String message) {
+  debugPrint(members.toString() + message);
+  // If all the values are yes return RadioButtonOptions.yes, if not return RadioButtonOptions.no
+  if (members.isEmpty) {
+    return RadioButtonOptions.no;
+  } else if (members
+      .any((element) => element != RadioButtonOptions.yes || element == null)) {
+    return RadioButtonOptions.no;
+  } else {
+    return RadioButtonOptions.yes;
   }
 }
