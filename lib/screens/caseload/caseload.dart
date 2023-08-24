@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:cpims_mobile/Models/case_load.dart';
+import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/services/api_service.dart';
+import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
@@ -16,39 +18,16 @@ class CaseLoad extends StatefulWidget {
 }
 
 class _CaseLoadState extends State<CaseLoad> {
-  var case_load = <CaseLoadModel>[];
-
   @override
   void initState() {
-    print("caseload >>>>>>>>>>> state");
-    print("get access token ..............");
-    debugPrint(context.read<UIProvider>().getAccess.toString());
-
-    Future.delayed(const Duration(seconds: 5), () {
-      _caseLoad();
-      print("caseload api list");
-      debugPrint(case_load.toString());
-    });
-
+    getData();
     super.initState();
   }
 
-  _caseLoad() async {
-    await ApiService()
-        .getSecureData(
-            'caseload', context.read<UIProvider>().getAccess["access"])
-        .then((response) {
-      print("***************RESPONSE************");
-      // debugPrint(response.body.data.toString());
+  final CaseLoadService caseLoadService = CaseLoadService();
 
-      setState(() {
-        Iterable list = json.decode(response.body);
-
-        case_load = list.map((model) => CaseLoadModel.fromJson(model)).toList();
-        print("************ case load  ****************88");
-        debugPrint("************ ${case_load.toString()}");
-      });
-    });
+  void getData() async {
+    await caseLoadService.fetchCaseLoadData(context: context);
   }
 
   @override
@@ -58,11 +37,28 @@ class _CaseLoadState extends State<CaseLoad> {
       drawer: const Drawer(
         child: CustomDrawer(),
       ),
-      body: ListView.builder(
-          itemCount: case_load.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Text("${case_load[index].cpimsId} ${case_load[index].name}");
-          }),
+      body: FutureBuilder(
+        future: CaseLoadDb.instance.retrieveCaseLoads(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          }
+          if (snapshot.hasError) {
+            return Text('${snapshot.error}');
+          }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Text('No caseload data');
+          }
+          final caseLoadData = snapshot.data;
+          return ListView.builder(
+            itemCount: caseLoadData!.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Text(
+                  "${caseLoadData[index].cpimsId} ${caseLoadData[index].ovc_first_name}");
+            },
+          );
+        },
+      ),
     );
   }
 }

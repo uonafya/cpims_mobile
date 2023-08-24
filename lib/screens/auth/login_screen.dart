@@ -97,9 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderSide: BorderSide(color: kPrimaryColor),
                   ),
                   labelText: "Enter Username here..."),
-              onChanged: (value) {
-                userNameController.text = value;
-              },
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.deny(
                   RegExp(
