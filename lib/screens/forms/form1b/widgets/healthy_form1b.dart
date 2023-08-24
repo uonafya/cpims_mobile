@@ -33,12 +33,18 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
     return ValueItem(label: "- ${service['subtitle']}", value: service['title']);
   }).toList();
 
-  List selectedCareGiverServices = [];
+  List<ValueItem> selectedCareGiverServices = [];
+  List<ValueItem> selectedCareGiverServicesOptions = [];
+
+
 
   @override
   Widget build(BuildContext context) {
     Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
-
+    selectedCareGiverServicesOptions = form1bProvider.formData.selectedServices;
+    // if(form1bProvider.formData.selectedServices != null){
+    //   selectedCareGiverServices = form1bProvider.formData.selectedServices;
+    // }
     return StepsWrapper(
       title: 'Caregiver health and nutrition status',
       children: [
@@ -58,6 +64,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           },
           options: caregiverHealthServiceItems,
           maxItems: 13,
+          selectedOptions: selectedCareGiverServicesOptions.cast<ValueItem>(),
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
           chipConfig: const ChipConfig(wrapType: WrapType.wrap),
