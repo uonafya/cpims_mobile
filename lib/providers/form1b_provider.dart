@@ -30,8 +30,19 @@ class Form1bProvider extends ChangeNotifier {
       selectedServices: [],
       selectedDate: ""
   );
+  final StableFormData _stableFormData = StableFormData(
+      selectedServices: [],
+      domainId: ""
+  );
+
+  final SafeFormData _safeFormData = SafeFormData(
+      selectedServices: [],
+      domainId: ""
+  );
 
   HealthFormData get formData => _formData;
+  StableFormData get stableFormData => _stableFormData;
+  SafeFormData get safeFormData => _safeFormData;
 
   void setSelectedServices(List selectedServices) {
     _formData.selectedServices.clear(); // Clear the current list
@@ -43,9 +54,21 @@ class Form1bProvider extends ChangeNotifier {
     // _formData.selectedDate = selectedDate;
     // CustomToastWidget.showToast(selectedDate);
     final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
-
     _formData.selectedDate = formattedDate;
     notifyListeners();
+  }
+
+  void setStableFormData(List selectedServices, String domainId){
+    _stableFormData.selectedServices.clear();
+    _stableFormData.selectedServices = selectedServices;
+    _stableFormData.domainId= domainId;
+  }
+
+  void setSafeFormData(List selectedServices, String domainId){
+    _safeFormData.selectedServices.clear();
+    _safeFormData.selectedServices = selectedServices;
+    _safeFormData.domainId= domainId;
+
   }
 
   void saveData(String toastData) {
