@@ -36,6 +36,14 @@ class _CparaStableWidgetState extends State<CparaStableWidget> {
   }
 
   @override
+  void initState() {
+    StableModel stableModel = context.read<CparaProvider>().stableModel ?? StableModel();
+    question1Option = stableModel.question1 == null ? question1Option : convertingStringToRadioButtonOptions(stableModel.question1!);
+    question2Option = stableModel.question2 == null ? question2Option : convertingStringToRadioButtonOptions(stableModel.question2!);
+    question3Option = stableModel.question3 == null ? question3Option : convertingStringToRadioButtonOptions(stableModel.question3!);
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
 
     return StableWidgetWrapper(
@@ -58,6 +66,7 @@ const GoalWidget(
             });
           },
           isNaAvailable: true,
+          option: question1Option,
         ),
         const SizedBox(height: 30,),
         QuestionWidget(
@@ -71,6 +80,7 @@ const GoalWidget(
             });
           },
           isNaAvailable: true,
+          option: question2Option,
         ),
         const SizedBox(height: 30,),
         QuestionWidget(
@@ -84,6 +94,7 @@ const GoalWidget(
             });
           },
           isNaAvailable: false,
+          option: question3Option,
         ),
         const SizedBox(height: 30,),
         BenchMarkAchievementWidget(text: "Has the household achieved this benchmarks?", benchmarkOption: getOverallOption(question1Option: question1Option, question2Option: question2Option, question3Option: question3Option),),
@@ -177,8 +188,9 @@ class OverallQuestionWidget extends StatelessWidget {
 class QuestionWidget extends StatelessWidget {
   final bool isNaAvailable;
   final String question;
+  final RadioButtonOptions? option;
   final Function(RadioButtonOptions?) selectedOption;
-  const QuestionWidget({super.key, required this.question, required this.selectedOption, required this.isNaAvailable});
+  const QuestionWidget({super.key, required this.question, required this.selectedOption, required this.isNaAvailable, this.option});
 
 
   @override
@@ -212,6 +224,7 @@ class QuestionWidget extends StatelessWidget {
             height: 10,
           ),
           CustomRadioButton(
+              option: option,
               isNaAvailable: isNaAvailable,
               optionSelected: (value) => selectedOption(value))
         ],
@@ -543,10 +556,23 @@ const overallQuestionBlueColor = Color.fromRGBO(190, 226, 239, 1);
 String convertingRadioButtonOptionsToString(RadioButtonOptions? radioButtonOptions) {
   switch (radioButtonOptions) {
     case RadioButtonOptions.yes:
-      case RadioButtonOptions.na:
       return 'Yes';
+      case RadioButtonOptions.na:
+      return 'N/A';
     case RadioButtonOptions.no:
       default:
       return 'No';
+  }
+}
+
+RadioButtonOptions convertingStringToRadioButtonOptions(String savedRadioButtonOptions) {
+  switch (savedRadioButtonOptions.toLowerCase()) {
+    case "yes":
+      return RadioButtonOptions.yes;
+    case "n/a":
+      return RadioButtonOptions.na;
+    case "no":
+    default:
+      return RadioButtonOptions.no;
   }
 }

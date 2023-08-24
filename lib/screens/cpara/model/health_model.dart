@@ -17,9 +17,7 @@ class HealthModel{
   final String question16;
   final String question17;
   final String question18;
-  final String question19;
-  final String question20;
-  final String question21;
+  final List<HealthChild> childrenQuestions;
 
   HealthModel({
     required this.question1,
@@ -40,9 +38,7 @@ class HealthModel{
     required this.question16,
     required this.question17,
     required this.question18,
-    required this.question19,
-    required this.question20,
-    required this.question21,
+    required this.childrenQuestions,
   });
 
 
@@ -66,10 +62,28 @@ class HealthModel{
       question16: json['question16'],
       question17: json['question17'],
       question18: json['question18'],
-      question19: json['question19'],
-      question20: json['question20'],
-      question21: json['question21'],
+      childrenQuestions: List<HealthChild>.from(json["childrenQuestions"]!.map((x) => HealthChild.fromJson(x))),
     );
   }
 }
-//list of children
+
+class HealthChild{
+  final String question1;
+  final String question2;
+  final String question3;
+
+  HealthChild({
+    required this.question1,
+    required this.question2,
+    required this.question3,
+  });
+
+
+  factory HealthChild.fromJson(Map<String, dynamic> json) {
+    return HealthChild(
+      question1: json['question1'],
+      question2: json['question2'],
+      question3: json['question3'],
+    );
+  }
+}

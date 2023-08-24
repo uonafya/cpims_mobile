@@ -148,6 +148,32 @@ class _CparaFormsScreenState
                                               Text(" || Answer: ${stableModel?.question3}"),
                                             ],
                                           ),
+                                          const Text("Safe Model:"),
+                                          Row(
+                                            children: [
+                                              Text("Question: 1"),
+                                              Text("Answer: ${safeModel?.question1}"),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Text("Question: 2"),
+                                              Text(" || Answer: ${stableModel?.question2}"),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Text("Question: 3"),
+                                              Text(" || Answer: ${stableModel?.question3}"),
+                                            ],
+                                          ),
+                                          const Text("Detail model:"),
+                                          Row(
+                                            children: [
+                                              Text("last Assesment"),
+                                              Text("Answer: ${detailModel?.dateOfAssessment}"),
+                                            ],
+                                          ),
                                         ],
                                       ),
                                     ));

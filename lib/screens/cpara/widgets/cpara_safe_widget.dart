@@ -1,6 +1,10 @@
+import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
+import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
 
@@ -28,6 +32,9 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
   RadioButtonOptions? _benchmark_7;
   RadioButtonOptions? _legal_documents;
   RadioButtonOptions? _benchmark_8;
+
+  RadioButtonOptions? question1Option, question2Option, question3Option, question4Option, question5Option, question6Option, question7Option;
+  List<RadioButtonOptions?> childrenQuestionsOptions = [];
 
   // Update the state of the questions
   void updateQuestion(String question, RadioButtonOptions? value) {
@@ -130,6 +137,13 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
   void noChangeToRadio(RadioButtonOptions? val) {}
 
   @override
+  void initState() {
+    SafeModel safeModel = context.read<CparaProvider>().safeModel ?? SafeModel();
+    question1Option = safeModel.question1 == null ? question1Option : convertingStringToRadioButtonOptions(safeModel.question1!);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return StepsWrapper(
       title: 'Safe',
@@ -177,6 +191,10 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             other_question:
                 "6.1 Have you experienced violence, abuse (sexual, physical, or emotional) in the last six months?*",
             selectedOption: (value) {
+              question1Option = value;
+              SafeModel safeModel = context.read<CparaProvider>().safeModel ?? SafeModel();
+              String selectedOption = convertingRadioButtonOptionsToString(value);
+              context.read<CparaProvider>().updateSafeModel(safeModel.copyWith(question1: selectedOption));
               // Update the state of the question
               updateQuestion("_experienced_violence", value);
             },
