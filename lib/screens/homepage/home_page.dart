@@ -1,6 +1,6 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
-import 'package:cpims_mobile/screens/homepage/widgets/homepage_card_primary.dart';
+import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_gridItem.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
@@ -45,7 +45,7 @@ class _HomepageState extends State<Homepage> {
                 'Application data and usage summary',
                 style: TextStyle(color: kTextGrey),
               ),
-              const HomepageCardPrimary(
+              const StatisticsItem(
                 title: 'UNSYNCED RECORDS',
                 icon: FontAwesomeIcons.arrowsRotate,
                 color: Color(0xffa10036),
@@ -55,7 +55,7 @@ class _HomepageState extends State<Homepage> {
                 cpaCount: 2,
                 cparaCount: 1,
               ),
-              const HomepageCardPrimary(
+              const StatisticsItem(
                 title: 'UNAPPROVED RECORDS',
                 icon: FontAwesomeIcons.fileCircleXmark,
                 color: Color(0xff947901),
