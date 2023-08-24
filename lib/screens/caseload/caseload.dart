@@ -1,12 +1,11 @@
 import 'dart:convert';
 
 import 'package:cpims_mobile/Models/case_load.dart';
-import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/services/api_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CaseLoad extends StatefulWidget {
   const CaseLoad({Key? key}) : super(key: key);
@@ -20,10 +19,6 @@ class _CaseLoadState extends State<CaseLoad> {
 
   @override
   void initState() {
-    print("caseload >>>>>>>>>>> state");
-    print("get access token ..............");
-    debugPrint(context.read<UIProvider>().getAccess.toString());
-
     Future.delayed(const Duration(seconds: 5), () {
       _caseLoad();
       print("caseload api list");
@@ -34,19 +29,13 @@ class _CaseLoadState extends State<CaseLoad> {
   }
 
   _caseLoad() async {
-    await ApiService()
-        .getSecureData(
-            'caseload', context.read<UIProvider>().getAccess["access"])
-        .then((response) {
-      print("***************RESPONSE************");
-      // debugPrint(response.body.data.toString());
-
+    final prefs = await SharedPreferences.getInstance();
+    final access = prefs.getString('access');
+    await ApiService().getSecureData('caseload', access).then((response) {
       setState(() {
         Iterable list = json.decode(response.body);
 
         case_load = list.map((model) => CaseLoadModel.fromJson(model)).toList();
-        print("************ case load  ****************88");
-        debugPrint("************ ${case_load.toString()}");
       });
     });
   }

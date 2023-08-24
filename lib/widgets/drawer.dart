@@ -1,7 +1,6 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
-import 'package:cpims_mobile/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

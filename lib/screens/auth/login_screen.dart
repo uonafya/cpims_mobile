@@ -1,7 +1,6 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/screens/auth/widgets/important_links_widget.dart';
-import 'package:cpims_mobile/services/auth_service.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({
@@ -25,8 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isObscure = true;
   bool _isloading = false;
 
-  final AuthService authService = AuthService(AuthProvider());
-
   void loginuser({
     required String username,
     required String password,
@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await authService.login(
+      await Provider.of<AuthProvider>(context, listen: false).login(
         context: context,
         password: password,
         username: username,
@@ -49,6 +49,71 @@ class _LoginScreenState extends State<LoginScreen> {
         _isloading = false;
       });
     }
+  }
+
+  final auth = LocalAuthentication();
+  String authorized = " not authorized";
+
+  Future<void> _authenticate() async {
+    bool authenticated = false;
+
+    try {
+      authenticated = await auth.authenticate(
+        localizedReason: "Scan your finger to authenticate",
+      );
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    setState(() {
+      authorized =
+          authenticated ? "Authorized success" : "Failed to authenticate";
+      successSnackBar(context, 'Auth success');
+    });
+    final prefs = await SharedPreferences.getInstance();
+
+    final username = prefs.getString('username');
+    final password = prefs.getString('password');
+
+    if (username != null && password != null) {
+      loginuser(username: username, password: password);
+    } else {
+      errorSnackBar(context, 'Please login with your credentials first');
+    }
+  }
+
+  Future<void> _checkBiometric() async {
+    bool canCheckBiometric = false;
+
+    try {
+      canCheckBiometric = await auth.canCheckBiometrics;
+    } on PlatformException catch (_) {
+      errorSnackBar(context, 'Unable to check biometrics');
+    }
+
+    if (!mounted) return;
+
+    setState(() {});
+  }
+
+  Future _getAvailableBiometric() async {
+    List<BiometricType> availableBiometric = [];
+
+    try {
+      availableBiometric = await auth.getAvailableBiometrics();
+    } on PlatformException catch (_) {
+      errorSnackBar(context, 'Unable to get available biometrics');
+    }
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    _checkBiometric();
+    _getAvailableBiometric();
+
+    super.initState();
   }
 
   @override
@@ -196,6 +261,28 @@ class _LoginScreenState extends State<LoginScreen> {
                   )
                 ],
               ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: _authenticate,
+                  child: const SizedBox(
+                    height: 80,
+                    width: 80,
+                    child: Card(
+                      child: Icon(
+                        Icons.fingerprint,
+                        size: 50,
+                        color: kPrimaryColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(
               height: 30,
