@@ -1,14 +1,14 @@
 class DetailModel{
-  final String question1;
-  final List<DetailChild> childrenQuestions;
-  final String dateOfAssessment;
-  final String dateOfLastAssessment;
+  final String? question1;
+  final List<DetailChild>? childrenQuestions;
+  final String? dateOfAssessment;
+  final String? dateOfLastAssessment;
 
   DetailModel({
-    required this.question1,
-    required this.childrenQuestions,
-    required this.dateOfAssessment,
-    required this.dateOfLastAssessment,
+    this.question1,
+    this.childrenQuestions,
+    this.dateOfAssessment,
+    this.dateOfLastAssessment,
   });
 
   factory DetailModel.fromJson(Map<String, dynamic> json) {
@@ -17,6 +17,20 @@ class DetailModel{
       childrenQuestions: List<DetailChild>.from(json["childrenQuestions"]!.map((x) => DetailChild.fromJson(x))),
       dateOfAssessment: json['dateOfAssessment'],
       dateOfLastAssessment: json['dateOfLastAssessment'],
+    );
+  }
+
+  DetailModel copyWith({
+    String? question1,
+    List<DetailChild>? childrenQuestions,
+    String? dateOfAssessment,
+    String? dateOfLastAssessment,
+  }) {
+    return DetailModel(
+      question1: question1 ?? this.question1,
+      childrenQuestions: childrenQuestions ?? this.childrenQuestions,
+      dateOfAssessment: dateOfAssessment ?? this.dateOfAssessment,
+      dateOfLastAssessment: dateOfLastAssessment ?? this.dateOfLastAssessment,
     );
   }
 }

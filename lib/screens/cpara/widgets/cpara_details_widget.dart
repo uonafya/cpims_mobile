@@ -1,8 +1,11 @@
+import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
+import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
 import 'ovc_sub_population_form.dart';
@@ -75,6 +78,12 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
           label: 'Date of Assessment',
           enabled: true,
           identifier: DateTextFieldIdentifier.dateOfAssessment,
+          onDateSelected: (date) {
+            print('Date selected: $date');
+            DetailModel detailModel = context.read<CparaProvider>().detailModel ??
+                DetailModel();
+            context.read<CparaProvider>().updateDetailModel(detailModel.copyWith(dateOfAssessment: date.toString()));
+          },
         ),
         const Divider(
           height: 20,
@@ -99,6 +108,12 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
           label: 'If No, give date of Previous Case Plan Readiness Assessment',
           enabled: isFirstAssessment == RadioButtonOptions.no,
           identifier: DateTextFieldIdentifier.previousAssessment,
+          onDateSelected: (date) {
+            print('Date selected: $date');
+            DetailModel detailModel = context.read<CparaProvider>().detailModel ??
+                DetailModel();
+            context.read<CparaProvider>().updateDetailModel(detailModel.copyWith(dateOfLastAssessment: date.toString()));
+          },
         ),
         const SizedBox(height: 20),
         const ReusableTitleText(
@@ -154,12 +169,14 @@ class DateTextField extends StatefulWidget {
       {Key? key,
       required this.label,
       required this.enabled,
+        required this.onDateSelected,
       required this.identifier})
       : super(key: key);
 
   final String label;
   final bool enabled;
   final DateTextFieldIdentifier identifier;
+  final Function(DateTime?)? onDateSelected;
 
   @override
   _DateTextFieldState createState() => _DateTextFieldState();
@@ -195,6 +212,7 @@ class _DateTextFieldState extends State<DateTextField> {
             if (pickedDate != null && mounted) {
               setState(() {
                 selectedDate = pickedDate;
+                widget.onDateSelected!(selectedDate);
               });
             }
           });

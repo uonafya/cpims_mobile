@@ -167,6 +167,13 @@ class _CparaFormsScreenState
                                               Text(" || Answer: ${stableModel?.question3}"),
                                             ],
                                           ),
+                                          const Text("Detail model:"),
+                                          Row(
+                                            children: [
+                                              Text("last Assesment"),
+                                              Text("Answer: ${detailModel?.dateOfAssessment}"),
+                                            ],
+                                          ),
                                         ],
                                       ),
                                     ));
