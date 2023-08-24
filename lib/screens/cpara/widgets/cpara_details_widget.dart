@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
+import 'ovc_sub_population_form.dart';
 
 class CparaDetailsWidget extends StatefulWidget {
   const CparaDetailsWidget({super.key});
@@ -87,7 +88,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
               setState(() {
                 isFirstAssessment = value;
                 if (isFirstAssessment == RadioButtonOptions.yes) {
-                  _dateTextFieldKey.currentState?.clearDate();
+                  _dateTextFieldPreviousKey.currentState?.clearDate();
                 }
               });
             }),
@@ -140,7 +141,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
           onPressed: _getDataAndMoveToNext,
           child: const Text('Next'),
         ),
-        // CheckboxForm(),
+        CheckboxForm(),
       ],
     );
   }
