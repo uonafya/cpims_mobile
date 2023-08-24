@@ -301,6 +301,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
+  multi_dropdown:
+    dependency: "direct main"
+    description:
+      name: multi_dropdown
+      sha256: a23eae9c6a71a69c315195ca3e8f82051ee686a1123d7f347f9877b634421711
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   multiselect:
     dependency: "direct main"
     description:
@@ -317,14 +325,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.3"
-  multi_dropdown:
-    dependency: "direct main"
-    description:
-      name: multi_dropdown
-      sha256: a23eae9c6a71a69c315195ca3e8f82051ee686a1123d7f347f9877b634421711
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.1"
   nested:
     dependency: transitive
     description:
