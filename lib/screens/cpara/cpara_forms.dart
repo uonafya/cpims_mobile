@@ -23,12 +23,10 @@ class CparaFormsScreen extends StatefulWidget {
   const CparaFormsScreen({super.key});
 
   @override
-  State<CparaFormsScreen> createState() =>
-      _CparaFormsScreenState();
+  State<CparaFormsScreen> createState() => _CparaFormsScreenState();
 }
 
-class _CparaFormsScreenState
-    extends State<CparaFormsScreen> {
+class _CparaFormsScreenState extends State<CparaFormsScreen> {
   int selectedStep = 0;
 
   List<Widget> steps = [
@@ -114,43 +112,63 @@ class _CparaFormsScreenState
                                     ? 'Submit'
                                     : 'Next',
                                 onTap: () {
-
-                                  if(selectedStep == steps.length - 1){
+                                  if (selectedStep == steps.length - 1) {
                                     // display collected data
-                                    DetailModel? detailModel = context.read<CparaProvider>().detailModel;
-                                    HealthModel? healthModel = context.read<CparaProvider>().healthModel;
-                                    StableModel? stableModel = context.read<CparaProvider>().stableModel;
-                                    SafeModel? safeModel = context.read<CparaProvider>().safeModel;
-                                    SchooledModel? schooledModel = context.read<CparaProvider>().schooledModel;
-                                    CparaModel? cparaModel = context.read<CparaProvider>().cparaModel;
+                                    DetailModel? detailModel = context
+                                        .read<CparaProvider>()
+                                        .detailModel;
+                                    HealthModel? healthModel = context
+                                        .read<CparaProvider>()
+                                        .healthModel;
+                                    StableModel? stableModel = context
+                                        .read<CparaProvider>()
+                                        .stableModel;
+                                    SafeModel? safeModel =
+                                        context.read<CparaProvider>().safeModel;
+                                    SchooledModel? schooledModel = context
+                                        .read<CparaProvider>()
+                                        .schooledModel;
+                                    CparaModel? cparaModel = context
+                                        .read<CparaProvider>()
+                                        .cparaModel;
 
-                                    showDialog(context: context, builder: (_) => AlertDialog(
-                                      title: const Text('Collected Data'),
-                                      content: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          const Text("Stable Model:"),
-                                          Row(
-                                            children: [
-                                              Text("Question: 1"),
-                                              Text("Answer: ${stableModel?.question1}"),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Text("Question: 2"),
-                                              Text(" || Answer: ${stableModel?.question2}"),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Text("Question: 3"),
-                                              Text(" || Answer: ${stableModel?.question3}"),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ));
+                                    showDialog(
+                                        context: context,
+                                        builder: (_) => AlertDialog(
+                                              title:
+                                                  const Text('Collected Data'),
+                                              content: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  const Text("Stable Model:"),
+                                                  Row(
+                                                    children: [
+                                                      Text("Question: 1"),
+                                                      Text(
+                                                          "Answer: ${stableModel?.question1}"),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      const Text("Question: 2"),
+                                                      Text(
+                                                          " || Answer: ${stableModel?.question2}"),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      const Text("Question: 3"),
+                                                      Text(
+                                                          " || Answer: ${stableModel?.question3}"),
+                                                    ],
+                                                  ),
+
+                                                  // Health Model
+                                                  HealthModelCollected()
+                                                ],
+                                              ),
+                                            ));
                                   }
 
                                   setState(() {
