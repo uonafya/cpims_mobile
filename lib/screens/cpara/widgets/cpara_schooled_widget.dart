@@ -10,24 +10,14 @@ class CparaSchooledWidget extends StatefulWidget {
 }
 
 class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
-  // Radio button options
   // State of the questions
   RadioButtonOptions? school_going_children;
-  RadioButtonOptions? q9_1;
-  RadioButtonOptions? q9_2;
-  RadioButtonOptions? ecde_4_5;
-  RadioButtonOptions? q9_3;
-  RadioButtonOptions? q9_4;
+  RadioButtonOptions? q9_1_Children_enrooled_in_school;
+  RadioButtonOptions? q9_2_Children_attending_school_regularly;
+  RadioButtonOptions? ecde_4_5_children;
+  RadioButtonOptions? q9_3_Children_attending_ecde;
+  RadioButtonOptions? q9_4_Children_progressed_from_one_level_to_another;
   RadioButtonOptions? benchmark_score;
-
-  // Color codes
-  static const lightBlue = Color.fromRGBO(217, 237, 247, 1);
-  static const darkBlue = Color.fromRGBO(190, 226, 239, 1);
-  static const green = Color.fromRGBO(0, 172, 172, 1);
-  static const grey = Color.fromRGBO(219, 219, 219, 1);
-  // static const greyBorder = Color.fromRGBO(59, 9, 9, 1);
-  static const lightTextColor = Colors.white;
-  // static const darkTextColor = Colors.black;
 
   // Update the state of the questions
   void updateQuestion(String question, RadioButtonOptions? value) {
@@ -37,29 +27,29 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
           school_going_children = value;
         });
         break;
-      case "q9_1":
+      case "q9_1_Children_enrooled_in_school":
         setState(() {
-          q9_1 = value;
+          q9_1_Children_enrooled_in_school = value;
         });
         break;
-      case "q9_2":
+      case "q9_2_Children_attending_school_regularly":
         setState(() {
-          q9_2 = value;
+          q9_2_Children_attending_school_regularly = value;
         });
         break;
-      case "ecde_4_5":
+      case "ecde_4_5_children":
         setState(() {
-          ecde_4_5 = value;
+          ecde_4_5_children = value;
         });
         break;
-      case "q9_3":
+      case "q9_3_Children_attending_ecde":
         setState(() {
-          q9_3 = value;
+          q9_3_Children_attending_ecde = value;
         });
         break;
-      case "q9_4":
+      case "q9_4_Children_progressed_from_one_level_to_another":
         setState(() {
-          q9_4 = value;
+          q9_4_Children_progressed_from_one_level_to_another = value;
         });
         break;
       case "benchmark_score":
@@ -77,118 +67,50 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: StepsWrapper(
-        title: 'CPARA schooled widget',
+        title: 'Schooled',
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: lightBlue,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: const Column(
-              children: [
-                Text(
-                  "Schooled: Goal 8: Increase School Attendance and Progression ",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  "Benchmark 9: All school-aged children (4-17) and adolescents aged 18-20 enrolled in school in the household regularly attended school and progressed during the last year.",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ],
-            ),
+          const GoalWidget(
+            title:
+                'Schooled: Goal 8: Increase School Attendance and Progression',
+            description:
+                'Benchmark 9: All school-aged children (4-17) and adolescents aged 18-20 enrolled in school in the household regularly attended school and progressed during the last year.',
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: small_height),
+          MainCardQuestion(
+              card_question:
+                  "Are there school going children in this Household ?",
+              selectedOption: (value) { 
+                // Update the state of the question
+                updateQuestion("school_going_children", value);
+              }),
 
-          Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: darkBlue,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Column(
-                  children: [
-                    const Text(
-                      "Are there school going children in this Household ? ",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    CustomRadioButton(
-                      isNaAvailable: false,
-                      optionSelected: (value) {
-                        setState(() {
-                          school_going_children = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              const Text(
-                "9.1 Are all school aged children (6-17) enrolled in school? (And out of school OVC aged 15-20 years engaged in approved economic intervention?* ",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              CustomRadioButton(
-                isNaAvailable: false,
-                optionSelected: (value) {
-                  setState(() {
-                    q9_1 = value;
-                  });
-                },
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              const Text(
-                "9.2 Are the enrolled children attending school regularly? (i.e. have not missed school for more than five school days in a month). Probe the trend of absence). Verify with the school attendance tracking tool where applicable)*  ",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              CustomRadioButton(
-                isNaAvailable: false,
-                optionSelected: (value) {
-                  setState(() {
-                    q9_2 = value;
-                  });
-                },
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 25,
-          ),
+// Question 9.1 - 9.2
+// Question 9.1
+          OtherQuestions(
+              other_question:
+                  "9.1 Are all school aged children (6-17) enrolled in school? (And out of school OVC aged 15-20 years engaged in approved economic intervention?*",
+              selectedOption: (value) {
+                // Update the state of the question
+                updateQuestion("q9_1_Children_enrooled_in_school", value);
+              },
+              NaAvailable: false),
+
+// Question 9.2
+          OtherQuestions(
+              other_question:
+                  "9.2 Are the enrolled children attending school regularly? (i.e. have not missed school for more than five school days in a month). Probe the trend of absence). Verify with the school attendance tracking tool where applicable)*",
+              selectedOption: (value) {
+                // Update the state of the question
+                updateQuestion(
+                    "q9_2_Children_attending_school_regularly", value);
+              },
+              NaAvailable: false),
+
+// General Statement
           const Text(
             "If there is a child between 4-5 years in the household and there is an ECDE center in the area, please ask the caregiver, otherwise skip and score the benchmark appropriately:",
             style: TextStyle(
-              fontSize: 18,
+              fontSize: question_font_Size,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -196,114 +118,53 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
             height: 25,
           ),
 
-          // Question ECDE
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: lightBlue,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Column(
-              children: [
-                const Text(
-                  "Is there a child between 4-5 years in the household and is there an ECDE center in the area ? ",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                CustomRadioButton(
-                  isNaAvailable: false,
-                  optionSelected: (value) {
-                    setState(() {
-                      ecde_4_5 = value;
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
+// Main Card Question
+          MainCardQuestion(
+              card_question:
+                  "Is there a child between 4-5 years in the household and is there an ECDE center in the area ?",
+              selectedOption: (value) {
+                // Update the state of the question
+                updateQuestion("ecde_4_5_children", value);
+              }),
+
           const SizedBox(
             height: 25,
-          ),
-          // Question 9.3 - 9.4
-          const Text(
-            "9.3 Is your child (4–5-year-old) attending ECDE?* ",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          CustomRadioButton(
-            isNaAvailable: false,
-            optionSelected: (value) {
-              setState(() {
-                q9_2 = value;
-              });
-            },
           ),
 
-          const Text(
-            "9.4 Have all the enrolled children progressed/graduated from one level to the other in the last school calendar year? Note: if possible, please ask to see report card.*  ",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          CustomRadioButton(
-            isNaAvailable: true,
-            optionSelected: (value) {
-              setState(() {
-                q9_2 = value;
-              });
-            },
-          ),
-          const SizedBox(
-            height: 25,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: grey,
-              borderRadius: BorderRadius.circular(5),
-              // border:  const Border(
-              //   left: BorderSide(
-              //   color: greyBorder,
-              //   width: 2,
-              //   ),
-              // ),
-            ),
-            child: Column(children: [
-              const Text(
-                "Has the household achieved this benchmarks?",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              CustomRadioButton(
-                isNaAvailable: false,
-                optionSelected: (value) {
-                  setState(() {
-                    benchmark_score = value;
-                  });
-                },
-              ),
-            ]),
-          ),
-          const SizedBox(
-            height: 25,
-          ),
+// Question 9.3 - 9.4
+// Question 9.3
+          OtherQuestions(
+              other_question:
+                  "9.3 Is your child (4–5-year-old) attending ECDE?* ",
+              selectedOption: (value) {
+                // Update the state of the question
+                updateQuestion("q9_3_Children_attending_ecde", value);
+              },
+              NaAvailable: false),
+
+// Question 9.4
+          OtherQuestions(
+              other_question:
+                  "9.4 Have all the enrolled children progressed/graduated from one level to the other in the last school calendar year? Note: if possible, please ask to see report card.*  ",
+              selectedOption: (value) {
+                // Update the state of the question
+                updateQuestion(
+                    "q9_4_Children_progressed_from_one_level_to_another",
+                    value);
+                print("This value2 is $value");
+
+              },
+              NaAvailable: true,
+              divider: true),
+
+// Benchmark score
+          BenchMarkQuestion(
+              benchmark_question: "Has the household achieved this benchmarks?",
+              selectedOption: (value) {
+                // Update the state of the question
+                updateQuestion("benchmark_score", value);
+              }),
+
           const Column(
             children: [
               Text(
@@ -317,6 +178,193 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
           )
         ],
       ),
+    );
+  }
+}
+
+// Color codes
+const lightBlue = Color.fromRGBO(217, 237, 247, 1);
+const darkBlue = Color.fromRGBO(190, 226, 239, 1);
+const green = Color.fromRGBO(0, 172, 172, 1);
+const grey = Color.fromRGBO(219, 219, 219, 1);
+// static const greyBorder = Color.fromRGBO(59, 9, 9, 1);
+const lightTextColor = Colors.white;
+// static const darkTextColor = Colors.black;
+
+const goal_font = 20.0;
+const goal_weight = FontWeight.w700;
+const goaldesc_font = 14.0;
+const goaldesc_weight = FontWeight.w300;
+
+class GoalWidget extends StatelessWidget {
+  final String title;
+  final String description;
+  const GoalWidget({super.key, required this.title, required this.description});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      decoration: const BoxDecoration(color: lightBlue),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontWeight: goal_weight, fontSize: goal_font),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            description,
+            style: const TextStyle(
+                fontWeight: goaldesc_weight,
+                color: Colors.black54,
+                fontSize: goaldesc_font,
+                fontStyle: FontStyle.italic),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+//Question for card 1
+// Radio button options
+
+class MainCardQuestion extends StatelessWidget {
+  final String card_question;
+  final Function(RadioButtonOptions?) selectedOption;
+  const MainCardQuestion(
+      {super.key, required this.card_question, required this.selectedOption});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: darkBlue,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Column(
+            children: [
+              Text(
+                card_question,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              CustomRadioButton(
+                isNaAvailable: false,
+                optionSelected: (value) => selectedOption(value),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+const question_font_Size = 18.0;
+const question_font_weight = FontWeight.w500;
+const small_height = 10.0;
+const large_height = 25.0;
+
+class OtherQuestions extends StatelessWidget {
+  final bool NaAvailable;
+  final String other_question;
+  final bool divider;
+  final Function(RadioButtonOptions?) selectedOption;
+
+  const OtherQuestions(
+      {super.key,
+      required this.other_question,
+      required this.selectedOption,
+      this.divider = false,
+      this.NaAvailable = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        if (divider == true) const Divider(),
+        const SizedBox(
+          height: large_height,
+        ),
+        Text(
+          other_question,
+          style: const TextStyle(
+            fontSize: question_font_Size,
+            fontWeight: question_font_weight,
+          ),
+        ),
+        const SizedBox(
+          height: small_height,
+        ),
+        CustomRadioButton(
+          isNaAvailable: NaAvailable,
+          optionSelected: (value) => selectedOption(value),
+        ),
+        const SizedBox(
+          height: large_height,
+        ),
+      ],
+    );
+  }
+}
+
+class BenchMarkQuestion extends StatelessWidget {
+  final String benchmark_question;
+  final Function(RadioButtonOptions?) selectedOption;
+  const BenchMarkQuestion(
+      {super.key,
+      required this.benchmark_question,
+      required this.selectedOption});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: grey,
+            borderRadius: BorderRadius.circular(5),
+            // border:  const Border(
+            //   left: BorderSide(
+            //   color: greyBorder,
+            //   width: 2,
+            //   ),
+            // ),
+          ),
+          child: Column(
+            children: [
+              Text(
+                benchmark_question,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              CustomRadioButton(
+                isNaAvailable: false,
+                optionSelected: (value) => selectedOption(value),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
