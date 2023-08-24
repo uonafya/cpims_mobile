@@ -113,7 +113,8 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
       child: StepsWrapper(
         title: 'Safe',
         children: [
-          // Safe Goal 6
+
+// Safe Goal 6
           const SafeGoalWidget(
               title:
                   "Safe: Goal 6: Reduce Risk of Physical, Emotional and Psychological Injury Due to Exposure to Violence",
@@ -424,7 +425,7 @@ class QuestionForCard extends StatelessWidget {
           Text(
             text,
             style: const TextStyle(
-              fontSize: 24,
+              fontSize: 20,
               fontWeight: FontWeight.w700,
               color: lightTextColor,
             ),
