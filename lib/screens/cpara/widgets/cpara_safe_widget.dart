@@ -20,6 +20,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
   RadioButtonOptions? _exposed_to_violence;
   RadioButtonOptions? _no_siblings_over_10;
   RadioButtonOptions? _referred_for_services;
+  RadioButtonOptions? _tick_Yes;
   RadioButtonOptions? _received_services;
   RadioButtonOptions? _benchmark_6;
   RadioButtonOptions? _primary_caregiver;
@@ -43,7 +44,16 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             _no_siblings_over_10 = RadioButtonOptions.yes;
             _referred_for_services = RadioButtonOptions.yes;
             _received_services = RadioButtonOptions.yes;
-            _benchmark_6 = RadioButtonOptions.yes;
+          }
+          if (value == RadioButtonOptions.yes) {
+            // Set values of radio buttons for questions 6.1 and 6.2 to yes
+            _experienced_violence = null;
+            _child_below_12 = null;
+            _adolescents_older_than_12 = null;
+            _exposed_to_violence = null;
+            _no_siblings_over_10 = null;
+            _referred_for_services = null;
+            _received_services = null;
           }
         });
         break;
@@ -148,48 +158,57 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             selectedOption: (value) {
               // Update the state of the question
               updateQuestion("_children_adolecent_caregiver", value);
-              if(value ==RadioButtonOptions.no) _adolescents_older_than_12 = RadioButtonOptions.no;
-              if(value == RadioButtonOptions.no) _exposed_to_violence = RadioButtonOptions.yes;
+              if (value == RadioButtonOptions.no)
+                _adolescents_older_than_12 = RadioButtonOptions.no;
+              if (value == RadioButtonOptions.no)
+                _exposed_to_violence = RadioButtonOptions.yes;
+              if (value == RadioButtonOptions.no)
+                _tick_Yes = RadioButtonOptions.yes;
+              if (value == RadioButtonOptions.yes) _tick_Yes = null;
             }),
 
 // Question 6.1
 
-        if (_children_adolecent_caregiver == RadioButtonOptions.yes)
+        if (_children_adolecent_caregiver == RadioButtonOptions.no)
+          const SkipQuestion()
+        else
           OtherQuestions(
+            groupValue: _experienced_violence,
             other_question:
                 "6.1 Have you experienced violence, abuse (sexual, physical, or emotional) in the last six months?*",
             selectedOption: (value) {
               // Update the state of the question
               updateQuestion("_experienced_violence", value);
             },
-          )
-        else
-          const SkipQuestion(),
+          ),
 
         // Question 6.2
-        if (_children_adolecent_caregiver == RadioButtonOptions.yes)
+        if (_children_adolecent_caregiver == RadioButtonOptions.no)
+          const SkipQuestion()
+        else
           OtherQuestions(
+            groupValue: _child_below_12,
             other_question:
                 "6.2 Is there a child below 12 years who has been exposed to violence or abuse (sexual, physical or emotional), neglect, or exploitation in the last six months?*",
             selectedOption: (value) {
               // Update the state of the question
               updateQuestion("_child_below_12", value);
             },
-          )
-        else
-          const SkipQuestion(),
+          ),
 
 // Question 6.3 to 6.2
 // Question Main Card
-        if (_children_adolecent_caregiver == RadioButtonOptions.yes)
+        if (_children_adolecent_caregiver == RadioButtonOptions.no)
+          const SkipQuestion()
+        else
           MainCardQuestion(
               card_question: " Is there adolescents 12 years and above ? ",
               selectedOption: (value) {
                 // Update the state of the question
                 updateQuestion("_adolescents_older_than_12", value);
-              })
-        else
-          const SkipQuestion(),
+                if (value == RadioButtonOptions.no)
+                  _tick_Yes = RadioButtonOptions.yes;
+              }),
 
         const SizedBox(
           height: large_height,
@@ -245,17 +264,20 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                 ],
               ),
             ),
-            if (_children_adolecent_caregiver == RadioButtonOptions.yes && _adolescents_older_than_12 == RadioButtonOptions.yes)
+            if (_children_adolecent_caregiver == RadioButtonOptions.no)
+              const SkipQuestion()
+            else
               OtherQuestions(
+                groupValue: _exposed_to_violence,
                 other_question:
                     "6.3 Have you been exposed to violence, abuse (sexual, physical or emotional), neglect, or exploitation in the last six months?",
                 selectedOption: (value) {
                   // // Update the state of the question
                   updateQuestion("_exposed_to_violence", value);
+                  if (value == RadioButtonOptions.yes)
+                    _tick_Yes = RadioButtonOptions.yes;
                 },
               )
-              else
-              const SkipQuestion(),
           ],
         ),
 
@@ -281,11 +303,10 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
 // Tick yes if yes for all children
         OtherQuestions(
-            other_question: "Tick Yes if YES for all children",
-            selectedOption: (value) {
-              // Update the state of the question
-              updateQuestion("_exposed_to_violence", value);
-            }),
+          other_question: "Tick Yes if YES for all children",
+          selectedOption: (value) {},
+          groupValue: _tick_Yes,
+        ),
 
 // Label for question 6.4 to 6.5
         const Text(
@@ -297,28 +318,39 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
         ),
 
 // Question 6.4
-        OtherQuestions(
-            other_question:
-                "6.4 Is there any evidence that the case has referred for services such as child protection?* ",
-            selectedOption: (value) {
-              // Update the state of the question
-              updateQuestion("_referred_for_services", value);
-            }),
+        if (_children_adolecent_caregiver == RadioButtonOptions.no)
+          const SkipQuestion()
+        else
+          OtherQuestions(
+              groupValue: _referred_for_services,
+              other_question:
+                  "6.4 Is there any evidence that the case has referred for services such as child protection?* ",
+              selectedOption: (value) {
+                // Update the state of the question
+                updateQuestion("_referred_for_services", value);
+              }),
 
 // Question 6.5
-        OtherQuestions(
-            other_question:
-                "6.5 Is there documentation that they received services (e,g counseling, psycho-social, legal or health services)?* ",
-            selectedOption: (value) {
-              // Update the state of the question
-              updateQuestion("_received_services", value);
-            }),
+        if (_children_adolecent_caregiver == RadioButtonOptions.no)
+          const SkipQuestion()
+        else
+          OtherQuestions(
+              groupValue: _received_services,
+              other_question:
+                  "6.5 Is there documentation that they received services (e,g counseling, psycho-social, legal or health services)?* ",
+              selectedOption: (value) {
+                // Update the state of the question
+                updateQuestion("_received_services", value);
+              }),
 
 // Benchmak 6 results
+        if (_children_adolecent_caregiver == RadioButtonOptions.no)
         BenchMarkQuestion(
           benchmark_question: "Has the household achieved this benchmarks?",
-          selectedOption: _benchmark_6,
-          isEditable: false,
+          selectedOption: (value) {
+            // Update the state of the question
+            updateQuestion("_benchmark_6", value);
+          }
         ),
 
         const SizedBox(
@@ -335,6 +367,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
 // Question 7.1
         OtherQuestions(
+            groupValue: _primary_caregiver,
             other_question: "7.1 Is the primary caregiver 18yrs and above?* ",
             selectedOption: (value) {
               // Update the state of the question
@@ -343,6 +376,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
 // Question 7.2
         OtherQuestions(
+            groupValue: _caregiver_lived_12_months,
             other_question:
                 "7.2 Has the caregiver cared for and lived in the same home as the child/adolescents for at least the last 12 months?*  ",
             selectedOption: (value) {
@@ -351,8 +385,12 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             }),
 
 // Benchmak 7 results
-        const BenchMarkQuestion(
+        BenchMarkQuestion(
           benchmark_question: "Has the household achieved this benchmarks?",
+          selectedOption: (value) {
+            // Update the state of the question
+            updateQuestion("_benchmark_7", value);
+          }
         ),
 
         const SizedBox(
@@ -369,6 +407,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
 // Question 8.1
         OtherQuestions(
+            groupValue: _legal_documents,
             other_question:
                 "8.1 Do all children under the age of 18 have legal documents (birth certificate)?* ",
             selectedOption: (value) {
@@ -377,8 +416,12 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             }),
 
 // Benchmak 7 results
-        const BenchMarkQuestion(
+        BenchMarkQuestion(
           benchmark_question: "Has the household achieved this benchmarks?",
+          selectedOption: (value) {
+            // Update the state of the question
+            updateQuestion("_benchmark_8", value);
+          },
         ),
 
 /////////////////////////////////////////
@@ -521,6 +564,7 @@ class OtherQuestions extends StatelessWidget {
   final String other_question;
   final bool divider;
   final Function(RadioButtonOptions?) selectedOption;
+  final RadioButtonOptions? groupValue;
 
   const OtherQuestions({
     super.key,
@@ -528,6 +572,7 @@ class OtherQuestions extends StatelessWidget {
     required this.selectedOption,
     this.divider = false,
     this.NaAvailable = false,
+    required this.groupValue,
   });
 
   @override
@@ -548,9 +593,10 @@ class OtherQuestions extends StatelessWidget {
         const SizedBox(
           height: small_height,
         ),
-        CustomRadioButton(
+        MyCustomRadioListTileColumn(
           isNaAvailable: NaAvailable,
-          optionSelected: (value) => selectedOption(value),
+          updateRadioButton: (value) => selectedOption(value),
+          groupValue: groupValue,
         ),
         const SizedBox(
           height: large_height,
@@ -562,15 +608,11 @@ class OtherQuestions extends StatelessWidget {
 
 class BenchMarkQuestion extends StatelessWidget {
   final String benchmark_question;
-  final RadioButtonOptions? selectedOption;
-  final bool isEditable;
-
-  const BenchMarkQuestion({
-    Key? key,
-    required this.benchmark_question,
-    this.selectedOption,
-    this.isEditable = true,
-  }) : super(key: key);
+  final Function(RadioButtonOptions?) selectedOption;
+  const BenchMarkQuestion(
+      {super.key,
+      required this.benchmark_question,
+      required this.selectedOption});
 
   @override
   Widget build(BuildContext context) {
@@ -581,6 +623,12 @@ class BenchMarkQuestion extends StatelessWidget {
           decoration: BoxDecoration(
             color: grey,
             borderRadius: BorderRadius.circular(5),
+            // border:  const Border(
+            //   left: BorderSide(
+            //   color: greyBorder,
+            //   width: 2,
+            //   ),
+            // ),
           ),
           child: Column(
             children: [
@@ -594,21 +642,9 @@ class BenchMarkQuestion extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Column(
-                children: [
-                  Radio(
-                    value: RadioButtonOptions.yes,
-                    groupValue: selectedOption,
-                    onChanged: isEditable ? (_) {} : null,
-                  ),
-                  Text("Yes"),
-                  Radio(
-                    value: RadioButtonOptions.no,
-                    groupValue: selectedOption,
-                    onChanged: null, // No onChanged callback for "No"
-                  ),
-                  Text("No"),
-                ],
+              CustomRadioButton(
+                isNaAvailable: false,
+                optionSelected: (value) => selectedOption(value),
               ),
             ],
           ),
@@ -626,6 +662,48 @@ class SkipQuestion extends StatelessWidget {
     return const Column(
       children: [
         Text("Skipped Question"),
+      ],
+    );
+  }
+}
+
+typedef UpdateRadioButton = void Function(RadioButtonOptions? value);
+
+class MyCustomRadioListTileColumn extends StatelessWidget {
+  final bool isNaAvailable;
+  final UpdateRadioButton updateRadioButton;
+  final RadioButtonOptions? groupValue;
+
+  const MyCustomRadioListTileColumn(
+      {required this.isNaAvailable,
+      required this.updateRadioButton,
+      required this.groupValue,
+      super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        RadioListTile<RadioButtonOptions>(
+            title: const Text('Yes'),
+            value: RadioButtonOptions.yes,
+            groupValue: groupValue,
+            onChanged: updateRadioButton),
+        RadioListTile<RadioButtonOptions>(
+            title: const Text('No'),
+            value: RadioButtonOptions.no,
+            groupValue: groupValue,
+            onChanged: updateRadioButton),
+        isNaAvailable
+            ? RadioListTile<RadioButtonOptions>(
+                title: const Text('N/A'),
+                value: RadioButtonOptions.na,
+                groupValue: groupValue,
+                onChanged: updateRadioButton)
+            : const SizedBox.shrink(),
       ],
     );
   }
