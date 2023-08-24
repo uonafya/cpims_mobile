@@ -8,7 +8,6 @@ import 'package:multi_dropdown/multiselect_dropdown.dart';
 class SafeForm1b extends StatefulWidget {
   const SafeForm1b({super.key});
 
-
   @override
   State<SafeForm1b> createState() => _SafeForm1bState();
 }
@@ -34,9 +33,6 @@ class _SafeForm1bState extends State<SafeForm1b> {
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
-        const CustomTextField(
-          hintText: 'Select service',
-        ),
         MultiSelectDropDown(
           showClearIcon: true,
           hint: 'Services(s)',
@@ -63,6 +59,11 @@ class _SafeForm1bState extends State<SafeForm1b> {
           borderRadius: BorderRadius.circular(5.w)
               .topLeft
               .x, // Set the desired border radius value
+        ),
+        const SizedBox(height: 15),
+        const Text(
+          'Date of Service(s) / Event',
+          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
         const CustomDatePicker(
