@@ -54,14 +54,14 @@ class _StableForm1bState extends State<StableForm1b> {
               .x, // Set the desired border radius value
         ),
         const SizedBox(height: 15),
-        const Text(
-          'Date of Service(s) / Event',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 10),
-        const CustomDatePicker(
-          hintText: 'Select date',
-        )
+        // const Text(
+        //   'Date of Service(s) / Event',
+        //   style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        // ),
+        // const SizedBox(height: 10),
+        // const CustomDatePicker(
+        //   hintText: 'Select date',
+        // )
       ],
     );
   }

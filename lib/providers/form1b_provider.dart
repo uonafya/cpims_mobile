@@ -1,18 +1,34 @@
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import '../widgets/custom_toast.dart';
 
 class HealthFormData {
   late final List selectedServices;
-  late final DateTime selectedDate;
+  late final String selectedDate;
+  late final String domainId;
+
 
   HealthFormData({required this.selectedServices, required this.selectedDate});
+}
+
+class StableFormData {
+  late final List selectedServices;
+  late final String domainId;
+
+  StableFormData({required this.selectedServices, required this.domainId});
+}
+
+class SafeFormData {
+  late final List selectedServices;
+  late final String domainId;
+
+  SafeFormData({required this.selectedServices, required this.domainId});
 }
 
 class Form1bProvider extends ChangeNotifier {
   final HealthFormData _formData = HealthFormData(
       selectedServices: [],
-      selectedDate: DateTime.now()
+      selectedDate: ""
   );
 
   HealthFormData get formData => _formData;
@@ -24,18 +40,16 @@ class Form1bProvider extends ChangeNotifier {
   }
 
   void setSelectedDate(DateTime selectedDate) {
-    _formData.selectedDate = selectedDate;
+    // _formData.selectedDate = selectedDate;
+    // CustomToastWidget.showToast(selectedDate);
+    final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+
+    _formData.selectedDate = formattedDate;
     notifyListeners();
   }
 
-
-  bool _showToast = false;
-
-  bool get showToast => _showToast;
-
   void saveData(String toastData) {
-    // Save data logic
-    CustomToastWidget.showToast('Data saved successfully!${toastData}');
+    CustomToastWidget.showToast('Data saved successfuy!$toastData');
     notifyListeners();
   }
 

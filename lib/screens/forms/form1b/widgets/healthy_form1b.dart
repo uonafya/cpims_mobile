@@ -53,8 +53,6 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           onOptionSelected: (selectedServices) {
             selectedCareGiverServices = selectedServices;
             form1bProvider.setSelectedServices(selectedCareGiverServices);
-            // selectedCareGiverServices = selectedServices.cast<String>().toList();
-            //   form1bProvider.setSelectedServices(selectedServices.cast<String>());
             CustomToastWidget.showToast("hii${form1bProvider.formData.selectedServices}");
 
           },
@@ -81,9 +79,9 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
         CustomFormsDatePicker(
           hintText: 'Select the date',
           onDateSelected: (selectedDate) {
-            print("object for testing");
+            final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+            CustomToastWidget.showToast(formattedDate);
             form1bProvider.setSelectedDate(selectedDate);
-
           },
         ),
       ],

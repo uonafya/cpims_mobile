@@ -40,7 +40,7 @@ List<Map<String, dynamic>> ServiceDomains = [
 
 // List<Map<String, dynamic>> criticalEventsSection = [
 //   {
-//     'title': 'Healthy',
+//     'title': 'Critical Events',
 //     'subtitle': 'Caregiver health and nutrition status',
 //     'onTap': () {}
 //   }
