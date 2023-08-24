@@ -1,16 +1,12 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
-
 import '../screens/forms/form1b/utils/form1bConstants.dart';
 
 
-class CustomMultiSelectDropDown extends StatefulWidget {
+class CustomMultiSelectDropDown<T> extends StatefulWidget {
   final bool showClearIcon;
   final String hint;
-  final Function(List<String>) onOptionSelected;
+  final Function(List<T>) onOptionSelected;
   final List<ValueItem> options;
   final int maxItems;
   final List<ValueItem> disabledOptions;
