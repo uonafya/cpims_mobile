@@ -106,6 +106,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
                 'Details of all children below 18 years currently living in the household.'),
         ListView.builder(
           shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           itemCount: children.length,
           itemBuilder: (context, index) {
             return ChildCard(childDetails: children[index]);

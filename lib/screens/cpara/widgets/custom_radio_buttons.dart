@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class CustomRadioButton extends StatefulWidget {
   final bool isNaAvailable;
+  final RadioButtonOptions? option;
   final Function(RadioButtonOptions?) optionSelected;
-  const CustomRadioButton({super.key, required this.isNaAvailable, required this.optionSelected});
+  const CustomRadioButton({super.key, required this.isNaAvailable, required this.optionSelected, this.option});
 
   @override
   State<CustomRadioButton> createState() => _CustomRadioButtonState();
@@ -11,6 +12,13 @@ class CustomRadioButton extends StatefulWidget {
 
 class _CustomRadioButtonState extends State<CustomRadioButton> {
   RadioButtonOptions? _option;
+
+  @override
+  void initState() {
+    _option = widget.option;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
