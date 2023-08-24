@@ -133,6 +133,8 @@ class _CparaFormsScreenState
                   ),
                 ],
               )),
+          const SizedBox(height: 20),
+          const PastCPARAWidget(),
           const Footer(),
         ],
       ),

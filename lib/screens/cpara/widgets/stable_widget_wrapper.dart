@@ -12,7 +12,7 @@ class StableWidgetWrapper extends StatelessWidget {
       padding: const EdgeInsets.all(15),
       width: double.infinity,
       decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey, width: 1),
+          border: Border.all(color: Colors.grey.shade300, width: 1),
           borderRadius: BorderRadius.circular(5)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
