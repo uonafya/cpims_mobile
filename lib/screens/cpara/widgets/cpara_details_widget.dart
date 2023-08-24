@@ -2,6 +2,7 @@ import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
 
@@ -44,14 +45,35 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
     print('Has HIV exposed infant: $hasHivExposedInfant');
     print(
         'Has pregnant or breastfeeding woman: $hasPregnantOrBreastfeedingWoman');
+    DateTime? dateOfAssessment =
+        _dateTextFieldKey.currentState?.getSelectedDate();
+    String formattedDateOfAssessment = dateOfAssessment != null
+        ? DateFormat('yyyy-MM-dd').format(dateOfAssessment)
+        : '';
+    print('Date of assessment: $formattedDateOfAssessment'); //am not able to get the date of assessment
+
+    DateTime? dateOfPreviousAssessment =
+        _dateTextFieldPreviousKey.currentState?.getSelectedDate();
+    String formattedDateOfPreviousAssessment = dateOfPreviousAssessment != null
+        ? DateFormat('yyyy-MM-dd').format(dateOfPreviousAssessment)
+        : '';
+    print('Date of previous assessment: $formattedDateOfPreviousAssessment');
   }
+
+  final GlobalKey<_DateTextFieldState> _dateTextFieldKey = GlobalKey();
+  final GlobalKey<_DateTextFieldState> _dateTextFieldPreviousKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return StepsWrapper(
       title: 'CPARA Details',
       children: [
-        const DateTextField(),
+        DateTextField(
+          key: _dateTextFieldKey,
+          label: 'Date of Assessment',
+          enabled: true,
+          identifier: DateTextFieldIdentifier.dateOfAssessment,
+        ),
         const Divider(
           height: 20,
           thickness: 2,
@@ -64,9 +86,18 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             optionSelected: (value) {
               setState(() {
                 isFirstAssessment = value;
+                if (isFirstAssessment == RadioButtonOptions.yes) {
+                  _dateTextFieldKey.currentState?.clearDate();
+                }
               });
             }),
-        const DateTextField(),
+        const SizedBox(height: 20),
+        DateTextField(
+          key: _dateTextFieldPreviousKey,
+          label: 'If No, give date of Previous Case Plan Readiness Assessment',
+          enabled: isFirstAssessment == RadioButtonOptions.no,
+          identifier: DateTextFieldIdentifier.previousAssessment,
+        ),
         const SizedBox(height: 20),
         const ReusableTitleText(
             title:
@@ -115,25 +146,64 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
   }
 }
 
-class DateTextField extends StatelessWidget {
-  const DateTextField({super.key});
+class DateTextField extends StatefulWidget {
+  const DateTextField(
+      {Key? key,
+      required this.label,
+      required this.enabled,
+      required this.identifier})
+      : super(key: key);
+
+  final String label;
+  final bool enabled;
+  final DateTextFieldIdentifier identifier;
+
+  @override
+  _DateTextFieldState createState() => _DateTextFieldState();
+}
+
+class _DateTextFieldState extends State<DateTextField> {
+  DateTime? selectedDate;
+
+  void clearDate() {
+    setState(() {
+      selectedDate = null;
+    });
+  }
+
+  DateTime? getSelectedDate() {
+    return selectedDate;
+  }
 
   @override
   Widget build(BuildContext context) {
+    String textFieldText = selectedDate != null
+        ? DateFormat('MMMM d, yyyy').format(selectedDate!)
+        : '';
     return TextField(
       onTap: () {
-        // Implement your date picker logic here
-        showDatePicker(
-          context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2101),
-        );
+        if (widget.enabled) {
+          showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2101),
+          ).then((pickedDate) {
+            if (pickedDate != null && mounted) {
+              setState(() {
+                selectedDate = pickedDate;
+              });
+            }
+          });
+        }
       },
-      decoration: const InputDecoration(
-        labelText: 'Date of Assessment',
+      readOnly: true,
+      enabled: widget.enabled,
+      decoration: InputDecoration(
+        labelText: widget.label,
         border: OutlineInputBorder(),
       ),
+      controller: TextEditingController(text: textFieldText),
     );
   }
 }
@@ -397,4 +467,9 @@ class ApiService {
       throw Exception('Failed to load OVC details');
     }
   }
+}
+
+enum DateTextFieldIdentifier {
+  dateOfAssessment,
+  previousAssessment,
 }
