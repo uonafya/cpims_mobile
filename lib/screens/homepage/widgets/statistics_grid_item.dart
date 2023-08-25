@@ -11,7 +11,7 @@ class StatisticsGridItem extends StatelessWidget {
       required this.color,
       required this.secondaryColor})
       : super(key: key);
-  final int value;
+  final String value;
   final String title;
   final IconData icon;
   final Color color;
@@ -51,7 +51,7 @@ class StatisticsGridItem extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        value.toString(),
+                        value,
                         style: const TextStyle(
                           fontSize: 20,
                           color: Colors.white,
