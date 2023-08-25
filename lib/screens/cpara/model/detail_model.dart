@@ -1,22 +1,53 @@
-class DetailModel{
-  final String question1;
-  final List<DetailChild> childrenQuestions;
-  final String dateOfAssessment;
-  final String dateOfLastAssessment;
+class DetailModel {
+  final String? isFirstAssessment;
+  final String? isChildHeaded;
+  final String? hasHivExposedInfant;
+  final String? hasPregnantOrBreastfeedingWoman;
+  final List<DetailChild>? childrenQuestions;
+  final String? dateOfAssessment;
+  final String? dateOfLastAssessment;
 
   DetailModel({
-    required this.question1,
-    required this.childrenQuestions,
-    required this.dateOfAssessment,
-    required this.dateOfLastAssessment,
+    this.isFirstAssessment,
+    this.isChildHeaded,
+    this.hasHivExposedInfant,
+    this.hasPregnantOrBreastfeedingWoman,
+    this.childrenQuestions,
+    this.dateOfAssessment,
+    this.dateOfLastAssessment,
   });
 
   factory DetailModel.fromJson(Map<String, dynamic> json) {
     return DetailModel(
-      question1: json['question1'],
-      childrenQuestions: List<DetailChild>.from(json["childrenQuestions"]!.map((x) => DetailChild.fromJson(x))),
+      isFirstAssessment: json['question1'],
+      isChildHeaded: json['question2'],
+      hasHivExposedInfant: json['question3'],
+      hasPregnantOrBreastfeedingWoman: json['question4'],
+      childrenQuestions: List<DetailChild>.from(
+          json["childrenQuestions"]!.map((x) => DetailChild.fromJson(x))),
       dateOfAssessment: json['dateOfAssessment'],
       dateOfLastAssessment: json['dateOfLastAssessment'],
+    );
+  }
+
+  DetailModel copyWith({
+    String? isFirstAssessment,
+    String? isChildHeaded,
+    String? hasHivExposedInfant,
+    String? hasPregnantOrBreastfeedingWoman,
+    List<DetailChild>? childrenQuestions,
+    String? dateOfAssessment,
+    String? dateOfLastAssessment,
+  }) {
+    return DetailModel(
+      isFirstAssessment: isFirstAssessment ?? this.isFirstAssessment,
+      isChildHeaded: isChildHeaded ?? this.isChildHeaded,
+      hasHivExposedInfant: hasHivExposedInfant ?? this.hasHivExposedInfant,
+      hasPregnantOrBreastfeedingWoman: hasPregnantOrBreastfeedingWoman ??
+          this.hasPregnantOrBreastfeedingWoman,
+      childrenQuestions: childrenQuestions ?? this.childrenQuestions,
+      dateOfAssessment: dateOfAssessment ?? this.dateOfAssessment,
+      dateOfLastAssessment: dateOfLastAssessment ?? this.dateOfLastAssessment,
     );
   }
 }
@@ -30,7 +61,6 @@ class DetailChild {
   final String question6;
   final String question7;
   final String question8;
-
 
   DetailChild({
     required this.question1,

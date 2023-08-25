@@ -1,8 +1,12 @@
+import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
+import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
 import 'ovc_sub_population_form.dart';
@@ -75,6 +79,13 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
           label: 'Date of Assessment',
           enabled: true,
           identifier: DateTextFieldIdentifier.dateOfAssessment,
+          onDateSelected: (date) {
+            print('Date selected: $date');
+            DetailModel detailModel =
+                context.read<CparaProvider>().detailModel ?? DetailModel();
+            context.read<CparaProvider>().updateDetailModel(
+                detailModel.copyWith(dateOfAssessment: date.toString()));
+          },
         ),
         const Divider(
           height: 20,
@@ -93,12 +104,34 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
                 }
               });
             }),
+        QuestionWidget(
+            question: 'Is this the first Case Plan Readiness Assessment?',
+            selectedOption: (value) {
+              setState(() {
+                isFirstAssessment = value;
+                if (isFirstAssessment == RadioButtonOptions.yes) {
+                  _dateTextFieldPreviousKey.currentState?.clearDate();
+                }
+                DetailModel detailModel =
+                    context.read<CparaProvider>().detailModel ?? DetailModel();
+                context.read<CparaProvider>().updateDetailModel(
+                    detailModel.copyWith(isFirstAssessment: value.toString()));
+              });
+            },
+            isNaAvailable: false),
         const SizedBox(height: 20),
         DateTextField(
           key: _dateTextFieldPreviousKey,
           label: 'If No, give date of Previous Case Plan Readiness Assessment',
           enabled: isFirstAssessment == RadioButtonOptions.no,
           identifier: DateTextFieldIdentifier.previousAssessment,
+          onDateSelected: (date) {
+            print('Date selected: $date');
+            DetailModel detailModel =
+                context.read<CparaProvider>().detailModel ?? DetailModel();
+            context.read<CparaProvider>().updateDetailModel(
+                detailModel.copyWith(dateOfLastAssessment: date.toString()));
+          },
         ),
         const SizedBox(height: 20),
         const ReusableTitleText(
@@ -112,32 +145,45 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             return ChildCard(childDetails: children[index]);
           },
         ),
-        const Text(
-            'Is this household child-headed (i.e. Household head age is less than 18 years)?'),
-        CustomRadioButton(
-            isNaAvailable: false,
-            optionSelected: (value) {
+        QuestionWidget(
+            question:
+                "Is this household child-headed (i.e. Household head age is less than 18 years)?",
+            selectedOption: (value) {
               setState(() {
                 isChildHeaded = value;
+                DetailModel detailModel =
+                    context.read<CparaProvider>().detailModel ?? DetailModel();
+                context.read<CparaProvider>().updateDetailModel(
+                    detailModel.copyWith(isChildHeaded: value.toString()));
               });
-            }),
-        const Text('Does this HH have HIV exposed infant?'),
-        CustomRadioButton(
-            isNaAvailable: false,
-            optionSelected: (value) {
+            },
+            isNaAvailable: false),
+        QuestionWidget(
+            question: 'Does this HH have HIV exposed infant?',
+            selectedOption: (value) {
               setState(() {
                 hasHivExposedInfant = value;
+                DetailModel detailModel =
+                    context.read<CparaProvider>().detailModel ?? DetailModel();
+                context.read<CparaProvider>().updateDetailModel(detailModel
+                    .copyWith(hasHivExposedInfant: value.toString()));
               });
-            }),
-        const Text(
-            'Does this HH currently have a pregnant and/or breastfeeding woman/ adolescent?'),
-        CustomRadioButton(
-            isNaAvailable: false,
-            optionSelected: (value) {
+            },
+            isNaAvailable: false),
+        QuestionWidget(
+            question:
+                'Does this HH currently have a pregnant and/or breastfeeding woman/ adolescent?',
+            selectedOption: (value) {
               setState(() {
                 hasPregnantOrBreastfeedingWoman = value;
+                DetailModel detailModel =
+                    context.read<CparaProvider>().detailModel ?? DetailModel();
+                context.read<CparaProvider>().updateDetailModel(
+                    detailModel.copyWith(
+                        hasPregnantOrBreastfeedingWoman: value.toString()));
               });
-            }),
+            },
+            isNaAvailable: false),
         const SizedBox(height: 20),
         ElevatedButton(
           onPressed: _getDataAndMoveToNext,
@@ -154,12 +200,14 @@ class DateTextField extends StatefulWidget {
       {Key? key,
       required this.label,
       required this.enabled,
+      required this.onDateSelected,
       required this.identifier})
       : super(key: key);
 
   final String label;
   final bool enabled;
   final DateTextFieldIdentifier identifier;
+  final Function(DateTime?)? onDateSelected;
 
   @override
   _DateTextFieldState createState() => _DateTextFieldState();
@@ -195,6 +243,7 @@ class _DateTextFieldState extends State<DateTextField> {
             if (pickedDate != null && mounted) {
               setState(() {
                 selectedDate = pickedDate;
+                widget.onDateSelected!(selectedDate);
               });
             }
           });
