@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:cpims_mobile/Models/case_load.dart';
+import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:flutter/foundation.dart';
@@ -17,13 +17,12 @@ class CaseLoadService {
     final int caseloadLastSave = preferences.getInt('caseload_last_save') ?? 0;
     final int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
     final int diff = currentTimestamp - caseloadLastSave;
-    if (!(isForceSync || diff > 60000)) { // Todo : 30 days - 2592000000 milliseconds
+    if (!(isForceSync || diff > 60000)) {
+      // Todo : 30 days - 2592000000 milliseconds
       return;
     }
 
-
     try {
-
       final accessToken = preferences.getString('access');
       http.Response response = await http.get(
         Uri.parse('${cpimsApiUrl}caseload'),
@@ -38,7 +37,7 @@ class CaseLoadService {
             jsonDecode(response.body)[i],
           );
           if (kDebugMode) {
-            print(caseLoadModel.caregiver_names);
+            print(caseLoadModel.caregiverNames);
           }
           LocalDb.instance.insertCaseLoad(caseLoadModel);
         }

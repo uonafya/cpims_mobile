@@ -1,4 +1,4 @@
-import 'package:cpims_mobile/Models/case_load.dart';
+import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/screens/unsynched_workflows/widgets/child_details_grid_item.dart';
@@ -74,11 +74,11 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                     children: [
                       ChildDetailsGridItem(
                         header: "Surname",
-                        details: "${widget.caseLoadModel.ovc_surname}",
+                        details: "${widget.caseLoadModel.ovcSurname}",
                       ),
                       ChildDetailsGridItem(
                         header: "Firstname",
-                        details: "${widget.caseLoadModel.ovc_first_name}",
+                        details: "${widget.caseLoadModel.ovcFirstName}",
                       ),
                       ChildDetailsGridItem(
                         header: "Sex",
@@ -87,11 +87,11 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                       ChildDetailsGridItem(
                         header: "Age",
                         details: calculateAge(
-                            widget.caseLoadModel.date_of_birth ?? '10/10/2008'),
+                            widget.caseLoadModel.dateOfBirth ?? '10/10/2008'),
                       ),
                       ChildDetailsGridItem(
                         header: "Caregiver",
-                        details: "${widget.caseLoadModel.caregiver_names}",
+                        details: "${widget.caseLoadModel.caregiverNames}",
                       ),
                     ],
                   )

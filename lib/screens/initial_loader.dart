@@ -3,6 +3,7 @@ import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/services/dash_board_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/route_manager.dart';
@@ -27,7 +28,16 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
     Future.delayed(
       const Duration(seconds: 0),
       () async {
-        //TO DO: Check internet connection if not, do local auth, then fetch local data
+        /// Here we check if the user has internet connection
+        /// If they do, we fetch the dashboard data from the server
+        /// If they don't, we fetch the dashboard data from the local database
+        /// We then set the dashboard data in the provider
+        /// We then fetch the caseload data from the server
+        /// We then set the caseload data in the provider
+        /// We then navigate to the homepage
+        /// If the user is coming from the login screen, we don't check for biometrics because they might have used biometric login
+        /// If the user is coming from the splash screen, we check for biometrics(Subsequent logins)
+
         final hasConnection =
             await Provider.of<ConnectivityProvider>(context, listen: false)
                 .checkInternetConnection();
@@ -37,10 +47,13 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
             await _getAvailableBiometric();
             await _authenticate();
           }
+
           final localDashData = await DashBoardService().fetchDashboardData();
           if (context.mounted) {
             Provider.of<UIProvider>(context, listen: false)
                 .setDashData(localDashData);
+            await Provider.of<UIProvider>(context, listen: false)
+                .setCaseLoadData();
           }
         } else {
           final prefs = await SharedPreferences.getInstance();
@@ -54,6 +67,8 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
               context: context,
               isForceSync: false,
             );
+            await Provider.of<UIProvider>(context, listen: false)
+                .setCaseLoadData();
           }
         }
 
@@ -67,6 +82,10 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
 
     try {
       canCheckBiometric = await auth.canCheckBiometrics;
+      if (kReleaseMode && !canCheckBiometric) {
+        errorSnackBar(context, 'Biometrics not available');
+        return;
+      }
     } on PlatformException catch (_) {
       if (context.mounted) {
         errorSnackBar(context, 'Unable to check biometrics');
@@ -103,7 +122,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
         localizedReason: "Scan your finger to authenticate",
       );
     } on PlatformException catch (e) {
-      print(e);
+      errorSnackBar(context, e.details);
     }
 
     setState(() {

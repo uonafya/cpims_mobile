@@ -1,7 +1,5 @@
-
-import 'package:cpims_mobile/Models/case_load.dart';
+import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -86,14 +84,12 @@ class LocalDb {
   Future<List<CaseLoadModel>> retrieveCaseLoads() async {
     final db = await instance.database;
     final result = await db.query(caseloadTable);
-    print('Local Model ${result}');
     return result.map((json) => CaseLoadModel.fromJson(json)).toList();
   }
 
   Future<List<SummaryDataModel>> retrieveStatistics() async {
     final db = await instance.database;
     final result = await db.query(statisticsTable);
-    print('Local Model ${result}');
     return result.map((json) => SummaryDataModel.fromJson(json)).toList();
   }
 

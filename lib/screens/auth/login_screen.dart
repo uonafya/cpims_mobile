@@ -1,6 +1,5 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
-import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/screens/auth/widgets/important_links_widget.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
@@ -63,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
         localizedReason: "Scan your finger to authenticate",
       );
     } on PlatformException catch (e) {
-      print(e);
+      errorSnackBar(context, e.message);
     }
 
     setState(() {
@@ -75,7 +74,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final username = prefs.getString('username');
     final password = prefs.getString('password');
-    final accessToken = prefs.getString('access');
 
     if (username != null && password != null) {
       loginuser(username: username, password: password);

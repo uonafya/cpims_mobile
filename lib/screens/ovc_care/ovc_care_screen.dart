@@ -1,4 +1,4 @@
-import 'package:cpims_mobile/Models/case_load.dart';
+import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_details_screen.dart';
@@ -27,55 +27,31 @@ class _OVCCareScreenState extends State<OVCCareScreen> {
   List<CaseLoadModel> searchedData = [];
 
   void handleSearch(List<CaseLoadModel> data) {
-    if (selectedCriteria.toLowerCase() == 'names') {
-      setState(() {
-        searchedData = data
-            .where((element) =>
-                element.ovc_first_name!
-                    .toLowerCase()
-                    .contains(searchTerm!.toLowerCase()) ||
-                element.ovc_surname!
-                    .toLowerCase()
-                    .contains(searchTerm!.toLowerCase()))
-            .toList();
-      });
-    } else if (selectedCriteria.toLowerCase() == 'cpims id') {
-      setState(() {
-        searchedData = data
-            .where((element) =>
-                element.cpimsId!
-                    .toLowerCase()
-                    .contains(searchTerm!.toLowerCase()) ||
-                element.cpimsId!
-                    .toLowerCase()
-                    .contains(searchTerm!.toLowerCase()))
-            .toList();
-      });
-    }
-    if (selectedCriteria.toLowerCase() == 'caregiver names') {
-      setState(() {
-        searchedData = data
-            .where((element) => element.caregiver_names!
-                .toLowerCase()
-                .contains(searchTerm!.toLowerCase()))
-            .toList();
-      });
-    } else {
-      setState(() {
-        searchedData = data
-            .where((element) =>
-                element.ovc_first_name!
-                    .toLowerCase()
-                    .contains(searchTerm!.toLowerCase()) ||
-                element.ovc_surname!
-                    .toLowerCase()
-                    .contains(searchTerm!.toLowerCase()) ||
-                element.caregiver_names!
-                    .toLowerCase()
-                    .contains(searchTerm!.toLowerCase()))
-            .toList();
-      });
-    }
+    setState(() {
+      final searchTermLowerCase = searchTerm!.toLowerCase();
+      final selectedCriteriaLowerCase = selectedCriteria.toLowerCase();
+
+      searchedData = data.where((element) {
+        final firstNameLowerCase = element.ovcFirstName!.toLowerCase();
+        final surnameLowerCase = element.ovcSurname!.toLowerCase();
+        final cpimsIdLowerCase = element.cpimsId!.toLowerCase();
+        final caregiverNamesLowerCase = element.caregiverNames!.toLowerCase();
+
+        if (selectedCriteriaLowerCase == 'names') {
+          return firstNameLowerCase.contains(searchTermLowerCase) ||
+              surnameLowerCase.contains(searchTermLowerCase);
+        } else if (selectedCriteriaLowerCase == 'cpims id') {
+          return cpimsIdLowerCase.contains(searchTermLowerCase);
+        } else if (selectedCriteriaLowerCase == 'caregiver names') {
+          return caregiverNamesLowerCase.contains(searchTermLowerCase);
+        } else {
+          return firstNameLowerCase.contains(searchTermLowerCase) ||
+              surnameLowerCase.contains(searchTermLowerCase) ||
+              cpimsIdLowerCase.contains(searchTermLowerCase) ||
+              caregiverNamesLowerCase.contains(searchTermLowerCase);
+        }
+      }).toList();
+    });
   }
 
   @override
@@ -134,14 +110,6 @@ class _OVCCareScreenState extends State<OVCCareScreen> {
             const SizedBox(
               height: 15,
             ),
-            // CustomButton(
-            //     text: 'Search',
-            //     onTap: () {
-            //       handleSearch(caseLoadData!);
-            //     }),
-            // const SizedBox(
-            //   height: 10,
-            // )
           ]),
           const SizedBox(
             height: 10,
@@ -184,7 +152,7 @@ class _OVCCardItemState extends State<OVCCardItem> {
   Widget build(BuildContext context) {
     final children = widget.allCaseLoadData
         .where((element) =>
-            element.caregiver_names == widget.caseLoadModel.caregiver_names)
+            element.caregiverNames == widget.caseLoadModel.caregiverNames)
         .toList();
     return Column(
       children: [
@@ -202,7 +170,7 @@ class _OVCCardItemState extends State<OVCCardItem> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${widget.caseLoadModel.ovc_first_name} ${widget.caseLoadModel.ovc_surname}',
+                        '${widget.caseLoadModel.ovcFirstName} ${widget.caseLoadModel.ovcSurname}',
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w600),
                       ),
@@ -242,7 +210,7 @@ class _OVCCardItemState extends State<OVCCardItem> {
                               color: Colors.grey),
                         ),
                         Text(
-                          '${widget.caseLoadModel.caregiver_names}',
+                          '${widget.caseLoadModel.caregiverNames}',
                           style: const TextStyle(fontSize: 12),
                         ),
                         const Spacer(),
@@ -262,7 +230,7 @@ class _OVCCardItemState extends State<OVCCardItem> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.grey),
                       ),
-                      Text(calculateAge(widget.caseLoadModel.date_of_birth!))
+                      Text(calculateAge(widget.caseLoadModel.dateOfBirth!))
                     ],
                   ),
                   const SizedBox(
@@ -284,9 +252,9 @@ class _OVCCardItemState extends State<OVCCardItem> {
                     },
                     leading: Text(children[index].cpimsId!),
                     title: Text(
-                        '${children[index].ovc_surname!} ${children[index].ovc_first_name!}'),
+                        '${children[index].ovcSurname!} ${children[index].ovcFirstName!}'),
                     trailing: Text(
-                        "${children[index].sex!}(${calculateAge(children[index].date_of_birth!)})"),
+                        "${children[index].sex!}(${calculateAge(children[index].dateOfBirth!)})"),
                     tileColor: Colors.grey[200],
                   )),
         if (isExpanded)

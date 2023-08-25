@@ -1,4 +1,4 @@
-import 'package:cpims_mobile/Models/case_load.dart';
+import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -23,11 +23,10 @@ class UIProvider with ChangeNotifier {
   }
 
   Future<void> setCaseLoadData() async {
-    final caseLoadData = await LocalDb.instance.retrieveCaseLoads();
+    final data = await LocalDb.instance.retrieveCaseLoads();
 
-    _caseLoadData = caseLoadData;
+    _caseLoadData = data;
 
-    print(caseLoadData.length);
     notifyListeners();
   }
 }
