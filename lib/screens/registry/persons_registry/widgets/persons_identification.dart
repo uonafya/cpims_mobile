@@ -6,6 +6,6 @@ class PersonsIdentification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StepsWrapper(title: 'Identification', children: []);
+    return const StepsWrapper(title: 'Identification', children: []);
   }
 }

@@ -1,13 +1,16 @@
+import 'package:cpims_mobile/providers/form1b_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
+import 'package:cpims_mobile/screens/forms/form1a/form_1A.dart';
+import 'package:cpims_mobile/screens/forms/form1b/form_1B.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
+import 'package:cpims_mobile/screens/registry/organisation_units/register_new_organisation.dart';
 import 'package:cpims_mobile/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 // import 'package:path_provider/path_provider.dart';
 // import 'package:hive/hive.dart';
@@ -29,7 +32,7 @@ class _CPIMSState extends State<CPIMS> {
   @override
   void initState() {
     super.initState();
-    _checkLogin();
+    // _checkLogin();
   }
 
   _checkLogin() async {
@@ -39,7 +42,7 @@ class _CPIMSState extends State<CPIMS> {
     var authKey = prefs.getString('authenticated');
 
     if (authKey != null) {
-      Get.to(() => Homepage(),
+      Get.to(() => const Homepage(),
           transition: Transition.fade,
           duration: const Duration(milliseconds: 2000));
     } else {
@@ -62,6 +65,8 @@ class _CPIMSState extends State<CPIMS> {
         return MultiProvider(
           providers: [
             ChangeNotifierProvider(create: (_) => UIProvider()),
+            ChangeNotifierProvider(create: (_) => Form1bProvider()),
+
           ],
           child: GetMaterialApp(
             title: 'CPIMS',
@@ -73,7 +78,7 @@ class _CPIMSState extends State<CPIMS> {
       },
       child:
           // const Homepage()
-          const LoginScreen(),
+          const Form1AScreen(),
     );
   }
 }

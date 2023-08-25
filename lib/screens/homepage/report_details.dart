@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/widgets/custom_chip.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 
 import 'package:flutter/material.dart';
@@ -38,7 +39,7 @@ class ReportDetailsScreen extends StatelessWidget {
                 const SizedBox(
                   width: 15,
                 ),
-                Icon(
+                const Icon(
                   FontAwesomeIcons.solidFileExcel,
                   color: kPrimaryColor,
                 ),
