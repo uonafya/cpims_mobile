@@ -377,11 +377,7 @@ class ChildCard extends StatelessWidget {
                 SizedBox(
                   width: 10.0,
                 ),
-                Expanded(
-                  child: FittedBox(
-                      child: ReusableTitleText(
-                          title: 'Registered in this OVC Program')),
-                ),
+                ReusableTitleText(title: 'Age')
               ],
             ),
             const SizedBox(height: 8),
@@ -389,7 +385,7 @@ class ChildCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(childDetails.name),
-                Text(childDetails.registeredInProgram.toString()),
+                Text(childDetails.age.toString()),
               ],
             ),
             const SizedBox(height: 8),
@@ -414,14 +410,26 @@ class ChildCard extends StatelessWidget {
                 ReusableTitleText(
                   title: 'School Level',
                 ),
-                ReusableTitleText(title: 'Age')
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(childDetails.schoolLevel),
-                Text(childDetails.age.toString()),
+              ],
+            ),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                FittedBox(
+                    child: ReusableTitleText(
+                        title: 'Registered in this OVC Program')),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(childDetails.registeredInProgram.toString()),
               ],
             ),
           ],
