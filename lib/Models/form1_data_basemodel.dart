@@ -31,7 +31,7 @@ class Form1ServicesModel {
   factory Form1ServicesModel.fromJson(Map<String, dynamic> json) {
     return Form1ServicesModel(
       domainId: json['domain_id'] as String,
-      serviceId: List<String>.from(json['service_id']),
+      serviceId: json['service_id'],
     );
   }
 }
