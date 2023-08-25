@@ -44,19 +44,30 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
     ),
   ];
 
+  @override
+  void initState(){
+    DetailModel detailModel = context.read<CparaProvider>().detailModel ?? DetailModel();
+    isFirstAssessment = detailModel.isFirstAssessment == null ? isFirstAssessment : convertingStringToRadioButtonOptions(detailModel.isFirstAssessment!);
+    isChildHeaded = detailModel.isChildHeaded == null ? isChildHeaded : convertingStringToRadioButtonOptions(detailModel.isChildHeaded!);
+    hasHivExposedInfant = detailModel.hasHivExposedInfant == null ? hasHivExposedInfant : convertingStringToRadioButtonOptions(detailModel.hasHivExposedInfant!);
+    // dateOfAssessment = detailModel.dateOfAssessment == null ? dateOfAssessment : DateTime.parse(detailModel.dateOfAssessment!);
+    // dateOfLastAssessment = detailModel.dateOfLastAssessment == null ? dateOfLastAssessment : DateTime.parse(detailModel.dateOfLastAssessment!);
+    super.initState();
+  }
+
   void _getDataAndMoveToNext() {
     print('Is first assessment: $isFirstAssessment');
     print('Is child headed: $isChildHeaded');
     print('Has HIV exposed infant: $hasHivExposedInfant');
     print(
         'Has pregnant or breastfeeding woman: $hasPregnantOrBreastfeedingWoman');
+
     DateTime? dateOfAssessment =
         _dateTextFieldKey.currentState?.getSelectedDate();
     String formattedDateOfAssessment = dateOfAssessment != null
         ? DateFormat('yyyy-MM-dd').format(dateOfAssessment)
         : '';
-    print(
-        'Date of assessment: $formattedDateOfAssessment'); //am not able to get the date of assessment
+    print('Date of assessment: $formattedDateOfAssessment');
 
     DateTime? dateOfPreviousAssessment =
         _dateTextFieldPreviousKey.currentState?.getSelectedDate();
@@ -64,6 +75,21 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
         ? DateFormat('yyyy-MM-dd').format(dateOfPreviousAssessment)
         : '';
     print('Date of previous assessment: $formattedDateOfPreviousAssessment');
+
+    // Iterate through the children and collect OVC sub-population data
+    // for (var child in children) {
+    //   print('Child Name: ${child.name}');
+    //   print('Child OVC CPIMS ID: ${child.uniqueNumber}');
+    //   // Retrieve CheckboxQuestion objects for the current child
+    //   List<CheckboxQuestion> childQuestions = questions1.map((questions1) =>
+    //       CheckboxQuestion(id: questions1.id, question: questions1.question, isChecked: questions1.isChecked))
+    //       .toList();
+    //
+    //   // Print the checkbox values for the current child
+    //   for (var question in childQuestions) {
+    //     print('${question.question}: ${question.isChecked}');
+    //   }
+    // }
   }
 
   final GlobalKey<_DateTextFieldState> _dateTextFieldKey = GlobalKey();
@@ -93,17 +119,6 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
         ),
         const SizedBox(height: 20),
         const TextViewsColumn(),
-        const Text('Is this the first Case Plan Readiness Assessment?'),
-        CustomRadioButton(
-            isNaAvailable: false,
-            optionSelected: (value) {
-              setState(() {
-                isFirstAssessment = value;
-                if (isFirstAssessment == RadioButtonOptions.yes) {
-                  _dateTextFieldPreviousKey.currentState?.clearDate();
-                }
-              });
-            }),
         QuestionWidget(
             question: 'Is this the first Case Plan Readiness Assessment?',
             selectedOption: (value) {
@@ -195,7 +210,20 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
           onPressed: _getDataAndMoveToNext,
           child: const Text('Next'),
         ),
-        CheckboxForm(),
+        // for (var child in children)
+        //   ExpansionTile(title: Text(child.name), children: [
+        //     CheckboxForm(
+        //       childName: child.name,
+        //       ovcCpimsId: child.uniqueNumber,
+        //       onCheckboxSelected: (id) {
+        //         DetailModel detailModel =
+        //             context.read<CparaProvider>().detailModel ?? DetailModel();
+        //         context.read<CparaProvider>().updateDetailModel(
+        //             detailModel.copyWith(childrenQuestions: id));
+        //       },
+        //     ),
+        //   ]),
+        // const SizedBox(height: 20),
       ],
     );
   }
@@ -259,7 +287,7 @@ class _DateTextFieldState extends State<DateTextField> {
       enabled: widget.enabled,
       decoration: InputDecoration(
         labelText: widget.label,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
       controller: TextEditingController(text: textFieldText),
     );
@@ -279,9 +307,13 @@ class _TextViewsColumnState extends State<TextViewsColumn> {
 
   @override
   void initState() {
+    DetailModel detailModel =
+        context.read<CparaProvider>().detailModel ?? DetailModel();
+
+
     super.initState();
     _ovcDetails = ApiService.fetchOvcDetails(
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkyODcxNTM2LCJpYXQiOjE2OTI4Njc5MzYsImp0aSI6ImMxYzQxYzE2YmU1OTQzMGVhMDVhMzIwNDhmMTBkM2Q2IiwidXNlcl9pZCI6ODg4fQ.__r5tgvnqXHBIOhkGuQUELr18NE98IF4AhRPvqybOqo',
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkyOTc3ODM4LCJpYXQiOjE2OTI5NzQyMzgsImp0aSI6IjFlZDVkMGYzNWI1ZDQ2MmM5YTkyMDUxYWFmM2NiOTdkIiwidXNlcl9pZCI6ODg4fQ.RKzW5BJYb3eorTlqZMAABs6sejTvQtWeFlZeFc5r6ZA',
         '2457100');
   }
 

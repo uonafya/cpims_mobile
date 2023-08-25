@@ -29,6 +29,7 @@ class CparaFormsScreen extends StatefulWidget {
 }
 
 class _CparaFormsScreenState extends State<CparaFormsScreen> {
+  final ScrollController _scrollController = ScrollController();
   int selectedStep = 0;
 
   List<Widget> steps = [
@@ -85,6 +86,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
         child: CustomDrawer(),
       ),
       body: ListView(
+        controller: _scrollController, // Assign the ScrollController
         padding: const EdgeInsets.symmetric(horizontal: 15),
         children: [
           Container(
@@ -135,6 +137,11 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                   if (selectedStep == 0) {
                                     Navigator.pop(context);
                                   }
+                                  _scrollController.animateTo(
+                                    0,
+                                    duration: Duration(milliseconds: 500),
+                                    curve: Curves.easeInOut,
+                                  );
                                   setState(() {
                                     if (selectedStep > 0) {
                                       selectedStep--;
@@ -235,13 +242,70 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                                       ],
                                                     ),
                                                     const Text("Detail model:"),
+                                                    const Text("Detail model:"),
                                                     Row(
                                                       children: [
-                                                        Text("last Assesment"),
+                                                        const Text(
+                                                            'Date of Assessment'),
                                                         Text(
-                                                            "Answer: ${detailModel?.dateOfAssessment}"),
+                                                            'Answer: ${detailModel?.dateOfAssessment}'),
                                                       ],
                                                     ),
+                                                    Row(
+                                                      children: [
+                                                        const Text(
+                                                            'Is this first case plan readiness assessment?'),
+                                                        Text(
+                                                            'Answer: ${detailModel?.isFirstAssessment}'),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        const Text(
+                                                            'Date of Previous Assessment'),
+                                                        Text(
+                                                            'Answer: ${detailModel?.dateOfLastAssessment}'),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        const Text(
+                                                            'Is the child headed household?'),
+                                                        Text(
+                                                            'Answer: ${detailModel?.isChildHeaded}'),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        const Text(
+                                                            'Does the child have an HIV exposed infant?'),
+                                                        Text(
+                                                            'Answer: ${detailModel?.hasHivExposedInfant}'),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                            'Does this HH currently have a pregnant and/or breastfeeding woman/adolescent?'),
+                                                        Text(
+                                                            'Answer: ${detailModel?.hasPregnantOrBreastfeedingWoman}'),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(height: 20),
+                                                    const Text(
+                                                        "OVC Sub Population Form"),
+                                                    const SizedBox(height: 10),
+                                                    Text(
+                                                        '${detailModel?.childrenQuestions?[0].question1}'),
+                                                    const SizedBox(height: 10),
+                                                    Text(
+                                                        '${detailModel?.childrenQuestions?[0].question2}'),
+                                                    const SizedBox(height: 10),
+                                                    Text(
+                                                        '${detailModel?.childrenQuestions?[0].question3}'),
+                                                    const SizedBox(height: 10),
+                                                    Text(
+                                                        '${detailModel?.childrenQuestions?[0].question4}'),
                                                   ],
                                                 ),
                                               ),
@@ -289,6 +353,11 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                     }
                                   }
 
+                                  _scrollController.animateTo(
+                                    0,
+                                    duration: Duration(milliseconds: 500),
+                                    curve: Curves.easeInOut,
+                                  );
                                   setState(() {
                                     if (selectedStep < steps.length - 1) {
                                       selectedStep++;
