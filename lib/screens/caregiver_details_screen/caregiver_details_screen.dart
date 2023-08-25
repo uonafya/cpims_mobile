@@ -1,16 +1,11 @@
-import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
-import 'package:cpims_mobile/screens/cpara/cpara_forms.dart';
-import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/widgets/custom_card_grid_item.dart';
-import 'package:cpims_mobile/screens/unsynched_workflows/widgets/child_details_workflow_button.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/route_manager.dart';
 
 class CareGiverDetailsScreen extends StatefulWidget {
   const CareGiverDetailsScreen({super.key});
@@ -106,6 +101,7 @@ class _CareGiverDetailsScreenState extends State<CareGiverDetailsScreen> {
                   border: TableBorder.symmetric(
                     inside: BorderSide(color: Colors.grey.withOpacity(0.5)),
                   ),
+                  defaultColumnWidth: const IntrinsicColumnWidth(),
                   children: [
                     const TableRow(children: [
                       Padding(
@@ -121,7 +117,27 @@ class _CareGiverDetailsScreenState extends State<CareGiverDetailsScreen> {
                       Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Text(
-                          "Workflow",
+                          "CPIMS ID",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          "Age",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          "Sex",
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
@@ -132,15 +148,39 @@ class _CareGiverDetailsScreenState extends State<CareGiverDetailsScreen> {
                     ...fixedLengthList
                         .map((e) => const TableRow(children: [
                               Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.0),
+                                padding: EdgeInsets.all(8.0),
                                 child: Text(
-                                  "Name",
+                                  "Firstname Middle Lastname",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(
-                                  "Workflow",
+                                  "1234",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  "10",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Male",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ),
                             ]))
@@ -217,7 +257,7 @@ class _CareGiverDetailsScreenState extends State<CareGiverDetailsScreen> {
                   ...List<int>.generate(9, (int index) => index + 1,
                           growable: false)
                       .map((e) => Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Text(
                               "$e",
                               style: const TextStyle(
