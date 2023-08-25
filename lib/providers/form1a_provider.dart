@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
@@ -30,13 +32,14 @@ class Form1AProvider extends ChangeNotifier {
       selectedDomain: [],
       selectedEventDate: DateTime.now(),
       selectedService: []);
+
 //<<<<<<<<<<<<<<<<<<<<<Critical events >>>>>>>>>>>>>>>>>>>>>
 
   CriticalFormData get criticalFormData => _criticalFormData;
   ServiceFormData get serviceFormData => _serviceFormData;
 
-  // <<<<<<<<<<<<<<<<<<<Services >>>>>>>>>>>>>>>>>>>>>>>>>>>>
   // <<<<<<<<<<<<<<<Set Methods >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
   // <<<<<<<<<<<<<<<Critical methods >>>>>>>>>>>>>>>>>>>>>>>>
   void setSelectedEvents(List<ValueItem> selectedEvents) {
     _criticalFormData.selectedEvents.clear();
@@ -79,10 +82,12 @@ class Form1AProvider extends ChangeNotifier {
       criticalEvent["event_date"] = formattedDate;
       criticalEvent["event_id"] = valueItem.value;
       criticalEvents.add(criticalEvent);
+      eventData = criticalEvents;
+      print(criticalEvents);
     }
-    print(criticalEvents);
   }
 
+// <<<<<<<<<<<<<Submit Services >>>>>>>>>>>>>>>>>>>>>>>
   void submitServicesData() {
     List<Map<String, String>> data = [];
     for (var valueItem in _serviceFormData.selectedDomain) {
@@ -94,24 +99,35 @@ class Form1AProvider extends ChangeNotifier {
           'service_id': serviceId,
         };
         data.add(item);
+        print(data);
+        serviceData = data;
       }
     }
-
-    print(data);
   }
 
+  List<Map<String, dynamic>> eventData = [];
+  List<Map<String, String>> serviceData = [];
+
   void submitCriticalServices() {
-    List<Map<String, String>> data = [];
-    for (var valueItem in _serviceFormData.selectedDomain) {
-      String domainId = valueItem.value ?? '';
-      for (var serviceItem in _serviceFormData.selectedService) {
-        String serviceId = serviceItem.value ?? '';
-        Map<String, String> item = {
-          'domain_id': domainId,
-          'service_id': serviceId,
-        };
-        data.add(item);
-      }
-    }
+    String dateOfEvent =
+        DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
+    Map<String, dynamic> payload = {};
+    payload.addAll({
+      'ovc_cpims_id': 12344,
+      'date_of_event': dateOfEvent,
+      'services': serviceData,
+      'critical_events': eventData,
+    });
+    String form1A = jsonEncode(payload);
+    print(form1A);
+
+    // After submission reset the form
+    setSelectedEvents([]);
+    setSelectedDomain([]);
+    setSelectedSubDomain([]);
+    setEventSelectedDate(DateTime.now());
+    setServiceSelectedDate(DateTime.now());
+
+    notifyListeners();
   }
 }

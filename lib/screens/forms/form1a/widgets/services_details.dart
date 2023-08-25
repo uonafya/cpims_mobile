@@ -109,6 +109,7 @@ class _ServicesDetailsState extends State<ServicesDetails> {
           onOptionSelected: (selectedService) {
             selectedSubDomainOptions = selectedService;
             form1aProvider.setSelectedSubDomain(selectedService);
+            form1aProvider.submitServicesData();
           },
           options: listOfSubDomains,
           maxItems: 35,

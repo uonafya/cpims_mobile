@@ -61,7 +61,7 @@ class _Form1AScreenState extends State<Form1AScreen> {
                     width: double.infinity,
                     color: Colors.black,
                     child: const Text(
-                      'Form 1A Details',
+                      'Form 1A Details  {Ovc_Cpims_Child}',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -115,7 +115,10 @@ class _Form1AScreenState extends State<Form1AScreen> {
                                     if (selectedStep < steps.length - 1) {
                                       selectedStep++;
                                     }
-                                    form1aProvider.submitCriticalServices();
+
+                                    if (selectedStep == steps.length - 1) {
+                                      form1aProvider.submitCriticalServices();
+                                    }
                                   });
                                 },
                               ),

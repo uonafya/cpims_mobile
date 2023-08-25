@@ -47,6 +47,7 @@ class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
           onOptionSelected: (selectedEvents) {
             selectedEventsOptions = selectedEvents;
             form1aProvider.setSelectedEvents(selectedEvents);
+            form1aProvider.submitCriticalData();
           },
           options: listOfCriticalEvents,
           maxItems: 13,
