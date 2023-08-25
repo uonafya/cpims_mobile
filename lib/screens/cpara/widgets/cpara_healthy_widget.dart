@@ -870,6 +870,9 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
               setState(() {
                 children = newChildren;
+                set3_1final = RadioButtonOptions.na;
+                set3_2final = RadioButtonOptions.na;
+                set3_3final = RadioButtonOptions.na;
               });
             }
           },
@@ -899,42 +902,48 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
               question: "Tick Yes if YES for all children",
               questions: [
                 QuestionBlock(
-                  groupValue: allShouldBeYes(
-                      children.map((e) => e.hivRiskGroupValue).toList(),
-                      "Tick yes if all q1"), // All hivRiskGroupValues should be yes
+                  groupValue: set3_1final == null
+                      ? null
+                      : allShouldBeYes(
+                          children.map((e) => e.hivRiskGroupValue).toList(),
+                          "Tick yes if all q1"), // All hivRiskGroupValues should be yes
                   isTopDividerThere: false,
                   isOptional: false,
                   question:
                       "Can you tell me two behaviors that increase risk of HIV infection?",
                   isNAAvailable: false,
-                  canNotBeEdited: true,
+                  tempFix: true,
                   updateRadioButton: (RadioButtonOptions? val) {
                     debugPrint(val.toString() + " tick if all true q1 form");
                   },
                 ),
                 QuestionBlock(
-                  groupValue: allShouldBeYes(
-                      children.map((e) => e.protectHIVGroupvalue).toList(),
-                      "Tick Yes if all q2"),
+                  groupValue: set3_2final == null
+                      ? null
+                      : allShouldBeYes(
+                          children.map((e) => e.protectHIVGroupvalue).toList(),
+                          "Tick Yes if all q2"),
                   isTopDividerThere: false,
                   isOptional: false,
                   question:
                       "Can you tell me two ways you can protect yourself/ others against HIV?",
                   isNAAvailable: false,
                   updateRadioButton: (RadioButtonOptions? val) {},
-                  canNotBeEdited: true,
+                  tempFix: true,
                 ),
                 QuestionBlock(
-                  groupValue: allShouldBeYes(
-                      children.map((e) => e.preventHIVGroupvalue).toList(),
-                      "Tick yes if all q3"),
+                  groupValue: set3_3final == null
+                      ? null
+                      : allShouldBeYes(
+                          children.map((e) => e.preventHIVGroupvalue).toList(),
+                          "Tick yes if all q3"),
                   isTopDividerThere: false,
                   isOptional: false,
                   question:
                       "Can you name two places in the community where you can access HIV prevention services?",
                   isNAAvailable: false,
                   updateRadioButton: (RadioButtonOptions? val) {},
-                  canNotBeEdited: true,
+                  tempFix: true,
                 ),
               ],
             ),
@@ -947,6 +956,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                       groupValue: children[i].hivRiskGroupValue,
                       isTopDividerThere: false,
                       isOptional: true,
+                      tempFix: true,
                       question:
                           "3.1 Can you tell me two behaviors that increase risk of HIV infection?",
                       isNAAvailable: false,
@@ -957,6 +967,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
                         setState(() {
                           children = newChildren;
+                          set3_1final = RadioButtonOptions
+                              .na; // changing incase previously set to null
                         });
                       },
                     ),
@@ -964,6 +976,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                       groupValue: children[i].protectHIVGroupvalue,
                       isTopDividerThere: false,
                       isOptional: true,
+                      tempFix: true,
                       question:
                           "3.2 Can you tell me two ways you can protect yourself/ others against HIV?",
                       isNAAvailable: false,
@@ -974,6 +987,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
                         setState(() {
                           children = newChildren;
+                          set3_2final = RadioButtonOptions
+                              .na; // changing incase previously set to null
                         });
                       },
                     ),
@@ -981,6 +996,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                       groupValue: children[i].preventHIVGroupvalue,
                       isTopDividerThere: false,
                       isOptional: true,
+                      tempFix: true,
                       question:
                           "3.3 Can you name two places in the community where you can access HIV prevention services?",
                       isNAAvailable: false,
@@ -991,6 +1007,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
                         setState(() {
                           children = newChildren;
+                          set3_2final = RadioButtonOptions
+                              .na; // changing incase previously set to null
                         });
                       },
                     ),
@@ -1237,7 +1255,7 @@ class FinalResultBox extends StatelessWidget {
           child: Center(
             child: QuestionBlock(
               isBigAndBold: false,
-              canNotBeEdited: true,
+              tempFix: true,
               groupValue: result,
               isTopDividerThere: isTopDividerThere,
               isOptional: false,
@@ -1554,7 +1572,7 @@ class QuestionBlock extends StatelessWidget {
   final bool isNAAvailable; // Whether to show the NA option or not
   final bool isOptional; // Whether or not the question is optional
   final bool isTopDividerThere;
-  final bool canNotBeEdited; // To be removed
+  final bool tempFix; // To be removed
   final bool isBigAndBold; // Whether to make the question text big and bold
   final String
       warningText; // Text that is in red and used as a warning or a caution
@@ -1567,13 +1585,13 @@ class QuestionBlock extends StatelessWidget {
       required this.isNAAvailable,
       this.isBigAndBold = false,
       required this.updateRadioButton,
-      this.canNotBeEdited = false,
+      this.tempFix = false,
       this.warningText = "",
       super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (canNotBeEdited == false) {
+    if (tempFix == false) {
       return SqueezedBetweenDivider(
         widget: Column(
           children: [
