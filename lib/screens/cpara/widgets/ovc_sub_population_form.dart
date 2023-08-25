@@ -2,18 +2,25 @@ import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:flutter/material.dart';
 
 class CheckboxQuestion {
-  final String question;
-  bool isChecked;
+  final int? id;
+  final String? question;
+  bool? isChecked;
 
-  CheckboxQuestion({required this.question, this.isChecked = false});
+  CheckboxQuestion(
+      {required this.question, required this.id, this.isChecked = false});
 }
 
 class CheckboxForm extends StatefulWidget {
   final String childName;
   final String ovcCpimsId;
 
+  final Function? onCheckboxSelected;
+
   const CheckboxForm(
-      {Key? key, required this.childName, required this.ovcCpimsId})
+      {Key? key,
+      required this.childName,
+      required this.ovcCpimsId,
+      required this.onCheckboxSelected})
       : super(key: key);
 
   @override
@@ -22,14 +29,14 @@ class CheckboxForm extends StatefulWidget {
 
 class _CheckboxFormState extends State<CheckboxForm> {
   List<CheckboxQuestion> questions = [
-    CheckboxQuestion(question: 'Orphan'),
-    CheckboxQuestion(question: 'AGYW'),
-    CheckboxQuestion(question: 'HEI'),
-    CheckboxQuestion(question: 'FSW Child'),
-    CheckboxQuestion(question: 'PLHIV Child'),
-    CheckboxQuestion(question: 'CLHIV'),
-    CheckboxQuestion(question: 'SVAC'),
-    CheckboxQuestion(question: 'Household Affected by HIV'),
+    CheckboxQuestion(id: 1, question: 'Orphan'),
+    CheckboxQuestion(id: 2, question: 'AGYW'),
+    CheckboxQuestion(id: 3, question: 'HEI'),
+    CheckboxQuestion(id: 4, question: 'FSW Child'),
+    CheckboxQuestion(id: 5, question: 'PLHIV Child'),
+    CheckboxQuestion(id: 6, question: 'CLHIV'),
+    CheckboxQuestion(id: 7, question: 'SVAC'),
+    CheckboxQuestion(id: 8, question: 'Household Affected by HIV'),
   ];
 
   @override
@@ -46,19 +53,19 @@ class _CheckboxFormState extends State<CheckboxForm> {
             // Use Row instead of Column
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                child: FittedBox(
-                    fit: BoxFit.fitWidth,
-                    child: ReusableTitleText(title: question.question)),
-              ),
+              Expanded(
+                  child: ReusableTitleText(title: question.question ?? "")),
               Checkbox(
                 value: question.isChecked,
                 onChanged: (value) {
                   setState(() {
                     question.isChecked = value!;
+                    widget.onCheckboxSelected!(question.id);
                   });
                 },
               ),
+              const SizedBox(height: 10),
+              //elevated button
             ],
           ),
       ],

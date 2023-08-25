@@ -50,13 +50,13 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
     print('Has HIV exposed infant: $hasHivExposedInfant');
     print(
         'Has pregnant or breastfeeding woman: $hasPregnantOrBreastfeedingWoman');
+
     DateTime? dateOfAssessment =
         _dateTextFieldKey.currentState?.getSelectedDate();
     String formattedDateOfAssessment = dateOfAssessment != null
         ? DateFormat('yyyy-MM-dd').format(dateOfAssessment)
         : '';
-    print(
-        'Date of assessment: $formattedDateOfAssessment'); //am not able to get the date of assessment
+    print('Date of assessment: $formattedDateOfAssessment');
 
     DateTime? dateOfPreviousAssessment =
         _dateTextFieldPreviousKey.currentState?.getSelectedDate();
@@ -64,6 +64,21 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
         ? DateFormat('yyyy-MM-dd').format(dateOfPreviousAssessment)
         : '';
     print('Date of previous assessment: $formattedDateOfPreviousAssessment');
+
+    // Iterate through the children and collect OVC sub-population data
+    // for (var child in children) {
+    //   print('Child Name: ${child.name}');
+    //   print('Child OVC CPIMS ID: ${child.uniqueNumber}');
+    //   // Retrieve CheckboxQuestion objects for the current child
+    //   List<CheckboxQuestion> childQuestions = questions1.map((questions1) =>
+    //       CheckboxQuestion(id: questions1.id, question: questions1.question, isChecked: questions1.isChecked))
+    //       .toList();
+    //
+    //   // Print the checkbox values for the current child
+    //   for (var question in childQuestions) {
+    //     print('${question.question}: ${question.isChecked}');
+    //   }
+    // }
   }
 
   final GlobalKey<_DateTextFieldState> _dateTextFieldKey = GlobalKey();
@@ -195,12 +210,19 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
           onPressed: _getDataAndMoveToNext,
           child: const Text('Next'),
         ),
-        // checkbox form should appear here depending on the number of children in the household  and also the checkbox form should allow one to pass a parameter named childName
         for (var child in children)
-          CheckboxForm(
-            childName: child.name,
-            ovcCpimsId: child.uniqueNumber,
-          ),
+          ExpansionTile(title: Text(child.name), children: [
+            CheckboxForm(
+              childName: child.name,
+              ovcCpimsId: child.uniqueNumber,
+              onCheckboxSelected: (id) {
+                DetailModel detailModel =
+                    context.read<CparaProvider>().detailModel ?? DetailModel();
+                context.read<CparaProvider>().updateDetailModel(
+                    detailModel.copyWith(childrenQuestions: id));
+              },
+            ),
+          ]),
         const SizedBox(height: 20),
       ],
     );
@@ -265,7 +287,7 @@ class _DateTextFieldState extends State<DateTextField> {
       enabled: widget.enabled,
       decoration: InputDecoration(
         labelText: widget.label,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
       controller: TextEditingController(text: textFieldText),
     );
