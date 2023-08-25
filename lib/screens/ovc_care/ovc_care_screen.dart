@@ -3,7 +3,6 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_details_screen.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
-import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
 import 'package:cpims_mobile/widgets/custom_dropdown.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
@@ -150,6 +149,7 @@ class _OVCCareScreenState extends State<OVCCareScreen> {
           if (caseLoadData != null && searchedData.isNotEmpty)
             ...searchedData.map((e) => OVCCardItem(
                   caseLoadModel: e,
+                  allCaseLoadData: caseLoadData,
                 )),
           if (caseLoadData != null && searchedData.isEmpty)
             Container(
@@ -167,36 +167,90 @@ class _OVCCareScreenState extends State<OVCCareScreen> {
   }
 }
 
-class OVCCardItem extends StatelessWidget {
-  const OVCCardItem({super.key, required this.caseLoadModel});
+class OVCCardItem extends StatefulWidget {
+  const OVCCardItem(
+      {super.key, required this.caseLoadModel, required this.allCaseLoadData});
   final CaseLoadModel caseLoadModel;
-  String calculateAge(String date) {
-    final dob = DateTime.parse(date);
-    final now = DateTime.now();
-    final difference = now.difference(dob);
-    final age = difference.inDays / 365;
-    return age.toStringAsFixed(0);
-  }
+  final List<CaseLoadModel> allCaseLoadData;
+
+  @override
+  State<OVCCardItem> createState() => _OVCCardItemState();
+}
+
+class _OVCCardItemState extends State<OVCCardItem> {
+  bool isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Get.to(() => OVCDetailsScreen(caseLoadModel: caseLoadModel));
-      },
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final children = widget.allCaseLoadData
+        .where((element) =>
+            element.caregiver_names == widget.caseLoadModel.caregiver_names)
+        .toList();
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            Get.to(() => OVCDetailsScreen(caseLoadModel: widget.caseLoadModel));
+          },
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '${caseLoadModel.ovc_first_name} ${caseLoadModel.ovc_surname}',
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w600),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '${widget.caseLoadModel.ovc_first_name} ${widget.caseLoadModel.ovc_surname}',
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Row(
+                        children: [
+                          const Text(
+                            'CPIMS ID: ',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          Text(
+                            '${widget.caseLoadModel.cpimsId}',
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        isExpanded = !isExpanded;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        const Text(
+                          'Caregiver: ',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey),
+                        ),
+                        Text(
+                          '${widget.caseLoadModel.caregiver_names}',
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                        const Spacer(),
+                        Icon(isExpanded
+                            ? Icons.keyboard_arrow_up
+                            : Icons.keyboard_arrow_down)
+                      ],
+                    ),
                   ),
                   const SizedBox(
                     height: 4,
@@ -204,56 +258,54 @@ class OVCCardItem extends StatelessWidget {
                   Row(
                     children: [
                       const Text(
-                        'CPIMS ID: ',
-                        style: TextStyle(fontSize: 12),
+                        'Age: ',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.grey),
                       ),
-                      Text(
-                        '${caseLoadModel.cpimsId}',
-                        style: const TextStyle(fontSize: 12),
-                      ),
+                      Text(calculateAge(widget.caseLoadModel.date_of_birth!))
                     ],
                   ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Text(widget.caseLoadModel.sex!),
                 ],
               ),
-              const SizedBox(
-                height: 4,
-              ),
-              Row(
-                children: [
-                  const Text(
-                    'Caregiver: ',
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey),
-                  ),
-                  Text(
-                    '${caseLoadModel.caregiver_names}',
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Row(
-                children: [
-                  const Text(
-                    'Age: ',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.grey),
-                  ),
-                  Text(calculateAge(caseLoadModel.date_of_birth!))
-                ],
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Text(caseLoadModel.sex!),
-            ],
+            ),
           ),
         ),
-      ),
+        if (isExpanded)
+          ...List.generate(
+              children.length,
+              (index) => ListTile(
+                    onTap: () {
+                      Get.to(() =>
+                          OVCDetailsScreen(caseLoadModel: children[index]));
+                    },
+                    leading: Text(children[index].cpimsId!),
+                    title: Text(
+                        '${children[index].ovc_surname!} ${children[index].ovc_first_name!}'),
+                    trailing: Text(
+                        "${children[index].sex!}(${calculateAge(children[index].date_of_birth!)})"),
+                    tileColor: Colors.grey[200],
+                  )),
+        if (isExpanded)
+          const SizedBox(
+            height: 16,
+          ),
+      ],
     );
   }
+}
+
+String calculateAge(String date) {
+  final dob = DateTime.parse(date);
+  final now = DateTime.now();
+  final difference = now.difference(dob);
+  final age = difference.inDays / 365;
+  return age.toStringAsFixed(0);
+}
+
+String formatSex(String sex) {
+  return sex.toLowerCase() == "male" ? "M" : "F";
 }

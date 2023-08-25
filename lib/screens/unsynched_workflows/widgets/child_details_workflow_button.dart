@@ -17,13 +17,13 @@ class ChildDetailsWorkflowButton extends StatelessWidget {
       decoration: const BoxDecoration(
           border: Border(
               bottom: BorderSide(
-                color: Colors.black26,
-                width: 1,
-              ))),
+        color: Colors.black26,
+        width: 1,
+      ))),
       child: TextButton(
           style: TextButton.styleFrom(
             minimumSize: Size.zero,
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 0),
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 0),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
           onPressed: () {
