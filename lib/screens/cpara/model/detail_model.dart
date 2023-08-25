@@ -38,7 +38,7 @@ class DetailModel {
       'q3': hasHivExposedInfant,
       'q4': hasPregnantOrBreastfeedingWoman,
       'q5': dateOfAssessment,
-      'q6': dateOfLastAssessment
+      // 'q6': dateOfLastAssessment // This is sent as its own parameter in the request
     };
   }
 

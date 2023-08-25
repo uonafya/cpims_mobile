@@ -248,6 +248,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                             ));
 
                                     try {
+                                      String ovcpmisid = "1573288";
                                       // Insert to db
                                       CparaModel cparaModelDB = CparaModel(
                                           detail: detailModel ?? DetailModel(),
@@ -267,11 +268,17 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                         // Get formID
                                         cparaModelDB
                                             .getLatestFormID(database)
-                                            .then((formID) {
+                                            .then((formData) {
+                                          var formDate = formData.formDate;
+                                          var formDateString =
+                                              formDate.toString().split(' ')[0];
+                                          var formID = formData.formID;
                                           cparaModelDB
                                               .addHouseholdFilledQuestionsToDB(
                                                   database,
                                                   "Test House",
+                                                  formDateString,
+                                                  ovcpmisid,
                                                   formID);
                                         });
                                       });

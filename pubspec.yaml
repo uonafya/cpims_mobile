@@ -28,6 +28,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   cupertino_icons: ^1.0.2
+  dio: ^5.3.2
   flutter:
     sdk: flutter
   flutter_screenutil: ^5.5.3+2

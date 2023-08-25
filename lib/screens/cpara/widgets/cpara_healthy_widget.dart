@@ -63,6 +63,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   RadioButtonOptions? set3_1final;
   RadioButtonOptions? set3_2final;
   RadioButtonOptions? set3_3final;
+  // List of children
 
   // Initiallized Data
   @override
@@ -518,6 +519,20 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
     }
   }
 
+  RadioButtonOptions allShouldBeYesOrNA(
+      List<RadioButtonOptions?> members, String message) {
+    debugPrint(members.toString() + message);
+    // If all the values are yes return RadioButtonOptions.yes, if not return RadioButtonOptions.no
+    if (members.isEmpty) {
+      return RadioButtonOptions.no;
+    } else if (members.any(
+        (element) => element == RadioButtonOptions.no || element == null)) {
+      return RadioButtonOptions.no;
+    } else {
+      return RadioButtonOptions.yes;
+    }
+  }
+
   // When you skip a section or goal the answers of the skipped questions should be set to NA
   void updateAnswersOnSkip(List<String> answersToChange) {
     for (var i in answersToChange) {
@@ -659,7 +674,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           },
           finalBlockQuestion: "Has the household achieved this benchmark?",
           showNAInFinalResult: false,
-          finalResult: allShouldBeYes([
+          finalResult: allShouldBeYesOrNA([
             q2_1SuppresedPast12,
             q2_2ChildrenRegularAttendTreatment,
             q2_3ChildrenNotMissDose,
