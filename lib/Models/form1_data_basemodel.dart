@@ -20,7 +20,7 @@ abstract class Form1DataBaseModel {
 
 class Form1ServicesModel {
   late final String domainId;
-  late final List<String> serviceId;
+  late final String? serviceId;
 
 
   Form1ServicesModel({
@@ -30,7 +30,7 @@ class Form1ServicesModel {
 
   factory Form1ServicesModel.fromJson(Map<String, dynamic> json) {
     return Form1ServicesModel(
-      domainId: json['domain_id'] as String,
+      domainId: json['domain_id'] ,
       serviceId: json['service_id'],
     );
   }

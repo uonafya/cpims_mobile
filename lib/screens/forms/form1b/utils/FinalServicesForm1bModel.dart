@@ -1,7 +1,7 @@
 import 'MasterServicesForm1bModel.dart';
 
 class FinalServicesFormData {
-  late  List<MasterServicesFormData>? masterServicesList;
+  late  List<MasterServicesFormData> masterServicesList;
   late  String dateOfEvent;
   late String ovc_cpims_id;
 

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import '../Models/form_1b.dart';
 
 // save form to local storage
-saveValues(String formType, formData) async {
+Future<bool> saveValues(String formType, formData) async {
 //save the form data that is in the form of a map to  a local database
   final db = DatabaseHelper();
   try {

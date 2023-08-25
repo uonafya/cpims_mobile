@@ -1,4 +1,3 @@
-import 'package:cpims_mobile/providers/form1b_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
 import 'package:cpims_mobile/screens/forms/form1a/form_1A.dart';
@@ -65,8 +64,6 @@ class _CPIMSState extends State<CPIMS> {
         return MultiProvider(
           providers: [
             ChangeNotifierProvider(create: (_) => UIProvider()),
-            ChangeNotifierProvider(create: (_) => Form1bProvider()),
-
           ],
           child: GetMaterialApp(
             title: 'CPIMS',
@@ -78,7 +75,7 @@ class _CPIMSState extends State<CPIMS> {
       },
       child:
           // const Homepage()
-          const Form1BScreen(),
+          const Form1AScreen(),
     );
   }
 }

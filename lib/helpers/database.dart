@@ -95,7 +95,6 @@ class DatabaseHelper {
           form_id INTEGER NOT NULL,
           domain_id TEXT,
           $columnGoalId TEXT,
-          $columnPriorityId TEXT,
           $columnGapId TEXT,
           $columnPriorityId TEXT,
           $columnResultsId TEXT,
@@ -206,14 +205,16 @@ class DatabaseHelper {
         );
       }
     } else {
+      print("ourPrint ");
       // insert services
       for (var service in formData.services) {
+        print("ourservice${service}");
         await _db.insert(
           childTableServices1B,
           {
             'form_id': formId,
-            'domain_id': service['domain_id'],
-            'service_id': service['service_id'],
+            'domain_id': service.domainId ?? ' ',
+            'service_id': service.serviceId,
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );

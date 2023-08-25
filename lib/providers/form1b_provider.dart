@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/Models/form1_data_basemodel.dart';
 import 'package:cpims_mobile/Models/form_1b.dart';
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:flutter/material.dart';
@@ -101,26 +102,20 @@ class Form1bProvider extends ChangeNotifier {
 
 
 
-    List<Map<String, String?>> servicesList = [];
+    List<Form1ServicesModel> servicesList = [];
 
     for (MasterServicesFormData masterFormData in finalServicesFormData.masterServicesList ?? []) {
-      Map<String, String?> entry = {
-        'domain_id': masterFormData.domainId,
-        'service_id': masterFormData.selectedServiceId,
-      };
+      Form1ServicesModel entry = Form1ServicesModel(domainId: masterFormData.domainId, serviceId: masterFormData.selectedServiceId);
       servicesList.add(entry);
     }
 
 
-    Map<String, dynamic> toDbData ={
-      'ovc_cpims_id': finalServicesFormData.ovc_cpims_id,
-      'date_of_event': finalServicesFormData.dateOfEvent,
-      'services' : servicesList
-    };
+    Form1BDataModel toDbData = Form1BDataModel(ovcCpimsId: finalServicesFormData.ovc_cpims_id, dateOfEvent: finalServicesFormData.dateOfEvent, services: servicesList);
     print("ourData${toDbData}");
 
-    Form1BDataModel data = Form1BDataModel.fromJson(toDbData);
-    Form1Service.saveFormLocal("form1b", data);
+
+
+    Form1Service.saveFormLocal("form1b", toDbData);
 
 
     // print("Form1bData: ${form1bListData.length}");
