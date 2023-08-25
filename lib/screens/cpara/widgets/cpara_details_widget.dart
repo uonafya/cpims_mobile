@@ -44,6 +44,17 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
     ),
   ];
 
+  @override
+  void initState(){
+    DetailModel detailModel = context.read<CparaProvider>().detailModel ?? DetailModel();
+    isFirstAssessment = detailModel.isFirstAssessment == null ? isFirstAssessment : convertingStringToRadioButtonOptions(detailModel.isFirstAssessment!);
+    isChildHeaded = detailModel.isChildHeaded == null ? isChildHeaded : convertingStringToRadioButtonOptions(detailModel.isChildHeaded!);
+    hasHivExposedInfant = detailModel.hasHivExposedInfant == null ? hasHivExposedInfant : convertingStringToRadioButtonOptions(detailModel.hasHivExposedInfant!);
+    // dateOfAssessment = detailModel.dateOfAssessment == null ? dateOfAssessment : DateTime.parse(detailModel.dateOfAssessment!);
+    // dateOfLastAssessment = detailModel.dateOfLastAssessment == null ? dateOfLastAssessment : DateTime.parse(detailModel.dateOfLastAssessment!);
+    super.initState();
+  }
+
   void _getDataAndMoveToNext() {
     print('Is first assessment: $isFirstAssessment');
     print('Is child headed: $isChildHeaded');
@@ -108,17 +119,6 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
         ),
         const SizedBox(height: 20),
         const TextViewsColumn(),
-        const Text('Is this the first Case Plan Readiness Assessment?'),
-        CustomRadioButton(
-            isNaAvailable: false,
-            optionSelected: (value) {
-              setState(() {
-                isFirstAssessment = value;
-                if (isFirstAssessment == RadioButtonOptions.yes) {
-                  _dateTextFieldPreviousKey.currentState?.clearDate();
-                }
-              });
-            }),
         QuestionWidget(
             question: 'Is this the first Case Plan Readiness Assessment?',
             selectedOption: (value) {
@@ -210,20 +210,20 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
           onPressed: _getDataAndMoveToNext,
           child: const Text('Next'),
         ),
-        for (var child in children)
-          ExpansionTile(title: Text(child.name), children: [
-            CheckboxForm(
-              childName: child.name,
-              ovcCpimsId: child.uniqueNumber,
-              onCheckboxSelected: (id) {
-                DetailModel detailModel =
-                    context.read<CparaProvider>().detailModel ?? DetailModel();
-                context.read<CparaProvider>().updateDetailModel(
-                    detailModel.copyWith(childrenQuestions: id));
-              },
-            ),
-          ]),
-        const SizedBox(height: 20),
+        // for (var child in children)
+        //   ExpansionTile(title: Text(child.name), children: [
+        //     CheckboxForm(
+        //       childName: child.name,
+        //       ovcCpimsId: child.uniqueNumber,
+        //       onCheckboxSelected: (id) {
+        //         DetailModel detailModel =
+        //             context.read<CparaProvider>().detailModel ?? DetailModel();
+        //         context.read<CparaProvider>().updateDetailModel(
+        //             detailModel.copyWith(childrenQuestions: id));
+        //       },
+        //     ),
+        //   ]),
+        // const SizedBox(height: 20),
       ],
     );
   }
@@ -307,9 +307,13 @@ class _TextViewsColumnState extends State<TextViewsColumn> {
 
   @override
   void initState() {
+    DetailModel detailModel =
+        context.read<CparaProvider>().detailModel ?? DetailModel();
+
+
     super.initState();
     _ovcDetails = ApiService.fetchOvcDetails(
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkyODcxNTM2LCJpYXQiOjE2OTI4Njc5MzYsImp0aSI6ImMxYzQxYzE2YmU1OTQzMGVhMDVhMzIwNDhmMTBkM2Q2IiwidXNlcl9pZCI6ODg4fQ.__r5tgvnqXHBIOhkGuQUELr18NE98IF4AhRPvqybOqo',
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkyOTc3ODM4LCJpYXQiOjE2OTI5NzQyMzgsImp0aSI6IjFlZDVkMGYzNWI1ZDQ2MmM5YTkyMDUxYWFmM2NiOTdkIiwidXNlcl9pZCI6ODg4fQ.RKzW5BJYb3eorTlqZMAABs6sejTvQtWeFlZeFc5r6ZA',
         '2457100');
   }
 
