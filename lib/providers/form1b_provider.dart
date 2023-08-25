@@ -2,44 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
+import '../screens/forms/form1b/model/health_form1b_model.dart';
+import '../screens/forms/form1b/utils/FinalServicesForm1bModel.dart';
+import '../screens/forms/form1b/utils/MasterServicesForm1bModel.dart';
+import '../screens/forms/form1b/utils/SafeForm1bModel.dart';
+import '../screens/forms/form1b/utils/StableForm1bModel.dart';
 import '../widgets/custom_toast.dart';
-
-class HealthFormData {
-  late List<ValueItem> selectedServices;
-  late DateTime selectedDate;
-  late String domainId ;
-
-  HealthFormData({required this.selectedServices, required this.selectedDate, required this.domainId});
-}
-
-
-class StableFormData {
-  late final List<ValueItem> selectedServices;
-  late String domainId;
-
-  StableFormData({required this.selectedServices, required this.domainId});
-}
-class SafeFormData {
-  late final List<ValueItem> selectedServices;
-  late String domainId;
-
-  SafeFormData({required this.selectedServices, required this.domainId});
-}
-
-//this is the broken down list of the grouped domains
-class MasterServicesFormData {
-  late final String? selectedServiceId;
-  late final String domainId;
-  late final String dateOfEvent;
-
-  MasterServicesFormData({required this.selectedServiceId, required this.domainId, required this.dateOfEvent});
-}
-
-
-
-
-
-
 
 class Form1bProvider extends ChangeNotifier {
   final HealthFormData _formData = HealthFormData(
@@ -51,30 +19,33 @@ class Form1bProvider extends ChangeNotifier {
       selectedServices: [],
       domainId: ""
   );
-
   final SafeFormData _safeFormData = SafeFormData(
       selectedServices: [],
       domainId: ""
+  );
+  final FinalServicesFormData _finalServicesFormData = FinalServicesFormData(
+      masterServicesList: [],
+      dateOfEvent: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      ovc_cpims_id: "",
   );
 
   HealthFormData get formData => _formData;
   StableFormData get stableFormData => _stableFormData;
   SafeFormData get safeFormData => _safeFormData;
+  FinalServicesFormData get finalServicesFormData => _finalServicesFormData;
 
-  void setSelectedServices(List<ValueItem> selectedServices, String domainId) {
+  void setSelectedHealthServices(List<ValueItem> selectedServices, String domainId) {
     _formData.selectedServices.clear(); // Clear the current list
     _formData.selectedServices.addAll(selectedServices);
     _formData.domainId = domainId;
     notifyListeners();
   }
-
   void setSelectedSafeFormDataServices(List<ValueItem> selectedServices, String domainId) {
     _safeFormData.selectedServices.clear(); // Clear the current list
     _safeFormData.selectedServices.addAll(selectedServices);
     _safeFormData.domainId = domainId;
     notifyListeners();
   }
-
   void setSelectedStableFormDataServices(List<ValueItem> selectedServices, String domainId) {
     _stableFormData.selectedServices.clear(); // Clear the current list
     _stableFormData.selectedServices.addAll(selectedServices);
@@ -82,45 +53,70 @@ class Form1bProvider extends ChangeNotifier {
     notifyListeners();
   }
   void setSelectedDate(DateTime selectedDate) {
-    // _formData.selectedDate = selectedDate;
-    // CustomToastWidget.showToast(selectedDate);
-    // final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+     // CustomToastWidget.showToast(selectedDate);
     _formData.selectedDate = selectedDate;
     notifyListeners();
   }
 
 
 
-  void setStableFormData(List<ValueItem> selectedServices, String domainId){
-    _stableFormData.selectedServices.clear();
-    _stableFormData.selectedServices = selectedServices;
-    _stableFormData.domainId= domainId;
+  //these are methods to be worked on just before our form is saved
+  void setFinalFormDataOvcId(String ovc_cpims_id) {
+    _finalServicesFormData.ovc_cpims_id = ovc_cpims_id;
+    notifyListeners();
+  }
+  void setFinalFormDataDOE(DateTime dateOfEvent){
+    //we get the date as date time and save it as a string in yyyy-mm--dd
+    _finalServicesFormData.dateOfEvent = DateFormat('yyyy-MM-dd').format(dateOfEvent);
+    notifyListeners();
+  }
+  void setFinalFormDataServices(List<MasterServicesFormData> masterServicesList){
+    _finalServicesFormData.masterServicesList = masterServicesList;
+    notifyListeners();
   }
 
-  void setSafeFormData(List<ValueItem> selectedServices, String domainId){
-    _safeFormData.selectedServices.clear();
-    _safeFormData.selectedServices = selectedServices;
-    _safeFormData.domainId= domainId;
-  }
+  
+
+
+
 
   void saveForm1bData(HealthFormData healthFormData) {
-    List<MasterServicesFormData> form1bListData = convertToMasterServicesFormData();
-    // print("Form1bData: ${form1bListData.length}");
-    for (MasterServicesFormData msFormData in form1bListData) {
-      print("Form1bData: ");
-      print('Domain ID: ${msFormData.domainId}');
-      print('Selected Service ID: ${msFormData.selectedServiceId}');
-      print('Date of Event: ${msFormData.dateOfEvent}');
-      print('----------------------');
+    List<MasterServicesFormData> masterServicesList = convertToMasterServicesFormData();
+    //creating our data to be sent for saving
+    setFinalFormDataServices(masterServicesList);
+    setFinalFormDataOvcId("ovc_cpims_675748");
+    setFinalFormDataDOE(formData.selectedDate);
+
+
+    print('Date of Event: ${finalServicesFormData.dateOfEvent}');
+    print('OVC CPIMS ID: ${finalServicesFormData.ovc_cpims_id}');
+    print('Master Services List:');
+    for (MasterServicesFormData masterFormData in finalServicesFormData.masterServicesList ?? []) {
+      print('- Domain ID: ${masterFormData.domainId}');
+      print('- Selected Service ID: ${masterFormData.selectedServiceId}');
+      print('---');
     }
-    CustomToastWidget.showToast('Data saved successfully!${form1bListData[0].dateOfEvent}');
+
+
+    // print("Form1bData: ${form1bListData.length}");
+    // for (MasterServicesFormData msFormData in form1bListData) {
+    //   print("Form1bData: ");
+    //   print('Domain ID: ${msFormData.domainId}');
+    //   print('Selected Service ID: ${msFormData.selectedServiceId}');
+    //   print('Date of Event: ${msFormData.dateOfEvent}');
+    //   print('----------------------');
+    // }
+    // CustomToastWidget.showToast('Data saved successfully!${form1bListData[0].dateOfEvent}');
     notifyListeners();
   }
 
 
 
 
-  //this is a function for converting a health form data to a list digestable for saving locally and remote
+
+
+
+  //converting the various services from the domains into one Services list with domain id and service id
   List<MasterServicesFormData> convertToMasterServicesFormData() {
     List<MasterServicesFormData> masterServicesList = [];
     HealthFormData healthFormData = formData;
@@ -130,30 +126,27 @@ class Form1bProvider extends ChangeNotifier {
         MasterServicesFormData(
           selectedServiceId: serviceItem.value,
           domainId: healthFormData.domainId,
-          dateOfEvent: DateFormat('yyyy-MM-dd').format(healthFormData.selectedDate),
+          // dateOfEvent: DateFormat('yyyy-MM-dd').format(healthFormData.selectedDate),
         ),
       );
     }
-
-
     // Convert StableFormData selected services
     for (ValueItem serviceItem in stableFormData.selectedServices) {
       masterServicesList.add(
         MasterServicesFormData(
           selectedServiceId: serviceItem.value,
           domainId: stableFormData.domainId,
-          dateOfEvent: DateFormat('yyyy-MM-dd').format(healthFormData.selectedDate),
+          // dateOfEvent: DateFormat('yyyy-MM-dd').format(healthFormData.selectedDate),
         ),
       );
     }
-
     // Convert SafeFormData selected services
     for (dynamic serviceItem in safeFormData.selectedServices) {
       masterServicesList.add(
         MasterServicesFormData(
           selectedServiceId: serviceItem.value,
           domainId: safeFormData.domainId,
-          dateOfEvent: DateFormat('yyyy-MM-dd').format(healthFormData.selectedDate),
+          // dateOfEvent: DateFormat('yyyy-MM-dd').format(healthFormData.selectedDate),
         ),
       );
     }

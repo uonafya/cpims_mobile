@@ -61,7 +61,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             selectedCareGiverServices = selectedServices;
-            form1bProvider.setSelectedServices(selectedCareGiverServices, domainId);
+            form1bProvider.setSelectedHealthServices(selectedCareGiverServices, domainId);
             CustomToastWidget.showToast("hii${form1bProvider.formData.selectedServices}");
 
           },
