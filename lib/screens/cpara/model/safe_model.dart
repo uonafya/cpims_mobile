@@ -1,4 +1,4 @@
-class SafeModel{
+class SafeModel {
   final String? question1;
   final String? question2;
   final String? question3;
@@ -28,8 +28,24 @@ class SafeModel{
       question5: json['question5'],
       question6: json['question6'],
       question7: json['question7'],
-      childrenQuestions: json["childrenQuestions"] == null ? [] : List<SafeChild>.from(json["childrenQuestions"]!.map((x) => SafeChild.fromJson(x))),
+      childrenQuestions: json["childrenQuestions"] == null
+          ? []
+          : List<SafeChild>.from(
+              json["childrenQuestions"]!.map((x) => SafeChild.fromJson(x))),
     );
+  }
+
+  // Converts the detail model to json. This is particulary going to be used for the sake of the database
+  Map<String, dynamic> toJSON() {
+    return {
+      'q25': question1,
+      'q26': question2,
+      'q27': question3,
+      'q28': question4,
+      'q29': question5,
+      'q30': question6,
+      'q31': question7
+    };
   }
 
   SafeModel copyWith({
@@ -55,7 +71,7 @@ class SafeModel{
   }
 }
 
-class SafeChild{
+class SafeChild {
   final String? question1;
 
   SafeChild({

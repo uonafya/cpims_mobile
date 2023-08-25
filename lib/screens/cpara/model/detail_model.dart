@@ -30,6 +30,18 @@ class DetailModel {
     );
   }
 
+  // Converts the detail model to json. This is particulary going to be used for the sake of the database
+  Map<String, dynamic> toJSON() {
+    return {
+      'q1': isFirstAssessment,
+      'q2': isChildHeaded,
+      'q3': hasHivExposedInfant,
+      'q4': hasPregnantOrBreastfeedingWoman,
+      'q5': dateOfAssessment,
+      'q6': dateOfLastAssessment
+    };
+  }
+
   DetailModel copyWith({
     String? isFirstAssessment,
     String? isChildHeaded,

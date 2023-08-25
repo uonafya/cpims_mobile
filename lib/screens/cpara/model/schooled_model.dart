@@ -1,4 +1,4 @@
-class SchooledModel{
+class SchooledModel {
   final String question1;
   final String question2;
   final String question3;
@@ -18,5 +18,14 @@ class SchooledModel{
       question3: json['question3'],
       question4: json['question4'],
     );
+  }
+
+  Map<String, dynamic> toJSON() {
+    return {
+      'q32': question1,
+      'q33': question2,
+      'q34': question3,
+      'q35': question4,
+    };
   }
 }

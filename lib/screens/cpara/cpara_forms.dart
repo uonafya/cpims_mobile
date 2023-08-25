@@ -18,6 +18,8 @@ import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as p;
 
 class CparaFormsScreen extends StatefulWidget {
   const CparaFormsScreen({super.key});
@@ -36,6 +38,45 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
     const CparaSafeWidget(),
     const CparaSchooledWidget(),
   ];
+
+  Database? database;
+  static const databaseName = "CPARAv2.db";
+  // Initialize database
+  @override
+  void initState() {
+    super.initState();
+
+    // initialize the database
+    initializeDatabase();
+  }
+
+  // Function that creates the database and tables
+  void initializeDatabase() async {
+    try {
+      debugPrint("This has been created");
+      database =
+          await openDatabase(p.join(await getDatabasesPath(), databaseName),
+              onCreate: (db, version) async {
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT);");
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS Child(childOVCCPMISID TEXT PRIMARY KEY, childName TEXT, childAge TEXT, childGender TEXT, childSchool TEXT, childOVCRegistered TEXT);");
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS Household(householdID TEXT PRIMARY KEY);");
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS HouseholdChild(childID TEXT, householdID TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (householdID) REFERENCES Household(householdID), PRIMARY KEY(childID, householdID));");
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER, id INTEGER PRIMARY KEY, houseHoldID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (houseHoldID) REFERENCES Household(householdid), FOREIGN KEY (formID) REFERENCES Form(id));");
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionid TEXT, answer TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (formID) REFERENCES Form(id));");
+      }, version: 2);
+    } catch (err) {
+      debugPrint("OHH SHIT!");
+      debugPrint(err.toString());
+      debugPrint("OHH SHIT");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -205,6 +246,40 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                                 ),
                                               ),
                                             ));
+
+                                    try {
+                                      // Insert to db
+                                      CparaModel cparaModelDB = CparaModel(
+                                          detail: detailModel ?? DetailModel(),
+                                          safe: safeModel ?? SafeModel(),
+                                          stable: stableModel ?? StableModel(),
+                                          schooled: schooledModel ??
+                                              SchooledModel(
+                                                  question1: "",
+                                                  question2: "question2",
+                                                  question3: "question3",
+                                                  question4: "question4"),
+                                          health: healthModel ?? HealthModel());
+                                      // Create form
+                                      cparaModelDB
+                                          .createForm(database)
+                                          .then((value) {
+                                        // Get formID
+                                        cparaModelDB
+                                            .getLatestFormID(database)
+                                            .then((formID) {
+                                          cparaModelDB
+                                              .addHouseholdFilledQuestionsToDB(
+                                                  database,
+                                                  "Test House",
+                                                  formID);
+                                        });
+                                      });
+                                    } catch (err) {
+                                      debugPrint("OHH SHIT!");
+                                      debugPrint(err.toString());
+                                      debugPrint("OHH SHIT");
+                                    }
                                   }
 
                                   setState(() {
