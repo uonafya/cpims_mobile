@@ -1,7 +1,11 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'dart:io';
+
 import 'package:cpims_mobile/Models/case_load_model.dart';
+import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -69,6 +73,16 @@ class LocalDb {
         ${SummaryFields.details} $textType
       )
 ''');
+
+    await db.execute('''
+        CREATE TABLE $tableFormMetadata (
+          ${FormMetadata.columnItemId} $idType,
+          ${FormMetadata.columnFieldName} $textType,
+          ${FormMetadata.columnItemDescription} $textType,
+          ${FormMetadata.columnItemSubCategory} $textType,
+          ${FormMetadata.columnTheOrder} $textType,
+        )
+        ''');
   }
 
   Future<void> insertCaseLoad(CaseLoadModel caseLoadModel) async {
@@ -95,9 +109,34 @@ class LocalDb {
     return result.map((json) => SummaryDataModel.fromJson(json)).toList();
   }
 
+  // insert Metadata
+  Future<bool> insertMetadata(Metadata metadata) async {
+    final db = await instance.database;
+    await db.insert(tableFormMetadata, metadata.toJson());
+    return true;
+  }
+
+  // Query All form Metadata
+  Future<List<Map<String, dynamic>>> queryAllMetadataRows() async {
+    final db = await instance.database;
+    List<Map<String, dynamic>> map = await db.query(tableFormMetadata);
+    return map;
+  }
+
+  //Query specific field Items
+  Future<List<Map<String, dynamic>>> querySpecificFieldItems(
+      String fieldName) async {
+    final db = await instance.database;
+    const sql = 'SELECT * FROM $tableFormMetadata WHERE field_name = ?';
+    final List<Map<String, dynamic>> results =
+        await db.rawQuery(sql, [fieldName]);
+    return results;
+  }
+
   // table name and field names
   static const caseloadTable = 'ovcs';
   static const statisticsTable = 'statistics';
+  static const tableFormMetadata = 'form_metadata';
 }
 
 class OvcFields {
@@ -163,4 +202,21 @@ class SummaryFields {
   static const String orgUnit = 'org_unit';
   static const String orgUnitId = 'org_unit_id';
   static const String details = 'details';
+}
+
+class FormMetadata {
+  static final List<String> values = [
+    columnId,
+    columnFieldName,
+    columnItemId,
+    columnItemDescription,
+    columnItemSubCategory,
+    columnTheOrder,
+  ];
+  static const String columnId = '_id';
+  static const String columnFieldName = 'field_name';
+  static const String columnItemId = 'item_id';
+  static const String columnItemDescription = 'item_description';
+  static const String columnItemSubCategory = 'item_sub_Category';
+  static const String columnTheOrder = 'the_order';
 }
