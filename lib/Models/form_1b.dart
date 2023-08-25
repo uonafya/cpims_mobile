@@ -1,21 +1,29 @@
-import 'baseForm1Data.dart';
+import 'form1_data_basemodel.dart';
 
-class Form1BData extends BaseForm1Data {
-  Form1BData({
+class Form1BDataModel extends Form1DataBaseModel {
+  Form1BDataModel({
     required String ovcCpimsId,
     required String dateOfEvent,
-    required List<Map<String, dynamic>> services,
+    required List<Form1ServicesModel> services,
   }) : super(
     ovcCpimsId: ovcCpimsId,
     dateOfEvent: dateOfEvent,
     services: services,
   );
 
-  factory Form1BData.fromJson(Map<String, dynamic> json) {
-    return Form1BData(
+  factory Form1BDataModel.fromJson(Map<String, dynamic> json) {
+    List<Form1ServicesModel> services = [];
+    if (json['services'] != null) {
+      // Parse the list of services
+      for (var serviceJson in json['services']) {
+        services.add(Form1ServicesModel.fromJson(serviceJson));
+      }
+    }
+
+    return Form1BDataModel(
       ovcCpimsId: json['ovc_cpims_id'],
       dateOfEvent: json['date_of_event'],
-      services: json['services'],
+      services: services,
     );
   }
 }
