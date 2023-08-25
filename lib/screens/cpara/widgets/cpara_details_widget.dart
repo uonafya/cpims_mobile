@@ -114,8 +114,10 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
                 }
                 DetailModel detailModel =
                     context.read<CparaProvider>().detailModel ?? DetailModel();
+                String selectedOption =
+                    convertingRadioButtonOptionsToString(value);
                 context.read<CparaProvider>().updateDetailModel(
-                    detailModel.copyWith(isFirstAssessment: value.toString()));
+                    detailModel.copyWith(isFirstAssessment: selectedOption));
               });
             },
             isNaAvailable: false),
@@ -150,11 +152,12 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
                 "Is this household child-headed (i.e. Household head age is less than 18 years)?",
             selectedOption: (value) {
               setState(() {
-                isChildHeaded = value;
                 DetailModel detailModel =
                     context.read<CparaProvider>().detailModel ?? DetailModel();
+                String selectedOption =
+                    convertingRadioButtonOptionsToString(value);
                 context.read<CparaProvider>().updateDetailModel(
-                    detailModel.copyWith(isChildHeaded: value.toString()));
+                    detailModel.copyWith(isChildHeaded: selectedOption));
               });
             },
             isNaAvailable: false),
@@ -165,8 +168,10 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
                 hasHivExposedInfant = value;
                 DetailModel detailModel =
                     context.read<CparaProvider>().detailModel ?? DetailModel();
-                context.read<CparaProvider>().updateDetailModel(detailModel
-                    .copyWith(hasHivExposedInfant: value.toString()));
+                String selectedOption =
+                    convertingRadioButtonOptionsToString(value);
+                context.read<CparaProvider>().updateDetailModel(
+                    detailModel.copyWith(hasHivExposedInfant: selectedOption));
               });
             },
             isNaAvailable: false),
@@ -178,9 +183,10 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
                 hasPregnantOrBreastfeedingWoman = value;
                 DetailModel detailModel =
                     context.read<CparaProvider>().detailModel ?? DetailModel();
-                context.read<CparaProvider>().updateDetailModel(
-                    detailModel.copyWith(
-                        hasPregnantOrBreastfeedingWoman: value.toString()));
+                String selectedOption =
+                    convertingRadioButtonOptionsToString(value);
+                context.read<CparaProvider>().updateDetailModel(detailModel
+                    .copyWith(hasPregnantOrBreastfeedingWoman: selectedOption));
               });
             },
             isNaAvailable: false),

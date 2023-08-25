@@ -33,12 +33,14 @@ class _CheckboxFormState extends State<CheckboxForm> {
       children: [
         const ReusableTitleText(title: "OVC Sub Population Form"),
         for (var question in questions)
-          Row( // Use Row instead of Column
+          Row(
+            // Use Row instead of Column
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                question.question,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Container(
+                child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: ReusableTitleText(title: question.question)),
               ),
               Checkbox(
                 value: question.isChecked,
