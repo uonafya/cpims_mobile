@@ -485,7 +485,10 @@ class CparaResultBenchmarks extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text("Result: ${Provider.of<CparaProvider>(context).schooledBenchmark()}"),
+        Text("SchooledResult: ${Provider.of<CparaProvider>(context).schooledBenchmark()}"),
+        Text("HealthResult: ${Provider.of<CparaProvider>(context).healthyBenchmark()}"),
+        Text("StableBenchmark: ${Provider.of<CparaProvider>(context).stableBenchMark()}"),
+        Text("SafeBenchmark: ${Provider.of<CparaProvider>(context).safeBenchMark()}"),
       ],
     );
   }
