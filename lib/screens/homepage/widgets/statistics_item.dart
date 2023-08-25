@@ -1,6 +1,4 @@
-import 'package:cpims_mobile/screens/homepage/report_details.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 
 class StatisticsItem extends StatelessWidget {
   const StatisticsItem({Key? key, required this.title, required this.icon, required this.color, required this.secondaryColor, required this.form1ACount, required this.form1BCount, required this.cpaCount, required this.cparaCount, required this.onClick}) : super(key: key);

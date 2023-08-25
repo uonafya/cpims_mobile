@@ -1,7 +1,5 @@
-import 'dart:io';
 
 import 'package:cpims_mobile/Models/case_load.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -56,7 +54,7 @@ class CaseLoadDb {
   Future<List<CaseLoadModel>> retrieveCaseLoads() async {
     final db = await instance.database;
     final result = await db.query(tableOvc);
-    print('Local Model ${result}');
+    print('Local Model $result');
     return result.map((json) => CaseLoadModel.fromJson(json)).toList();
   }
 
