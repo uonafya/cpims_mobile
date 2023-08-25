@@ -1,7 +1,10 @@
+import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
+import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_safe_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CparaSchooledWidget extends StatefulWidget {
   const CparaSchooledWidget({super.key});
@@ -26,45 +29,104 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
       case "school_going_children":
         setState(() {
           school_going_children = value;
+
           if (value == RadioButtonOptions.no) {
             q9_1_Children_enrooled_in_school = RadioButtonOptions.yes;
+
+            SchooledModel schooledModel =
+                context.read<CparaProvider>().schooledModel ?? SchooledModel();
+
+            String selectedOption = convertingRadioButtonOptionsToString(
+                q9_1_Children_enrooled_in_school);
+            context.read<CparaProvider>().updateSchooledModel(
+                schooledModel.copyWith(question1: selectedOption));
+          }
+
+          if (value == RadioButtonOptions.no) {
             q9_2_Children_attending_school_regularly = RadioButtonOptions.yes;
+
+            SchooledModel schooledModel =
+                context.read<CparaProvider>().schooledModel ?? SchooledModel();
+
+            String selectedOption = convertingRadioButtonOptionsToString(
+                q9_2_Children_attending_school_regularly);
+            context.read<CparaProvider>().updateSchooledModel(
+                schooledModel.copyWith(question2: selectedOption));
           }
           if (value == RadioButtonOptions.yes) {
             q9_1_Children_enrooled_in_school = null;
             q9_2_Children_attending_school_regularly = null;
           }
+
+          SchooledModel schooledModel =
+              context.read<CparaProvider>().schooledModel ?? SchooledModel();
+          String selectedOption = convertingRadioButtonOptionsToString(value);
+          context.read<CparaProvider>().updateSchooledModel(
+              schooledModel.copyWith(mainquestion1: selectedOption));
         });
         break;
       case "q9_1_Children_enrooled_in_school":
         setState(() {
           q9_1_Children_enrooled_in_school = value;
+          SchooledModel schooledModel =
+              context.read<CparaProvider>().schooledModel ?? SchooledModel();
+          String selectedOption = convertingRadioButtonOptionsToString(value);
+          context.read<CparaProvider>().updateSchooledModel(
+              schooledModel.copyWith(question1: selectedOption));
         });
         break;
       case "q9_2_Children_attending_school_regularly":
         setState(() {
           q9_2_Children_attending_school_regularly = value;
+          SchooledModel schooledModel =
+              context.read<CparaProvider>().schooledModel ?? SchooledModel();
+          String selectedOption = convertingRadioButtonOptionsToString(value);
+          context.read<CparaProvider>().updateSchooledModel(
+              schooledModel.copyWith(question2: selectedOption));
         });
         break;
       case "ecde_4_5_children":
         setState(() {
           ecde_4_5_children = value;
+
           if (value == RadioButtonOptions.no) {
             q9_3_Children_attending_ecde = RadioButtonOptions.yes;
+            SchooledModel schooledModel =
+                context.read<CparaProvider>().schooledModel ?? SchooledModel();
+            String selectedOption = convertingRadioButtonOptionsToString(
+                q9_3_Children_attending_ecde);
+            context.read<CparaProvider>().updateSchooledModel(
+                schooledModel.copyWith(question3: selectedOption));
           }
+
           if (value == RadioButtonOptions.yes) {
             q9_3_Children_attending_ecde = null;
           }
+          SchooledModel schooledModel =
+              context.read<CparaProvider>().schooledModel ?? SchooledModel();
+          String selectedOption = convertingRadioButtonOptionsToString(value);
+          context.read<CparaProvider>().updateSchooledModel(
+              schooledModel.copyWith(mainquestion2: selectedOption));
         });
         break;
       case "q9_3_Children_attending_ecde":
         setState(() {
           q9_3_Children_attending_ecde = value;
+          SchooledModel schooledModel =
+              context.read<CparaProvider>().schooledModel ?? SchooledModel();
+          String selectedOption = convertingRadioButtonOptionsToString(value);
+          context.read<CparaProvider>().updateSchooledModel(
+              schooledModel.copyWith(question3: selectedOption));
         });
         break;
       case "q9_4_Children_progressed_from_one_level_to_another":
         setState(() {
           q9_4_Children_progressed_from_one_level_to_another = value;
+          SchooledModel schooledModel =
+              context.read<CparaProvider>().schooledModel ?? SchooledModel();
+          String selectedOption = convertingRadioButtonOptionsToString(value);
+          context.read<CparaProvider>().updateSchooledModel(
+              schooledModel.copyWith(question4: selectedOption));
         });
         break;
       case "benchmark_score":
@@ -75,6 +137,39 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
       default:
         break;
     }
+  }
+
+  @override
+  void initState() {
+    SchooledModel schooledModel =
+        context.read<CparaProvider>().schooledModel ?? SchooledModel();
+
+    school_going_children = schooledModel.mainquestion1 == null
+        ? school_going_children
+        : convertingStringToRadioButtonOptions(schooledModel.mainquestion1!);
+
+    q9_1_Children_enrooled_in_school = schooledModel.question1 == null
+        ? q9_1_Children_enrooled_in_school
+        : convertingStringToRadioButtonOptions(schooledModel.question1!);
+
+    q9_2_Children_attending_school_regularly = schooledModel.question2 == null
+        ? q9_2_Children_attending_school_regularly
+        : convertingStringToRadioButtonOptions(schooledModel.question2!);
+
+    ecde_4_5_children = schooledModel.mainquestion2 == null
+        ? ecde_4_5_children
+        : convertingStringToRadioButtonOptions(schooledModel.mainquestion2!);
+
+    q9_3_Children_attending_ecde = schooledModel.question3 == null
+        ? q9_3_Children_attending_ecde
+        : convertingStringToRadioButtonOptions(schooledModel.question3!);
+
+    q9_4_Children_progressed_from_one_level_to_another =
+        schooledModel.question4 == null
+            ? q9_4_Children_progressed_from_one_level_to_another
+            : convertingStringToRadioButtonOptions(schooledModel.question4!);
+
+    super.initState();
   }
 
   @override
@@ -95,6 +190,7 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
 ///////////////////////////////////////////
 // First Main Question
           MainCardQuestion(
+              option: school_going_children,
               card_question:
                   "Are there school going children in this Household ?",
               selectedOption: (value) {
@@ -148,6 +244,7 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
 
 // Main Card Question
           MainCardQuestion(
+              option: ecde_4_5_children,
               card_question:
                   "Is there a child between 4-5 years in the household and is there an ECDE center in the area ?",
               selectedOption: (value) {
@@ -191,14 +288,20 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
 
 // Benchmark score
           BenchMarkQuestion(
-              groupValue: allShouldBeYes([
+            groupValue: allShouldBeYes(
+              [
                 q9_1_Children_enrooled_in_school,
                 q9_2_Children_attending_school_regularly,
                 q9_3_Children_attending_ecde,
                 q9_4_Children_progressed_from_one_level_to_another
-              ], "Last Benchmark school"),
-              benchmark_question: "Has the household achieved this benchmarks?",
-              selectedOption: (value) {}),
+              ],
+              "Last Benchmark school",
+            ),
+            benchmark_question: "Has the household achieved this benchmarks?",
+            selectedOption: (value) {},
+          ),
+
+////////////////////////////////////
 
           const Column(
             children: [
@@ -209,6 +312,7 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
+              CparaResultBenchmarks(),
             ],
           )
         ],
@@ -272,8 +376,14 @@ class GoalWidget extends StatelessWidget {
 class MainCardQuestion extends StatelessWidget {
   final String card_question;
   final Function(RadioButtonOptions?) selectedOption;
-  const MainCardQuestion(
-      {super.key, required this.card_question, required this.selectedOption});
+  final RadioButtonOptions? option;
+
+  const MainCardQuestion({
+    super.key,
+    required this.card_question,
+    required this.selectedOption,
+    this.option,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -300,6 +410,7 @@ class MainCardQuestion extends StatelessWidget {
               CustomRadioButton(
                 isNaAvailable: false,
                 optionSelected: (value) => selectedOption(value),
+                option: option,
               ),
             ],
           ),
@@ -322,49 +433,6 @@ class SkipQuestion extends StatelessWidget {
   }
 }
 
-// class OtherQuestions extends StatelessWidget {
-//   final bool NaAvailable;
-//   final String other_question;
-//   final bool divider;
-//   final Function(RadioButtonOptions?) selectedOption;
-
-//   const OtherQuestions(
-//       {super.key,
-//       required this.other_question,
-//       required this.selectedOption,
-//       this.divider = false,
-//       this.NaAvailable = false});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         if (divider == true) const Divider(),
-//         const SizedBox(
-//           height: large_height,
-//         ),
-//         Text(
-//           other_question,
-//           style: const TextStyle(
-//             fontSize: question_font_Size,
-//             fontWeight: question_font_weight,
-//           ),
-//         ),
-//         const SizedBox(
-//           height: small_height,
-//         ),
-//         CustomRadioButton(
-//           isNaAvailable: NaAvailable,
-//           optionSelected: (value) => selectedOption(value),
-//         ),
-//         const SizedBox(
-//           height: large_height,
-//         ),
-//       ],
-//     );
-//   }
-// }
-
 // A function that computes whether the final result of a section is yes or no given the values of the members
 RadioButtonOptions allShouldBeYes(
     List<RadioButtonOptions?> members, String message) {
@@ -380,51 +448,45 @@ RadioButtonOptions allShouldBeYes(
   }
 }
 
+String convertingRadioButtonOptionsToString(
+    RadioButtonOptions? radioButtonOptions) {
+  switch (radioButtonOptions) {
+    case RadioButtonOptions.yes:
+      return 'Yes';
+    case RadioButtonOptions.na:
+      return 'N/A';
+    case RadioButtonOptions.no:
+    default:
+      return 'No';
+  }
+}
 
-// class BenchMarkQuestion extends StatelessWidget {
-//   final String benchmark_question;
-//   final Function(RadioButtonOptions?) selectedOption;
-//   const BenchMarkQuestion(
-//       {super.key,
-//       required this.benchmark_question,
-//       required this.selectedOption});
+RadioButtonOptions convertingStringToRadioButtonOptions(
+    String savedRadioButtonOptions) {
+  switch (savedRadioButtonOptions.toLowerCase()) {
+    case "yes":
+      return RadioButtonOptions.yes;
+    case "n/a":
+      return RadioButtonOptions.na;
+    case "no":
+    default:
+      return RadioButtonOptions.no;
+  }
+}
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         Container(
-//           padding: const EdgeInsets.all(8),
-//           decoration: BoxDecoration(
-//             color: grey,
-//             borderRadius: BorderRadius.circular(5),
-//             // border:  const Border(
-//             //   left: BorderSide(
-//             //   color: greyBorder,
-//             //   width: 2,
-//             //   ),
-//             // ),
-//           ),
-//           child: Column(
-//             children: [
-//               Text(
-//                 benchmark_question,
-//                 style: const TextStyle(
-//                   fontSize: 18,
-//                   fontWeight: FontWeight.w300,
-//                 ),
-//               ),
-//               const SizedBox(
-//                 height: 10,
-//               ),
-//               CustomRadioButton(
-//                 isNaAvailable: false,
-//                 optionSelected: (value) => selectedOption(value),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
+// if (_children_adolecent_caregiver == RadioButtonOptions.no || _adolescents_older_than_12 == RadioButtonOptions.no)
+
+
+
+class CparaResultBenchmarks extends StatelessWidget {
+  const CparaResultBenchmarks({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text("Result: ${Provider.of<CparaProvider>(context).schooledBenchmark()}"),
+      ],
+    );
+  }
+}

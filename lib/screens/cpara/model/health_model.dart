@@ -107,6 +107,30 @@ class HealthModel {
           json["childrenQuestions"]!.map((x) => HealthChild.fromJson(x))),
     );
   }
+
+  // Converts the detail model to json. This is particulary going to be used for the sake of the database
+  Map<String, dynamic> toJSON() {
+    return {
+      'q7': question1,
+      'q8': question2,
+      'q9': question3,
+      'q10': question4,
+      'q11': question5,
+      'q12': question6,
+      'q13': question7,
+      'q14': question8,
+      'q15': question9,
+      'q16': question10,
+      'q17': question11,
+      'q18': question12,
+      'q19': question13,
+      'q20': question14,
+      'q21': question15,
+      'q22': question16,
+      'q23': question17,
+      'q24': question18,
+    };
+  }
 }
 
 class HealthChild {
