@@ -71,6 +71,11 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
       return ValueItem(label: "- ${resultList['name']}", value: resultList['id']);
     }).toList();
 
+    List<ValueItem> selectedServicesList = [];
+    List<ValueItem> selectedPersonsResponsible = [];
+    DateTime currentlySelectedDate = DateTime.now();
+    DateTime completionDate = DateTime.now();
+
 
     return Scaffold(
       appBar: customAppBar(),
@@ -144,8 +149,8 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           hint: 'Please   select the Domains',
                           onOptionSelected: (selectedEvents) {
                             setState(() {
-                              this.selectedEvents =
-                                  selectedEvents.cast<String>().toList();
+                              // this.selectedEvents =
+                                  // selectedEvents.cast<String>().toList();
                             });
                           },
                           options: casePlanProviderDomainList,
