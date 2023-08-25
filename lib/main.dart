@@ -30,6 +30,7 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => ConnectivityProvider(),
         ),
+        ChangeNotifierProvider(create: (_) => CparaProvider()),
       ],
       child: const CPIMS(),
     ),
@@ -56,7 +57,6 @@ class _CPIMSState extends State<CPIMS> {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-
         return GetMaterialApp(
           title: 'CPIMS',
           debugShowCheckedModeBanner: false,

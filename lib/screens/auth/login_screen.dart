@@ -366,6 +366,16 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!hasConnection) {
       final savedUsername = prefs.getString('username');
       final savedPassword = prefs.getString('password');
+      if (savedUsername == null || savedPassword == null) {
+        if (mounted) {
+          errorSnackBar(context, 'Please login with your credentials first');
+        }
+        setState(() {
+          _isloading = false;
+        });
+        return;
+      }
+
       if (username != savedUsername || password != savedPassword) {
         if (mounted) {
           errorSnackBar(context, 'Please login with your credentials first');

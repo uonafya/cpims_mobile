@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/screens/cpara/cpara_forms.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/screens/unsynched_workflows/widgets/child_details_grid_item.dart';
 import 'package:cpims_mobile/screens/unsynched_workflows/widgets/child_details_workflow_button.dart';
@@ -9,6 +10,7 @@ import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/route_manager.dart';
 
 class OVCDetailsScreen extends StatefulWidget {
   const OVCDetailsScreen({super.key, required this.caseLoadModel});
@@ -118,7 +120,9 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             ),
             ChildDetailsWorkflowButton(
               workflowName: "CPARA",
-              onClick: () {},
+              onClick: () {
+                Get.to(() => CparaFormsScreen());
+              },
             ),
             ChildDetailsWorkflowButton(
               workflowName: "Case Plan Template",
