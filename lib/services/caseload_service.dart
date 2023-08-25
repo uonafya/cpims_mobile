@@ -12,20 +12,21 @@ class CaseLoadService {
   Future<void> fetchCaseLoadData({
     required BuildContext context,
     required bool isForceSync,
+    required String deviceID,
   }) async {
     final preferences = await SharedPreferences.getInstance();
     final int caseloadLastSave = preferences.getInt('caseload_last_save') ?? 0;
     final int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
     final int diff = currentTimestamp - caseloadLastSave;
     if (!(isForceSync || diff > 60000)) {
-      // Todo : 30 days - 2592000000 milliseconds
+      // TODO : 30 days - 2592000000 milliseconds
       return;
     }
 
     try {
       final accessToken = preferences.getString('access');
       http.Response response = await http.get(
-        Uri.parse('${cpimsApiUrl}caseload'),
+        Uri.parse('${cpimsApiUrl}caseload?deviceID=$deviceID'),
         headers: {
           'Authorization': 'Bearer $accessToken',
         },
