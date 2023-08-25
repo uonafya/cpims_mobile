@@ -1,7 +1,6 @@
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:hive/hive.dart';
 import 'package:lottie/lottie.dart';
 
 class BiometricInformation extends StatefulWidget {
