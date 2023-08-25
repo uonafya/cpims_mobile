@@ -14,6 +14,34 @@ class CparaProvider extends ChangeNotifier {
   SafeModel? safeModel;
   SchooledModel? schooledModel;
 
+  // Calculate schooled benchmark
+  int schooledBenchmark() {
+    int schooledBenchmark = 5;
+    print("1");
+    print(schooledModel?.question1);
+    print("2");
+    print(schooledModel?.question2);
+    print("3");
+    print(schooledModel?.question3);
+    print("4");
+    print(schooledModel?.question4);
+
+    if (schooledModel?.question1 == "Yes" &&
+            schooledModel?.question2 == "Yes" &&
+            schooledModel?.question3 == "Yes" &&
+            schooledModel?.question4 == "Yes" ||
+        schooledModel?.question4 == "N/A") {
+      schooledBenchmark = 1;
+    } else {
+      schooledBenchmark = 0;
+    }
+    return schooledBenchmark;
+  }
+
+  int healthyBenchmark() {
+    
+    return 2;
+  }
 
 // update cpara model
   void updateCparaModel(CparaModel cparaModel) {
@@ -50,6 +78,4 @@ class CparaProvider extends ChangeNotifier {
     this.schooledModel = schooledModel;
     notifyListeners();
   }
-
-
 }

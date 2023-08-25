@@ -29,6 +29,7 @@ class CparaFormsScreen extends StatefulWidget {
 }
 
 class _CparaFormsScreenState extends State<CparaFormsScreen> {
+  final ScrollController _scrollController = ScrollController();
   int selectedStep = 0;
 
   List<Widget> steps = [
@@ -85,6 +86,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
         child: CustomDrawer(),
       ),
       body: ListView(
+        controller: _scrollController, // Assign the ScrollController
         padding: const EdgeInsets.symmetric(horizontal: 15),
         children: [
           Container(
@@ -135,6 +137,11 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                   if (selectedStep == 0) {
                                     Navigator.pop(context);
                                   }
+                                  _scrollController.animateTo(
+                                    0,
+                                    duration: Duration(milliseconds: 500),
+                                    curve: Curves.easeInOut,
+                                  );
                                   setState(() {
                                     if (selectedStep > 0) {
                                       selectedStep--;
@@ -149,146 +156,163 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                             ),
                             Expanded(
                               child: CustomButton(
-                                text: selectedStep == steps.length - 1
-                                    ? 'Submit'
-                                    : 'Next',
-                                onTap: () {
-                                  if (selectedStep == steps.length - 1) {
-                                    // display collected data
-                                    DetailModel? detailModel = context
-                                        .read<CparaProvider>()
-                                        .detailModel;
-                                    HealthModel? healthModel = context
-                                        .read<CparaProvider>()
-                                        .healthModel;
-                                    StableModel? stableModel = context
-                                        .read<CparaProvider>()
-                                        .stableModel;
-                                    SafeModel? safeModel =
-                                        context.read<CparaProvider>().safeModel;
-                                    SchooledModel? schooledModel = context
-                                        .read<CparaProvider>()
-                                        .schooledModel;
-                                    CparaModel? cparaModel = context
-                                        .read<CparaProvider>()
-                                        .cparaModel;
+                                  text: selectedStep == steps.length - 1
+                                      ? 'Submit'
+                                      : 'Next',
+                                  onTap: () {
+                                    if (selectedStep == steps.length - 1) {
+                                      if (selectedStep == steps.length - 1) {
+                                        // display collected data
+                                        DetailModel? detailModel = context
+                                            .read<CparaProvider>()
+                                            .detailModel;
+                                        HealthModel? healthModel = context
+                                            .read<CparaProvider>()
+                                            .healthModel;
+                                        StableModel? stableModel = context
+                                            .read<CparaProvider>()
+                                            .stableModel;
+                                        SafeModel? safeModel = context
+                                            .read<CparaProvider>()
+                                            .safeModel;
+                                        SchooledModel? schooledModel = context
+                                            .read<CparaProvider>()
+                                            .schooledModel;
+                                        CparaModel? cparaModel = context
+                                            .read<CparaProvider>()
+                                            .cparaModel;
 
-                                    showDialog(
-                                        context: context,
-                                        builder: (_) => AlertDialog(
-                                              title:
-                                                  const Text('Collected Data'),
-                                              content: SingleChildScrollView(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    const Text("Stable Model:"),
-                                                    Row(
-                                                      children: [
-                                                        Text("Question: 1"),
-                                                        Text(
-                                                            "Answer: ${stableModel?.question1}"),
-                                                      ],
-                                                    ),
-                                                    Row(
+                                        showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                                  title: const Text(
+                                                      'Collected Data'),
+                                                  content:
+                                                      SingleChildScrollView(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: [
                                                         const Text(
-                                                            "Question: 2"),
-                                                        Text(
-                                                            " || Answer: ${stableModel?.question2}"),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            "Question: 3"),
-                                                        Text(
-                                                            " || Answer: ${stableModel?.question3}"),
-                                                      ],
-                                                    ),
+                                                            "Stable Model:"),
+                                                        Row(
+                                                          children: [
+                                                            Text("Question: 1"),
+                                                            Text(
+                                                                "Answer: ${stableModel?.question1}"),
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            const Text(
+                                                                "Question: 2"),
+                                                            Text(
+                                                                " || Answer: ${stableModel?.question2}"),
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            const Text(
+                                                                "Question: 3"),
+                                                            Text(
+                                                                " || Answer: ${stableModel?.question3}"),
+                                                          ],
+                                                        ),
 
-                                                    // Health Model
-                                                    HealthModelCollected(),
-                                                    const Text("Safe Model:"),
-                                                    Row(
-                                                      children: [
-                                                        Text("Question: 1"),
-                                                        Text(
-                                                            "Answer: ${safeModel?.question1}"),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
+                                                        // Health Model
+                                                        HealthModelCollected(),
                                                         const Text(
-                                                            "Question: 2"),
-                                                        Text(
-                                                            " || Answer: ${stableModel?.question2}"),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
+                                                            "Safe Model:"),
+                                                        Row(
+                                                          children: [
+                                                            Text("Question: 1"),
+                                                            Text(
+                                                                "Answer: ${safeModel?.question1}"),
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            const Text(
+                                                                "Question: 2"),
+                                                            Text(
+                                                                " || Answer: ${stableModel?.question2}"),
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            const Text(
+                                                                "Question: 3"),
+                                                            Text(
+                                                                " || Answer: ${stableModel?.question3}"),
+                                                          ],
+                                                        ),
                                                         const Text(
-                                                            "Question: 3"),
-                                                        Text(
-                                                            " || Answer: ${stableModel?.question3}"),
+                                                            "Detail model:"),
+                                                        Row(
+                                                          children: [
+                                                            Text(
+                                                                "last Assesment"),
+                                                            Text(
+                                                                "Answer: ${detailModel?.dateOfAssessment}"),
+                                                          ],
+                                                        ),
                                                       ],
                                                     ),
-                                                    const Text("Detail model:"),
-                                                    Row(
-                                                      children: [
-                                                        Text("last Assesment"),
-                                                        Text(
-                                                            "Answer: ${detailModel?.dateOfAssessment}"),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ));
+                                                  ),
+                                                ));
 
-                                    try {
-                                      // Insert to db
-                                      CparaModel cparaModelDB = CparaModel(
-                                          detail: detailModel ?? DetailModel(),
-                                          safe: safeModel ?? SafeModel(),
-                                          stable: stableModel ?? StableModel(),
-                                          schooled: schooledModel ??
-                                              SchooledModel(
-                                                  question1: "",
-                                                  question2: "question2",
-                                                  question3: "question3",
-                                                  question4: "question4"),
-                                          health: healthModel ?? HealthModel());
-                                      // Create form
-                                      cparaModelDB
-                                          .createForm(database)
-                                          .then((value) {
-                                        // Get formID
-                                        cparaModelDB
-                                            .getLatestFormID(database)
-                                            .then((formID) {
+                                        try {
+                                          // Insert to db
+                                          CparaModel cparaModelDB = CparaModel(
+                                              detail:
+                                                  detailModel ?? DetailModel(),
+                                              safe: safeModel ?? SafeModel(),
+                                              stable:
+                                                  stableModel ?? StableModel(),
+                                              schooled: schooledModel ??
+                                                  SchooledModel(
+                                                      question1: "",
+                                                      question2: "question2",
+                                                      question3: "question3",
+                                                      question4: "question4"),
+                                              health:
+                                                  healthModel ?? HealthModel());
+                                          // Create form
                                           cparaModelDB
-                                              .addHouseholdFilledQuestionsToDB(
-                                                  database,
-                                                  "Test House",
-                                                  formID);
-                                        });
-                                      });
-                                    } catch (err) {
-                                      debugPrint("OHH SHIT!");
-                                      debugPrint(err.toString());
-                                      debugPrint("OHH SHIT");
-                                    }
-                                  }
+                                              .createForm(database)
+                                              .then((value) {
+                                            // Get formID
+                                            cparaModelDB
+                                                .getLatestFormID(database)
+                                                .then((formID) {
+                                              cparaModelDB
+                                                  .addHouseholdFilledQuestionsToDB(
+                                                      database,
+                                                      "Test House",
+                                                      formID);
+                                            });
+                                          });
+                                        } catch (err) {
+                                          debugPrint("OHH SHIT!");
+                                          debugPrint(err.toString());
+                                          debugPrint("OHH SHIT");
+                                        }
+                                      }
 
-                                  setState(() {
-                                    if (selectedStep < steps.length - 1) {
-                                      selectedStep++;
+                                      _scrollController.animateTo(
+                                        0,
+                                        duration: Duration(milliseconds: 500),
+                                        curve: Curves.easeInOut,
+                                      );
+                                      setState(() {
+                                        if (selectedStep < steps.length - 1) {
+                                          selectedStep++;
+                                        }
+                                      });
                                     }
-                                  });
-                                },
-                              ),
+                                    ;
+                                  },),
                             )
                           ],
                         ),
