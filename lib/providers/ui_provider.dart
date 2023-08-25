@@ -23,7 +23,7 @@ class UIProvider with ChangeNotifier {
   }
 
   Future<void> setCaseLoadData() async {
-    final caseLoadData = await CaseLoadDb.instance.retrieveCaseLoads();
+    final caseLoadData = await LocalDb.instance.retrieveCaseLoads();
 
     _caseLoadData = caseLoadData;
 

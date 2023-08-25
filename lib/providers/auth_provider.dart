@@ -90,7 +90,7 @@ class AuthProvider with ChangeNotifier {
           prefs.setString('username', username);
           prefs.setString('password', password);
 
-          Get.off(() => const InitialLoadingScreen(),
+          Get.off(() => const InitialLoadingScreen(isFromAuth: true),
               transition: Transition.fadeIn,
               duration: const Duration(microseconds: 300));
         },
