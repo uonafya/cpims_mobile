@@ -10,9 +10,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CaseLoadService {
   Future<void> fetchCaseLoadData({
     required BuildContext context,
+    required bool isForceSync,
   }) async {
+    final preferences = await SharedPreferences.getInstance();
+    final int caseloadLastSave = preferences.getInt('caseload_last_save') ?? 0;
+    final int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
+    final int diff = currentTimestamp - caseloadLastSave;
+    if (!(isForceSync || diff > 60000)) { // Todo : 30 days - 2592000000 milliseconds
+      return;
+    }
+
+
     try {
-      final preferences = await SharedPreferences.getInstance();
 
       final accessToken = preferences.getString('access');
       http.Response response = await http.get(
@@ -29,7 +38,9 @@ class CaseLoadService {
           );
           print(caseLoadModel.caregiver_names);
           CaseLoadDb.instance.insertDoc(caseLoadModel);
-        } 
+        }
+        final int timestamp = DateTime.now().millisecondsSinceEpoch;
+        await preferences.setInt('caseload_last_save', timestamp);
       } else {
         print("We have an issue");
       }

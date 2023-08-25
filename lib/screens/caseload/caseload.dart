@@ -1,4 +1,3 @@
-
 import 'package:cpims_mobile/providers/db_provider.dart';
 
 import 'package:cpims_mobile/services/caseload_service.dart';
@@ -23,7 +22,8 @@ class _CaseLoadState extends State<CaseLoad> {
   final CaseLoadService caseLoadService = CaseLoadService();
 
   void getData() async {
-    await caseLoadService.fetchCaseLoadData(context: context);
+    await caseLoadService.fetchCaseLoadData(
+        context: context, isForceSync: true);
   }
 
   @override

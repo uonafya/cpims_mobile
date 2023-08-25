@@ -27,7 +27,8 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
         Provider.of<UIProvider>(context, listen: false).setDashData(dashResp);
         final CaseLoadService caseLoadService = CaseLoadService();
 
-        await caseLoadService.fetchCaseLoadData(context: context);
+        await caseLoadService.fetchCaseLoadData(
+            context: context, isForceSync: false);
         await Provider.of<UIProvider>(context, listen: false).setCaseLoadData();
 
         Get.off(() => const Homepage());
