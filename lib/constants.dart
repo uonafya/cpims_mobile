@@ -232,6 +232,34 @@ successSnackBar(BuildContext context, message) {
   ));
 }
 
+
+// case plan stepper data
+List<Map<String, dynamic>> cparaStepperData = [
+  {
+    'title': 'Details',
+    'subtitle': 'CPARA Base Details',
+    'onTap': () {}
+  },
+  {
+    'title': 'Healthy',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Stable',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Safe',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Schooled',
+    'subtitle': '',
+    'onTap': () => {},}];
+
 List<Map<String, dynamic>> unapprovedItems = [
   {
     'title': 'Form 1A',
@@ -264,5 +292,6 @@ List<Map<String, dynamic>> unapprovedItems = [
     'onTap': () => {},
     'color': Colors.red,
     's_color': const Color(0xff9A3734),
+
   },
 ];

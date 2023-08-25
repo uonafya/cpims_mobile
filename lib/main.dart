@@ -2,8 +2,14 @@ import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
+
+import 'package:cpims_mobile/screens/cpara/cpara_forms.dart';
+import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/homepage/home_page.dart';
+
 import 'package:cpims_mobile/screens/initial_loader.dart';
 import 'package:cpims_mobile/screens/splash_screen.dart';
+
 import 'package:cpims_mobile/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -50,6 +56,7 @@ class _CPIMSState extends State<CPIMS> {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
+
         return GetMaterialApp(
           title: 'CPIMS',
           debugShowCheckedModeBanner: false,
