@@ -17,15 +17,6 @@ class CparaProvider extends ChangeNotifier {
   // Calculate schooled benchmark
   int schooledBenchmark() {
     int schooledBenchmark = 5;
-    print("1");
-    print(schooledModel?.question1);
-    print("2");
-    print(schooledModel?.question2);
-    print("3");
-    print(schooledModel?.question3);
-    print("4");
-    print(schooledModel?.question4);
-
     if (schooledModel?.question1 == "Yes" &&
             schooledModel?.question2 == "Yes" &&
             schooledModel?.question3 == "Yes" &&

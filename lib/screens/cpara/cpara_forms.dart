@@ -161,7 +161,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                       : 'Next',
                                   onTap: () {
                                     if (selectedStep == steps.length - 1) {
-                                      if (selectedStep == steps.length - 1) {
                                         // display collected data
                                         DetailModel? detailModel = context
                                             .read<CparaProvider>()
@@ -310,8 +309,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           selectedStep++;
                                         }
                                       });
-                                    }
-                                    ;
                                   },),
                             )
                           ],
