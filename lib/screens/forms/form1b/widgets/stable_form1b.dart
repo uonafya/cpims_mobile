@@ -5,6 +5,9 @@ import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../providers/form1b_provider.dart';
 
 class StableForm1b extends StatefulWidget {
   const StableForm1b({super.key});
@@ -16,15 +19,20 @@ class StableForm1b extends StatefulWidget {
 
 class _StableForm1bState extends State<StableForm1b> {
 
-  List<Map> careGiverServices = careGiverEconomicServices;
   List<ValueItem> caregiverEconomicItems = careGiverEconomicServices.map((service) {
     return ValueItem(label: "- ${service['subtitle']}", value: service['title']);
   }).toList();
 
-  List<String> selectedCareGiverServices = [];
+  List<ValueItem> selectedCareGiverStableServices = [];
+  List<ValueItem> selectedCareGiverStableServicesOptions = [];
 
   @override
   Widget build(BuildContext context) {
+    Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
+    selectedCareGiverStableServicesOptions = form1bProvider.stableFormData.selectedServices;
+    String domainId = ServiceDomains[1]['id'];
+
+
     return StepsWrapper(
       title: 'Caregiver household economic strengthening status',
       children: [
@@ -37,11 +45,11 @@ class _StableForm1bState extends State<StableForm1b> {
           showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
-            setState(() {
-              selectedCareGiverServices = selectedServices.cast<String>().toList();
-            });
+            selectedCareGiverStableServices = selectedServices;
+            form1bProvider.setSelectedStableFormDataServices(selectedCareGiverStableServices, domainId);
           },
           options: caregiverEconomicItems,
+          selectedOptions: selectedCareGiverStableServicesOptions.cast<ValueItem>(),
           maxItems: 50,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
@@ -54,14 +62,6 @@ class _StableForm1bState extends State<StableForm1b> {
               .x, // Set the desired border radius value
         ),
         const SizedBox(height: 15),
-        // const Text(
-        //   'Date of Service(s) / Event',
-        //   style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        // ),
-        // const SizedBox(height: 10),
-        // const CustomDatePicker(
-        //   hintText: 'Select date',
-        // )
       ],
     );
   }

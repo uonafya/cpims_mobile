@@ -20,7 +20,7 @@ class StableFormData {
   StableFormData({required this.selectedServices, required this.domainId});
 }
 class SafeFormData {
-  late final List selectedServices;
+  late final List<ValueItem> selectedServices;
   late final String domainId;
 
   SafeFormData({required this.selectedServices, required this.domainId});
@@ -67,6 +67,20 @@ class Form1bProvider extends ChangeNotifier {
     _formData.domainId = domainId;
     notifyListeners();
   }
+
+  void setSelectedSafeFormDataServices(List<ValueItem> selectedServices, String domainId) {
+    _safeFormData.selectedServices.clear(); // Clear the current list
+    _safeFormData.selectedServices.addAll(selectedServices);
+    _safeFormData.domainId = domainId;
+    notifyListeners();
+  }
+
+  void setSelectedStableFormDataServices(List<ValueItem> selectedServices, String domainId) {
+    _stableFormData.selectedServices.clear(); // Clear the current list
+    _stableFormData.selectedServices.addAll(selectedServices);
+    _stableFormData.domainId = domainId;
+    notifyListeners();
+  }
   void setSelectedDate(DateTime selectedDate) {
     // _formData.selectedDate = selectedDate;
     // CustomToastWidget.showToast(selectedDate);
@@ -83,7 +97,7 @@ class Form1bProvider extends ChangeNotifier {
     _stableFormData.domainId= domainId;
   }
 
-  void setSafeFormData(List selectedServices, String domainId){
+  void setSafeFormData(List<ValueItem> selectedServices, String domainId){
     _safeFormData.selectedServices.clear();
     _safeFormData.selectedServices = selectedServices;
     _safeFormData.domainId= domainId;
@@ -98,12 +112,11 @@ class Form1bProvider extends ChangeNotifier {
 
 
 
-
-
   //this is a function for converting a health form data to a list digestable for saving locally and remote
   List<MasterServicesFormData> convertToMasterServicesFormData(HealthFormData healthFormData) {
     List<MasterServicesFormData> masterServicesList = [];
 
+    //convert the healthy form data
     for (ValueItem serviceItem in healthFormData.selectedServices) {
       masterServicesList.add(
         MasterServicesFormData(
@@ -113,6 +126,31 @@ class Form1bProvider extends ChangeNotifier {
         ),
       );
     }
+
+
+    // Convert StableFormData selected services
+    for (ValueItem serviceItem in stableFormData.selectedServices) {
+      masterServicesList.add(
+        MasterServicesFormData(
+          selectedServiceId: serviceItem.value,
+          domainId: stableFormData.domainId,
+          dateOfEvent: DateFormat('yyyy-MM-dd').format(healthFormData.selectedDate),
+        ),
+      );
+    }
+
+    // Convert SafeFormData selected services
+    for (dynamic serviceItem in safeFormData.selectedServices) {
+      masterServicesList.add(
+        MasterServicesFormData(
+          selectedServiceId: serviceItem.toString(),
+          domainId: safeFormData.domainId,
+          dateOfEvent: DateFormat('yyyy-MM-dd').format(healthFormData.selectedDate),
+        ),
+      );
+    }
+
+
 
     return masterServicesList;
   }

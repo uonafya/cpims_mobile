@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../providers/form1b_provider.dart';
+
 
 class SafeForm1b extends StatefulWidget {
   const SafeForm1b({super.key});
@@ -18,17 +18,20 @@ class SafeForm1b extends StatefulWidget {
 
 class _SafeForm1bState extends State<SafeForm1b> {
 
-  List<Map> careGiverServices = careGiverProtectionServices;
   List<ValueItem> caregiverProtectionItems = careGiverProtectionServices.map((service) {
     return ValueItem(label: "- ${service['subtitle']}", value: service['title']);
   }).toList();
 
-  List<String> selectedCareGiverServices = [];
+  List<ValueItem> selectedCareGiverProtectionServices = [];
+  List<ValueItem> selectedCareGiverProtectionServicesOptions = [];
 
 
   @override
   Widget build(BuildContext context) {
     Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
+    selectedCareGiverProtectionServicesOptions = form1bProvider.safeFormData.selectedServices;
+
+    String domainId = ServiceDomains[1]['id'];
 
 
     return StepsWrapper(
@@ -43,11 +46,11 @@ class _SafeForm1bState extends State<SafeForm1b> {
           showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
-            setState(() {
-              selectedCareGiverServices = selectedServices.cast<String>().toList();
-            });
+            selectedCareGiverProtectionServices = selectedServices;
+            form1bProvider.setSelectedSafeFormDataServices(selectedCareGiverProtectionServices, domainId);
           },
           options: caregiverProtectionItems,
+          selectedOptions: selectedCareGiverProtectionServicesOptions.cast<ValueItem>(),
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
