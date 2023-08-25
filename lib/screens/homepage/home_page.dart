@@ -1,11 +1,18 @@
+import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
-import 'package:cpims_mobile/screens/homepage/widgets/homepage_card.dart';
+import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
+import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
+import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
+import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
+
+import '../unsynched_workflows/unsynched_workeflows_screen.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -16,129 +23,140 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   @override
-  void initState() {
-    var access = context.read<UIProvider>().getAccess.toString();
-    print(">>>>>>>>>>>>>>>>>>> access >>>>>>>>>>>>> $access");
-
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final SummaryDataModel dashData =
+        context.select((UIProvider provider) => provider.getDashData);
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
         child: CustomDrawer(),
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
+      body: Stack(
         children: [
-          const SizedBox(height: 20),
-          const Text('4THE CHILD - Dashboard',
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black)),
-          const SizedBox(height: 5),
-          const Text(
-            'Application data and usage summary',
-            style: TextStyle(color: kTextGrey),
+          Positioned.fill(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              children: [
+                const SizedBox(height: 20),
+                const Text(
+                  '4THE CHILD - Dashboard',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                const Text(
+                  'Application data and usage summary',
+                  style: TextStyle(color: kTextGrey),
+                ),
+                StatisticsItem(
+                  title: 'UNSYNCED RECORDS',
+                  icon: FontAwesomeIcons.arrowsRotate,
+                  color: const Color(0xffa10036),
+                  secondaryColor: const Color(0xff630122),
+                  form1ACount: 4,
+                  form1BCount: 3,
+                  cpaCount: 2,
+                  cparaCount: 1,
+                  onClick: () {
+                    Get.to(() => const UnsyncedWorkflowsPage());
+                  },
+                ),
+                StatisticsItem(
+                  title: 'UNAPPROVED RECORDS',
+                  icon: FontAwesomeIcons.fileCircleXmark,
+                  color: const Color(0xff947901),
+                  secondaryColor: const Color(0xff524300),
+                  form1ACount: 4,
+                  form1BCount: 3,
+                  cpaCount: 2,
+                  cparaCount: 1,
+                  onClick: () {},
+                ),
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    StatisticsGridItem(
+                      title: 'Org Unit Id',
+                      value: dashData.orgUnitId,
+                      icon: FontAwesomeIcons.orcid,
+                      color: Colors.black54,
+                      secondaryColor: Colors.black87,
+                    ),
+                    StatisticsGridItem(
+                      title: 'OVC-ACTIVE/EVER REGISTERED',
+                      value: dashData.caregivers,
+                      icon: FontAwesomeIcons.person,
+                      color: kPrimaryColor,
+                      secondaryColor: const Color(0xff0E6668),
+                    ),
+                    StatisticsGridItem(
+                      title: 'CAREGIVERS/GUARDIANS',
+                      value: dashData.caregivers,
+                      icon: FontAwesomeIcons.peopleGroup,
+                      color: const Color(0xff348FE2),
+                      secondaryColor: const Color(0xff1F5788),
+                    ),
+                    StatisticsGridItem(
+                      title: 'WORKFORCE MEMBERS',
+                      value: dashData.workforceMembers,
+                      icon: Icons.people,
+                      color: const Color(0xff727DB6),
+                      secondaryColor: const Color(0xff454A6D),
+                    ),
+                    StatisticsGridItem(
+                      title: 'ORG UNITS/CBOs',
+                      value: dashData.orgUnits,
+                      icon: FontAwesomeIcons.landmark,
+                      color: const Color(0xff49B6D5),
+                      secondaryColor: const Color(0xff2C6E80),
+                    ),
+                    StatisticsGridItem(
+                      title: 'HOUSEHOLDS',
+                      value: dashData.household,
+                      icon: FontAwesomeIcons.house,
+                      color: const Color(0xffFE5C57),
+                      secondaryColor: const Color(0xff9A3734),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 90,
+                )
+              ],
+            ),
           ),
-
-          HomepageCard(
-            data: {
-              'title': 'Org Unit Id',
-              'value': context
-                  .read<UIProvider>()
-                  .getDashData['org_unit_id']
-                  .toString(),
-              'icon': FontAwesomeIcons.orcid,
-              'color': Colors.black54,
-              's_color': const Color(0xff0E6668),
-            },
-            // homeCardsTitles[1],
-            // context.read<UIProvider>().homeCardsTitles[1]
-          ),
-
-          HomepageCard(
-            data: {
-              'title': 'OVC-ACTIVE/EVER REGISTERED',
-              'value': context
-                      .read<UIProvider>()
-                      .getDashData['caregivers']
-                      .toString() ??
-                  "null",
-              'icon': FontAwesomeIcons.person,
-              'color': kPrimaryColor,
-              's_color': const Color(0xff0E6668),
-            },
-            // homeCardsTitles[1],
-            // context.read<UIProvider>().homeCardsTitles[1]
-          ),
-
-          HomepageCard(
-            data: {
-              'title': 'CAREGIVERS/GUARDIANS',
-              'value': context
-                      .read<UIProvider>()
-                      .getDashData['caregivers']
-                      .toString() ??
-                  "null",
-              'icon': FontAwesomeIcons.peopleGroup,
-              'color': const Color(0xff348FE2),
-              's_color': const Color(0xff1F5788),
-            },
-          ),
-
-          HomepageCard(
-            data: {
-              'title': 'WORKFORCE MEMBERS',
-              'value': context
-                      .read<UIProvider>()
-                      .getDashData['workforce_members']
-                      .toString() ??
-                  "null",
-              'icon': Icons.people,
-              'color': const Color(0xff727DB6),
-              's_color': const Color(0xff454A6D),
-            },
-          ),
-          HomepageCard(
-            data: {
-              'title': 'ORG UNITS/CBOs',
-              'value': context
-                      .read<UIProvider>()
-                      .getDashData['org_units']
-                      .toString() ??
-                  "null",
-              'icon': FontAwesomeIcons.landmark,
-              'color': const Color(0xff49B6D5),
-              's_color': const Color(0xff2C6E80),
-            },
-          ),
-          HomepageCard(data: {
-            'title': 'HOUSEHOLDS',
-            'value':
-                context.read<UIProvider>().getDashData['hh_holds'].toString() ??
-                    "null",
-            'icon': FontAwesomeIcons.house,
-            'color': const Color(0xffFE5C57),
-            's_color': const Color(0xff9A3734),
-          }),
-
-          // const SizedBox(height: 10),
-          // ...List.generate(
-          //   context.read<UIProvider>().homeCardsTitles.length,
-          //   (index) => HomepageCard(
-          //       data: context.read<UIProvider>().homeCardsTitles[index]
-          //       // homeCardsTitles[index],
-          //       ),
-          // ),
-          // ...List.generate(
-          //     5,
-          //     (index) => GraphWidget(
-          //           title: graphTitles[index],
-          //         )),
+          Positioned(
+            bottom: 30,
+            right: 30,
+            left: 20,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SizedBox(
+                  width: 140,
+                  child: CustomButton(
+                    onTap: () {
+                      Get.to(
+                        () => const OVCCareScreen(),
+                        transition: Transition.cupertino,
+                        duration: const Duration(
+                          milliseconds: 200,
+                        ),
+                      );
+                    },
+                    text: "OVC Care",
+                    color: Colors.green,
+                  ),
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );

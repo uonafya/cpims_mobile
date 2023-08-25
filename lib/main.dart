@@ -1,23 +1,39 @@
+import 'package:cpims_mobile/providers/auth_provider.dart';
+import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
+
 import 'package:cpims_mobile/screens/cpara/cpara_forms.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
+
+import 'package:cpims_mobile/screens/initial_loader.dart';
+import 'package:cpims_mobile/screens/splash_screen.dart';
+
 import 'package:cpims_mobile/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-
-// import 'package:path_provider/path_provider.dart';
-// import 'package:hive/hive.dart';
-
-// final prefs = await SharedPreferences.getInstance();
 
 void main() async {
-  runApp(const CPIMS());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => AuthProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => UIProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ConnectivityProvider(),
+        ),
+      ],
+      child: const CPIMS(),
+    ),
+  );
 }
 
 class CPIMS extends StatefulWidget {
@@ -31,29 +47,8 @@ class _CPIMSState extends State<CPIMS> {
   @override
   void initState() {
     super.initState();
-    // _checkLogin();
   }
 
-  _checkLogin() async {
-    final prefs = await SharedPreferences.getInstance();
-    // await prefs.remove('authenticated');
-
-    var authKey = prefs.getString('authenticated');
-
-    if (authKey != null) {
-      Get.to(() => const Homepage(),
-          transition: Transition.fade,
-          duration: const Duration(milliseconds: 2000));
-    } else {
-      Get.to(() => const LoginScreen(),
-          transition: Transition.fade,
-          duration: const Duration(milliseconds: 1000));
-    }
-
-    return prefs.getString('authenticated');
-  }
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -61,23 +56,44 @@ class _CPIMSState extends State<CPIMS> {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => UIProvider()),
-            ChangeNotifierProvider(create: (_) => CparaProvider()),
-          ],
-          child: GetMaterialApp(
-            title: 'CPIMS',
-            debugShowCheckedModeBanner: false,
-            theme: appTheme(),
-            home: child,
+
+        return GetMaterialApp(
+          title: 'CPIMS',
+          debugShowCheckedModeBanner: false,
+          theme: appTheme(),
+          home: Builder(
+            builder: (context) {
+              return FutureBuilder(
+                future: intialSetup(context),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const SplashScreen();
+                  }
+                  return snapshot.data!['hasConnection'] == false ||
+                          snapshot.data!['isAuthenticated']
+                      ? const InitialLoadingScreen()
+                      : const LoginScreen();
+                },
+              );
+            },
           ),
         );
       },
-      child:
-          // const Homepage()
-          // const LoginScreen(),
-        const CparaFormsScreen()
     );
   }
+}
+
+Future<Map<String, dynamic>> intialSetup(BuildContext context) async {
+  final hasConnection =
+      await Provider.of<ConnectivityProvider>(context, listen: false)
+          .checkInternetConnection();
+  if (hasConnection == false) {
+    return {'hasConnection': hasConnection, 'isAuthenticated': false};
+  }
+  final isAuthenticated =
+      // ignore: use_build_context_synchronously
+      await Provider.of<AuthProvider>(context, listen: false)
+          .verifyToken(context: context);
+
+  return {'hasConnection': hasConnection, 'isAuthenticated': isAuthenticated};
 }
