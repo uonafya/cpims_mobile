@@ -195,7 +195,13 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
           onPressed: _getDataAndMoveToNext,
           child: const Text('Next'),
         ),
-        CheckboxForm(),
+        // checkbox form should appear here depending on the number of children in the household  and also the checkbox form should allow one to pass a parameter named childName
+        for (var child in children)
+          CheckboxForm(
+            childName: child.name,
+            ovcCpimsId: child.uniqueNumber,
+          ),
+        const SizedBox(height: 20),
       ],
     );
   }

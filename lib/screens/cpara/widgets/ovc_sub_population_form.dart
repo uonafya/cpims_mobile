@@ -9,7 +9,12 @@ class CheckboxQuestion {
 }
 
 class CheckboxForm extends StatefulWidget {
-  const CheckboxForm({Key? key}) : super(key: key);
+  final String childName;
+  final String ovcCpimsId;
+
+  const CheckboxForm(
+      {Key? key, required this.childName, required this.ovcCpimsId})
+      : super(key: key);
 
   @override
   _CheckboxFormState createState() => _CheckboxFormState();
@@ -32,6 +37,10 @@ class _CheckboxFormState extends State<CheckboxForm> {
     return Column(
       children: [
         const ReusableTitleText(title: "OVC Sub Population Form"),
+        const SizedBox(height: 10),
+        Text('Child Name: ${widget.childName}'),
+        const SizedBox(height: 10),
+        Text('OVC CPIMS ID: ${widget.ovcCpimsId}'),
         for (var question in questions)
           Row(
             // Use Row instead of Column
