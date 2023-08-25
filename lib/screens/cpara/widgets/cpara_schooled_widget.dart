@@ -303,15 +303,11 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
 
 ////////////////////////////////////
 
+          const SizedBox(
+            height: 25,
+          ),
           const Column(
             children: [
-              Text(
-                "Form Score: 0/9",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
               CparaResultBenchmarks(),
             ],
           )
@@ -476,8 +472,6 @@ RadioButtonOptions convertingStringToRadioButtonOptions(
 
 // if (_children_adolecent_caregiver == RadioButtonOptions.no || _adolescents_older_than_12 == RadioButtonOptions.no)
 
-
-
 class CparaResultBenchmarks extends StatelessWidget {
   const CparaResultBenchmarks({super.key});
 
@@ -485,10 +479,106 @@ class CparaResultBenchmarks extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text("SchooledResult: ${Provider.of<CparaProvider>(context).schooledBenchmark()}"),
-        Text("HealthResult: ${Provider.of<CparaProvider>(context).healthyBenchmark()}"),
-        Text("StableBenchmark: ${Provider.of<CparaProvider>(context).stableBenchMark()}"),
-        Text("SafeBenchmark: ${Provider.of<CparaProvider>(context).safeBenchMark()}"),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("Overall number of points from all DOMAINS:",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                )),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+                "Score: ${Provider.of<CparaProvider>(context).finalScore()} / (9 points)",
+                style: const TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w700,
+                ))
+          ],
+        ),
+        const SizedBox(
+          height: 25,
+        ),
+        Table(
+            border: TableBorder.all(
+              color: Colors.black,
+              style: BorderStyle.solid,
+              width: 2,
+            ),
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: [
+              const TableRow(children: [
+                Column(children: [
+                  Text(
+                    'Domain',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue),
+                  )
+                ]),
+                Column(children: [
+                  Text(
+                    'Max Score',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue),
+                  )
+                ]),
+                Column(children: [
+                  Text(
+                    'HH Score',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue),
+                  )
+                ]),
+              ]),
+              TableRow(children: [
+                const Column(children: [Text('Healthy')]),
+                const Column(children: [Text('4')]),
+                Column(children: [
+                  Text(
+                      "${Provider.of<CparaProvider>(context).healthyBenchmark()}")
+                ]),
+              ]),
+              TableRow(children: [
+                const Column(children: [Text('Stable')]),
+                const Column(children: [Text('1')]),
+                Column(children: [
+                  Text(
+                      "${Provider.of<CparaProvider>(context).stableBenchMark()}")
+                ]),
+              ]),
+              TableRow(children: [
+                const Column(children: [Text('Safe')]),
+                const Column(children: [Text('3')]),
+                Column(children: [
+                  Text("${Provider.of<CparaProvider>(context).safeBenchMark()}")
+                ]),
+              ]),
+              TableRow(children: [
+                const Column(children: [Text('Schooled')]),
+                const Column(children: [Text('1')]),
+                Column(children: [
+                  Text(
+                      "${Provider.of<CparaProvider>(context).schooledBenchmark()}")
+                ]),
+              ]),
+              TableRow(children: [
+                const Column(children: [Text('Total')]),
+                const Column(children: [Text("9")]),
+                Column(children: [
+                  Text("${Provider.of<CparaProvider>(context).finalScore()}")
+                ]),
+              ]),
+            ]),
+
+            
       ],
     );
   }

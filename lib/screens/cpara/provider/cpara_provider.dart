@@ -114,6 +114,29 @@ class CparaProvider extends ChangeNotifier {
     int benchmark2 = 0;
     int benchmark3 = 0;
 
+    print("Q1");
+    print(safeModel?.question1);
+    print("Q2");
+    print(safeModel?.question2);
+    print("Q3");
+    print(safeModel?.question3);
+    print("Q4");
+    print(safeModel?.question4);
+    print("Q5");
+    print(safeModel?.question5);
+    print("Q6");
+    print(safeModel?.question6);
+    print("Q7");
+    print(safeModel?.question7);
+    print("Q8");
+    print(safeModel?.question8);
+    print("Q9");
+    print(safeModel?.question8);
+    print("Qweqw");
+    print(safeModel?.overallQuestion1);
+    print("Qqwere");
+    print(safeModel?.overallQuestion2);
+
     if (safeModel?.question1 == "Yes" &&
         safeModel?.question2 == "Yes" &&
         safeModel?.question3 == "Yes" &&
@@ -132,7 +155,7 @@ class CparaProvider extends ChangeNotifier {
     }
 
 // Safe Benchmark 3 result
-    if (safeModel?.question8 == "Yes" || safeModel?.question8 == "N/A") {
+    if (safeModel?.question8 == "Yes") {
       benchmark3 = 1;
     } else {
       benchmark3 = 0;
@@ -149,6 +172,12 @@ class CparaProvider extends ChangeNotifier {
       schooledBenchmark = 0;
     }
     return schooledBenchmark;
+  }
+
+  int finalScore() {
+    int finalBenchmarkScore = schooledBenchmark() + healthyBenchmark() + stableBenchMark() + safeBenchMark();
+
+    return finalBenchmarkScore;
   }
 
 // update cpara model
