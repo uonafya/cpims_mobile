@@ -121,7 +121,7 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             ChildDetailsWorkflowButton(
               workflowName: "CPARA",
               onClick: () {
-                Get.to(() => CparaFormsScreen());
+                Get.to(() => const CparaFormsScreen());
               },
             ),
             ChildDetailsWorkflowButton(
