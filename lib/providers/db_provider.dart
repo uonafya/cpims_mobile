@@ -49,8 +49,33 @@ class CaseLoadDb {
 
   Future<void> insertDoc(CaseLoadModel caseLoadModel) async {
     final db = await instance.database;
+    //checkng if data exists
 
-    await db.insert(tableOvc, caseLoadModel.toJson());
+    final existingData =  await db.query(tableOvc);
+   //check iexists
+    if(existingData.isNotEmpty){
+
+      await db.delete(tableOvc);
+      await db.insert(tableOvc, caseLoadModel.toJson());
+        //     await db.transaction((txn)  async{
+
+        // await txn.delete(tableOvc);
+        // await txn.insert(tableOvc, caseLoadModel.toJson());
+        //     });
+    }
+
+    //data does not exist
+    else{
+      await db.insert(tableOvc, caseLoadModel.toJson());
+      // await db.transaction((txn)  async{
+ 
+      //   await txn.insert(tableOvc, caseLoadModel.toJson());
+
+
+      // });
+    }
+
+    
   }
 
   Future<List<CaseLoadModel>> retrieveCaseLoads() async {

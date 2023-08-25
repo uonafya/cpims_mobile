@@ -196,9 +196,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                 ),
               ),
-              onChanged: (value) {
-                passwordController.text = value;
-              },
+              // onChanged: (value) {
+              //   passwordController.text = value;
+              // },
             ),
             const SizedBox(height: 15),
             _isloading

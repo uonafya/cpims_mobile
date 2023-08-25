@@ -28,7 +28,8 @@ class _CaseLoadState extends State<CaseLoad> {
   final CaseLoadService caseLoadService = CaseLoadService();
 
   void getData() async {
-    await caseLoadService.fetchCaseLoadData(context: context);
+    await CaseLoadDb.instance.retrieveCaseLoads();
+    // await caseLoadService.fetchCaseLoadData(context: context);
   }
 
   @override
@@ -54,8 +55,28 @@ class _CaseLoadState extends State<CaseLoad> {
           return ListView.builder(
             itemCount: caseLoadData!.length,
             itemBuilder: (BuildContext context, int index) {
-              return Text(
-                  "${caseLoadData[index].cpimsId} ${caseLoadData[index].ovc_first_name}");
+              return  Card(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        "Cpims Id:  ${caseLoadData[index].cpimsId}  "),
+                         Text(
+                        "First Name:  ${caseLoadData[index].ovc_first_name}"),
+                         Text(
+                        "Last Name: ${caseLoadData[index].ovc_surname}"),
+                         Text(
+                        "Caregiver names: ${caseLoadData[index].caregiver_names}"),
+                         Text(
+                        "Date Of Birth:  ${caseLoadData[index].date_of_birth}"),
+                         Text(
+                        "Registration Date: ${caseLoadData[index].registration_date}"),
+                         Text(
+                        "Sex:  ${caseLoadData[index].sex}"),
+                        
+                  ],
+                ),
+              );
             },
           );
         },

@@ -27,8 +27,15 @@ class CaseLoadService {
           CaseLoadModel caseLoadModel = CaseLoadModel.fromJson(
             jsonDecode(response.body)[i],
           );
-          print(caseLoadModel.caregiver_names);
-          CaseLoadDb.instance.insertDoc(caseLoadModel);
+          bool dataInserted = false;
+          if(!dataInserted){
+
+            CaseLoadDb.instance.insertDoc(caseLoadModel);
+            dataInserted = true;
+
+          }
+          
+          
         } 
       } else {
         print("We have an issue");
