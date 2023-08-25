@@ -39,9 +39,9 @@ class _HomepageState extends State<Homepage> {
               padding: const EdgeInsets.symmetric(horizontal: 15),
               children: [
                 const SizedBox(height: 20),
-                const Text(
-                  '4THE CHILD - Dashboard',
-                  style: TextStyle(
+                Text(
+                  '${dashData.orgUnit} - Dashboard',
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
