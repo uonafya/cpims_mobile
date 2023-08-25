@@ -2,6 +2,7 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/screens/auth/widgets/important_links_widget.dart';
+import 'package:cpims_mobile/screens/connectivity_screen.dart';
 import 'package:cpims_mobile/screens/initial_loader.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
@@ -49,8 +50,8 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       authorized =
           authenticated ? "Authorized success" : "Failed to authenticate";
-      successSnackBar(context, 'Auth success');
     });
+    if (!authenticated) return;
     final prefs = await SharedPreferences.getInstance();
 
     final username = prefs.getString('username');
@@ -360,10 +361,16 @@ class _LoginScreenState extends State<LoginScreen> {
       _isloading = true;
     });
     final prefs = await SharedPreferences.getInstance();
+    final hasUserSetup = prefs.getBool("hasUserSetup");
     final hasConnection =
         await Provider.of<ConnectivityProvider>(context, listen: false)
             .checkInternetConnection();
     if (!hasConnection) {
+      if (hasUserSetup == null) {
+        Get.off(() => const ConnectivityScreen(redirectScreen: LoginScreen()));
+        return;
+      }
+
       final savedUsername = prefs.getString('username');
       final savedPassword = prefs.getString('password');
       if (savedUsername == null || savedPassword == null) {
