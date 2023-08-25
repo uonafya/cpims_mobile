@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../widgets/custom_date_picker.dart';
 import '../../../../widgets/custom_forms_date_picker.dart';
+import '../../../../widgets/custom_toast.dart';
 import '../model/health_form1b_model.dart';
 import '../utils/form1bConstants.dart';
 
@@ -28,7 +29,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
 
   // HealthFormData formData = HealthFormData(selectedServices: [], selectedDate: DateTime.now());
 
-  List<Map> careGiverServices = careGiverHealthServices;
+  // List<Map> careGiverServices = careGiverHealthServices;
   List<ValueItem> caregiverHealthServiceItems = careGiverHealthServices.map((service) {
     return ValueItem(label: "- ${service['subtitle']}", value: service['title']);
   }).toList();
@@ -44,6 +45,9 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
     Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
     selectedCareGiverServicesOptions = form1bProvider.formData.selectedServices;
     currentlySelectedDate = form1bProvider.formData.selectedDate;
+    String domainId = ServiceDomains[0]['id'];
+
+
     return StepsWrapper(
       title: 'Caregiver health and nutrition status',
       children: [
@@ -57,7 +61,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             selectedCareGiverServices = selectedServices;
-            form1bProvider.setSelectedServices(selectedCareGiverServices);
+            form1bProvider.setSelectedServices(selectedCareGiverServices, domainId);
             CustomToastWidget.showToast("hii${form1bProvider.formData.selectedServices}");
 
           },
@@ -90,7 +94,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
             // final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
             // currentlySelectedDate = formattedDate;
             form1bProvider.setSelectedDate(currentlySelectedDate);
-            CustomToastWidget.showToast(form1bProvider.formData.selectedDate as String);
+            // CustomToastWidget.showToast(form1bProvider.formData.selectedDate as String);
           },
         ),
       ],

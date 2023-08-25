@@ -7,10 +7,11 @@ import '../widgets/custom_toast.dart';
 class HealthFormData {
   late List<ValueItem> selectedServices;
   late DateTime selectedDate;
-  late String domainId;
+  late String domainId ;
 
-  HealthFormData({required this.selectedServices, required this.selectedDate});
+  HealthFormData({required this.selectedServices, required this.selectedDate, required this.domainId});
 }
+
 
 class StableFormData {
   late final List<ValueItem> selectedServices;
@@ -18,7 +19,6 @@ class StableFormData {
 
   StableFormData({required this.selectedServices, required this.domainId});
 }
-
 class SafeFormData {
   late final List selectedServices;
   late final String domainId;
@@ -28,18 +28,24 @@ class SafeFormData {
 
 //this is the broken down list of the grouped domains
 class MasterServicesFormData {
-  late final String selectedServiceId;
+  late final String? selectedServiceId;
   late final String domainId;
+  late final String dateOfEvent;
 
-  MasterServicesFormData({required this.selectedServiceId, required this.domainId});
+  MasterServicesFormData({required this.selectedServiceId, required this.domainId, required this.dateOfEvent});
 }
+
+
+
+
 
 
 
 class Form1bProvider extends ChangeNotifier {
   final HealthFormData _formData = HealthFormData(
       selectedServices: [],
-      selectedDate: DateTime.now()
+      selectedDate: DateTime.now(),
+      domainId: '1234'
   );
   final StableFormData _stableFormData = StableFormData(
       selectedServices: [],
@@ -55,12 +61,12 @@ class Form1bProvider extends ChangeNotifier {
   StableFormData get stableFormData => _stableFormData;
   SafeFormData get safeFormData => _safeFormData;
 
-  void setSelectedServices(List<ValueItem> selectedServices) {
+  void setSelectedServices(List<ValueItem> selectedServices, String domainId) {
     _formData.selectedServices.clear(); // Clear the current list
     _formData.selectedServices.addAll(selectedServices);
+    _formData.domainId = domainId;
     notifyListeners();
   }
-
   void setSelectedDate(DateTime selectedDate) {
     // _formData.selectedDate = selectedDate;
     // CustomToastWidget.showToast(selectedDate);
@@ -68,6 +74,8 @@ class Form1bProvider extends ChangeNotifier {
     _formData.selectedDate = selectedDate;
     notifyListeners();
   }
+
+
 
   void setStableFormData(List<ValueItem> selectedServices, String domainId){
     _stableFormData.selectedServices.clear();
@@ -79,13 +87,36 @@ class Form1bProvider extends ChangeNotifier {
     _safeFormData.selectedServices.clear();
     _safeFormData.selectedServices = selectedServices;
     _safeFormData.domainId= domainId;
-
   }
 
-  void saveData(String toastData) {
-    CustomToastWidget.showToast('Data saved successfuy!$toastData');
+  void saveData(HealthFormData healthFormData) {
+    List<MasterServicesFormData> healthFormDataList = convertToMasterServicesFormData(healthFormData);
+    CustomToastWidget.showToast('Data saved successfully!${healthFormDataList[0].dateOfEvent}');
     notifyListeners();
   }
 
 
+
+
+
+
+  //this is a function for converting a health form data to a list digestable for saving locally and remote
+  List<MasterServicesFormData> convertToMasterServicesFormData(HealthFormData healthFormData) {
+    List<MasterServicesFormData> masterServicesList = [];
+
+    for (ValueItem serviceItem in healthFormData.selectedServices) {
+      masterServicesList.add(
+        MasterServicesFormData(
+          selectedServiceId: serviceItem.value,
+          domainId: healthFormData.domainId,
+          dateOfEvent: DateFormat('yyyy-MM-dd').format(healthFormData.selectedDate),
+        ),
+      );
+    }
+
+    return masterServicesList;
+  }
 }
+
+
+

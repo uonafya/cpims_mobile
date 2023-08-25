@@ -148,7 +148,7 @@ class _Form1BScreen extends State<Form1BScreen> {
                                 onTap: () {
                                   // form1bProvider.setSelectedServices(['Service 1', 'Service 2']);
                                   // form1bProvider.setSelectedDate(DateTime.now());
-                                  form1bProvider.saveData(form1bProvider.formData.selectedDate.toString());
+                                  form1bProvider.saveData(form1bProvider.formData);
                                 },
                               ),
                             )
