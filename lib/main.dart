@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
