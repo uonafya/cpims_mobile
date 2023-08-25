@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 
 class StatisticsGridItem extends StatelessWidget {
-  const StatisticsGridItem({Key? key, required this.value, required this.title, required this.icon, required this.color, required this.secondaryColor}) : super(key: key);
+  const StatisticsGridItem(
+      {Key? key,
+      required this.value,
+      required this.title,
+      required this.icon,
+      required this.color,
+      required this.secondaryColor})
+      : super(key: key);
   final int value;
   final String title;
   final IconData icon;

@@ -2,7 +2,7 @@ import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
-import 'package:cpims_mobile/screens/homepage/widgets/statistics_gridItem.dart';
+import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
@@ -62,10 +62,9 @@ class _HomepageState extends State<Homepage> {
                   cpaCount: 2,
                   cparaCount: 1,
                   onClick: () {
-                  Get.to(() => const UnsyncedWorkflowsPage(
-                  ));
-                },
-              ),
+                    Get.to(() => const UnsyncedWorkflowsPage());
+                  },
+                ),
                 StatisticsItem(
                   title: 'UNAPPROVED RECORDS',
                   icon: FontAwesomeIcons.fileCircleXmark,
@@ -76,7 +75,7 @@ class _HomepageState extends State<Homepage> {
                   cpaCount: 2,
                   cparaCount: 1,
                   onClick: () {},
-              ),
+                ),
                 GridView.count(
                   crossAxisCount: 2,
                   shrinkWrap: true,

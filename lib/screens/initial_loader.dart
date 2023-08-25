@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
@@ -14,14 +16,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/caseload_service.dart';
 
 class InitialLoadingScreen extends StatefulWidget {
-  const InitialLoadingScreen({super.key, this.isFromAuth = false});
+  const InitialLoadingScreen(
+      {super.key, this.isFromAuth = false, this.hasBioAuth = false});
   final bool? isFromAuth;
+  final bool? hasBioAuth;
 
   @override
   State<InitialLoadingScreen> createState() => _InitialLoadingScreenState();
 }
 
 class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
+  List<BiometricType> availableBiometric = [];
+
   @override
   void initState() {
     super.initState();
@@ -42,7 +48,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
             await Provider.of<ConnectivityProvider>(context, listen: false)
                 .checkInternetConnection();
         if (hasConnection == false) {
-          if (widget.isFromAuth == false) {
+          if (widget.isFromAuth == false && widget.hasBioAuth == false) {
             await _checkBiometric();
             await _getAvailableBiometric();
             await _authenticate();
@@ -98,10 +104,12 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
   }
 
   Future _getAvailableBiometric() async {
-    List<BiometricType> availableBiometric = [];
-
     try {
       availableBiometric = await auth.getAvailableBiometrics();
+      if (availableBiometric.isEmpty) {
+        errorSnackBar(context, 'Biometrics not available');
+        return;
+      }
     } on PlatformException catch (_) {
       if (context.mounted) {
         errorSnackBar(context, 'Unable to get available biometrics');

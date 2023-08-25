@@ -84,6 +84,7 @@ Future<Map<String, dynamic>> intialSetup(BuildContext context) async {
     return {'hasConnection': hasConnection, 'isAuthenticated': false};
   }
   final isAuthenticated =
+      // ignore: use_build_context_synchronously
       await Provider.of<AuthProvider>(context, listen: false)
           .verifyToken(context: context);
 
