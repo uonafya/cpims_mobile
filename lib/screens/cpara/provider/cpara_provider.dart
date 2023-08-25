@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/screens/cpara/cpara_util.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
@@ -36,13 +37,27 @@ class CparaProvider extends ChangeNotifier {
     int benchmark3 = 0;
     int benchmark4 = 0;
 
+    List<String> firstListOfQuestions = [];
+    List<String> secondListOfQuestions = [];
+    List<String> thirdListOfQuestions = [];
+
+    List<HealthChild> childrens = [];
+    childrens = healthModel?.childrenQuestions ?? childrens;
+
+    for(HealthChild child in childrens){
+      firstListOfQuestions.add(child.question1);
+      secondListOfQuestions.add(child.question2);
+      thirdListOfQuestions.add(child.question3);
+    }
+
 // Health BenchMark 1 result
     if (healthModel?.question1 == "Yes" && healthModel?.question2 == "Yes" ||
         healthModel?.question2 == "N/A" && healthModel?.question3 == "Yes" ||
         healthModel?.question1 == "N/A" &&
             healthModel?.question4 == "Yes" &&
             healthModel?.question5 == "Yes" ||
-        healthModel?.question1 == "N/A") {
+        healthModel?.question1 == "N/A"
+            ) {
       benchmark1 = 1;
     } else {
       benchmark1 = 0;
@@ -65,7 +80,9 @@ class CparaProvider extends ChangeNotifier {
     }
 
 // Health BenchMark 3 result
-    if (healthModel?.question15 == "Yes") {
+    if ( overallChildrenBenchmark(childrenOptions: firstListOfQuestions).toLowerCase() == "yes"
+    && overallChildrenBenchmark(childrenOptions: secondListOfQuestions).toLowerCase() == "yes"
+    && overallChildrenBenchmark(childrenOptions: thirdListOfQuestions).toLowerCase() == "yes") {
       benchmark3 = 1;
     } else {
       benchmark3 = 0;
@@ -137,11 +154,17 @@ class CparaProvider extends ChangeNotifier {
     print("Qqwere");
     print(safeModel?.overallQuestion2);
 
+    List<String> childQuestions = [];
+
+    for(SafeChild child in safeModel?.childrenQuestions ?? []){
+      childQuestions.add(child.question1 ?? "No");
+    }
+
     if (safeModel?.question1 == "Yes" &&
         safeModel?.question2 == "Yes" &&
-        safeModel?.question3 == "Yes" &&
+        // safeModel?.question3 == "Yes" &&
         safeModel?.question4 == "Yes" &&
-        safeModel?.question5 == "Yes") {
+        safeModel?.question5 == "Yes" && overallChildrenBenchmark(childrenOptions: childQuestions).toLowerCase() == "yes") {
       benchmark1 = 1;
     } else {
       benchmark1 = 0;
