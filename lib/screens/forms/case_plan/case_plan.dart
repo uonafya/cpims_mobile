@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/case_plan_provider.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_date_picker.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:provider/provider.dart';
 
 class CasePlanTemplateScreen extends StatefulWidget {
   const CasePlanTemplateScreen({super.key});
@@ -39,6 +41,37 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    CasePlanProvider casePlanProvider = Provider.of<CasePlanProvider>(context);
+
+    List<ValueItem> casePlanProviderDomainList = casePlanProvider.csDomainList.map((domain) {
+      return ValueItem(label: "- ${domain['domainName']}", value: domain['domainId']);
+    }).toList();
+
+    List<ValueItem> casePlanProviderPriorityActionList = casePlanProvider.csPriorityActionList.map((priorityAction) {
+      return ValueItem(label: "- ${priorityAction['actionName']}", value: priorityAction['actionId']);
+    }).toList();
+
+    List<ValueItem> casePlanProviderGoalList = casePlanProvider.csNeedsList.map((need) {
+      return ValueItem(label: "- ${need['needName']}", value: need['needId']);
+    }).toList();
+
+    List<ValueItem> casePlanProviderNeedsList = casePlanProvider.csGoalList.map((goal) {
+      return ValueItem(label: "- ${goal['goalName']}", value: goal['goalId']);
+    }).toList();
+
+    List<ValueItem> casePlanProviderServicesList = casePlanProvider.csServicesList.map((service) {
+      return ValueItem(label: "- ${service['serviceName']}", value: service['serviceId']);
+    }).toList();
+
+    List<ValueItem> casePlanProviderPersonsResponsibleList = casePlanProvider.csPersonsResponsibleList.map((personResponsible) {
+      return ValueItem(label: "- ${personResponsible['name']}", value: personResponsible['id']);
+    }).toList();
+
+    List<ValueItem> casePlanProviderResultList = casePlanProvider.csResultsList.map((resultList) {
+      return ValueItem(label: "- ${resultList['name']}", value: resultList['id']);
+    }).toList();
+
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -115,18 +148,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                                   selectedEvents.cast<String>().toList();
                             });
                           },
-                          options: const <ValueItem>[
-                            ValueItem(
-                                label: 'Education - (Schooled)', value: '1'),
-                            ValueItem(
-                                label: 'Health and Nutrition - (Healthy)',
-                                value: '2'),
-                            ValueItem(
-                                label: 'Economic Strengthening - (Stable)',
-                                value: '3'),
-                            ValueItem(label: 'Protection - (Safe)', value: '4'),
-                            ValueItem(label: 'Shelter and Care', value: '5'),
-                          ],
+                          options: casePlanProviderDomainList,
                           maxItems: 35,
                           disabledOptions: const [
                             ValueItem(label: 'Option 1', value: '1')
@@ -160,18 +182,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                                   selectedEvents.cast<String>().toList();
                             });
                           },
-                          options: const <ValueItem>[
-                            ValueItem(
-                                label: 'Education - (Schooled)', value: '1'),
-                            ValueItem(
-                                label: 'Health and Nutrition - (Healthy)',
-                                value: '2'),
-                            ValueItem(
-                                label: 'Economic Strengthening - (Stable)',
-                                value: '3'),
-                            ValueItem(label: 'Protection - (Safe)', value: '4'),
-                            ValueItem(label: 'Shelter and Care', value: '5'),
-                          ],
+                          options: casePlanProviderGoalList,
                           maxItems: 35,
                           disabledOptions: const [
                             ValueItem(label: 'Option 1', value: '1')
@@ -205,18 +216,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                                   selectedEvents.cast<String>().toList();
                             });
                           },
-                          options: const <ValueItem>[
-                            ValueItem(
-                                label: 'Education - (Schooled)', value: '1'),
-                            ValueItem(
-                                label: 'Health and Nutrition - (Healthy)',
-                                value: '2'),
-                            ValueItem(
-                                label: 'Economic Strengthening - (Stable)',
-                                value: '3'),
-                            ValueItem(label: 'Protection - (Safe)', value: '4'),
-                            ValueItem(label: 'Shelter and Care', value: '5'),
-                          ],
+                          options: casePlanProviderNeedsList,
                           maxItems: 35,
                           disabledOptions: const [
                             ValueItem(label: 'Option 1', value: '1')
@@ -250,18 +250,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                                   selectedEvents.cast<String>().toList();
                             });
                           },
-                          options: const <ValueItem>[
-                            ValueItem(
-                                label: 'Education - (Schooled)', value: '1'),
-                            ValueItem(
-                                label: 'Health and Nutrition - (Healthy)',
-                                value: '2'),
-                            ValueItem(
-                                label: 'Economic Strengthening - (Stable)',
-                                value: '3'),
-                            ValueItem(label: 'Protection - (Safe)', value: '4'),
-                            ValueItem(label: 'Shelter and Care', value: '5'),
-                          ],
+                          options: casePlanProviderPriorityActionList,
                           maxItems: 35,
                           disabledOptions: const [
                             ValueItem(label: 'Option 1', value: '1')
@@ -295,18 +284,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                                   selectedEvents.cast<String>().toList();
                             });
                           },
-                          options: const <ValueItem>[
-                            ValueItem(label: 'Child Pregnant', value: '1'),
-                            ValueItem(
-                                label: 'Child not Adhering to ARVs',
-                                value: '2'),
-                            ValueItem(label: 'Child Malnourished', value: '3'),
-                            ValueItem(
-                                label: 'Child HIV status Changed', value: '4'),
-                            ValueItem(
-                                label: 'Child Acquired Opportunistic Infection',
-                                value: '5'),
-                          ],
+                          options: casePlanProviderServicesList,
                           maxItems: 13,
                           disabledOptions: const [
                             ValueItem(label: 'Option 1', value: '1')
@@ -340,18 +318,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                                   selectedEvents.cast<String>().toList();
                             });
                           },
-                          options: const <ValueItem>[
-                            ValueItem(label: 'Child Pregnant', value: '1'),
-                            ValueItem(
-                                label: 'Child not Adhering to ARVs',
-                                value: '2'),
-                            ValueItem(label: 'Child Malnourished', value: '3'),
-                            ValueItem(
-                                label: 'Child HIV status Changed', value: '4'),
-                            ValueItem(
-                                label: 'Child Acquired Opportunistic Infection',
-                                value: '5'),
-                          ],
+                          options: casePlanProviderPersonsResponsibleList,
                           maxItems: 13,
                           disabledOptions: const [
                             ValueItem(label: 'Option 1', value: '1')
@@ -385,10 +352,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                                   selectedEvents.cast<String>().toList();
                             });
                           },
-                          options: const <ValueItem>[
-                            ValueItem(label: 'Achieved', value: '1'),
-                            ValueItem(label: 'Not Achieved', value: '2'),
-                          ],
+                          options: casePlanProviderResultList,
                           maxItems: 13,
                           disabledOptions: const [
                             ValueItem(label: 'Option 1', value: '1')
@@ -431,15 +395,6 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           hintText: 'Please Write the Reasons',
                         ),
                       ],
-                    ),
-                  ),
-                  const Center(
-                    child: SizedBox(
-                      width: 120,
-                      child: CustomButton(
-                        text: 'Add',
-                        color: kTextGrey,
-                      ),
                     ),
                   ),
                   const SizedBox(height: 10),

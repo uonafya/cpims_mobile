@@ -77,12 +77,6 @@ class Form1bProvider extends ChangeNotifier {
     _finalServicesFormData.masterServicesList = masterServicesList;
     notifyListeners();
   }
-
-  
-
-
-
-
   void saveForm1bData(HealthFormData healthFormData) {
     List<MasterServicesFormData> masterServicesList = convertToMasterServicesFormData();
     //creating our data to be sent for saving
@@ -91,14 +85,14 @@ class Form1bProvider extends ChangeNotifier {
     setFinalFormDataDOE(formData.selectedDate);
 
 
-    print('Date of Event: ${finalServicesFormData.dateOfEvent}');
-    print('OVC CPIMS ID: ${finalServicesFormData.ovc_cpims_id}');
-    print('Master Services List:');
-    for (MasterServicesFormData masterFormData in finalServicesFormData.masterServicesList ?? []) {
-      print('- Domain ID: ${masterFormData.domainId}');
-      print('- Selected Service ID: ${masterFormData.selectedServiceId}');
-      print('---');
-    }
+    // print('Date of Event: ${finalServicesFormData.dateOfEvent}');
+    // print('OVC CPIMS ID: ${finalServicesFormData.ovc_cpims_id}');
+    // print('Master Services List:');
+    // for (MasterServicesFormData masterFormData in finalServicesFormData.masterServicesList ?? []) {
+    //   print('- Domain ID: ${masterFormData.domainId}');
+    //   print('- Selected Service ID: ${masterFormData.selectedServiceId}');
+    //   print('---');
+    // }
 
 
 
@@ -109,11 +103,8 @@ class Form1bProvider extends ChangeNotifier {
       servicesList.add(entry);
     }
 
-
     Form1BDataModel toDbData = Form1BDataModel(ovcCpimsId: finalServicesFormData.ovc_cpims_id, dateOfEvent: finalServicesFormData.dateOfEvent, services: servicesList);
     print("ourData${toDbData}");
-
-
 
     Form1Service.saveFormLocal("form1b", toDbData);
 
