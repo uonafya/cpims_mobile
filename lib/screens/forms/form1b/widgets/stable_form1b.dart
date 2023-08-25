@@ -30,7 +30,7 @@ class _StableForm1bState extends State<StableForm1b> {
   Widget build(BuildContext context) {
     Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
     selectedCareGiverStableServicesOptions = form1bProvider.stableFormData.selectedServices;
-    String domainId = ServiceDomains[1]['id'];
+    String domainId = ServiceDomains[2]['id'];
 
 
     return StepsWrapper(

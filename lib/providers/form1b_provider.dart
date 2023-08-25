@@ -15,13 +15,13 @@ class HealthFormData {
 
 class StableFormData {
   late final List<ValueItem> selectedServices;
-  late final String domainId;
+  late String domainId;
 
   StableFormData({required this.selectedServices, required this.domainId});
 }
 class SafeFormData {
   late final List<ValueItem> selectedServices;
-  late final String domainId;
+  late String domainId;
 
   SafeFormData({required this.selectedServices, required this.domainId});
 }
@@ -103,9 +103,17 @@ class Form1bProvider extends ChangeNotifier {
     _safeFormData.domainId= domainId;
   }
 
-  void saveData(HealthFormData healthFormData) {
-    List<MasterServicesFormData> healthFormDataList = convertToMasterServicesFormData(healthFormData);
-    CustomToastWidget.showToast('Data saved successfully!${healthFormDataList[0].dateOfEvent}');
+  void saveForm1bData(HealthFormData healthFormData) {
+    List<MasterServicesFormData> form1bListData = convertToMasterServicesFormData();
+    // print("Form1bData: ${form1bListData.length}");
+    for (MasterServicesFormData msFormData in form1bListData) {
+      print("Form1bData: ");
+      print('Domain ID: ${msFormData.domainId}');
+      print('Selected Service ID: ${msFormData.selectedServiceId}');
+      print('Date of Event: ${msFormData.dateOfEvent}');
+      print('----------------------');
+    }
+    CustomToastWidget.showToast('Data saved successfully!${form1bListData[0].dateOfEvent}');
     notifyListeners();
   }
 
@@ -113,9 +121,9 @@ class Form1bProvider extends ChangeNotifier {
 
 
   //this is a function for converting a health form data to a list digestable for saving locally and remote
-  List<MasterServicesFormData> convertToMasterServicesFormData(HealthFormData healthFormData) {
+  List<MasterServicesFormData> convertToMasterServicesFormData() {
     List<MasterServicesFormData> masterServicesList = [];
-
+    HealthFormData healthFormData = formData;
     //convert the healthy form data
     for (ValueItem serviceItem in healthFormData.selectedServices) {
       masterServicesList.add(
@@ -143,14 +151,12 @@ class Form1bProvider extends ChangeNotifier {
     for (dynamic serviceItem in safeFormData.selectedServices) {
       masterServicesList.add(
         MasterServicesFormData(
-          selectedServiceId: serviceItem.toString(),
+          selectedServiceId: serviceItem.value,
           domainId: safeFormData.domainId,
           dateOfEvent: DateFormat('yyyy-MM-dd').format(healthFormData.selectedDate),
         ),
       );
     }
-
-
 
     return masterServicesList;
   }
