@@ -60,27 +60,28 @@ class HealthModel {
     String? question16,
     String? question17,
     String? question18,
+    List<HealthChild>? childrenQuestions,
   }) {
     return HealthModel(
-      question1: question1 ?? this.question1,
-      question2: question2 ?? this.question2,
-      question3: question3 ?? this.question3,
-      question4: question4 ?? this.question4,
-      question5: question5 ?? this.question5,
-      question6: question6 ?? this.question6,
-      question7: question7 ?? this.question7,
-      question8: question8 ?? this.question8,
-      question9: question9 ?? this.question9,
-      question10: question10 ?? this.question10,
-      question11: question11 ?? this.question11,
-      question12: question12 ?? this.question12,
-      question13: question13 ?? this.question13,
-      question14: question14 ?? this.question14,
-      question15: question15 ?? this.question15,
-      question16: question16 ?? this.question16,
-      question17: question17 ?? this.question17,
-      question18: question18 ?? this.question18,
-    );
+        question1: question1 ?? this.question1,
+        question2: question2 ?? this.question2,
+        question3: question3 ?? this.question3,
+        question4: question4 ?? this.question4,
+        question5: question5 ?? this.question5,
+        question6: question6 ?? this.question6,
+        question7: question7 ?? this.question7,
+        question8: question8 ?? this.question8,
+        question9: question9 ?? this.question9,
+        question10: question10 ?? this.question10,
+        question11: question11 ?? this.question11,
+        question12: question12 ?? this.question12,
+        question13: question13 ?? this.question13,
+        question14: question14 ?? this.question14,
+        question15: question15 ?? this.question15,
+        question16: question16 ?? this.question16,
+        question17: question17 ?? this.question17,
+        question18: question18 ?? this.question18,
+        childrenQuestions: childrenQuestions ?? this.childrenQuestions);
   }
 
   factory HealthModel.fromJson(Map<String, dynamic> json) {
@@ -129,16 +130,21 @@ class HealthModel {
       'q22': question16,
       'q23': question17,
       'q24': question18,
+      "children": childrenQuestions?.map((e) => e.toJSON()).toList() ?? []
     };
   }
 }
 
 class HealthChild {
-  final String question1;
-  final String question2;
-  final String question3;
+  String id;
+  String name;
+  String question1;
+  String question2;
+  String question3;
 
   HealthChild({
+    required this.name,
+    required this.id,
     required this.question1,
     required this.question2,
     required this.question3,
@@ -146,9 +152,15 @@ class HealthChild {
 
   factory HealthChild.fromJson(Map<String, dynamic> json) {
     return HealthChild(
+      id: json['id'],
+      name: json['name'] ?? "",
       question1: json['question1'],
       question2: json['question2'],
       question3: json['question3'],
     );
+  }
+
+  Map<String, dynamic> toJSON() {
+    return {"id": id, "q1": question1, "q2": question2, "q3": question3};
   }
 }
