@@ -9,22 +9,26 @@ class StatisticsGridItem extends StatelessWidget {
       required this.title,
       required this.icon,
       required this.color,
-      required this.secondaryColor})
+      required this.secondaryColor,
+      this.onTap})
       : super(key: key);
   final String value;
+
   final String title;
   final IconData icon;
   final Color color;
   final Color secondaryColor;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Get.to(() => ReportDetailsScreen(
-              title: title,
-            ));
-      },
+      onTap: onTap ??
+          () => Get.to(
+                () => ReportDetailsScreen(
+                  title: title,
+                ),
+              ),
       child: Container(
         height: 120,
         width: double.infinity,

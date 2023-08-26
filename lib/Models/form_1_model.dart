@@ -45,50 +45,51 @@ class Form1DataModel {
   }
 }
 
+
 class Form1ServicesModel {
   final String domainId;
-  final List<String> serviceIds;
+  final String? serviceId;
 
   Form1ServicesModel({
     required this.domainId,
-    required this.serviceIds,
+    required this.serviceId,
   });
 
   factory Form1ServicesModel.fromJson(Map<String, dynamic> json) {
     return Form1ServicesModel(
       domainId: json['domain_id'] as String,
-      serviceIds: List<String>.from(json['service_id']),
+      serviceId: json['service_id'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'domain_id': domainId,
-      'service_id': serviceIds,
+      'service_id': serviceId,
     };
   }
 }
 
 class Form1CriticalEventsModel {
   final String eventId;
-  final List<String> eventDateIds;
+  final String eventDate;
 
   Form1CriticalEventsModel({
     required this.eventId,
-    required this.eventDateIds,
+    required this.eventDate,
   });
 
   factory Form1CriticalEventsModel.fromJson(Map<String, dynamic> json) {
     return Form1CriticalEventsModel(
       eventId: json['event_id'] as String,
-      eventDateIds: List<String>.from(json['event_date_id']),
+      eventDate: json['event_date'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'event_id': eventId,
-      'event_date_id': eventDateIds,
+      'event_date': eventDate,
     };
   }
 }
