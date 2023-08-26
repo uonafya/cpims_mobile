@@ -47,7 +47,9 @@ class LocalDb {
         ${OvcFields.registationDate} $textType,
         ${OvcFields.dateOfBirth} $textType,
         ${OvcFields.caregiverNames} $textType,
-        ${OvcFields.sex} $textType
+        ${OvcFields.sex} $textType,
+        ${OvcFields.caregiverCpimsId} $textType,
+        ${OvcFields.chvCpimsId} $textType
       )
     ''');
 
@@ -263,7 +265,7 @@ class LocalDb {
       print(e);
       return false;
     }
-    
+
   }
 
 
@@ -426,7 +428,9 @@ class OvcFields {
     ovcSurname,
     dateOfBirth,
     caregiverNames,
-    sex
+    sex,
+    caregiverCpimsId,
+    chvCpimsId,
   ];
 
   static const String id = '_id';
@@ -437,6 +441,8 @@ class OvcFields {
   static const String registationDate = 'registration_date';
   static const String caregiverNames = 'caregiver_names';
   static const String sex = 'sex';
+  static const String caregiverCpimsId = 'caregiver_cpims_id';
+  static const String chvCpimsId = 'chv_cpims_id';
 }
 
 class SummaryFields {
