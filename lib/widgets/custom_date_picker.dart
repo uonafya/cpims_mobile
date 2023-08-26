@@ -11,7 +11,8 @@ class CustomDatePicker extends StatefulWidget {
       this.hintText,
       this.prefixIcon,
       this.suffixIcon,
-      this.labelText});
+      this.labelText
+      });
   final DateTime? initialDate;
   final DateTime? firstDate;
   final DateTime? lastDate;

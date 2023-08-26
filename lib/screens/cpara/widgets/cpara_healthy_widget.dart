@@ -1,6 +1,5 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
-import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
@@ -920,7 +919,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   .toList(), // for every child hivRisk, prevent and protect should be yes
               "Children Table"),
           updateFinalFormRadio: noChangeToRadio,
-          sections: [],
+          sections: const [],
           descriptionHeading: "Healthy: Goal 3: Reduce Risk of HIV Infection",
           descriptionText:
               "Benchmark3: All adolescents 10-17 years of age in the household have key knowledge about preventing HIV infection Adolescents aged 10-17 can describe at least two HIV infection risks in their local community, can provide at least one example of how they can protect themselves against HIV risk, and can correctly describe the location of at least one place where HIV prevention support is available.",
@@ -947,7 +946,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   isNAAvailable: false,
                   tempFix: true,
                   updateRadioButton: (RadioButtonOptions? val) {
-                    debugPrint(val.toString() + " tick if all true q1 form");
+                    debugPrint("$val tick if all true q1 form");
                   },
                 ),
                 QuestionBlock(
@@ -1864,7 +1863,7 @@ class HealthModelCollected extends StatelessWidget {
         const Text("Health Model:"),
         Row(
           children: [
-            Text("Question: 1"),
+            const Text("Question: 1"),
             Text("Answer: ${healthModel?.question1}"),
           ],
         ),

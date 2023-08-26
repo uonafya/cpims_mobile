@@ -1,4 +1,3 @@
-
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/services/unapproved_data.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
@@ -7,7 +6,6 @@ import 'package:cpims_mobile/widgets/custom_chip.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class UnapprovedRecordsScreens extends StatefulWidget {
   const UnapprovedRecordsScreens({super.key});
@@ -21,8 +19,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
   List<String> unapprovedRecords = [
     'Form 1A',
     'Form 1B',
+    'CPT',
     'CPARA',
-    'CPA',
   ];
 
   @override
@@ -75,68 +73,199 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
               ),
             ),
             const SizedBox(height: 10),
-            CustomCard(
-              title: 'Form 1A Events List',
-              children: [
-                Table(
-                  columnWidths: const {
-                    0: FlexColumnWidth(1),
-                    1: FlexColumnWidth(2),
-                  },
-                  border: TableBorder.symmetric(
-                    inside: BorderSide(
-                      color: Colors.grey.withOpacity(0.5),
+            if (selectedRecord == 'CPARA')
+              Column(
+                children: [
+                  for (var item in unapprovedItems)
+                    if (item['title'] == 'CPARA')
+                      ChildDetailsCard(
+                        item,
+                      ),
+                ],
+              ),
+            if (selectedRecord != 'CPARA')
+              DefaultTabController(
+                length: 2,
+                child: Expanded(
+                  child: Column(
+                    children: [
+                      const TabBar(
+                        tabs: [
+                          Tab(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text('SERVICES'),
+                            ),
+                          ),
+                          Tab(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text('CRITICAL EVENTS'),
+                            ),
+                          ),
+                        ],
+                        indicatorColor: kPrimaryColor,
+                        labelColor: Colors.black,
+                      ),
+                      const SizedBox(height: 10),
+                      Expanded(
+                        child: TabBarView(
+                          children: [
+                            FormTab(
+                              selectedRecord: selectedRecord,
+                              eventType: 'SERVICES',
+                            ),
+                            FormTab(
+                              selectedRecord: selectedRecord,
+                              eventType: 'CRITICAL EVENTS',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class FormTab extends StatelessWidget {
+  final String selectedRecord;
+  final String eventType;
+
+  const FormTab({
+    super.key,
+    required this.selectedRecord,
+    required this.eventType,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedItems = unapprovedItems
+        .where((item) =>
+            item['title'] == selectedRecord && item['eventType'] == eventType)
+        .toList();
+
+    return CustomCard(
+      title: '$selectedRecord $eventType List',
+      children: [
+        if (selectedRecord == "CPARA")
+          Column(
+            children: selectedItems.map((e) => ChildDetailsCard(e)).toList(),
+          )
+        else
+          Table(
+            columnWidths: const {
+              0: FlexColumnWidth(1),
+              1: FlexColumnWidth(2),
+              2: FlexColumnWidth(1),
+            },
+            border: TableBorder.symmetric(
+              inside: BorderSide(
+                color: Colors.grey.withOpacity(0.5),
+              ),
+            ),
+            children: [
+              const TableRow(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(
+                      'Child ID',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
-                  children: [
-                    const TableRow(
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 10.0,
+                    ),
+                    child: Text(
+                      'Details',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 10.0,
+                    ),
+                    child: Text(
+                      'Date',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              ...selectedItems
+                  .map(
+                    (e) => TableRow(
                       children: [
                         Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8.0),
-                          child: Text(
-                            'Event Type',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 8.0,
                           ),
+                          child: Text(e['childID']),
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 8.0,
-                            horizontal: 10.0,
-                          ),
-                          child: Text(
-                            'Details',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
-                          ),
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(e['details']),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(e['date']),
                         ),
                       ],
                     ),
-                    ...unapprovedItems
-                        .map(
-                          (e) => TableRow(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8.0,
-                                ),
-                                child: Text(e['eventType']),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(e['details']),
-                              ),
-                            ],
-                          ),
-                        )
-                        .toList(),
-                  ],
+                  )
+                  .toList(),
+            ],
+          ),
+      ],
+    );
+  }
+}
+
+class ChildDetailsCard extends StatelessWidget {
+  final Map<String, dynamic> cargiverData;
+
+  const ChildDetailsCard(this.cargiverData, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  "${cargiverData['caregiverName']}",
+                ),
+                Text(
+                  "Caregiver ID: ${cargiverData['caregiverID']}",
+                ),
+                Text(
+                  "${cargiverData['date']}",
                 ),
               ],
             ),

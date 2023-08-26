@@ -3,9 +3,7 @@ import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
-import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
@@ -285,12 +283,15 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
               // Update the state of the question
               updateQuestion("_children_adolecent_caregiver", value);
-              if (value == RadioButtonOptions.no)
+              if (value == RadioButtonOptions.no) {
                 _adolescents_older_than_12 = RadioButtonOptions.no;
-              if (value == RadioButtonOptions.no)
+              }
+              if (value == RadioButtonOptions.no) {
                 _exposed_to_violence = RadioButtonOptions.yes;
-              if (value == RadioButtonOptions.no)
+              }
+              if (value == RadioButtonOptions.no) {
                 _tick_Yes = RadioButtonOptions.yes;
+              }
               if (value == RadioButtonOptions.yes) _tick_Yes = null;
             }),
 
@@ -355,8 +356,9 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                     safeModel.copyWith(overallQuestion2: selectedOption));
                 // Update the state of the question
                 updateQuestion("_adolescents_older_than_12", value);
-                if (value == RadioButtonOptions.no)
+                if (value == RadioButtonOptions.no) {
                   _tick_Yes = RadioButtonOptions.yes;
+                }
               }),
 
         const SizedBox(
@@ -451,8 +453,9 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
                     // // Update the state of the question
                     updateQuestion("_exposed_to_violence", value);
-                    if (value == RadioButtonOptions.yes)
+                    if (value == RadioButtonOptions.yes) {
                       _tick_Yes = RadioButtonOptions.yes;
+                    }
                   },
                 )
             ],

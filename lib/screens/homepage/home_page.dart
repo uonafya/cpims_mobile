@@ -1,11 +1,14 @@
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
+import 'package:cpims_mobile/screens/caregiver/caregiver.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
+import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
+import 'package:cpims_mobile/widgets/custom_grid_view.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -74,10 +77,13 @@ class _HomepageState extends State<Homepage> {
                   form1BCount: 3,
                   cpaCount: 2,
                   cparaCount: 1,
-                  onClick: () {},
+                  onClick: () {
+                    Get.to(() => const UnapprovedRecordsScreens());
+                  },
                 ),
-                GridView.count(
+                CustomGridView(
                   crossAxisCount: 2,
+                  childrenHeight: 180,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
@@ -115,13 +121,6 @@ class _HomepageState extends State<Homepage> {
                       icon: FontAwesomeIcons.heart,
                       color: Color(0xff49B6D5),
                       secondaryColor: Color(0xff2C6E80),
-                    ),
-                    StatisticsGridItem(
-                      title: 'HOUSEHOLDS',
-                      value: dashData.household.toString(),
-                      icon: FontAwesomeIcons.house,
-                      color: const Color(0xffFE5C57),
-                      secondaryColor: const Color(0xff9A3734),
                     ),
                     StatisticsGridItem(
                       title: 'Org Unit Id',
@@ -164,6 +163,15 @@ class _HomepageState extends State<Homepage> {
                       icon: FontAwesomeIcons.house,
                       color: const Color(0xffFE5C57),
                       secondaryColor: const Color(0xff9A3734),
+                      onTap: () {
+                        Get.to(
+                          () => const CaregiverScreen(),
+                          transition: Transition.cupertino,
+                          duration: const Duration(
+                            milliseconds: 200,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
