@@ -3,7 +3,7 @@ class Metadata {
   final String itemId;
   final String itemDescription;
   final String itemSubCategory;
-  final String itemTheOrder;
+  final int itemTheOrder;
 
   Metadata({
     required this.itemName,
