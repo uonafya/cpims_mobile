@@ -8,6 +8,7 @@ import 'package:cpims_mobile/screens/registry/organisation_units/organisation_un
 import 'package:cpims_mobile/screens/registry/persons_registry/persons_registry.dart';
 import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
 import 'package:cpims_mobile/services/caseload_service.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
@@ -137,10 +138,13 @@ List drawerOptions(BuildContext context) {
       'icon': FontAwesomeIcons.rotate,
       'onTap': () async {
         Get.back();
+        String deviceId = '';
+        final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
         try {
-          //TO DO: Call device id
-          const deviceId = '';
+          final AndroidDeviceInfo androidDeviceInfo =
+              await deviceInfoPlugin.androidInfo;
+          deviceId = androidDeviceInfo.id;
           CaseLoadService().fetchCaseLoadData(
               context: context, isForceSync: true, deviceID: deviceId);
           snackBar = SnackBar(
