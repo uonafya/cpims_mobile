@@ -304,13 +304,11 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
 ////////////////////////////////////
 
           const SizedBox(
-            height: 25,
+            height: 50,
           ),
-          const Column(
-            children: [
-              CparaResultBenchmarks(),
-            ],
-          )
+
+          // CparaResultBenchmarks(),
+          FinalBenchMark(),
         ],
       ),
     );
@@ -577,9 +575,120 @@ class CparaResultBenchmarks extends StatelessWidget {
                 ]),
               ]),
             ]),
-
-            
       ],
     );
+  }
+}
+
+class FinalBenchMark extends StatelessWidget {
+  const FinalBenchMark({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      const Center(
+        child: Text(
+          'Overall number of points from all DOMAINS:',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      ),
+      Text(
+        "Score: ${Provider.of<CparaProvider>(context).finalScore()} / (9 points)",
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+      DataTable(
+        dataRowMaxHeight: 60.0,
+        dataRowMinHeight: 40.0,
+        horizontalMargin: 0.0,
+        columns: const [
+          DataColumn(
+              label: Text('Domain',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+          DataColumn(
+              label: Text('Max Score',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+          DataColumn(
+              label: Text('HH Score',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+        ],
+        rows: [
+          DataRow(cells: [
+            const DataCell(Text('Healthy')),
+            const DataCell(Text('4')),
+            DataCell(Text(
+                '${Provider.of<CparaProvider>(context).healthyBenchmark()}')),
+          ]),
+          DataRow(cells: [
+            const DataCell(Text('Stable')),
+            const DataCell(Text('1')),
+            DataCell(Text(
+                '${Provider.of<CparaProvider>(context).stableBenchMark()}')),
+          ]),
+          DataRow(cells: [
+            const DataCell(Text('Safe')),
+            const DataCell(Text('3')),
+            DataCell(
+                Text('${Provider.of<CparaProvider>(context).safeBenchMark()}')),
+          ]),
+          DataRow(cells: [
+            const DataCell(Text('Schooled')),
+            const DataCell(Text('1')),
+            DataCell(Text(
+                '${Provider.of<CparaProvider>(context).schooledBenchmark()}')),
+          ]),
+          DataRow(cells: [
+            const DataCell(Text('Total')),
+            const DataCell(Text('9')),
+            DataCell(
+                Text('${Provider.of<CparaProvider>(context).finalScore()}')),
+          ]),
+        ],
+      ),
+      const SizedBox(
+        height: 25,
+      ),
+      DataTable(
+        dataRowColor: MaterialStateColor.resolveWith((states) => lightBlue),
+        dataRowMaxHeight: 60.0,
+        dataRowMinHeight: 40.0,
+        horizontalMargin: 10.0,
+        columns: const [
+          DataColumn(
+            label: Text(
+              'KEY',
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue),
+            ),
+          ),
+        ],
+        rows: const [
+          DataRow(
+            cells: [
+              DataCell(Text('Highly Vulnerable 0-4 ')),
+            ],
+          ),
+          DataRow(
+            cells: [
+              DataCell(Text(' Medium vulnerability 5-7 ')),
+            ],
+          ),
+          DataRow(
+            cells: [
+              DataCell(Text(' Low vulnerability 8 ')),
+            ],
+          ),
+          DataRow(
+            cells: [
+              DataCell(Text(' Ready to graduate 9 ')),
+            ],
+          ),
+        ],
+      ),
+    ]);
   }
 }
