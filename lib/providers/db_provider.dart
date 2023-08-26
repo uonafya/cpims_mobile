@@ -4,7 +4,6 @@ import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
-import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -78,9 +77,6 @@ class LocalDb {
       )
 ''');
 
-
-    await creatingCparaTables(db, version);
-
     await db.execute('''
       CREATE TABLE $casePlanTable (
         ${CasePlan.id} $idType,
@@ -142,7 +138,6 @@ class LocalDb {
         FOREIGN KEY (${Form1CriticalEvents.formId}) REFERENCES $form1Table(${Form1.id})
         )
       ''');
-
   }
 
   Future<void> insertCaseLoad(CaseLoadModel caseLoadModel) async {
@@ -169,57 +164,24 @@ class LocalDb {
     return result.map((json) => SummaryDataModel.fromJson(json)).toList();
   }
 
-  Future<void> creatingCparaTables(Database db, int version) async {
-    try {
-      debugPrint("Creating Cpara tables");
-      await db.execute(
-          "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT);");
-
-      // await db.execute(
-      //     "CREATE TABLE IF NOT EXISTS Child(childOVCCPMISID TEXT PRIMARY KEY, childName TEXT, childAge TEXT, childGender TEXT, childSchool TEXT, childOVCRegistered TEXT);");
-
-      // await db.execute(
-      //     "CREATE TABLE IF NOT EXISTS Household(householdID TEXT PRIMARY KEY);");
-
-      // await db.execute(
-      //     "CREATE TABLE IF NOT EXISTS HouseholdChild(childID TEXT, householdID TEXT, FOREIGN KEY (householdID) REFERENCES Household(householdID), PRIMARY KEY(childID, householdID));");
-
-      await db.execute(
-          "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER, id INTEGER PRIMARY KEY, houseHoldID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (formID) REFERENCES Form(id));");
-
-      await db.execute(
-          "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionid TEXT, answer TEXT, FOREIGN KEY (formID) REFERENCES Form(id));");
-
-    } catch (err) {
-      debugPrint("OHH SHIT!");
-      debugPrint(err.toString());
-      debugPrint("OHH SHIT");
-    }
-  }
-
-  Future<void> insertCparaData({required CparaModel cparaModelDB, required String ovcId, required String careProviderId}) async {
+  Future<void> insertCparaData(
+      {required CparaModel cparaModelDB,
+      required String ovcId,
+      required String careProviderId}) async {
     final db = await instance.database;
 
     // Create form
-    cparaModelDB
-        .createForm(db)
-        .then((value) {
+    cparaModelDB.createForm(db).then((value) {
       // Get formID
-      cparaModelDB
-          .getLatestFormID(db)
-          .then((formData) {
+      cparaModelDB.getLatestFormID(db).then((formData) {
         var formDate = formData.formDate;
-        var formDateString =
-        formDate.toString().split(' ')[0];
+        var formDateString = formDate.toString().split(' ')[0];
         var formID = formData.formID;
-        cparaModelDB
-            .addHouseholdFilledQuestionsToDB(
-            db,
-            formDateString,
-            ovcId,
-            formID);
+        cparaModelDB.addHouseholdFilledQuestionsToDB(
+            db, formDateString, ovcId, formID);
       });
     });
+  }
 
   // insert Metadata
   Future<bool> insertMetadata(Metadata metadata) async {
@@ -461,17 +423,17 @@ class LocalDb {
       return false;
     }
   }
-
-  // table name and field names
-  static const caseloadTable = 'ovcs';
-  static const statisticsTable = 'statistics';
-  static const tableFormMetadata = 'form_metadata';
-  static const casePlanTable = 'case_plan';
-  static const casePlanServicesTable = 'case_plan_services';
-  static const form1Table = 'form1';
-  static const form1ServicesTable = 'form1_services';
-  static const form1CriticalEventsTable = 'form1_critical_events';
 }
+
+// table name and field names
+const caseloadTable = 'ovcs';
+const statisticsTable = 'statistics';
+const tableFormMetadata = 'form_metadata';
+const casePlanTable = 'case_plan';
+const casePlanServicesTable = 'case_plan_services';
+const form1Table = 'form1';
+const form1ServicesTable = 'form1_services';
+const form1CriticalEventsTable = 'form1_critical_events';
 
 class OvcFields {
   static final List<String> values = [
@@ -541,7 +503,6 @@ class SummaryFields {
   static const String orgUnitId = 'org_unit_id';
   static const String details = 'details';
 }
-
 
 class FormMetadata {
   static final List<String> values = [

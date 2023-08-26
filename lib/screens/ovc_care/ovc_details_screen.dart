@@ -35,7 +35,7 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
   @override
   void initState() {
     // context.read<CparaProvider>().updateCaseLoadModel(widget.caseLoadModel);
-      super.initState();
+    super.initState();
   }
 
   @override
@@ -136,20 +136,22 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                 Get.to(() => const Form1BScreen());
               },
             ),
-          
-             ChildDetailsWorkflowButton(
+            ChildDetailsWorkflowButton(
               workflowName: "CPARA",
               onClick: () {
-                context.read<CparaProvider>().updateCaseLoadModel(widget.caseLoadModel);
-                Get.to(() =>  CparaFormsScreen(caseLoadModel: widget.caseLoadModel));
-
+                context
+                    .read<CparaProvider>()
+                    .updateCaseLoadModel(widget.caseLoadModel);
+                Get.to(() =>
+                    CparaFormsScreen(caseLoadModel: widget.caseLoadModel));
               },
             ),
             ChildDetailsWorkflowButton(
               workflowName: "OVC Prepopulation",
               onClick: () {
                 Get.to(() => CheckboxForm(caseLoadModel: widget.caseLoadModel));
-                Get.to(() => const CparaFormsScreen());
+                Get.to(() =>
+                    CparaFormsScreen(caseLoadModel: widget.caseLoadModel));
               },
             ),
             ChildDetailsWorkflowButton(
@@ -158,7 +160,6 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                 Get.to(() => const CasePlanTemplateScreen());
               },
             ),
-           
             const SizedBox(
               height: 10,
             ),
