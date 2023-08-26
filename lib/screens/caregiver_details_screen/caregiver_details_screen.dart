@@ -2,6 +2,7 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/widgets/custom_card_grid_item.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
+import 'package:cpims_mobile/widgets/custom_grid_view.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
@@ -61,13 +62,12 @@ class _CareGiverDetailsScreenState extends State<CareGiverDetailsScreen> {
             const SizedBox(
               height: 10,
             ),
-            CustomCard(title: "Caregiver ID: #####", children: [
-              GridView.count(
+            const CustomCard(title: "Caregiver ID: #####", children: [
+              CustomGridView(
                 crossAxisCount: 2,
                 shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                childAspectRatio: (1 / 0.4),
-                children: const [
+                physics: NeverScrollableScrollPhysics(),
+                children: [
                   CustomCardGridItem(
                     header: "Surname",
                     details: "Surname",
