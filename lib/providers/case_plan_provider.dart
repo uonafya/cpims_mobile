@@ -1,4 +1,7 @@
+import 'package:cpims_mobile/Models/caseplan_form_model.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/models/case_plan_main_model.dart';
+import 'package:cpims_mobile/services/form_service.dart';
+import 'package:cpims_mobile/widgets/custom_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
@@ -177,7 +180,10 @@ class CasePlanProvider extends ChangeNotifier {
   }
 
   void saveCasaPlanDataLocally() {
-    Map payload = generatePayload();
+    Map<String, dynamic> payload = generatePayload();
+    // CustomToastWidget.showToast("CasePlan saved");
+    print(payload);
+    CasePlanService.saveCasePlanLocal(CasePlanModel.fromJson(payload));
     //now send the data for local saving
 
   }

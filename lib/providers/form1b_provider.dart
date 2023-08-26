@@ -147,7 +147,8 @@ class Form1bProvider extends ChangeNotifier {
     print("criticalEventsDataForm1b${getFinalCriticalEventsFormData()}");
 
     CustomToastWidget.showToast("Data saved");
-     Form1Service.saveFormLocal("form1b", toDbData) as Bool;
+    Form1Service.saveFormLocal("form1b", toDbData) as Bool;
+
 
      notifyListeners();
   }
