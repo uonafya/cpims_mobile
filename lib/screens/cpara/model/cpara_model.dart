@@ -15,6 +15,7 @@ class CparaModel {
   final StableModel stable;
   final SchooledModel schooled;
   final HealthModel health;
+  final OvcSubPopulationModel? ovcSubPopulationModel;
 
   CparaModel({
     required this.detail,
@@ -22,6 +23,7 @@ class CparaModel {
     required this.stable,
     required this.schooled,
     required this.health,
+    required this.ovcSubPopulationModel
   });
 
   factory CparaModel.fromJson(Map<String, dynamic> json) {
@@ -31,6 +33,7 @@ class CparaModel {
       stable: StableModel.fromJson(json['stable']),
       schooled: SchooledModel.fromJson(json['schooled']),
       health: HealthModel.fromJson(json['health']),
+      ovcSubPopulationModel: OvcSubPopulationModel.fromJson(json['ovcSubPopulationModel'])
     );
   }
 
@@ -40,9 +43,9 @@ class CparaModel {
       // Create a batch
       var batch = await db!.batch();
 
-      // Loop through data as adding to database
+      // Loop through all children
       for (var i in data) {
-        // Now I'm getting combined data for a child
+        // looping through the questions for each child
         for (var j in i) {
           // print('j is $j');
           j.forEach((key, value) {
@@ -56,6 +59,8 @@ class CparaModel {
               "formID": formID
             });
           });
+
+          await batch.commit(noResult: true);
         }
       }
     } catch (err) {
@@ -76,6 +81,7 @@ class CparaModel {
       var safeJSON = safe.toJSON();
       var schooledJSON = schooled.toJSON();
       var stableJSON = stable.toJSON();
+      var ovcSubPopulationModelJSON=ovcSubPopulationModel?.toJSON();
 
       // insert to database, for now debugPrint for testing
       print("Detail");
@@ -88,6 +94,8 @@ class CparaModel {
       print(schooledJSON.toString());
       print("Stable");
       print(stableJSON.toString());
+      print("OVC Sbpopulation");
+      print(ovcSubPopulationModelJSON.toString());
 
       // Get children from safe and health
       // Health
@@ -145,6 +153,7 @@ class CparaModel {
       json.addAll(safeJSON);
       json.addAll(schooledJSON);
       json.addAll(stableJSON);
+      json.addAll(ovcSubPopulationModelJSON!);
       print(json);
 
       // Send request
@@ -171,21 +180,7 @@ class CparaModel {
       print("The Data Sent To The Server");
       print(jsonToSend.toString());
       print("Sending Data");
-
-      // Send request later
-      var prefs = await SharedPreferences.getInstance();
-      var accessToken = prefs.getString('access');
-
-      var response = await dio.request("https://dev.cpims.net/api/form/CPR/",
-          data: jsonToSend,
-          options: Options(
-              method: 'POST',
-              contentType: 'application/json',
-              headers: {"Authorization": "Bearer $accessToken"}));
-
-      print(response.statusCode);
-      print(response.data.toString());
-
+      print("Local Db Data start");
       // Insert database
       // Create a batch
       var batch = db!.batch();
@@ -202,6 +197,38 @@ class CparaModel {
       });
 
       await batch.commit(noResult: true);
+
+      print("Local Db Data end");
+      // Send request later
+      var prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getString('access');
+
+      var response = await dio.request("https://dev.cpims.net/api/form/CPR/",
+          data: jsonToSend,
+          options: Options(
+              method: 'POST',
+              contentType: 'application/json',
+              headers: {"Authorization": "Bearer $accessToken"}));
+
+      print(response.statusCode);
+      print(response.data.toString());
+
+      // // Insert database
+      // // Create a batch
+      // var batch = db!.batch();
+      // json.forEach((key, value) {
+      //   batch.insert(
+      //     "HouseholdAnswer",
+      //     {
+      //       "houseHoldID": houseHoldID,
+      //       "questionID": key,
+      //       "answer": value,
+      //       "formID": formID
+      //     },
+      //   );
+      // });
+      //
+      // await batch.commit(noResult: true);
     } catch (err) {
       print("OHH SHIT!");
       print(err.toString());

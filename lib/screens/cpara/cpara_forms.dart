@@ -22,8 +22,11 @@ import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 
+import '../../Models/case_load_model.dart';
+
 class CparaFormsScreen extends StatefulWidget {
-  const CparaFormsScreen({super.key});
+  final CaseLoadModel caseLoadModel;
+  const CparaFormsScreen({super.key, required this.caseLoadModel});
 
   @override
   State<CparaFormsScreen> createState() => _CparaFormsScreenState();
@@ -41,8 +44,8 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
     const CparaSchooledWidget(),
   ];
 
-  // Database? database;
-  // static const databaseName = "CPARAv2.db";
+  Database? database;
+  static const databaseName = "CPARAv2.db";
   // Initialize database
   @override
   void initState() {
@@ -52,60 +55,32 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
     // initializeDatabase();
   }
 
-  // // Function that creates the database and tables
-  // void initializeDatabase() async {
-  //   try {
-  //     debugPrint("This has been created");
-  //     database =
-  //         await openDatabase(p.join(await getDatabasesPath(), databaseName),
-  //             onCreate: (db, version) async {
-  //       await db.execute(
-  //           "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT);");
-  //       await db.execute(
-  //           "CREATE TABLE IF NOT EXISTS Child(childOVCCPMISID TEXT PRIMARY KEY, childName TEXT, childAge TEXT, childGender TEXT, childSchool TEXT, childOVCRegistered TEXT);");
-  //       await db.execute(
-  //           "CREATE TABLE IF NOT EXISTS Household(householdID TEXT PRIMARY KEY);");
-  //       await db.execute(
-  //           "CREATE TABLE IF NOT EXISTS HouseholdChild(childID TEXT, householdID TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (householdID) REFERENCES Household(householdID), PRIMARY KEY(childID, householdID));");
-  //       await db.execute(
-  //           "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER, id INTEGER PRIMARY KEY, houseHoldID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (houseHoldID) REFERENCES Household(householdid), FOREIGN KEY (formID) REFERENCES Form(id));");
-  //       await db.execute(
-  //           "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionid TEXT, answer TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (formID) REFERENCES Form(id));");
-  //     }, version: 2);
-  //   } catch (err) {
-  //     debugPrint("OHH SHIT!");
-  //     debugPrint(err.toString());
-  //     debugPrint("OHH SHIT");
-  //   }
-  // }
-  //
-  // void creatingCparaTables(Database db, int version) async {
-  //   try {
-  //     debugPrint("Creating Cpara tables");
-  //           await db.execute(
-  //               "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT);");
-  //
-  //           await db.execute(
-  //               "CREATE TABLE IF NOT EXISTS Child(childOVCCPMISID TEXT PRIMARY KEY, childName TEXT, childAge TEXT, childGender TEXT, childSchool TEXT, childOVCRegistered TEXT);");
-  //
-  //           await db.execute(
-  //               "CREATE TABLE IF NOT EXISTS Household(householdID TEXT PRIMARY KEY);");
-  //
-  //           await db.execute(
-  //               "CREATE TABLE IF NOT EXISTS HouseholdChild(childID TEXT, householdID TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (householdID) REFERENCES Household(householdID), PRIMARY KEY(childID, householdID));");
-  //
-  //           await db.execute(
-  //               "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER, id INTEGER PRIMARY KEY, houseHoldID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (houseHoldID) REFERENCES Household(householdid), FOREIGN KEY (formID) REFERENCES Form(id));");
-  //
-  //           await db.execute(
-  //               "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionid TEXT, answer TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (formID) REFERENCES Form(id));");
-  //
-  //   } catch (err) {
-  //     debugPrint("OHH SHIT!");
-  //     debugPrint(err.toString());
-  //     debugPrint("OHH SHIT");
-  //   }
-  // }
+  // Function that creates the database and tables
+  void initializeDatabase() async {
+    try {
+      debugPrint("This has been created");
+      database =
+          await openDatabase(p.join(await getDatabasesPath(), databaseName),
+              onCreate: (db, version) async {
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT);");
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS Child(childOVCCPMISID TEXT PRIMARY KEY, childName TEXT, childAge TEXT, childGender TEXT, childSchool TEXT, childOVCRegistered TEXT);");
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS Household(householdID TEXT PRIMARY KEY);");
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS HouseholdChild(childID TEXT, householdID TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (householdID) REFERENCES Household(householdID), PRIMARY KEY(childID, householdID));");
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER, id INTEGER PRIMARY KEY, houseHoldID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (houseHoldID) REFERENCES Household(householdid), FOREIGN KEY (formID) REFERENCES Form(id));");
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionid TEXT, answer TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (formID) REFERENCES Form(id));");
+      }, version: 2);
+    } catch (err) {
+      debugPrint("OHH SHIT!");
+      debugPrint(err.toString());
+      debugPrint("OHH SHIT");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,9 +107,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                     padding: const EdgeInsets.all(10),
                     width: double.infinity,
                     color: Colors.black,
-                    child: const Text(
-                      'Case Plan Achievement Readiness Assessment || {Caregiver Name}',
-                      style: TextStyle(color: Colors.white),
+                    child:  Text(
+                      'Case Plan Achievement Readiness Assessment \n ${widget.caseLoadModel.caregiverNames}',
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                   Padding(
@@ -324,24 +299,16 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                                     const Text(
                                                         "OVC Sub Population Form"),
                                                     const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question1}'),
-                                                    const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question2}'),
-                                                    const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question3}'),
-                                                    const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question4}'),
                                                   ],
                                                 ),
                                               ),
                                             ));
 
                                     try {
-                                      String ovcpmisid = "1573288";
+                                      String? ovsId = context.read<CparaProvider>().caseLoadModel?.cpimsId;
+
+                                      if(ovsId == null) throw("No CPMSID found");
+                                      String ovcpmisid = ovsId ?? "0" ;
                                       // Insert to db
                                       CparaModel cparaModelDB = CparaModel(
                                           detail: detailModel ?? DetailModel(),
@@ -353,8 +320,8 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                                   question2: "question2",
                                                   question3: "question3",
                                                   question4: "question4"),
-                                          health: healthModel ?? HealthModel());
-
+                                          health: healthModel ?? HealthModel(),
+                                          ovcSubPopulationModel: OvcSubPopulationModel());
                                       // Create form
                                       LocalDb.instance.insertCparaData(cparaModelDB: cparaModelDB, ovcId: ovcpmisid);
                                       // cparaModelDB
