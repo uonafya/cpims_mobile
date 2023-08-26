@@ -8,6 +8,8 @@ import 'package:cpims_mobile/screens/biometric_information_screen.dart';
 import 'package:cpims_mobile/screens/connectivity_screen.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/services/dash_board_service.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:cpims_mobile/services/metadata_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -87,12 +89,24 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
           if (context.mounted) {
             Provider.of<UIProvider>(context, listen: false)
                 .setDashData(dashRep);
-            await CaseLoadService().fetchCaseLoadData(
-              context: context,
-              isForceSync: false,
-            );
+            // retrieve deviceID
+            final deviceID = await getDeviceID();
+            if (mounted) {
+              await CaseLoadService().fetchCaseLoadData(
+                context: context,
+                isForceSync: false,
+                deviceID: deviceID,
+              );
+            }
             await Provider.of<UIProvider>(context, listen: false)
                 .setCaseLoadData();
+            try {
+              await MetadataService.fetchMetadata();
+            } catch (e) {
+              if (kDebugMode) {
+                print("Error fetching metadata in init load: $e");
+              }
+            }
           }
         }
 
@@ -101,13 +115,37 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
     );
   }
 
+  final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+
+  Future<String> getDeviceID() async {
+    // get device id
+    String? deviceID = '';
+    if (Theme.of(context).platform == TargetPlatform.android) {
+      final AndroidDeviceInfo androidDeviceInfo =
+          await deviceInfoPlugin.androidInfo;
+      deviceID = androidDeviceInfo.id;
+      if (kDebugMode) {
+        print('Device ID $deviceID');
+      }
+    } else if (Theme.of(context).platform == TargetPlatform.iOS) {
+      final IosDeviceInfo iosDeviceInfo = await deviceInfoPlugin.iosInfo;
+      deviceID = iosDeviceInfo.identifierForVendor;
+      if (kDebugMode) {
+        print(deviceID);
+      }
+    }
+    return deviceID!;
+  }
+
   Future<void> _checkBiometric() async {
     bool canCheckBiometric = false;
 
     try {
       canCheckBiometric = await auth.canCheckBiometrics;
       if (kReleaseMode && !canCheckBiometric) {
-        errorSnackBar(context, 'Biometrics not available');
+        if (mounted) {
+          errorSnackBar(context, 'Biometrics not available');
+        }
         return;
       }
     } on PlatformException catch (_) {
@@ -148,7 +186,9 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
         localizedReason: "Scan your finger to authenticate",
       );
     } on PlatformException catch (e) {
-      errorSnackBar(context, e.details);
+      if (mounted) {
+        errorSnackBar(context, e.details);
+      }
     }
 
     setState(() {
