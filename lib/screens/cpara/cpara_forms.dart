@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
@@ -40,43 +41,71 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
     const CparaSchooledWidget(),
   ];
 
-  Database? database;
-  static const databaseName = "CPARAv2.db";
+  // Database? database;
+  // static const databaseName = "CPARAv2.db";
   // Initialize database
   @override
   void initState() {
     super.initState();
 
     // initialize the database
-    initializeDatabase();
+    // initializeDatabase();
   }
 
-  // Function that creates the database and tables
-  void initializeDatabase() async {
-    try {
-      debugPrint("This has been created");
-      database =
-          await openDatabase(p.join(await getDatabasesPath(), databaseName),
-              onCreate: (db, version) async {
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT);");
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS Child(childOVCCPMISID TEXT PRIMARY KEY, childName TEXT, childAge TEXT, childGender TEXT, childSchool TEXT, childOVCRegistered TEXT);");
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS Household(householdID TEXT PRIMARY KEY);");
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS HouseholdChild(childID TEXT, householdID TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (householdID) REFERENCES Household(householdID), PRIMARY KEY(childID, householdID));");
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER, id INTEGER PRIMARY KEY, houseHoldID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (houseHoldID) REFERENCES Household(householdid), FOREIGN KEY (formID) REFERENCES Form(id));");
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionid TEXT, answer TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (formID) REFERENCES Form(id));");
-      }, version: 2);
-    } catch (err) {
-      debugPrint("OHH SHIT!");
-      debugPrint(err.toString());
-      debugPrint("OHH SHIT");
-    }
-  }
+  // // Function that creates the database and tables
+  // void initializeDatabase() async {
+  //   try {
+  //     debugPrint("This has been created");
+  //     database =
+  //         await openDatabase(p.join(await getDatabasesPath(), databaseName),
+  //             onCreate: (db, version) async {
+  //       await db.execute(
+  //           "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT);");
+  //       await db.execute(
+  //           "CREATE TABLE IF NOT EXISTS Child(childOVCCPMISID TEXT PRIMARY KEY, childName TEXT, childAge TEXT, childGender TEXT, childSchool TEXT, childOVCRegistered TEXT);");
+  //       await db.execute(
+  //           "CREATE TABLE IF NOT EXISTS Household(householdID TEXT PRIMARY KEY);");
+  //       await db.execute(
+  //           "CREATE TABLE IF NOT EXISTS HouseholdChild(childID TEXT, householdID TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (householdID) REFERENCES Household(householdID), PRIMARY KEY(childID, householdID));");
+  //       await db.execute(
+  //           "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER, id INTEGER PRIMARY KEY, houseHoldID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (houseHoldID) REFERENCES Household(householdid), FOREIGN KEY (formID) REFERENCES Form(id));");
+  //       await db.execute(
+  //           "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionid TEXT, answer TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (formID) REFERENCES Form(id));");
+  //     }, version: 2);
+  //   } catch (err) {
+  //     debugPrint("OHH SHIT!");
+  //     debugPrint(err.toString());
+  //     debugPrint("OHH SHIT");
+  //   }
+  // }
+  //
+  // void creatingCparaTables(Database db, int version) async {
+  //   try {
+  //     debugPrint("Creating Cpara tables");
+  //           await db.execute(
+  //               "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT);");
+  //
+  //           await db.execute(
+  //               "CREATE TABLE IF NOT EXISTS Child(childOVCCPMISID TEXT PRIMARY KEY, childName TEXT, childAge TEXT, childGender TEXT, childSchool TEXT, childOVCRegistered TEXT);");
+  //
+  //           await db.execute(
+  //               "CREATE TABLE IF NOT EXISTS Household(householdID TEXT PRIMARY KEY);");
+  //
+  //           await db.execute(
+  //               "CREATE TABLE IF NOT EXISTS HouseholdChild(childID TEXT, householdID TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (householdID) REFERENCES Household(householdID), PRIMARY KEY(childID, householdID));");
+  //
+  //           await db.execute(
+  //               "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER, id INTEGER PRIMARY KEY, houseHoldID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (houseHoldID) REFERENCES Household(householdid), FOREIGN KEY (formID) REFERENCES Form(id));");
+  //
+  //           await db.execute(
+  //               "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionid TEXT, answer TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (formID) REFERENCES Form(id));");
+  //
+  //   } catch (err) {
+  //     debugPrint("OHH SHIT!");
+  //     debugPrint(err.toString());
+  //     debugPrint("OHH SHIT");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -325,27 +354,29 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                                   question3: "question3",
                                                   question4: "question4"),
                                           health: healthModel ?? HealthModel());
+
                                       // Create form
-                                      cparaModelDB
-                                          .createForm(database)
-                                          .then((value) {
-                                        // Get formID
-                                        cparaModelDB
-                                            .getLatestFormID(database)
-                                            .then((formData) {
-                                          var formDate = formData.formDate;
-                                          var formDateString =
-                                              formDate.toString().split(' ')[0];
-                                          var formID = formData.formID;
-                                          cparaModelDB
-                                              .addHouseholdFilledQuestionsToDB(
-                                                  database,
-                                                  "Test House",
-                                                  formDateString,
-                                                  ovcpmisid,
-                                                  formID);
-                                        });
-                                      });
+                                      LocalDb.instance.insertCparaData(cparaModelDB: cparaModelDB, ovcId: ovcpmisid);
+                                      // cparaModelDB
+                                      //     .createForm(database)
+                                      //     .then((value) {
+                                      //   // Get formID
+                                      //   cparaModelDB
+                                      //       .getLatestFormID(database)
+                                      //       .then((formData) {
+                                      //     var formDate = formData.formDate;
+                                      //     var formDateString =
+                                      //         formDate.toString().split(' ')[0];
+                                      //     var formID = formData.formID;
+                                      //     cparaModelDB
+                                      //         .addHouseholdFilledQuestionsToDB(
+                                      //             database,
+                                      //             "Test House",
+                                      //             formDateString,
+                                      //             ovcpmisid,
+                                      //             formID);
+                                      //   });
+                                      // });
                                     } catch (err) {
                                       debugPrint("OHH SHIT!");
                                       debugPrint(err.toString());
