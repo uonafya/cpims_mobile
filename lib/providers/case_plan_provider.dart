@@ -117,7 +117,7 @@ class CasePlanProvider extends ChangeNotifier {
     return personsList;
   }
 
-  void saveCasaPlanData() {
+  Map<String, dynamic> generatePayload() {
     List<String> services = generateServicesList();
     List<String> responsibleId = generateResponsiblePersonList();
     String priorityId = "";
@@ -173,6 +173,14 @@ class CasePlanProvider extends ChangeNotifier {
     };
 
     print("casePlan Payload$payload");
+    return payload;
+
+  }
+
+  void saveCasaPlanDataLocally() {
+    Map payload = generatePayload();
+    //now send the data for local saving
+
 
   }
 
