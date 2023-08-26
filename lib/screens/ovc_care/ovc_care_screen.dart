@@ -106,6 +106,7 @@ class _OVCCareScreenState extends State<OVCCareScreen> {
                   setState(() {
                     selectedCriteria = val;
                   });
+                  handleSearch(caseLoadData!);
                 }),
             const SizedBox(
               height: 15,
