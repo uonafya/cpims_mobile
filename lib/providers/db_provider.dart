@@ -127,7 +127,7 @@ class LocalDb {
     }
   }
 
-  Future<void> insertCparaData({required CparaModel cparaModelDB, required String ovcId}) async {
+  Future<void> insertCparaData({required CparaModel cparaModelDB, required String ovcId, required String careProviderId}) async {
     final db = await instance.database;
 
     // Create form
@@ -145,7 +145,6 @@ class LocalDb {
         cparaModelDB
             .addHouseholdFilledQuestionsToDB(
             db,
-            "Test House",
             formDateString,
             ovcId,
             formID);

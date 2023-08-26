@@ -79,7 +79,7 @@ class CparaModel {
         // getting data for each child
 
         i.forEach((key, value) {
-          if(key != "id"){
+          if(key != "id" ){
             batch.insert("ChildAnswer", {
               "childID": i["id"],
               "questionID": key,
@@ -103,7 +103,7 @@ class CparaModel {
   }
 
   // This function add the portion of the form filled by the household to the database
-  Future<void> addHouseholdFilledQuestionsToDB(Database? db, String houseHoldID,
+  Future<void> addHouseholdFilledQuestionsToDB(Database? db,
       String formDate, String ovcpmsid, int formID) async {
     try {
       // Get JSON data from CPARA model
@@ -129,8 +129,8 @@ class CparaModel {
       print("OVC Sbpopulation");
       print(ovcSubPopulationModelJSON.toString());
 
-      var h = healthJSON.remove('children');
-      var s = safeJSON.remove('children');
+      // var h = healthJSON.remove('children');
+      // var s = safeJSON.remove('children');
       // Get children from safe and health
       // Health
       List<Map<String, dynamic>> healtChildren = healthJSON.remove('children');
@@ -138,8 +138,8 @@ class CparaModel {
       print(healtChildren.toString());
 
       // Safe
-      // List<Map<String, dynamic>> safeChildren = safeJSON.remove('children');
-      List<Map<String, dynamic>> safeChildren = [{"id": "45", "q1": "ge"}];
+      List<Map<String, dynamic>> safeChildren = safeJSON.remove('children');
+      // List<Map<String, dynamic>> safeChildren = [{"id": "45", "q1": "ge"}];
       print("\nSafe Children\n");
       print(safeChildren.toString());
 
@@ -225,7 +225,7 @@ class CparaModel {
         batch.insert(
           "HouseholdAnswer",
           {
-            "houseHoldID": houseHoldID,
+            "houseHoldID": ovcpmsid,
             "questionID": key,
             "answer": value,
             "formID": formID
@@ -235,7 +235,7 @@ class CparaModel {
 
       await batch.commit(noResult: true);
 
-      print("Local Db Data end");
+       print("Local Db Data end");
       // Send request later
       var prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getString('access');

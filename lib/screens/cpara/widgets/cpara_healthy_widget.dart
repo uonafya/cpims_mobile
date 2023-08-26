@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
@@ -56,27 +57,17 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   @override
   void initState() {
     super.initState();
-
+    List<CaseLoadModel> models =
+        context.read<CparaProvider>().children ?? [];
     // Get instance of model from provider
     HealthModel healthModel =
         context.read<CparaProvider>().healthModel ?? HealthModel();
 
     // Initialize children
-    children = healthModel.childrenQuestions ??
-        [
-          HealthChild(
-              name: "Felix Ouma",
-              id: '12312312',
-              question1: "",
-              question2: "",
-              question3: ""),
-          HealthChild(
-              name: "Jane Oluocj",
-              id: '345235',
-              question1: "",
-              question2: "",
-              question3: "")
-        ];
+    children = [];
+    for (CaseLoadModel model in models){
+      children.add(HealthChild(id: "${model.cpimsId}", question1: "", question2: "", question3: "", name: "${model.ovcFirstName} ${model.ovcSurname}"));
+    }
     // Initialize Details
     q1_1ChildrenHivTested = healthModel.question1 == null
         ? q1_1ChildrenHivTested

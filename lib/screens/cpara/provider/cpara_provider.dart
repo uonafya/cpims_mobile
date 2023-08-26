@@ -235,8 +235,11 @@ class CparaProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateChildren(List<CaseLoadModel> allChildren, CaseLoadModel selectedChild) {
-    this.caseLoadModel = caseLoadModel;
+  void updateChildren(List<CaseLoadModel> allChildren) {
+    children =  allChildren
+        .where((element) =>
+    element.caregiverNames == caseLoadModel?.caregiverNames)
+        .toList();
     notifyListeners();
   }
 }

@@ -19,6 +19,7 @@ import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
@@ -55,6 +56,14 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
     // todo: update case load data in Cpara provider
     // initialize the database
     // initializeDatabase();
+    fetchChildren(caseLoadData);
+  }
+
+  fetchChildren(caseList) async{
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      // Provider.of<CparaProvider>(context, listen: false).updateChildren(caseList));
+    context.read<CparaProvider>().updateChildren(caseList);
+    });
   }
 
   // Function that creates the database and tables
@@ -308,6 +317,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
 
                                     try {
                                       String? ovsId = context.read<CparaProvider>().caseLoadModel?.cpimsId;
+                                      // String? careGiverId = context.read<CparaProvider>().caseLoadModel?.cpimsId;
 
                                       if(ovsId == null) throw("No CPMSID found");
                                       String ovcpmisid = ovsId ?? "0" ;
@@ -325,7 +335,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           health: healthModel ?? HealthModel(),
                                           ovcSubPopulationModel: OvcSubPopulationModel());
                                       // Create form
-                                      LocalDb.instance.insertCparaData(cparaModelDB: cparaModelDB, ovcId: ovcpmisid);
+                                      LocalDb.instance.insertCparaData(cparaModelDB: cparaModelDB, ovcId: ovcpmisid, careProviderId: ovcpmisid );
                                       // cparaModelDB
                                       //     .createForm(database)
                                       //     .then((value) {
