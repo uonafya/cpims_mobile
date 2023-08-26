@@ -1,4 +1,6 @@
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/db_provider.dart';
+import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
@@ -17,12 +19,16 @@ import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 
+import '../../Models/case_load_model.dart';
+
 class CparaFormsScreen extends StatefulWidget {
-  const CparaFormsScreen({super.key});
+  final CaseLoadModel caseLoadModel;
+  const CparaFormsScreen({super.key, required this.caseLoadModel});
 
   @override
   State<CparaFormsScreen> createState() => _CparaFormsScreenState();
@@ -46,9 +52,18 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
   @override
   void initState() {
     super.initState();
-
+    final caseLoadData = Provider.of<UIProvider>(context, listen: false).caseLoadData;
+    // todo: update case load data in Cpara provider
     // initialize the database
-    initializeDatabase();
+    // initializeDatabase();
+    fetchChildren(caseLoadData);
+  }
+
+  fetchChildren(caseList) async{
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      // Provider.of<CparaProvider>(context, listen: false).updateChildren(caseList));
+    context.read<CparaProvider>().updateChildren(caseList);
+    });
   }
 
   // Function that creates the database and tables
@@ -103,9 +118,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                     padding: const EdgeInsets.all(10),
                     width: double.infinity,
                     color: Colors.black,
-                    child: const Text(
-                      'Case Plan Achievement Readiness Assessment || {Caregiver Name}',
-                      style: TextStyle(color: Colors.white),
+                    child:  Text(
+                      'Case Plan Achievement Readiness Assessment \n ${widget.caseLoadModel.caregiverNames}',
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                   Padding(
@@ -139,7 +154,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                   }
                                   _scrollController.animateTo(
                                     0,
-                                    duration: const Duration(milliseconds: 500),
+                                    duration: const Duration(milliseconds: 100),
                                     curve: Curves.easeInOut,
                                   );
                                   setState(() {
@@ -295,24 +310,17 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                                     const Text(
                                                         "OVC Sub Population Form"),
                                                     const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question1}'),
-                                                    const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question2}'),
-                                                    const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question3}'),
-                                                    const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question4}'),
                                                   ],
                                                 ),
                                               ),
                                             ));
 
                                     try {
-                                      String ovcpmisid = "1573288";
+                                      String? ovsId = context.read<CparaProvider>().caseLoadModel?.cpimsId;
+                                      // String? careGiverId = context.read<CparaProvider>().caseLoadModel?.cpimsId;
+
+                                      if(ovsId == null) throw("No CPMSID found");
+                                      String ovcpmisid = ovsId ?? "0" ;
                                       // Insert to db
                                       CparaModel cparaModelDB = CparaModel(
                                           detail: detailModel ?? DetailModel(),
@@ -324,28 +332,30 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                                   question2: "question2",
                                                   question3: "question3",
                                                   question4: "question4"),
-                                          health: healthModel ?? HealthModel());
+                                          health: healthModel ?? HealthModel(),
+                                          ovcSubPopulationModel: OvcSubPopulationModel());
                                       // Create form
-                                      cparaModelDB
-                                          .createForm(database)
-                                          .then((value) {
-                                        // Get formID
-                                        cparaModelDB
-                                            .getLatestFormID(database)
-                                            .then((formData) {
-                                          var formDate = formData.formDate;
-                                          var formDateString =
-                                              formDate.toString().split(' ')[0];
-                                          var formID = formData.formID;
-                                          cparaModelDB
-                                              .addHouseholdFilledQuestionsToDB(
-                                                  database,
-                                                  "Test House",
-                                                  formDateString,
-                                                  ovcpmisid,
-                                                  formID);
-                                        });
-                                      });
+                                      LocalDb.instance.insertCparaData(cparaModelDB: cparaModelDB, ovcId: ovcpmisid, careProviderId: ovcpmisid );
+                                      // cparaModelDB
+                                      //     .createForm(database)
+                                      //     .then((value) {
+                                      //   // Get formID
+                                      //   cparaModelDB
+                                      //       .getLatestFormID(database)
+                                      //       .then((formData) {
+                                      //     var formDate = formData.formDate;
+                                      //     var formDateString =
+                                      //         formDate.toString().split(' ')[0];
+                                      //     var formID = formData.formID;
+                                      //     cparaModelDB
+                                      //         .addHouseholdFilledQuestionsToDB(
+                                      //             database,
+                                      //             "Test House",
+                                      //             formDateString,
+                                      //             ovcpmisid,
+                                      //             formID);
+                                      //   });
+                                      // });
                                     } catch (err) {
                                       debugPrint("OHH SHIT!");
                                       debugPrint(err.toString());
@@ -355,7 +365,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
 
                                   _scrollController.animateTo(
                                     0,
-                                    duration: const Duration(milliseconds: 500),
+                                    duration: const Duration(milliseconds: 100),
                                     curve: Curves.easeInOut,
                                   );
                                   setState(() {
