@@ -4,6 +4,7 @@ import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
+import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
@@ -74,7 +75,9 @@ class _HomepageState extends State<Homepage> {
                   form1BCount: 3,
                   cpaCount: 2,
                   cparaCount: 1,
-                  onClick: () {},
+                  onClick: () {
+                     Get.to(() => const UnapprovedRecordsScreens());
+                  },
                 ),
                 GridView.count(
                   crossAxisCount: 2,
