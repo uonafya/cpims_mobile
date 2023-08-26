@@ -6,6 +6,7 @@ class CaseLoadModel {
   String? registrationDate;
   String? caregiverNames;
   String? sex;
+  String? caregiverCpimsId;
 
   CaseLoadModel({
     this.cpimsId,
@@ -15,6 +16,7 @@ class CaseLoadModel {
     this.registrationDate,
     this.caregiverNames,
     this.sex,
+    this.caregiverCpimsId,
   });
 
   CaseLoadModel.fromJson(Map<String, dynamic> json) {
@@ -25,6 +27,7 @@ class CaseLoadModel {
     registrationDate = json['registration_date'];
     caregiverNames = json['caregiver_names'];
     sex = json['sex'];
+    caregiverCpimsId = json['caregiver_cpims_id'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -36,6 +39,7 @@ class CaseLoadModel {
     data['registration_date'] = registrationDate;
     data['caregiver_names'] = caregiverNames;
     data['sex'] = sex;
+    data['caregiver_cpims_id'] = caregiverCpimsId;
     return data;
   }
 
@@ -47,18 +51,21 @@ class CaseLoadModel {
       'date_of_birth': dateOfBirth,
       'registration_date': registrationDate,
       'caregiver_names': caregiverNames,
-      'sex': sex
+      'sex': sex,
+      'caregiver_cpims_id': caregiverCpimsId,
     };
   }
 
   factory CaseLoadModel.fromMap(Map<String, dynamic> map) {
     return CaseLoadModel(
-        cpimsId: map['cbo_id'],
-        ovcFirstName: map['ovc_first_name'],
-        ovcSurname: map['ovc_surname'],
-        dateOfBirth: map['date_of_birth'],
-        registrationDate: map['registration_date'],
-        caregiverNames: map['caregiver_names'],
-        sex: map['sex']);
+      cpimsId: map['cbo_id'],
+      ovcFirstName: map['ovc_first_name'],
+      ovcSurname: map['ovc_surname'],
+      dateOfBirth: map['date_of_birth'],
+      registrationDate: map['registration_date'],
+      caregiverNames: map['caregiver_names'],
+      sex: map['sex'],
+      caregiverCpimsId: map['caregiver_cpims_id'],
+    );
   }
 }
