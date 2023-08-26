@@ -190,6 +190,14 @@ class LocalDb {
 
   }
 
+  Future<List<Map<String, dynamic>>> fetchOvcPrepopulationData() async {
+    final db = await LocalDb.instance.database;
+    final result = await db.query(LocalDb.ovcsubpopulation);
+    return result;
+  }
+
+
+
   // table name and field names
   static const caseloadTable = 'ovcs';
   static const statisticsTable = 'statistics';

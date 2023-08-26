@@ -142,7 +142,7 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
               },
             ),
             ChildDetailsWorkflowButton(
-              workflowName: "OVC Prepopulation",
+              workflowName: "OVC Sub Population",
               onClick: () {
                 if(detailProvider.detailModel?.dateOfAssessment== null){
                   showDialog(

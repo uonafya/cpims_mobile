@@ -111,12 +111,34 @@ class _CheckboxFormState extends State<CheckboxForm> {
                   child: const Text("Submit", style: TextStyle(fontSize: 20)),
                 ),
               ),
+              // SizedBox(
+              //   width: 250,
+              //   height: 50,
+              //   child: ElevatedButton(
+              //     onPressed: () {
+              //       fetchAndDisplayOvcPrepopulationData();
+              //     },
+              //     child: const Text("fetch", style: TextStyle(fontSize: 20)),
+              //   ),
+              // ),
             ],
           ),
         ),
       ),
     );
   }
+  // Future<void> fetchAndDisplayOvcPrepopulationData() async {
+  //   final localDb = LocalDb.instance;
+  //   List<Map<String, dynamic>> ovcPrepopulationData = await localDb.fetchOvcPrepopulationData();
+  //
+  //   for (var data in ovcPrepopulationData) {
+  //     print('UUID: ${data['uuid']}');
+  //     print('CPIMS ID: ${data['cpims_id']}');
+  //     print('Criteria: ${data['criteria']}');
+  //     print('Date of Event: ${data['date_of_event']}');
+  //     print('---');
+  //   }
+  // }
 
   void handleSubmit() async {
     final localDb = LocalDb.instance;
@@ -135,6 +157,8 @@ class _CheckboxFormState extends State<CheckboxForm> {
       String dateOfAssessment = Provider.of<CparaProvider>(context, listen: false).detailModel?.dateOfAssessment ?? "NULL";
       await localDb.insertOvcPrepopulationData(
           uuid, widget.caseLoadModel.cpimsId!,dateOfAssessment,selectedQuestions);
+
+      await localDb.fetchOvcPrepopulationData();
 
       // Show success dialog if the context is still mounted
       if (context.mounted) {
