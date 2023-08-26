@@ -181,7 +181,6 @@ class CasePlanProvider extends ChangeNotifier {
     Map payload = generatePayload();
     //now send the data for local saving
 
-
   }
 
 
