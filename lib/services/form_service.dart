@@ -1,15 +1,13 @@
-import 'package:cpims_mobile/Models/form_1a.dart';
-import 'package:cpims_mobile/helpers/database.dart';
+import 'package:cpims_mobile/Models/form_1_model.dart';
+import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/services/api_service.dart';
 import 'package:http/http.dart' as http;
-import '../Models/form_1b.dart';
 
 // save form to local storage
-Future<bool> saveValues(String formType, formData) async {
+saveValues(String formType, formData) async {
 //save the form data that is in the form of a map to  a local database
-  final db = DatabaseHelper();
+  final db = LocalDb.instance;
   try {
-    await db.init();
     await db.insertForm1Data(formType, formData);
     print(">>>>>>>>>>>>>>>>>>>>form saved<<<<<<<<<<<<<<<<");
     return true;
@@ -21,10 +19,9 @@ Future<bool> saveValues(String formType, formData) async {
 
 // delete a form from local storage
 deleteValue(String formType, int id) async {
-  final db = DatabaseHelper();
+  final db = LocalDb.instance;
   try {
-    await db.init();
-    await db.deleteForm1AData(formType, id);
+    await db.deleteForm1Data(formType, id);
     print(">>>>>>>>>>>>>>>>form deleted<<<<<<<<<<<<<<<<<");
     return true;
   } catch (e) {
@@ -35,26 +32,15 @@ deleteValue(String formType, int id) async {
 
 // get all forms from local storage
 getAllValues(String formType) async {
-  final db = DatabaseHelper();
+  final db = LocalDb.instance;
   try {
-    await db.init();
-    if (formType == 'form1a') {
       List<Map<String, dynamic>> maps = await db.queryAllForm1Rows(formType);
-      List<Form1ADataModel> forms = [];
+      List<Form1DataModel> forms = [];
       for (var map in maps) {
-        forms.add(Form1ADataModel.fromJson(map));
+        forms.add(Form1DataModel.fromJson(map));
       }
       print(">>>>>>>>>>>>> fetching all form data $forms ");
       return forms;
-    } else if (formType == 'form1b') {
-      List<Map<String, dynamic>> maps = await db.queryAllForm1Rows(formType);
-      List<Form1BDataModel> forms = [];
-      for (var map in maps) {
-        forms.add(Form1BDataModel.fromJson(map));
-      }
-      print(">>>>>>>>>>>>> fetching all form data $forms ");
-      return forms;
-    }
 
   } catch (e) {
     print(">>>>>>>>>>>>>>>>>>>>>>>>>$e");
@@ -78,7 +64,7 @@ postForm(formData, String formEndpoint) async {
 
 class Form1Service {
 
-  static Future<bool> saveFormLocal(String formType, formData) {
+  static Future<dynamic> saveFormLocal(String formType, formData) {
     return saveValues(formType, formData);
   }
 
