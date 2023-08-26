@@ -56,20 +56,20 @@ List<Map> optionSubDomains = [
     'service_id': 'S2',
     'domain_id': 'OC1',
     'service_description':
-        'Re-enrolled back to school (including teenage mothers)'
+    'Re-enrolled back to school (including teenage mothers)'
   },
   {
     'service_id': 'S3',
     'domain_id': 'OC1',
     'service_description':
-        'Adolescent(15 - 20 yrs) enrolled in an approved HES intervention including VTC'
+    'Adolescent(15 - 20 yrs) enrolled in an approved HES intervention including VTC'
   },
   {'service_id': 'S4', 'service_description': 'School fees paid'},
   {
     'service_id': 'S5',
     'domain_id': 'OC1',
     'service_description':
-        'Complete referral for bursary or other educational support'
+    'Complete referral for bursary or other educational support'
   },
   {
     'service_id': 'S7',
@@ -100,7 +100,7 @@ List<Map> optionSubDomains = [
     'service_id': 'Sb2',
     'domain_id': 'OC3',
     'service_description':
-        'OVC completed referral for business support(Startup Kit)'
+    'OVC completed referral for business support(Startup Kit)'
   },
   {
     'service_id': 'Sb3',

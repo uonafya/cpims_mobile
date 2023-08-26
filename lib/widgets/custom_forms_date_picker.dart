@@ -24,8 +24,7 @@ class CustomFormsDatePicker extends StatefulWidget {
   final IconData? prefixIcon;
   final IconData? suffixIcon;
   final DateTime? selectedDateTime;
-  final Function(DateTime selectedDate)
-      onDateSelected; // Define the callback function signature
+  final Function(DateTime selectedDate) onDateSelected; // Define the callback function signature
 
   @override
   State<CustomFormsDatePicker> createState() => _CustomDatePickerState();
@@ -38,8 +37,8 @@ class _CustomDatePickerState extends State<CustomFormsDatePicker> {
   void initState() {
     selectedDate = widget.selectedDateTime ?? selectedDate;
     super.initState();
-  }
 
+  }
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -48,15 +47,14 @@ class _CustomDatePickerState extends State<CustomFormsDatePicker> {
           currentDate: selectedDate,
           context: context,
           initialDate: widget.initialDate ?? DateTime.now(),
-          firstDate: widget.firstDate ?? DateTime(2012, 1, 1, 11, 59),
+          firstDate: widget.firstDate ?? DateTime.now(),
           lastDate: widget.lastDate ?? DateTime(2100, 12, 31, 11, 59),
         ).then((value) {
           if (value != null) {
             setState(() {
               selectedDate = value;
             });
-            widget.onDateSelected(
-                selectedDate); // Call the callback with selectedDate
+            widget.onDateSelected(selectedDate); // Call the callback with selectedDate
           }
         });
       },

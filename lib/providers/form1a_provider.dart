@@ -18,14 +18,14 @@ class ServiceFormData {
 
   ServiceFormData(
       {required this.selectedDomain,
-      required this.selectedEventDate,
-      required this.selectedService});
+        required this.selectedEventDate,
+        required this.selectedService});
 }
 
 class Form1AProvider extends ChangeNotifier {
   // <<<<<<<<<<<critical events >>>>>>>>>>>>>>>>>>>>>>>>>>>>
   final CriticalFormData _criticalFormData =
-      CriticalFormData(selectedEvents: [], selectedDate: DateTime.now());
+  CriticalFormData(selectedEvents: [], selectedDate: DateTime.now());
 
   // <<<<<<<<<<<< Service >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   final ServiceFormData _serviceFormData = ServiceFormData(
@@ -74,7 +74,7 @@ class Form1AProvider extends ChangeNotifier {
   // <<<<<<<<<<<<<<<Submit critical >>>>>>>>>>>>>>>>>>>
   void submitCriticalData() {
     String formattedDate =
-        DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
+    DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
 
     List<Map<String, dynamic>> criticalEvents = [];
     Map<String, dynamic> criticalEvent = {};
@@ -110,7 +110,7 @@ class Form1AProvider extends ChangeNotifier {
 
   void submitCriticalServices() {
     String dateOfEvent =
-        DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
+    DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
     Map<String, dynamic> payload = {};
     payload.addAll({
       'ovc_cpims_id': 12344,
