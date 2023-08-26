@@ -1,11 +1,14 @@
-import 'package:cpims_mobile/Models/form1_data_basemodel.dart';
-import 'package:cpims_mobile/Models/form_1b.dart';
+// import 'package:cpims_mobile/Models/form1_data_basemodel.dart';
+// import 'package:cpims_mobile/Models/form_1b.dart';
+import 'dart:ffi';
+
 import 'package:cpims_mobile/screens/forms/form1b/widgets/critical_event_form1b.dart';
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
+import '../Models/form_1_model.dart';
 import '../screens/forms/form1b/model/critical_events_form1b_model.dart';
 import '../screens/forms/form1b/model/health_form1b_model.dart';
 import '../screens/forms/form1b/utils/FinalServicesForm1bModel.dart';
@@ -86,7 +89,7 @@ class Form1bProvider extends ChangeNotifier {
   //these are methods to be worked on just before our form is saved
   void setFinalFormDataOvcId(String ovc_cpims_id) {
     _finalServicesFormData.ovc_cpims_id = ovc_cpims_id;
-    CustomToastWidget.showToast(_finalServicesFormData.ovc_cpims_id);
+    // CustomToastWidget.showToast(_finalServicesFormData.ovc_cpims_id);
     notifyListeners();
   }
   void setFinalFormDataDOE(DateTime dateOfEvent){
@@ -98,8 +101,8 @@ class Form1bProvider extends ChangeNotifier {
     _finalServicesFormData.masterServicesList = masterServicesList;
     notifyListeners();
   }
-  List<Map<String, dynamic>> getFinalCriticalEventsFormData(){
-    List<Map<String, dynamic>> criticalEvents = generateCriticalEventsDS(criticalEventDataForm1b);
+  List<Form1CriticalEventsModel> getFinalCriticalEventsFormData(){
+    List<Form1CriticalEventsModel> criticalEvents = generateCriticalEventsDS(criticalEventDataForm1b);
     print(criticalEvents);
     return criticalEvents;
   }
@@ -124,15 +127,29 @@ class Form1bProvider extends ChangeNotifier {
       servicesList.add(entry);
     }
 
-    Form1BDataModel toDbData = Form1BDataModel(
+    List<Form1CriticalEventsModel> criticalEventsList = [];
+    for (var criticalEvent in criticalEventsList) {
+      Form1CriticalEventsModel entry = Form1CriticalEventsModel(
+          eventId: criticalEvent.eventId,
+          eventDate: criticalEvent.eventDate
+      );
+      criticalEventsList.add(entry);
+    }
+
+
+    Form1DataModel toDbData = Form1DataModel(
         ovcCpimsId: finalServicesFormData.ovc_cpims_id,
         dateOfEvent: finalServicesFormData.dateOfEvent,
         services: servicesList,
+      criticalEvents: criticalEventsList
     );
     print("ourData${toDbData}");
     print("criticalEventsDataForm1b${getFinalCriticalEventsFormData()}");
 
-    Form1Service.saveFormLocal("form1b", toDbData);
+     Form1Service.saveFormLocal("form1b", toDbData) as Bool;
+
+
+      CustomToastWidget.showToast("data saved");
 
     notifyListeners();
   }
@@ -175,17 +192,16 @@ class Form1bProvider extends ChangeNotifier {
     return masterServicesList;
   }
 
-  List<Map<String, dynamic>> generateCriticalEventsDS(CriticalEventDataForm1b criticalEventDataForm1b) {
-    List<Map<String, dynamic>> eventsList = [];
+  List<Form1CriticalEventsModel> generateCriticalEventsDS(CriticalEventDataForm1b criticalEventDataForm1b) {
+    List<Form1CriticalEventsModel> eventsList = [];
 
     for (int i = 0; i < criticalEventDataForm1b.selectedEvents.length; i++) {
       final eventId = criticalEventDataForm1b.selectedEvents[i].value;
-      final eventDate = criticalEventDataForm1b.selectedDate;
+      final eventDate = DateFormat('yyyy-MM-dd').format(criticalEventDataForm1b.selectedDate);
 
-      eventsList.add({
-        'event_id': eventId,
-        'event_date': eventDate.toIso8601String(),
-      });
+      eventsList.add(
+        Form1CriticalEventsModel(eventId: eventId!, eventDate: eventDate)
+      );
     }
 
     return eventsList;
