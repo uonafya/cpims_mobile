@@ -1,6 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages
 
-
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
@@ -133,7 +132,6 @@ class LocalDb {
     FOREIGN KEY (${Form1Services.formId}) REFERENCES $form1Table(${Form1.id})
   )
 ''');
-
 
     await db.execute('''
       CREATE TABLE $form1CriticalEventsTable (
@@ -289,44 +287,41 @@ class LocalDb {
   Future<List<Map<String, dynamic>>> queryAllForm1Rows(String formType) async {
     final db = await instance.database;
     const sql = 'SELECT * FROM $form1Table WHERE form_type = ?';
-    final List<Map<String, dynamic>> results = await db.rawQuery(sql, [formType]);
+    final List<Map<String, dynamic>> results =
+        await db.rawQuery(sql, [formType]);
     return results;
   }
 
-
   // get a single row(form 1a or 1b)
   Future<bool> deleteForm1Data(String formType, int id) async {
-    try{
+    try {
       final db = await instance.database;
-    final queryResults = await db.query(
-      form1Table,
-      where: '${Form1.id} = ?',
-      whereArgs: [id],
-    );
-
-    if (queryResults.isNotEmpty) {
-      final form1Id = queryResults.first[Form1.id] as int;
-      await db.delete(
-        casePlanServicesTable,
-        where: 'form_id = ?',
-        whereArgs: [form1Id],
-      );
-      final rowsAffected = await db.delete(
-        casePlanTable,
+      final queryResults = await db.query(
+        form1Table,
         where: '${Form1.id} = ?',
-        whereArgs: [form1Id],
+        whereArgs: [id],
       );
-      return rowsAffected > 0;
-    }
-    return false;
-    } catch(e){
+
+      if (queryResults.isNotEmpty) {
+        final form1Id = queryResults.first[Form1.id] as int;
+        await db.delete(
+          casePlanServicesTable,
+          where: 'form_id = ?',
+          whereArgs: [form1Id],
+        );
+        final rowsAffected = await db.delete(
+          casePlanTable,
+          where: '${Form1.id} = ?',
+          whereArgs: [form1Id],
+        );
+        return rowsAffected > 0;
+      }
+      return false;
+    } catch (e) {
       print(e);
       return false;
     }
-
   }
-
-
 
 // inserting case plan
   Future<bool> insertCasePlan(CasePlanModel casePlan) async {
@@ -492,7 +487,7 @@ class OvcFields {
   ];
 
   static const String id = '_id';
-  static const String cboID = 'cbo_id';
+  static const String cboID = 'ovc_cpims_id';
   static const String ovcFirstName = 'ovc_first_name';
   static const String ovcSurname = 'ovc_surname';
   static const String dateOfBirth = 'date_of_birth';
