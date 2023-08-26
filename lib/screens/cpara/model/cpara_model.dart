@@ -1,4 +1,3 @@
-
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
@@ -10,6 +9,63 @@ import 'package:dio/dio.dart';
 
 final dio = Dio();
 
+// Models for interacting with db
+class CPARAChildQuestions {
+  String ovc_cpims_id;
+  String question_code;
+  String answer_id;
+
+  CPARAChildQuestions(
+      {this.ovc_cpims_id = "", this.question_code = "", this.answer_id = ""});
+
+  factory CPARAChildQuestions.fromJSON(Map<String, dynamic> json) {
+    return CPARAChildQuestions(
+        question_code: json['questionid'],
+        answer_id: json['answer'],
+        ovc_cpims_id: json['childid']);
+  }
+
+  Map<String, dynamic> toJSON() {
+    return {
+      "ovc_cpims_id": ovc_cpims_id,
+      "question_code": question_code,
+      "answer_id": answer_id
+    };
+  }
+}
+
+class CPARADatabaseQuestions {
+  final String question_code;
+  final String answer_id;
+
+  const CPARADatabaseQuestions({
+    required this.question_code,
+    required this.answer_id,
+  });
+
+  factory CPARADatabaseQuestions.fromJSON(Map<String, dynamic> json) {
+    return CPARADatabaseQuestions(
+        question_code: json['questionid'], answer_id: json['answer']);
+  }
+
+  Map<String, dynamic> toJSON() {
+    return {question_code: answer_id};
+  }
+}
+
+class CPARADatabase {
+  String ovc_cpims_id;
+  String date_of_event;
+  List<CPARADatabaseQuestions> questions;
+  List<CPARAChildQuestions> childQuestions;
+
+  CPARADatabase(
+      {this.ovc_cpims_id = "",
+      this.date_of_event = "",
+      this.questions = const [],
+      this.childQuestions = const []});
+}
+
 class CparaModel {
   final DetailModel detail;
   final SafeModel safe;
@@ -18,24 +74,23 @@ class CparaModel {
   final HealthModel health;
   final OvcSubPopulationModel? ovcSubPopulationModel;
 
-  CparaModel({
-    required this.detail,
-    required this.safe,
-    required this.stable,
-    required this.schooled,
-    required this.health,
-    required this.ovcSubPopulationModel
-  });
+  CparaModel(
+      {required this.detail,
+      required this.safe,
+      required this.stable,
+      required this.schooled,
+      required this.health,
+      required this.ovcSubPopulationModel});
 
   factory CparaModel.fromJson(Map<String, dynamic> json) {
     return CparaModel(
-      detail: DetailModel.fromJson(json['detail']),
-      safe: SafeModel.fromJson(json['safe']),
-      stable: StableModel.fromJson(json['stable']),
-      schooled: SchooledModel.fromJson(json['schooled']),
-      health: HealthModel.fromJson(json['health']),
-      ovcSubPopulationModel: OvcSubPopulationModel.fromJson(json['ovcSubPopulationModel'])
-    );
+        detail: DetailModel.fromJson(json['detail']),
+        safe: SafeModel.fromJson(json['safe']),
+        stable: StableModel.fromJson(json['stable']),
+        schooled: SchooledModel.fromJson(json['schooled']),
+        health: HealthModel.fromJson(json['health']),
+        ovcSubPopulationModel:
+            OvcSubPopulationModel.fromJson(json['ovcSubPopulationModel']));
   }
 
   Future<void> addChildren(
@@ -71,15 +126,104 @@ class CparaModel {
     }
   }
 
-  Future<void> addChildren2(List<Map<String, dynamic>> data, Database db, int formId) async{
+  Future<List<CPARADatabase>> getUnsynchedForms(Database db) async {
+    try {
+      List<CPARADatabase> forms = [];
+      List<Map<String, dynamic>> formsFetchResult =
+          await db.rawQuery("SELECT id FROM Form");
+      for (var i in formsFetchResult) {
+        var form = await getFormFromDB(i['id'], db);
+        forms.add(form);
+      }
+      return forms;
+    } catch (err) {
+      print("OHH SHIT!");
+      print(err.toString());
+      print("OHH SHIT!");
+      throw ("Could Not Get Unsynced Forms");
+    }
+  }
+
+  Future<CPARADatabase> getFormFromDB(int formID, Database? db) async {
+    try {
+      CPARADatabase form = CPARADatabase();
+      // Get ovpmsid, dateofevent and questions
+      List<Map<String, dynamic>> fetchResult1 = await db!.rawQuery(
+          "SELECT householdid, date, questionid, answer FROM HouseholdAnswer INNER JOIN Form ON Form.id = HouseholdAnswer.formID");
+
+      var ovcpmisID = fetchResult1[0]['householdid'];
+      form.ovc_cpims_id = ovcpmisID;
+      print("OVCPMIS ID from many: $ovcpmisID");
+      var dateOfEvent2 = fetchResult1[0]['date'];
+      form.date_of_event = dateOfEvent2;
+      print("Date of event from many: $dateOfEvent2");
+      List<CPARADatabaseQuestions> questions = [];
+      for (var i in fetchResult1) {
+        questions.add(CPARADatabaseQuestions(
+            question_code: i['questionid'], answer_id: i['answer']));
+      }
+      form.questions = questions;
+      print("Questions from many: $questions");
+
+      // Get children questions
+      List<Map<String, dynamic>> fetchResult2 = await db!.rawQuery(
+          "SELECT questionid, answer, childid FROM ChildAnswer WHERE formid = ?",
+          [formID]);
+      List<CPARAChildQuestions> childQuestions = [];
+      for (var i in fetchResult2) {
+        childQuestions.add(CPARAChildQuestions.fromJSON(i));
+      }
+      form.childQuestions = childQuestions;
+      return form;
+    } catch (err) {
+      print("OHH SHIT!");
+      print(err.toString());
+      print("OHH SHIT!");
+      throw ("Could Not Get Form");
+    }
+  }
+
+  Future<void> purgeForm(int formID, Database db) async {
+    try {
+      // Delete householdanswers
+      await db
+          .rawDelete("DELETE FROM HouseholdAnswer WHERE formID = ?", [formID]);
+
+      // Delete childanswers
+      await db.rawDelete("DELETE FROM ChildAnswer WHERE formID = ?", [formID]);
+
+      // Form
+      await db.rawDelete("DELTE FROM Form WHERE id = ?", [formID]);
+    } catch (err) {}
+  }
+
+  // Returns the number of CPARA forms
+  Future<int> getCountOfForms(Database? db) async {
+    try {
+      // Run query to get count of unique forms
+      List<Map<String, dynamic>> fetchResults =
+          await db!.rawQuery("SELECT COUNT(*) total FROM Form");
+      // Return value
+      int total = fetchResults[0]['total'];
+      return total;
+    } catch (err) {
+      print("OHH SHIT!");
+      print(err.toString());
+      print("OHH SHIT!");
+      throw ("Could Not Get Count");
+    }
+  }
+
+  Future<void> addChildren2(
+      List<Map<String, dynamic>> data, Database db, int formId) async {
     try {
       // Create a batch
       var batch = db.batch();
-      for(Map i in data) {
+      for (Map i in data) {
         // getting data for each child
 
         i.forEach((key, value) {
-          if(key != "id"){
+          if (key != "id") {
             batch.insert("ChildAnswer", {
               "childID": i["id"],
               "questionID": key,
@@ -89,13 +233,9 @@ class CparaModel {
           }
         });
         // Insert database
-
-
-
-
       }
       await batch.commit(noResult: true);
-    }catch(err) {
+    } catch (err) {
       print("OHH SHIT!");
       print(err.toString());
       print("OHH SHIT!");
@@ -113,7 +253,7 @@ class CparaModel {
       var safeJSON = safe.toJSON();
       var schooledJSON = schooled.toJSON();
       var stableJSON = stable.toJSON();
-      var ovcSubPopulationModelJSON=ovcSubPopulationModel?.toJSON();
+      var ovcSubPopulationModelJSON = ovcSubPopulationModel?.toJSON();
 
       // insert to database, for now debugPrint for testing
       print("Detail");
@@ -139,7 +279,9 @@ class CparaModel {
 
       // Safe
       // List<Map<String, dynamic>> safeChildren = safeJSON.remove('children');
-      List<Map<String, dynamic>> safeChildren = [{"id": "45", "q1": "ge"}];
+      List<Map<String, dynamic>> safeChildren = [
+        {"id": "45", "q1": "ge"}
+      ];
       print("\nSafe Children\n");
       print(safeChildren.toString());
 
@@ -249,6 +391,10 @@ class CparaModel {
 
       print(response.statusCode);
       print(response.data.toString());
+
+      if (response.statusCode == 200) {
+        purgeForm(formID, db);
+      }
 
       // // Insert database
       // // Create a batch
