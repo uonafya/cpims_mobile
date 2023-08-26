@@ -1,10 +1,12 @@
 import 'package:cpims_mobile/Models/form1_data_basemodel.dart';
 import 'package:cpims_mobile/Models/form_1b.dart';
+import 'package:cpims_mobile/screens/forms/form1b/widgets/critical_event_form1b.dart';
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
+import '../screens/forms/form1b/model/critical_events_form1b_model.dart';
 import '../screens/forms/form1b/model/health_form1b_model.dart';
 import '../screens/forms/form1b/utils/FinalServicesForm1bModel.dart';
 import '../screens/forms/form1b/utils/MasterServicesForm1bModel.dart';
@@ -31,11 +33,18 @@ class Form1bProvider extends ChangeNotifier {
       dateOfEvent: DateFormat('yyyy-MM-dd').format(DateTime.now()),
       ovc_cpims_id: "",
   );
+  final CriticalEventDataForm1b _criticalEventDataForm1b = CriticalEventDataForm1b(
+    selectedEvents: [],
+      selectedDate: DateTime.now(),
+  );
 
   HealthFormData get formData => _formData;
   StableFormData get stableFormData => _stableFormData;
   SafeFormData get safeFormData => _safeFormData;
+  CriticalEventDataForm1b get criticalEventDataForm1b => _criticalEventDataForm1b;
   FinalServicesFormData get finalServicesFormData => _finalServicesFormData;
+
+
 
   void setSelectedHealthServices(List<ValueItem> selectedServices, String domainId) {
     _formData.selectedServices.clear(); // Clear the current list
@@ -60,6 +69,17 @@ class Form1bProvider extends ChangeNotifier {
     _formData.selectedDate = selectedDate;
     notifyListeners();
   }
+  //setting up data for crticial events
+  void setCriticalEventsSelectedDate(DateTime selectedDate) {
+    // CustomToastWidget.showToast(selectedDate);
+    _criticalEventDataForm1b.selectedDate = selectedDate;
+    notifyListeners();
+  }
+  void setCriticalEventsSelectedEvents(List<ValueItem> selectedEvents){
+    _criticalEventDataForm1b.selectedEvents.clear();
+    _criticalEventDataForm1b.selectedEvents.addAll(selectedEvents);
+    notifyListeners();
+  }
 
 
 
@@ -77,22 +97,23 @@ class Form1bProvider extends ChangeNotifier {
     _finalServicesFormData.masterServicesList = masterServicesList;
     notifyListeners();
   }
+  List<Map<String, dynamic>> getFinalCriticalEventsFormData(){
+    List<Map<String, dynamic>> criticalEvents = generateCriticalEventsDS(criticalEventDataForm1b);
+    print(criticalEvents);
+    return criticalEvents;
+    notifyListeners();
+  }
+
+
+
+
   void saveForm1bData(HealthFormData healthFormData) {
     List<MasterServicesFormData> masterServicesList = convertToMasterServicesFormData();
     //creating our data to be sent for saving
     setFinalFormDataServices(masterServicesList);
     setFinalFormDataOvcId("ovc_cpims_675748");
     setFinalFormDataDOE(formData.selectedDate);
-
-
-    // print('Date of Event: ${finalServicesFormData.dateOfEvent}');
-    // print('OVC CPIMS ID: ${finalServicesFormData.ovc_cpims_id}');
-    // print('Master Services List:');
-    // for (MasterServicesFormData masterFormData in finalServicesFormData.masterServicesList ?? []) {
-    //   print('- Domain ID: ${masterFormData.domainId}');
-    //   print('- Selected Service ID: ${masterFormData.selectedServiceId}');
-    //   print('---');
-    // }
+    getFinalCriticalEventsFormData();
 
 
 
@@ -103,29 +124,18 @@ class Form1bProvider extends ChangeNotifier {
       servicesList.add(entry);
     }
 
-    Form1BDataModel toDbData = Form1BDataModel(ovcCpimsId: finalServicesFormData.ovc_cpims_id, dateOfEvent: finalServicesFormData.dateOfEvent, services: servicesList);
+    Form1BDataModel toDbData = Form1BDataModel(
+        ovcCpimsId: finalServicesFormData.ovc_cpims_id,
+        dateOfEvent: finalServicesFormData.dateOfEvent,
+        services: servicesList,
+    );
     print("ourData${toDbData}");
+    print("criticalEventsDataForm1b${getFinalCriticalEventsFormData()}");
 
     Form1Service.saveFormLocal("form1b", toDbData);
 
-
-    // print("Form1bData: ${form1bListData.length}");
-    // for (MasterServicesFormData msFormData in form1bListData) {
-    //   print("Form1bData: ");
-    //   print('Domain ID: ${msFormData.domainId}');
-    //   print('Selected Service ID: ${msFormData.selectedServiceId}');
-    //   print('Date of Event: ${msFormData.dateOfEvent}');
-    //   print('----------------------');
-    // }
-    // CustomToastWidget.showToast('Data saved successfully!${form1bListData[0].dateOfEvent}');
     notifyListeners();
   }
-
-
-
-
-
-
 
   //converting the various services from the domains into one Services list with domain id and service id
   List<MasterServicesFormData> convertToMasterServicesFormData() {
@@ -164,6 +174,27 @@ class Form1bProvider extends ChangeNotifier {
 
     return masterServicesList;
   }
+
+  List<Map<String, dynamic>> generateCriticalEventsDS(CriticalEventDataForm1b criticalEventDataForm1b) {
+    List<Map<String, dynamic>> eventsList = [];
+
+    for (int i = 0; i < criticalEventDataForm1b.selectedEvents.length; i++) {
+      final eventId = criticalEventDataForm1b.selectedEvents[i].value;
+      final eventDate = criticalEventDataForm1b.selectedDate;
+
+      eventsList.add({
+        'event_id': eventId,
+        'event_date': eventDate.toIso8601String(),
+      });
+    }
+
+    return eventsList;
+  }
+
+
+
+
+
 }
 
 
