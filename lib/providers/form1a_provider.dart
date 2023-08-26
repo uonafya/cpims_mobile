@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 
+import '../Models/form1_data_basemodel.dart';
 import '../Models/form_1a.dart';
 
 class CriticalFormData {
@@ -93,31 +94,74 @@ class Form1AProvider extends ChangeNotifier {
 
 // <<<<<<<<<<<<<Submit Services >>>>>>>>>>>>>>>>>>>>>>>
   void submitServicesData() {
-    List<Map<String, dynamic>> data = [];
+    List<Map<String, dynamic>> service_of_domains = [];
     for (var valueItem in _serviceFormData.selectedDomain) {
       String domainId = valueItem.value ?? '';
       for (var serviceItem in _serviceFormData.selectedService) {
         String serviceId = serviceItem.value ?? '';
         Map<String, dynamic> item = {
-          'domain_id': domainId,
-          'service_id': serviceId,
+          'domainId': domainId,
+          'serviceId': serviceId,
         };
-        data.add(item);
-        print(data);
-        services = data;
+        service_of_domains.add(item);
+        print(service_of_domains);
+        services = service_of_domains;
       }
     }
   }
 
   List<Map<String, dynamic>> eventData = [];
   List<Map<String, dynamic>> services = [];
+  // <<<<<<<<<<initializes >>>>>>>>>>>>>>>>>>>
+  // List<Form1ServicesModel> servicesList = [];
 
   void submitCriticalServices() {
+
     String dateOfEvent =
     DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
+    // Form1ADataModel toDbData = Form1ADataModel(ovcCpimsId: "123", dateOfEvent: dateOfEvent, services: services, criticalEvents: eventData);
+    // print("ourData${toDbData}");
+    Map<String, dynamic> payload = {};
+    payload.addAll({
+    'ovc_cpims_id': 12344,
+    'date_of_event': dateOfEvent,
+    'services': services,
+    'critical_events': eventData,
+    });
+    String form1A = jsonEncode(payload);
+    // print(form1A);
+
+    List<Form1ServicesModel> servicesList = [];
+    List<Form1ACriticalEventsModel> eventsList = [];
+
+    for(var event in eventsList){
+      Form1ACriticalEventsModel entry = Form1ACriticalEventsModel(
+         eventId: event.eventId,
+          eventDateId: event.eventDateId
+      );
+      eventsList.add(entry);
+      // print(entry);
+    }
+
+    for (var service in services) {
+      Form1ServicesModel entry = Form1ServicesModel(
+          domainId: service['domainId'],
+          serviceId: service['serviceId']);
+      servicesList.add(entry);
+      print(service);
+    }git
+
+
+    Form1ADataModel toDbData = Form1ADataModel(ovcCpimsId: "1234", dateOfEvent: dateOfEvent, services: servicesList, criticalEvents: eventsList);
+    print("ourData${toDbData}");
+
+    Form1Service.saveFormLocal("form1a", toDbData);
 
 
 
+// Form1Service.getAllForms('form1a').then((forms) {
+//   print('Retrieved Form1A data: $forms');
+// });
     // <<<<<<<<<<<<Saving the form 1A to DB >>>>>>>>>>>
 
 
@@ -129,20 +173,7 @@ class Form1AProvider extends ChangeNotifier {
   }
 }
 // <<<<<<<<<<<<< testing code >>>>>>>>>>>>>>>>
-// Map<String, dynamic> payload = {};
-// payload.addAll({
-//   'ovc_cpims_id': 12344,
-//   'date_of_event': dateOfEvent,
-//   'services': serviceData,
-//   'critical_events': eventData,
-// });
-// String form1A = jsonEncode(payload);
-// print(form1A);
-//
 
-// Form1Service.getAllForms('form1a').then((forms) {
-//   print('Retrieved Form1A data: $forms');
-// });
 
 //    setSelectedEvents([]);
 //     setSelectedDomain([]);
