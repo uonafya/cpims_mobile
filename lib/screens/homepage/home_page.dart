@@ -7,6 +7,7 @@ import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
+import 'package:cpims_mobile/widgets/custom_grid_view.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -76,11 +77,12 @@ class _HomepageState extends State<Homepage> {
                   cpaCount: 2,
                   cparaCount: 1,
                   onClick: () {
-                     Get.to(() => const UnapprovedRecordsScreens());
+                    Get.to(() => const UnapprovedRecordsScreens());
                   },
                 ),
-                GridView.count(
+                CustomGridView(
                   crossAxisCount: 2,
+                  childrenHeight: 180,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
