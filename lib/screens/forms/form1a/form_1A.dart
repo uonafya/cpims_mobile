@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/Models/case_load.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/screens/forms/form1a/widgets/critical_events_details.dart';
@@ -13,13 +14,13 @@ import 'package:provider/provider.dart';
 class Form1AScreen extends StatefulWidget {
   const Form1AScreen({super.key});
 
+
   @override
   State<Form1AScreen> createState() => _Form1AScreenState();
 }
 
 class _Form1AScreenState extends State<Form1AScreen> {
   int selectedStep = 0;
-
   List<Widget> steps = [const CriticalEventsScreen(), const ServicesDetails()];
 
   @override
