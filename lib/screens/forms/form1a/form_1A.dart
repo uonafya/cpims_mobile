@@ -1,4 +1,4 @@
-import 'package:cpims_mobile/Models/case_load.dart';
+import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/screens/forms/form1a/widgets/critical_events_details.dart';

@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 
-import '../Models/form1_data_basemodel.dart';
-import '../Models/form_1a.dart';
+import '../Models/form_1_model.dart';
+
 
 class CriticalFormData {
   late List<ValueItem> selectedEvents;
@@ -132,12 +132,12 @@ class Form1AProvider extends ChangeNotifier {
     // print(form1A);
 
     List<Form1ServicesModel> servicesList = [];
-    List<Form1ACriticalEventsModel> eventsList = [];
+    List<Form1CriticalEventsModel> eventsList = [];
 
     for(var event in eventsList){
-      Form1ACriticalEventsModel entry = Form1ACriticalEventsModel(
+      Form1CriticalEventsModel entry = Form1CriticalEventsModel(
          eventId: event.eventId,
-          eventDateId: event.eventDateId
+          eventDate: event.eventDate
       );
       eventsList.add(entry);
       // print(entry);
@@ -152,7 +152,7 @@ class Form1AProvider extends ChangeNotifier {
     }
 
 
-    Form1ADataModel toDbData = Form1ADataModel(ovcCpimsId: "1234", dateOfEvent: dateOfEvent, services: servicesList, criticalEvents: eventsList);
+    Form1DataModel toDbData = Form1DataModel(ovcCpimsId: "1234", dateOfEvent: dateOfEvent, services: servicesList, criticalEvents: eventsList);
     print("ourData${toDbData}");
 
     Form1Service.saveFormLocal("form1a", toDbData);
