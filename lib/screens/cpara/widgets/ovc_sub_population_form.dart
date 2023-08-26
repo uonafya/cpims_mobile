@@ -1,6 +1,10 @@
+import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../Models/case_load_model.dart';
 import '../../../widgets/drawer.dart';
@@ -8,10 +12,11 @@ import '../../../widgets/drawer.dart';
 class CheckboxQuestion {
   final int? id;
   final String? question;
+  final String? questionID;
   bool? isChecked;
 
   CheckboxQuestion(
-      {required this.question, required this.id, this.isChecked = false});
+      {required this.question,this.questionID, required this.id, this.isChecked = false});
 }
 
 class CheckboxForm extends StatefulWidget {
@@ -27,14 +32,14 @@ class CheckboxForm extends StatefulWidget {
 
 class _CheckboxFormState extends State<CheckboxForm> {
   List<CheckboxQuestion> questions = [
-    CheckboxQuestion(id: 1, question: 'Orphan'),
-    CheckboxQuestion(id: 2, question: 'AGYW'),
-    CheckboxQuestion(id: 3, question: 'HEI'),
-    CheckboxQuestion(id: 4, question: 'FSW Child'),
-    CheckboxQuestion(id: 5, question: 'PLHIV Child'),
-    CheckboxQuestion(id: 6, question: 'CLHIV'),
-    CheckboxQuestion(id: 7, question: 'SVAC'),
-    CheckboxQuestion(id: 8, question: 'Household Affected by HIV'),
+    CheckboxQuestion(id: 1, question: 'Orphan', questionID: "Orphan"),
+    CheckboxQuestion(id: 2, question: 'AGYW', questionID: "AGYW"),
+    CheckboxQuestion(id: 3, question: 'HEI', questionID: "HEI"),
+    CheckboxQuestion(id: 4, question: 'Child of FSW', questionID: "FSW"),
+    CheckboxQuestion(id: 5, question: 'Child of PLHIV', questionID: "PLHIV"),
+    CheckboxQuestion(id: 6, question: 'CLHIV', questionID: "CLHIV"),
+    CheckboxQuestion(id: 7, question: 'SVAC', questionID: "SVAC"),
+    CheckboxQuestion(id: 8, question: 'Household Affected by HIV', questionID: "HHIV"),
   ];
 
   @override
@@ -63,7 +68,7 @@ class _CheckboxFormState extends State<CheckboxForm> {
                   children: [
                     Expanded(
                         child:
-                        ReusableTitleText(title: question.question ?? "")),
+                            ReusableTitleText(title: question.question ?? "")),
                     Checkbox(
                       value: question.isChecked,
                       onChanged: (value) {
@@ -92,10 +97,43 @@ class _CheckboxFormState extends State<CheckboxForm> {
     );
   }
 
-  void handleSubmit() {
+  void handleSubmit() async {
+    final localDb = LocalDb.instance;
+
+    List<CheckboxQuestion> selectedQuestions = [];
     for (var question in questions) {
-      int value = question.isChecked! ? 1 : 0;
-      print('Question ID: ${question.id}, Value: $value');
+      if (question.isChecked!) {
+        selectedQuestions.add(question);
+      }
+    }
+    final context = this.context; // Store the context
+
+    try {
+      // Save OVC prepopulation data without specifying formId
+      String uuid = const Uuid().v4();
+      await localDb.insertOvcPrepopulationData(uuid,widget.caseLoadModel.cpimsId!, selectedQuestions);
+
+      // Show success dialog if the context is still mounted
+      if (context.mounted) {
+        showDialog(
+          context: context, // Use the context from the build method
+          builder: (context) => AlertDialog(
+            title: const Text('Success'),
+            content: const Text('OVC prepopulation data saved successfully.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Get.back(); // Close the dialog
+                  Get.back(); // Go back to the previous screen
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (error) {
+      print('Error saving OVC prepopulation data: $error');
     }
   }
 }
