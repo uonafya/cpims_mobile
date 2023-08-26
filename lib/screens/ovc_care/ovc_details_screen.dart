@@ -1,6 +1,9 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/screens/cpara/cpara_forms.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/case_plan.dart';
+import 'package:cpims_mobile/screens/forms/form1a/form_1A.dart';
+import 'package:cpims_mobile/screens/forms/form1b/form_1B.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/widgets/custom_card_grid_item.dart';
 import 'package:cpims_mobile/screens/unsynched_workflows/widgets/child_details_workflow_button.dart';
@@ -112,11 +115,15 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             ),
             ChildDetailsWorkflowButton(
               workflowName: "Form A",
-              onClick: () {},
+              onClick: () {
+                Get.to(() => const Form1AScreen());
+              },
             ),
             ChildDetailsWorkflowButton(
               workflowName: "Form B",
-              onClick: () {},
+              onClick: () {
+                Get.to(() => const Form1BScreen());
+              },
             ),
             ChildDetailsWorkflowButton(
               workflowName: "CPARA",
@@ -126,7 +133,9 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             ),
             ChildDetailsWorkflowButton(
               workflowName: "Case Plan Template",
-              onClick: () {},
+              onClick: () {
+                Get.to(() => const CasePlanTemplateScreen());
+              },
             ),
             const SizedBox(
               height: 10,

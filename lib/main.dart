@@ -1,5 +1,5 @@
-
 import 'package:cpims_mobile/providers/case_plan_provider.dart';
+import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/providers/form1b_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
@@ -39,6 +39,9 @@ void main() async {
           create: (_) => ConnectivityProvider(),
         ),
         ChangeNotifierProvider(create: (_) => CparaProvider()),
+        ChangeNotifierProvider(create: (_) => Form1AProvider()),
+        ChangeNotifierProvider(create: (_) => Form1bProvider()),
+        ChangeNotifierProvider(create: (_) => CasePlanProvider()),
       ],
       child: const CPIMS(),
     ),
@@ -65,7 +68,6 @@ class _CPIMSState extends State<CPIMS> {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-
         return GetMaterialApp(
           title: 'CPIMS',
           debugShowCheckedModeBanner: false,
