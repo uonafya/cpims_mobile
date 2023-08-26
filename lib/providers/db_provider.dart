@@ -1,9 +1,9 @@
 // ignore_for_file: depend_on_referenced_packages
 
-
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
+import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -131,7 +131,6 @@ class LocalDb {
     FOREIGN KEY (${Form1Services.formId}) REFERENCES $form1Table(${Form1.id})
   )
 ''');
-
 
     await db.execute('''
       CREATE TABLE $form1CriticalEventsTable (
@@ -474,6 +473,7 @@ class LocalDb {
     }
   }
 }
+
 // table name and field names
 const caseloadTable = 'ovcs';
 const statisticsTable = 'statistics';
