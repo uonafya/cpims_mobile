@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../providers/db_provider.dart';
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
 
 class CparaDetailsWidget extends StatefulWidget {
@@ -44,6 +45,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
     ),
   ];
 
+
   @override
   void initState() {
     DetailModel detailModel =
@@ -57,9 +59,11 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
     hasHivExposedInfant = detailModel.hasHivExposedInfant == null
         ? hasHivExposedInfant
         : convertingStringToRadioButtonOptions(
-        detailModel.hasHivExposedInfant!);
+            detailModel.hasHivExposedInfant!);
     // dateOfAssessment = detailModel.dateOfAssessment == null ? dateOfAssessment : DateTime.parse(detailModel.dateOfAssessment!);
     // dateOfLastAssessment = detailModel.dateOfLastAssessment == null ? dateOfLastAssessment : DateTime.parse(detailModel.dateOfLastAssessment!);
+
+
     super.initState();
   }
 
@@ -71,14 +75,14 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
         'Has pregnant or breastfeeding woman: $hasPregnantOrBreastfeedingWoman');
 
     DateTime? dateOfAssessment =
-    _dateTextFieldKey.currentState?.getSelectedDate();
+        _dateTextFieldKey.currentState?.getSelectedDate();
     String formattedDateOfAssessment = dateOfAssessment != null
         ? DateFormat('yyyy-MM-dd').format(dateOfAssessment)
         : '';
     print('Date of assessment: $formattedDateOfAssessment');
 
     DateTime? dateOfPreviousAssessment =
-    _dateTextFieldPreviousKey.currentState?.getSelectedDate();
+        _dateTextFieldPreviousKey.currentState?.getSelectedDate();
     String formattedDateOfPreviousAssessment = dateOfPreviousAssessment != null
         ? DateFormat('yyyy-MM-dd').format(dateOfPreviousAssessment)
         : '';
@@ -123,7 +127,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
                 DetailModel detailModel =
                     context.read<CparaProvider>().detailModel ?? DetailModel();
                 String selectedOption =
-                convertingRadioButtonOptionsToString(value);
+                    convertingRadioButtonOptionsToString(value);
                 context.read<CparaProvider>().updateDetailModel(
                     detailModel.copyWith(isFirstAssessment: selectedOption));
               });
@@ -146,7 +150,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
         const SizedBox(height: 20),
         const ReusableTitleText(
             title:
-            'Details of all children below 18 years currently living in the household.'),
+                'Details of all children below 18 years currently living in the household.'),
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -159,13 +163,13 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
         ),
         QuestionWidget(
             question:
-            "Is this household child-headed (i.e. Household head age is less than 18 years)?",
+                "Is this household child-headed (i.e. Household head age is less than 18 years)?",
             selectedOption: (value) {
               setState(() {
                 DetailModel detailModel =
                     context.read<CparaProvider>().detailModel ?? DetailModel();
                 String selectedOption =
-                convertingRadioButtonOptionsToString(value);
+                    convertingRadioButtonOptionsToString(value);
                 context.read<CparaProvider>().updateDetailModel(
                     detailModel.copyWith(isChildHeaded: selectedOption));
               });
@@ -179,7 +183,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
                 DetailModel detailModel =
                     context.read<CparaProvider>().detailModel ?? DetailModel();
                 String selectedOption =
-                convertingRadioButtonOptionsToString(value);
+                    convertingRadioButtonOptionsToString(value);
                 context.read<CparaProvider>().updateDetailModel(
                     detailModel.copyWith(hasHivExposedInfant: selectedOption));
               });
@@ -187,24 +191,20 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             isNaAvailable: false),
         QuestionWidget(
             question:
-            'Does this HH currently have a pregnant and/or breastfeeding woman/ adolescent?',
+                'Does this HH currently have a pregnant and/or breastfeeding woman/ adolescent?',
             selectedOption: (value) {
               setState(() {
                 hasPregnantOrBreastfeedingWoman = value;
                 DetailModel detailModel =
                     context.read<CparaProvider>().detailModel ?? DetailModel();
                 String selectedOption =
-                convertingRadioButtonOptionsToString(value);
+                    convertingRadioButtonOptionsToString(value);
                 context.read<CparaProvider>().updateDetailModel(detailModel
                     .copyWith(hasPregnantOrBreastfeedingWoman: selectedOption));
               });
             },
             isNaAvailable: false),
         const SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: _getDataAndMoveToNext,
-          child: const Text('Next'),
-        ),
       ],
     );
   }
@@ -213,10 +213,10 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
 class DateTextField extends StatefulWidget {
   const DateTextField(
       {Key? key,
-        required this.label,
-        required this.enabled,
-        required this.onDateSelected,
-        required this.identifier})
+      required this.label,
+      required this.enabled,
+      required this.onDateSelected,
+      required this.identifier})
       : super(key: key);
 
   final String label;
@@ -289,6 +289,7 @@ class _TextViewsColumnState extends State<TextViewsColumn> {
   @override
   void initState() {
     super.initState();
+
     caseLoadModel =
         context.read<CparaProvider>().caseLoadModel ?? CaseLoadModel();
   }
