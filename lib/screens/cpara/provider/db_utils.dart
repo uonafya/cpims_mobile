@@ -26,7 +26,7 @@ Future<CPARADatabase> getFormFromDB(int formID, Database? db) async {
     List<Map<String, dynamic>> fetchResult1 = await db!.rawQuery(
         "SELECT householdid, date, questionid, answer FROM HouseholdAnswer INNER JOIN Form ON Form.id = HouseholdAnswer.formID");
 
-    var ovcpmisID = fetchResult1[0]['householdid'];
+    var ovcpmisID = fetchResult1[0]['houseHoldID'];
     form.ovc_cpims_id = ovcpmisID;
     print("OVCPMIS ID from many: $ovcpmisID");
     var dateOfEvent2 = fetchResult1[0]['date'];
@@ -35,7 +35,7 @@ Future<CPARADatabase> getFormFromDB(int formID, Database? db) async {
     List<CPARADatabaseQuestions> questions = [];
     for (var i in fetchResult1) {
       questions.add(CPARADatabaseQuestions(
-          question_code: i['questionid'], answer_id: i['answer']));
+          question_code: i['questionID'], answer_id: i['answer'] ?? ""));
     }
     form.questions = questions;
     print("Questions from many: $questions");
