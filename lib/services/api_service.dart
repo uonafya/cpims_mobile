@@ -27,11 +27,16 @@ class ApiService {
 
   getData(apiUrl) async {
     var fullUrl = _url + apiUrl + await _getToken();
-    
+
     return await http.get(Uri.parse(fullUrl), headers: _setHeaders());
   }
 
   getSecureData(apiUrl, access) async {
+    var fullUrl = _url + apiUrl;
+    return await http.get(Uri.parse(fullUrl), headers: _setAuthHeaders(access));
+  }
+
+  getUnapprovedData(apiUrl, access) async {
     var fullUrl = _url + apiUrl;
     return await http.get(Uri.parse(fullUrl), headers: _setAuthHeaders(access));
   }
@@ -72,11 +77,9 @@ class ApiService {
       pref.setString("refresh", res['refresh'].toString());
 
       debugPrint(access);
-      print("******refresh******");
       debugPrint(refresh);
 
       debugPrint(access);
-      print("******response body******");
       debugPrint(response.body);
     } catch (e) {
       debugPrint(e.toString());
