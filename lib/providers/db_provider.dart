@@ -47,7 +47,9 @@ class LocalDb {
         ${OvcFields.registationDate} $textType,
         ${OvcFields.dateOfBirth} $textType,
         ${OvcFields.caregiverNames} $textType,
-        ${OvcFields.sex} $textType
+        ${OvcFields.sex} $textType,
+        ${OvcFields.caregiverCpimsId} $textType,
+        ${OvcFields.chvCpimsId} $textType
       )
     ''');
 
@@ -273,8 +275,6 @@ class LocalDb {
   }
 
 
-
-
   // get a single row(form 1a or 1b)
   Future<bool> deleteForm1Data(String formType, int id) async {
     try{
@@ -304,6 +304,7 @@ class LocalDb {
       );
       return rowsAffected > 0;
     }
+    return false;
     } catch(e){
       print(e);
     }
@@ -470,7 +471,9 @@ class OvcFields {
     ovcSurname,
     dateOfBirth,
     caregiverNames,
-    sex
+    sex,
+    caregiverCpimsId,
+    chvCpimsId,
   ];
 
   static const String id = '_id';
@@ -481,6 +484,8 @@ class OvcFields {
   static const String registationDate = 'registration_date';
   static const String caregiverNames = 'caregiver_names';
   static const String sex = 'sex';
+  static const String caregiverCpimsId = 'caregiver_cpims_id';
+  static const String chvCpimsId = 'chv_cpims_id';
 }
 
 class SummaryFields {
