@@ -408,8 +408,6 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           child: CustomButton(
                             text: "Submit",
                             onTap: () {
-                              // form1bProvider.setSelectedServices(['Service 1', 'Service 2']);
-                              // form1bProvider.setSelectedDate(DateTime.now());
                               casePlanProvider.saveCasaPlanDataLocally();
                             },
                           ),

@@ -86,6 +86,7 @@ class Form1bProvider extends ChangeNotifier {
   //these are methods to be worked on just before our form is saved
   void setFinalFormDataOvcId(String ovc_cpims_id) {
     _finalServicesFormData.ovc_cpims_id = ovc_cpims_id;
+    CustomToastWidget.showToast(_finalServicesFormData.ovc_cpims_id);
     notifyListeners();
   }
   void setFinalFormDataDOE(DateTime dateOfEvent){
@@ -101,7 +102,6 @@ class Form1bProvider extends ChangeNotifier {
     List<Map<String, dynamic>> criticalEvents = generateCriticalEventsDS(criticalEventDataForm1b);
     print(criticalEvents);
     return criticalEvents;
-    notifyListeners();
   }
 
 
@@ -111,7 +111,7 @@ class Form1bProvider extends ChangeNotifier {
     List<MasterServicesFormData> masterServicesList = convertToMasterServicesFormData();
     //creating our data to be sent for saving
     setFinalFormDataServices(masterServicesList);
-    setFinalFormDataOvcId("ovc_cpims_675748");
+    setFinalFormDataOvcId(_finalServicesFormData.ovc_cpims_id);
     setFinalFormDataDOE(formData.selectedDate);
     getFinalCriticalEventsFormData();
 
