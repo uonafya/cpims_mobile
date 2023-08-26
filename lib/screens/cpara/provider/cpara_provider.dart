@@ -18,6 +18,7 @@ class CparaProvider extends ChangeNotifier {
   SchooledModel? schooledModel;
   OvcSubPopulationModel? ovcSubPopulationModel;
   CaseLoadModel? caseLoadModel;
+  List<CaseLoadModel> children = [];
 
   // Calculate schooled benchmark
   int schooledBenchmark() {
@@ -230,6 +231,11 @@ class CparaProvider extends ChangeNotifier {
   }
 
   void updateCaseLoadModel(CaseLoadModel caseLoadModel) {
+    this.caseLoadModel = caseLoadModel;
+    notifyListeners();
+  }
+
+  void updateChildren(List<CaseLoadModel> allChildren, CaseLoadModel selectedChild) {
     this.caseLoadModel = caseLoadModel;
     notifyListeners();
   }

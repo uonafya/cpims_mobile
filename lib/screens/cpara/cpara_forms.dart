@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
+import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
@@ -50,7 +51,8 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
   @override
   void initState() {
     super.initState();
-
+    final caseLoadData = Provider.of<UIProvider>(context, listen: false).caseLoadData;
+    // todo: update case load data in Cpara provider
     // initialize the database
     // initializeDatabase();
   }
@@ -106,8 +108,8 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     width: double.infinity,
-                    color: Colors.black,
-                    child:  Text(
+                    color: Colors.blue,
+                    child: Text(
                       'Case Plan Achievement Readiness Assessment \n ${widget.caseLoadModel.caregiverNames}',
                       style: const TextStyle(color: Colors.white),
                     ),
@@ -185,124 +187,329 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                         .cparaModel;
 
                                     showDialog(
-                                        context: context,
-                                        builder: (_) => AlertDialog(
-                                              title:
-                                                  const Text('Collected Data'),
-                                              content: SingleChildScrollView(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    const Text("Stable Model:"),
-                                                    Row(
-                                                      children: [
-                                                        const Text("Question: 1"),
-                                                        Text(
-                                                            "Answer: ${stableModel?.question1}"),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            "Question: 2"),
-                                                        Text(
-                                                            " || Answer: ${stableModel?.question2}"),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            "Question: 3"),
-                                                        Text(
-                                                            " || Answer: ${stableModel?.question3}"),
-                                                      ],
-                                                    ),
-
-                                                    // Health Model
-                                                    const HealthModelCollected(),
-                                                    const Text("Safe Model:"),
-                                                    Row(
-                                                      children: [
-                                                        const Text("Question: 1"),
-                                                        Text(
-                                                            "Answer: ${safeModel?.question1}"),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            "Question: 2"),
-                                                        Text(
-                                                            " || Answer: ${stableModel?.question2}"),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            "Question: 3"),
-                                                        Text(
-                                                            " || Answer: ${stableModel?.question3}"),
-                                                      ],
-                                                    ),
-                                                    const Text("Detail model:"),
-                                                    const Text("Detail model:"),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            'Date of Assessment'),
-                                                        Text(
-                                                            'Answer: ${detailModel?.dateOfAssessment}'),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            'Is this first case plan readiness assessment?'),
-                                                        Text(
-                                                            'Answer: ${detailModel?.isFirstAssessment}'),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            'Date of Previous Assessment'),
-                                                        Text(
-                                                            'Answer: ${detailModel?.dateOfLastAssessment}'),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            'Is the child headed household?'),
-                                                        Text(
-                                                            'Answer: ${detailModel?.isChildHeaded}'),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            'Does the child have an HIV exposed infant?'),
-                                                        Text(
-                                                            'Answer: ${detailModel?.hasHivExposedInfant}'),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            'Does this HH currently have a pregnant and/or breastfeeding woman/adolescent?'),
-                                                        Text(
-                                                            'Answer: ${detailModel?.hasPregnantOrBreastfeedingWoman}'),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(height: 20),
-                                                    const Text(
-                                                        "OVC Sub Population Form"),
-                                                    const SizedBox(height: 10),
-                                                  ],
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                        backgroundColor: Colors.white,
+                                        title: const Text(
+                                          'CPARA Form Collected Data',
+                                          style: TextStyle(
+                                            color: Colors.blue,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        content: SingleChildScrollView(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                "Stable Model:",
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 30.0,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
                                                 ),
                                               ),
-                                            ));
+                                              const Text(
+                                                "Question: 1",
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18.0,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              Text(
+                                                "Answer: ${stableModel?.question1}",
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.w400,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              const Text(
+                                                "Question: 2",
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18.0,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              Text(
+                                                "Answer: ${stableModel?.question2}",
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.w400,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              const Text(
+                                                "Question: 3",
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18.0,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              Text(
+                                                "Answer: ${stableModel?.question3}",
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.w400,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+
+                                              // Health Model
+                                              const HealthModelCollected(),
+                                              // Safe model
+                                              const Text(
+                                                "Safe Model:",
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 30.0,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              const Text(
+                                                "Question: 1",
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18.0,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              Text(
+                                                "Answer: ${safeModel?.question1}",
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.w400,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              const Text(
+                                                "Question: 2",
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18.0,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              Text(
+                                                "Answer: ${stableModel?.question2}",
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.w400,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              const Text(
+                                                "Question: 3",
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18.0,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              Text(
+                                                "Answer: ${stableModel?.question3}",
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.w400,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              const Text("Detail model:",
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 30.0,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),),
+
+                                              const Text(
+                                                'Date of Assessment',
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18.0,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              Text(
+                                                'Answer: ${detailModel?.dateOfAssessment}',
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.w400,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+
+                                              const Text(
+                                                'Is this first case plan readiness assessment?',
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18.0,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              Text(
+                                                'Answer: ${detailModel?.isFirstAssessment}',
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.w400,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              const Text(
+                                                'Date of Previous Assessment',
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18.0,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              Text(
+                                                'Answer: ${detailModel?.dateOfLastAssessment}',
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.w400,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              const Text(
+                                                'Is the child headed household?',
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18.0,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              Text(
+                                                'Answer: ${detailModel?.isChildHeaded}',
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.w400,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+
+                                              const Text(
+                                                'Does the child have an HIV exposed infant?',
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18.0,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              Text(
+                                                'Answer: ${detailModel?.hasHivExposedInfant}',
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.w400,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+
+                                              const Text(
+                                                'Does this HH currently have a pregnant and/or breastfeeding woman/adolescent?',
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18.0,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              Text(
+                                                'Answer: ${detailModel?.hasPregnantOrBreastfeedingWoman}',
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.w400,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+
+                                              const SizedBox(height: 20),
+                                              const Text(
+                                                "OVC Sub Population Form",
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18.0,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.1,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
 
                                     try {
                                       String? ovsId = context.read<CparaProvider>().caseLoadModel?.cpimsId;
@@ -321,7 +528,8 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                                   question3: "question3",
                                                   question4: "question4"),
                                           health: healthModel ?? HealthModel(),
-                                          ovcSubPopulationModel: OvcSubPopulationModel());
+                                          ovcSubPopulationModel:
+                                              OvcSubPopulationModel());
                                       // Create form
                                       LocalDb.instance.insertCparaData(cparaModelDB: cparaModelDB, ovcId: ovcpmisid);
                                       // cparaModelDB

@@ -1217,7 +1217,7 @@ class HealthCardDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -1233,7 +1233,7 @@ class HealthCardDetails extends StatelessWidget {
               childName,
               style: const TextStyle(
                   color: Colors.blue,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w400,
                   fontSize: 16.0),
             )
           ],
@@ -1258,7 +1258,7 @@ class HealthCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Children Details Row
+        // Children Details Column
         HealthCardDetails(childName: childName),
 
         // Question
@@ -1869,114 +1869,485 @@ class HealthModelCollected extends StatelessWidget {
     var healthModel =
         Provider.of<CparaProvider>(context, listen: false).healthModel;
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("Health Model:"),
-        Row(
+        const Text(
+          "Health Model:",
+          style: TextStyle(
+            color: Colors.blue,
+            fontSize:30.0,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.1,
+            height: 1.5, // Adjust this value as needed
+          ),
+        ),
+        Column(
           children: [
-            Text("Question: 1"),
-            Text("Answer: ${healthModel?.question1}"),
+            const Text(
+              "Question: 1",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question1}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 2"),
-            Text(" || Answer: ${healthModel?.question2}"),
+            const Text(
+              "Question: 2",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question2}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 3"),
-            Text(" || Answer: ${healthModel?.question3}"),
+            const Text(
+              "Question: 3",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question3}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 4"),
-            Text(" || Answer: ${healthModel?.question4}"),
+            const Text(
+              "Question: 4",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question4}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 5"),
-            Text(" || Answer: ${healthModel?.question5}"),
+            const Text(
+              "Question: 5",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question5}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 6"),
-            Text(" || Answer: ${healthModel?.question6}"),
+            const Text(
+              "Question: 6",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question6}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 7"),
-            Text(" || Answer: ${healthModel?.question7}"),
+            const Text(
+              "Question: 7",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question7}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 8"),
-            Text(" || Answer: ${healthModel?.question8}"),
+            const Text(
+              "Question: 8",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question8}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 9"),
-            Text(" || Answer: ${healthModel?.question9}"),
+            const Text(
+              "Question: 9",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question9}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 10"),
-            Text(" || Answer: ${healthModel?.question10}"),
+            const Text(
+              "Question: 10",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question10}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 11"),
-            Text(" || Answer: ${healthModel?.question11}"),
+            const Text(
+              "Question: 11",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question11}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 12"),
-            Text(" || Answer: ${healthModel?.question12}"),
+            const Text(
+              "Question: 12",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question12}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 13"),
-            Text(" || Answer: ${healthModel?.question13}"),
+            const Text(
+              "Question: 13",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question13}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 14"),
-            Text(" || Answer: ${healthModel?.question14}"),
+            const Text(
+              "Question: 14",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question14}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 15"),
-            Text(" || Answer: ${healthModel?.question15}"),
+            const Text(
+              "Question: 15",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question15}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 16"),
-            Text(" || Answer: ${healthModel?.question16}"),
+            const Text(
+              "Question: 16",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question16}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 17"),
-            Text(" || Answer: ${healthModel?.question17}"),
+            const Text(
+              "Question: 17",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question17}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
-        Row(
+        Column(
           children: [
-            const Text("Question: 18"),
-            Text(" || Answer: ${healthModel?.question18}"),
+            const Text(
+              "Question: 18",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
+            
+            Text(
+              "Answer: ${healthModel?.question18}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.1,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
       ],
