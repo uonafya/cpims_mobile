@@ -74,6 +74,7 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                 children: [
                   CustomGridView(
                     crossAxisCount: 2,
+                    childrenHeight: 65,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
