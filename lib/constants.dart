@@ -139,8 +139,10 @@ List drawerOptions(BuildContext context) {
         Get.back();
 
         try {
-          CaseLoadService()
-              .fetchCaseLoadData(context: context, isForceSync: true);
+          //TO DO: Call device id
+          const deviceId = '';
+          CaseLoadService().fetchCaseLoadData(
+              context: context, isForceSync: true, deviceID: deviceId);
           snackBar = SnackBar(
             content: const Text(
               'Syncing in progress ...',
@@ -198,7 +200,6 @@ List drawerOptions(BuildContext context) {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       },
-     
       'children': []
     },
     {
