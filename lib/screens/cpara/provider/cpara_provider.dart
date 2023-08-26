@@ -7,6 +7,8 @@ import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../Models/case_load_model.dart';
+
 class CparaProvider extends ChangeNotifier {
   CparaModel? cparaModel;
   DetailModel? detailModel;
@@ -14,6 +16,8 @@ class CparaProvider extends ChangeNotifier {
   StableModel? stableModel;
   SafeModel? safeModel;
   SchooledModel? schooledModel;
+  OvcSubPopulationModel? ovcSubPopulationModel;
+  CaseLoadModel? caseLoadModel;
 
   // Calculate schooled benchmark
   int schooledBenchmark() {
@@ -236,6 +240,16 @@ class CparaProvider extends ChangeNotifier {
   // update schooled model
   void updateSchooledModel(SchooledModel schooledModel) {
     this.schooledModel = schooledModel;
+    notifyListeners();
+  }
+
+  void updateOvcSubPopulationModel(OvcSubPopulationModel ovcSubPopulationModel) {
+    this.ovcSubPopulationModel = ovcSubPopulationModel;
+    notifyListeners();
+  }
+
+  void updateCaseLoadModel(CaseLoadModel caseLoadModel) {
+    this.caseLoadModel = caseLoadModel;
     notifyListeners();
   }
 }

@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
 
+import '../cpara/widgets/ovc_sub_population_form.dart';
+
 class OVCDetailsScreen extends StatefulWidget {
   const OVCDetailsScreen({super.key, required this.caseLoadModel});
   final CaseLoadModel caseLoadModel;
@@ -118,16 +120,25 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
               workflowName: "Form B",
               onClick: () {},
             ),
-            ChildDetailsWorkflowButton(
-              workflowName: "CPARA",
-              onClick: () {
-                Get.to(() => CparaFormsScreen());
-              },
-            ),
-            ChildDetailsWorkflowButton(
+             ChildDetailsWorkflowButton(
               workflowName: "Case Plan Template",
               onClick: () {},
             ),
+             ChildDetailsWorkflowButton(
+              workflowName: "CPARA",
+              onClick: () {
+                Get.to(() =>  CparaFormsScreen(caseLoadModel: widget.caseLoadModel));
+
+              },
+            ),
+            ChildDetailsWorkflowButton(
+              workflowName: "OVC Prepopulation",
+              onClick: () {
+                Get.to(() => CheckboxForm(caseLoadModel: widget.caseLoadModel));
+              },
+            ),
+
+           
             const SizedBox(
               height: 10,
             ),
