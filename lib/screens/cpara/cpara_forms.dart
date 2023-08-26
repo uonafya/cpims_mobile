@@ -8,6 +8,7 @@ import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/cpara/provider/db_util.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_healthy_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_safe_widget.dart';
@@ -174,7 +175,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                 text: selectedStep == steps.length - 1
                                     ? 'Submit'
                                     : 'Next',
-                                onTap: () {
+                                onTap: () async{
                                   if (selectedStep == steps.length - 1) {
                                     // display collected data
                                     DetailModel? detailModel = context
@@ -361,6 +362,10 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                       debugPrint(err.toString());
                                       debugPrint("OHH SHIT");
                                     }
+                                  }
+                                  else{
+                                    var form = await getUnsynchedForms(await LocalDb.instance.database);
+                                    print(form);
                                   }
 
                                   _scrollController.animateTo(
