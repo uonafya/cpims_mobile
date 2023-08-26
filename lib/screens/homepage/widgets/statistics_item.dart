@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 
 class StatisticsItem extends StatelessWidget {
-  const StatisticsItem({Key? key, required this.title, required this.icon, required this.color, required this.secondaryColor, required this.form1ACount, required this.form1BCount, required this.cpaCount, required this.cparaCount, required this.onClick}) : super(key: key);
+  const StatisticsItem(
+      {Key? key,
+      required this.title,
+      required this.icon,
+      required this.color,
+      required this.secondaryColor,
+      required this.form1ACount,
+      required this.form1BCount,
+      required this.cpaCount,
+      required this.cparaCount,
+      required this.onClick})
+      : super(key: key);
   final String title;
   final IconData icon;
   final Color color;
@@ -19,7 +30,7 @@ class StatisticsItem extends StatelessWidget {
         onClick();
       },
       child: Container(
-        height: 190,
+        height: 200,
         width: double.infinity,
         color: color,
         margin: const EdgeInsets.symmetric(vertical: 7.5),
@@ -44,7 +55,8 @@ class StatisticsItem extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        (form1ACount + form1BCount + cpaCount + cparaCount).toString(),
+                        (form1ACount + form1BCount + cpaCount + cparaCount)
+                            .toString(),
                         style: const TextStyle(
                           fontSize: 24,
                           color: Colors.white,
