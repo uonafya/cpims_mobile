@@ -139,7 +139,8 @@ class LocalDb {
         uuid TEXT,
         cpims_id TEXT,
         criteria TEXT,
-        date_of_service DATETIME DEFAULT CURRENT_TIMESTAMP
+        date_of_event TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     ''');
     } catch (err) {
@@ -174,7 +175,7 @@ class LocalDb {
     });
   }
 
-  Future<void> insertOvcPrepopulationData(String uuid,String cpimsId,List<CheckboxQuestion> questions) async{
+  Future<void> insertOvcPrepopulationData(String uuid,String cpimsId,String date_of_assessment,List<CheckboxQuestion> questions) async{
     final db = await instance.database;
    for(var question in questions){
      int value= question.isChecked! ? 1 : 0;
@@ -182,6 +183,7 @@ class LocalDb {
        'uuid':uuid,
        'cpims_id':cpimsId,
        'criteria':question.questionID,
+       'date_of_event':date_of_assessment,
      },conflictAlgorithm: ConflictAlgorithm.replace
      );
    }

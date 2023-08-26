@@ -1,10 +1,14 @@
+
 import 'package:cpims_mobile/providers/db_provider.dart';
+import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
+import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:uuid/uuid.dart';
+import 'package:provider/provider.dart';
 
 import '../../../Models/case_load_model.dart';
 import '../../../widgets/drawer.dart';
@@ -16,21 +20,36 @@ class CheckboxQuestion {
   bool? isChecked;
 
   CheckboxQuestion(
-      {required this.question,this.questionID, required this.id, this.isChecked = false});
+      {required this.question,
+      this.questionID,
+      required this.id,
+      this.isChecked = false});
 }
 
 class CheckboxForm extends StatefulWidget {
   final CaseLoadModel caseLoadModel;
 
+
   // final Function? onCheckboxSelected;
 
-  const CheckboxForm({Key? key, required this.caseLoadModel}) : super(key: key);
+  const CheckboxForm({Key? key, required this.caseLoadModel
+  }) : super(key: key);
 
   @override
   _CheckboxFormState createState() => _CheckboxFormState();
+
+
 }
 
 class _CheckboxFormState extends State<CheckboxForm> {
+
+  @override
+  void initState() {
+    super.initState();
+    // DetailModel detailModel= context.read<CparaProvider>().detailModel?? DetailModel();
+    // DetailModel detailModel= Provider.of<CparaProvider>(context, listen: false).detailModel?? DetailModel();
+  }
+
   List<CheckboxQuestion> questions = [
     CheckboxQuestion(id: 1, question: 'Orphan', questionID: "Orphan"),
     CheckboxQuestion(id: 2, question: 'AGYW', questionID: "AGYW"),
@@ -39,11 +58,13 @@ class _CheckboxFormState extends State<CheckboxForm> {
     CheckboxQuestion(id: 5, question: 'Child of PLHIV', questionID: "PLHIV"),
     CheckboxQuestion(id: 6, question: 'CLHIV', questionID: "CLHIV"),
     CheckboxQuestion(id: 7, question: 'SVAC', questionID: "SVAC"),
-    CheckboxQuestion(id: 8, question: 'Household Affected by HIV', questionID: "HHIV"),
+    CheckboxQuestion(
+        id: 8, question: 'Household Affected by HIV', questionID: "HHIV"),
   ];
 
   @override
   Widget build(BuildContext context) {
+    DetailModel detailModel= Provider.of<CparaProvider>(context, listen: false).detailModel?? DetailModel();
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -111,7 +132,9 @@ class _CheckboxFormState extends State<CheckboxForm> {
     try {
       // Save OVC prepopulation data without specifying formId
       String uuid = const Uuid().v4();
-      await localDb.insertOvcPrepopulationData(uuid,widget.caseLoadModel.cpimsId!, selectedQuestions);
+      String dateOfAssessment = Provider.of<CparaProvider>(context, listen: false).detailModel?.dateOfAssessment ?? "NULL";
+      await localDb.insertOvcPrepopulationData(
+          uuid, widget.caseLoadModel.cpimsId!,dateOfAssessment,selectedQuestions);
 
       // Show success dialog if the context is still mounted
       if (context.mounted) {
