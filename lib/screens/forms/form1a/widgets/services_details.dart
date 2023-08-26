@@ -104,15 +104,6 @@ class _ServicesDetailsState extends State<ServicesDetails> {
         ),
         const SizedBox(height: 10),
         const Text(
-          'Date Of Service*',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 10),
-        const CustomDatePicker(),
-        const SizedBox(
-          height: 15,
-        ),
-        const Text(
           'Date Critical Event Recorded*',
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
@@ -125,24 +116,9 @@ class _ServicesDetailsState extends State<ServicesDetails> {
         ),
         const CustomButton(text: 'Add', color: kTextGrey),
         const SizedBox(
-          height: 35,
+          height: 5,
         ),
-        const Row(
-          children: [
-            Flexible(
-              child: CustomButton(
-                text: 'Submit Event(s)',
-              ),
-            ),
-            SizedBox(width: 15),
-            Flexible(
-              child: CustomButton(
-                text: 'Cancel',
-                color: kTextGrey,
-              ),
-            ),
-          ],
-        ),
+        const CustomButton(text: 'History Event(s)'),
       ],
     );
   }
