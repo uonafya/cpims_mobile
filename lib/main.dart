@@ -3,15 +3,8 @@ import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/providers/form1b_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
-import 'package:cpims_mobile/screens/forms/case_plan/case_plan.dart';
-import 'package:cpims_mobile/screens/forms/form1a/form_1A.dart';
-import 'package:cpims_mobile/screens/forms/form1b/form_1B.dart';
-import 'package:cpims_mobile/screens/homepage/home_page.dart';
-import 'package:cpims_mobile/screens/registry/organisation_units/register_new_organisation.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
-import 'package:cpims_mobile/providers/ui_provider.dart';
-import 'package:cpims_mobile/screens/auth/login_screen.dart';
 
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 

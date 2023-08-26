@@ -208,7 +208,7 @@ class DatabaseHelper {
       print("ourPrint ");
       // insert services
       for (var service in formData.services) {
-        print("ourservice${service}");
+        print("ourservice$service");
         await _db.insert(
           childTableServices1B,
           {
