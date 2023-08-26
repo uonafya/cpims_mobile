@@ -8,6 +8,7 @@ import 'package:cpims_mobile/screens/biometric_information_screen.dart';
 import 'package:cpims_mobile/screens/connectivity_screen.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/services/dash_board_service.dart';
+import 'package:cpims_mobile/services/metadata_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -93,6 +94,13 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
             );
             await Provider.of<UIProvider>(context, listen: false)
                 .setCaseLoadData();
+            try {
+              await MetadataService.fetchMetadata();
+            } catch (e) {
+              if (kDebugMode) {
+                print("Error fetching metadata in init load: $e");
+              }
+            }
           }
         }
 
