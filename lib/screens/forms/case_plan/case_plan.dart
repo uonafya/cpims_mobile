@@ -21,23 +21,27 @@ class CasePlanTemplateScreen extends StatefulWidget {
 }
 
 class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
-  List<String> typeOfDomain = [
-    'Education - (Schooled)',
-    'Health and Nutrition - (Healthy)',
-    'Economic Strengthening - (Stable)',
-    'Protection - (Safe)',
-    'Shelter and Care',
-  ];
-  List<String> selectedEvents = [];
-  List<String> selectedValues = [];
+  // List<String> typeOfDomain = [
+  //   'Education - (Schooled)',
+  //   'Health and Nutrition - (Healthy)',
+  //   'Economic Strengthening - (Stable)',
+  //   'Protection - (Safe)',
+  //   'Shelter and Care',
+  // ];
+  // List<String> selectedEvents = [];
+  // List<String> selectedValues = [];
+  //
+  // List<String> typeOfEvents = [
+  //   'OCE1 - Child Pregnant',
+  //   'OCE2 - Child not Adhering to ARVs',
+  //   'OCE3 - Child Malnourished',
+  //   'OCE4 - Child HIV status Changed',
+  //   'OCE5 - Child Acquired Opportunistic Infection'
+  // ];
 
-  List<String> typeOfEvents = [
-    'OCE1 - Child Pregnant',
-    'OCE2 - Child not Adhering to ARVs',
-    'OCE3 - Child Malnourished',
-    'OCE4 - Child HIV status Changed',
-    'OCE5 - Child Acquired Opportunistic Infection'
-  ];
+  List<ValueItem> selectedServicesList = [];
+  List<ValueItem> selectedPersonsResponsible = [];
+
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +75,17 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
       return ValueItem(label: "- ${resultList['name']}", value: resultList['id']);
     }).toList();
 
-    List<ValueItem> selectedServicesList = [];
-    List<ValueItem> selectedPersonsResponsible = [];
+    selectedServicesList = casePlanProvider.cpFormData.selectedDomain;
+    List<ValueItem> selectedDomain = casePlanProvider.cpFormData.selectedDomain;
+    selectedPersonsResponsible = casePlanProvider.cpFormData.selectedPersonsResponsible;
+    List<ValueItem> selectedGoals = casePlanProvider.cpFormData.selectedGoal;
+    List<ValueItem> selectedNeed = casePlanProvider.cpFormData.selectedNeed;
+    List<ValueItem> selectedPriorityAction = casePlanProvider.cpFormData.selectedPriorityAction;
+    List<ValueItem> selectedResult = casePlanProvider.cpFormData.selectedResult;
+
     DateTime currentlySelectedDate = DateTime.now();
     DateTime completionDate = DateTime.now();
+
 
 
     return Scaffold(
@@ -146,13 +157,11 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                         const SizedBox(height: 10),
                         MultiSelectDropDown(
                           showClearIcon: true,
-                          hint: 'Please   select the Domains',
+                          hint: 'Please select the Domains',
                           onOptionSelected: (selectedEvents) {
-                            setState(() {
-                              // this.selectedEvents =
-                                  // selectedEvents.cast<String>().toList();
-                            });
+                            casePlanProvider.setSelectedDomain(selectedEvents);
                           },
+                          selectedOptions: selectedDomain,
                           options: casePlanProviderDomainList,
                           maxItems: 35,
                           disabledOptions: const [
@@ -182,11 +191,9 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           showClearIcon: true,
                           hint: 'Please select the Goal',
                           onOptionSelected: (selectedEvents) {
-                            setState(() {
-                              this.selectedEvents =
-                                  selectedEvents.cast<String>().toList();
-                            });
+                            casePlanProvider.setSelectedGoal(selectedEvents);
                           },
+                          selectedOptions: casePlanProvider.cpFormData.selectedGoal,
                           options: casePlanProviderGoalList,
                           maxItems: 35,
                           disabledOptions: const [
@@ -216,12 +223,11 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           showClearIcon: true,
                           hint: 'Please select the Needs/Gaps',
                           onOptionSelected: (selectedEvents) {
-                            setState(() {
-                              this.selectedEvents =
-                                  selectedEvents.cast<String>().toList();
-                            });
+                            casePlanProvider.setSelectedNeed(selectedEvents);
+
                           },
                           options: casePlanProviderNeedsList,
+                          selectedOptions: casePlanProvider.cpFormData.selectedNeed,
                           maxItems: 35,
                           disabledOptions: const [
                             ValueItem(label: 'Option 1', value: '1')
@@ -250,12 +256,11 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           showClearIcon: true,
                           hint: 'Please select the Priority Actions',
                           onOptionSelected: (selectedEvents) {
-                            setState(() {
-                              this.selectedEvents =
-                                  selectedEvents.cast<String>().toList();
-                            });
+                            casePlanProvider.setSelectedPriorityAction(selectedEvents);
+
                           },
                           options: casePlanProviderPriorityActionList,
+                          selectedOptions: casePlanProvider.cpFormData.selectedPriorityAction,
                           maxItems: 35,
                           disabledOptions: const [
                             ValueItem(label: 'Option 1', value: '1')
@@ -284,11 +289,10 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           showClearIcon: true,
                           hint: 'Please Select the Services',
                           onOptionSelected: (selectedEvents) {
-                            setState(() {
-                              this.selectedEvents =
-                                  selectedEvents.cast<String>().toList();
-                            });
+                            casePlanProvider.setSelectedServicesList(selectedEvents);
+
                           },
+                          selectedOptions: casePlanProvider.cpFormData.selectedServices,
                           options: casePlanProviderServicesList,
                           maxItems: 13,
                           disabledOptions: const [
@@ -318,11 +322,10 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           showClearIcon: true,
                           hint: 'Please select Person(s) Responsible',
                           onOptionSelected: (selectedEvents) {
-                            setState(() {
-                              this.selectedEvents =
-                                  selectedEvents.cast<String>().toList();
-                            });
+
+                            casePlanProvider.setSelectedPersonsList(selectedEvents);
                           },
+                          selectedOptions: casePlanProvider.cpFormData.selectedPersonsResponsible,
                           options: casePlanProviderPersonsResponsibleList,
                           maxItems: 13,
                           disabledOptions: const [
@@ -352,10 +355,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           showClearIcon: true,
                           hint: 'Please select the Result(s)',
                           onOptionSelected: (selectedEvents) {
-                            setState(() {
-                              this.selectedEvents =
-                                  selectedEvents.cast<String>().toList();
-                            });
+
                           },
                           options: casePlanProviderResultList,
                           maxItems: 13,
@@ -403,11 +403,19 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const SizedBox(
-                    width: 300, // Adjust the width value as needed
-                    child: CustomButton(
-                      text: 'Submit Assessment(s)',
-                    ),
+                  Row(
+                      children: [
+                        Expanded(
+                          child: CustomButton(
+                            text: "Submit",
+                            onTap: () {
+                              // form1bProvider.setSelectedServices(['Service 1', 'Service 2']);
+                              // form1bProvider.setSelectedDate(DateTime.now());
+                              casePlanProvider.saveCasaPlanData();
+                            },
+                          ),
+                        ),
+                      ]
                   ),
                   const SizedBox(
                     height: 15,
