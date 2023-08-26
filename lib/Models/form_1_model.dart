@@ -47,7 +47,7 @@ class Form1DataModel {
 
 class Form1ServicesModel {
   final String domainId;
-  final String serviceId;
+  final String? serviceId;
 
   Form1ServicesModel({
     required this.domainId,

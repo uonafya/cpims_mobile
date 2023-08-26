@@ -1,39 +1,43 @@
+import 'package:cpims_mobile/Models/caseplan_form_model.dart';
 import 'package:cpims_mobile/Models/form_1_model.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/services/api_service.dart';
 import 'package:http/http.dart' as http;
 
-// save form to local storage
-saveValues(String formType, formData) async {
+
+class Form1Service {
+
+  // save form to local storage
+  static _saveValues(String formType, formData) async {
 //save the form data that is in the form of a map to  a local database
-  final db = LocalDb.instance;
-  try {
-    await db.insertForm1Data(formType, formData);
-    print(">>>>>>>>>>>>>>>>>>>>form saved<<<<<<<<<<<<<<<<");
-    return true;
-  } catch (e) {
-    print(e);
+    final db = LocalDb.instance;
+    try {
+      await db.insertForm1Data(formType, formData);
+      print(">>>>>>>>>>>>>>>>>>>>form saved<<<<<<<<<<<<<<<<");
+      return true;
+    } catch (e) {
+      print(e);
+    }
+    return false;
   }
-  return false;
-}
 
 // delete a form from local storage
-deleteValue(String formType, int id) async {
-  final db = LocalDb.instance;
-  try {
-    await db.deleteForm1Data(formType, id);
-    print(">>>>>>>>>>>>>>>>form deleted<<<<<<<<<<<<<<<<<");
-    return true;
-  } catch (e) {
-    print(e);
+  static _deleteValue(String formType, int id) async {
+    final db = LocalDb.instance;
+    try {
+      await db.deleteForm1Data(formType, id);
+      print(">>>>>>>>>>>>>>>>form deleted<<<<<<<<<<<<<<<<<");
+      return true;
+    } catch (e) {
+      print(e);
+    }
+    return false;
   }
-  return false;
-}
 
 // get all forms from local storage
-getAllValues(String formType) async {
-  final db = LocalDb.instance;
-  try {
+  static _getAllValues(String formType) async {
+    final db = LocalDb.instance;
+    try {
       List<Map<String, dynamic>> maps = await db.queryAllForm1Rows(formType);
       print(">>>>>>>>>$maps");
       List<Form1DataModel> forms = [];
@@ -43,42 +47,100 @@ getAllValues(String formType) async {
       print(">>>>>>>>>>>>> fetching all form data $forms ");
       return forms;
 
-  } catch (e) {
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>$e");
+    } catch (e) {
+      print(">>>>>>>>>>>>>>>>>>>>>>>>>$e");
+    }
+    return [];
   }
-  return [];
-}
 
 
-postForm(formData, String formEndpoint) async {
-  var data = formData.toMap();
-  try {
-    http.Response response = await ApiService().postSecData(data, formEndpoint);
-    print(response.body);
-    return response;
-  } catch (e) {
-    print(e);
+  static _postForm(formData, String formEndpoint) async {
+    var data = formData.toMap();
+    try {
+      http.Response response = await ApiService().postSecData(data, formEndpoint);
+      print(response.body);
+      return response;
+    } catch (e) {
+      print(e);
+    }
+    return http.Response("error", 500);
   }
-  return http.Response("error", 500);
-}
-
-
-class Form1Service {
 
   static Future<dynamic> saveFormLocal(String formType, formData) {
-    return saveValues(formType, formData);
+    return _saveValues(formType, formData);
   }
 
   static Future<bool> deleteFormLocal(String formType, int id) {
-    return deleteValue(formType, id);
+    return _deleteValue(formType, id);
   }
 
   static getAllForms(String formType) {
-    return getAllValues(formType);
+    return _getAllValues(formType);
   }
 
   // send form to server
-  static Future<http.Response> postFormRemote(formData, String formEndpoint) {
-    return postForm(formData, formEndpoint);
+  static Future<http.Response> postFormRemote(formData, String formType) {
+    String formEndpoint = "$formType/";
+    return _postForm(formData, formEndpoint);
+  }
+}
+
+class CasePlanService {
+
+  // save form to local storage
+  static saveCasePlanLocal(formData) async {
+//save the form data that is in the form of a map to  a local database
+    final db = LocalDb.instance;
+    try {
+      await db.insertCasePlan(formData);
+      print(">>>>>>>>>>>>>>>>>>>>form saved<<<<<<<<<<<<<<<<");
+      return true;
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
+
+// delete a form from local storage
+  static deleteCasePlanLocal(String ovcCpimsId) async {
+    final db = LocalDb.instance;
+    try {
+      await db.deleteCasePlan(ovcCpimsId);
+      print(">>>>>>>>>>>>>>>>form deleted<<<<<<<<<<<<<<<<<");
+      return true;
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
+
+// get all forms from local storage
+  static getCasePlanRecordLocal(ovcCpimsId) async {
+    final db = LocalDb.instance;
+    try {
+      CasePlanModel? casePlanRecord = await db.getCasePlan(ovcCpimsId);
+      Map<String, dynamic>? casePlanMap = casePlanRecord?.toJson();
+      List<Map<String, dynamic>?> casePlanList = [];
+      casePlanList.add(casePlanMap);
+
+      print(">>>>>>>>>>>>> fetching all form data $casePlanList ");
+      return casePlanList;
+
+    } catch (e) {
+      print(">>>>>>>>>>>>>>>>>>>>>>>>>$e");
+    }
+    return [];
+  }
+
+  static postCasePlanRemote(CasePlanModel casePlanRecord, String formEndpoint) async {
+    var data = casePlanRecord.toJson();
+    try {
+      http.Response response = await ApiService().postSecData(data, formEndpoint);
+      print(response.body);
+      return response;
+    } catch (e) {
+      print(e);
+    }
+    return http.Response("error", 500);
   }
 }
