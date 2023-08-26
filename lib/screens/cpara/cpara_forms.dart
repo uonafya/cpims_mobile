@@ -21,8 +21,12 @@ import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 
+import '../../Models/case_load_model.dart';
+
 class CparaFormsScreen extends StatefulWidget {
-  const CparaFormsScreen({super.key});
+  final CaseLoadModel caseLoadModel;
+
+  const CparaFormsScreen({super.key, required this.caseLoadModel});
 
   @override
   State<CparaFormsScreen> createState() => _CparaFormsScreenState();
@@ -42,11 +46,12 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
 
   Database? database;
   static const databaseName = "CPARAv2.db";
+
   // Initialize database
   @override
   void initState() {
     super.initState();
-
+    context.read<CparaProvider>().caseLoadModel = widget.caseLoadModel;
     // initialize the database
     initializeDatabase();
   }
@@ -103,9 +108,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                     padding: const EdgeInsets.all(10),
                     width: double.infinity,
                     color: Colors.black,
-                    child: const Text(
-                      'Case Plan Achievement Readiness Assessment || {Caregiver Name}',
-                      style: TextStyle(color: Colors.white),
+                    child: Text(
+                      'Case Plan Achievement Readiness Assessment || ${widget.caseLoadModel.caregiverNames}',
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                   Padding(
@@ -285,7 +290,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                                     ),
                                                     Row(
                                                       children: [
-                                                        Text(
+                                                        const Text(
                                                             'Does this HH currently have a pregnant and/or breastfeeding woman/adolescent?'),
                                                         Text(
                                                             'Answer: ${detailModel?.hasPregnantOrBreastfeedingWoman}'),
@@ -295,17 +300,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                                     const Text(
                                                         "OVC Sub Population Form"),
                                                     const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question1}'),
-                                                    const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question2}'),
-                                                    const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question3}'),
-                                                    const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question4}'),
                                                   ],
                                                 ),
                                               ),
@@ -324,7 +318,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                                   question2: "question2",
                                                   question3: "question3",
                                                   question4: "question4"),
-                                          health: healthModel ?? HealthModel());
+                                          health: healthModel ?? HealthModel(),
+                                          ovcSubPopulationModel: OvcSubPopulationModel());
+
                                       // Create form
                                       cparaModelDB
                                           .createForm(database)

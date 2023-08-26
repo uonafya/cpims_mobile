@@ -15,6 +15,8 @@ class CparaModel {
   final StableModel stable;
   final SchooledModel schooled;
   final HealthModel health;
+  final OvcSubPopulationModel? ovcSubPopulationModel;
+  // Add your model
 
   CparaModel({
     required this.detail,
@@ -22,6 +24,7 @@ class CparaModel {
     required this.stable,
     required this.schooled,
     required this.health,
+    required this.ovcSubPopulationModel
   });
 
   factory CparaModel.fromJson(Map<String, dynamic> json) {
@@ -31,6 +34,7 @@ class CparaModel {
       stable: StableModel.fromJson(json['stable']),
       schooled: SchooledModel.fromJson(json['schooled']),
       health: HealthModel.fromJson(json['health']),
+      ovcSubPopulationModel: OvcSubPopulationModel.fromJson(json['ovcSubPopulationModel'])
     );
   }
 
@@ -45,6 +49,8 @@ class CparaModel {
       var safeJSON = safe.toJSON();
       var schooledJSON = schooled.toJSON();
       var stableJSON = stable.toJSON();
+      var ovcSubPopulationModelJSON=ovcSubPopulationModel?.toJSON();
+
 
       // insert to database, for now debugPrint for testing
       print("Detail");
@@ -57,6 +63,8 @@ class CparaModel {
       print(schooledJSON.toString());
       print("Stable");
       print(stableJSON.toString());
+      print("OVC Sbpopulation");
+      print(ovcSubPopulationModelJSON.toString());
 
       // Merge all maps
       json.addAll(detailJSON);
@@ -64,6 +72,7 @@ class CparaModel {
       json.addAll(safeJSON);
       json.addAll(schooledJSON);
       json.addAll(stableJSON);
+      json.addAll(ovcSubPopulationModelJSON!);
       print(json);
 
       // Send request

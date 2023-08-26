@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
@@ -13,6 +14,8 @@ class CparaProvider extends ChangeNotifier {
   StableModel? stableModel;
   SafeModel? safeModel;
   SchooledModel? schooledModel;
+  OvcSubPopulationModel? ovcSubPopulationModel;
+  CaseLoadModel? caseLoadModel;
 
   // Calculate schooled benchmark
   int schooledBenchmark() {
@@ -163,6 +166,11 @@ class CparaProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateOvcSubPopulationModel(OvcSubPopulationModel ovcSubPopulationModel) {
+    this.ovcSubPopulationModel = ovcSubPopulationModel;
+    notifyListeners();
+  }
+
   // update health model
   void updateHealthModel(HealthModel healthModel) {
     this.healthModel = healthModel;
@@ -184,6 +192,12 @@ class CparaProvider extends ChangeNotifier {
   // update schooled model
   void updateSchooledModel(SchooledModel schooledModel) {
     this.schooledModel = schooledModel;
+    notifyListeners();
+  }
+
+  // update case load model
+  void updateCaseLoadModel(CaseLoadModel caseLoadModel) {
+    this.caseLoadModel = caseLoadModel;
     notifyListeners();
   }
 }

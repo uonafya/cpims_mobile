@@ -1,6 +1,7 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/screens/cpara/cpara_forms.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/screens/unsynched_workflows/widgets/child_details_grid_item.dart';
 import 'package:cpims_mobile/screens/unsynched_workflows/widgets/child_details_workflow_button.dart';
@@ -14,6 +15,7 @@ import 'package:get/route_manager.dart';
 
 class OVCDetailsScreen extends StatefulWidget {
   const OVCDetailsScreen({super.key, required this.caseLoadModel});
+
   final CaseLoadModel caseLoadModel;
 
   @override
@@ -119,14 +121,20 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
               onClick: () {},
             ),
             ChildDetailsWorkflowButton(
+              workflowName: "Case Plan Template",
+              onClick: () {},
+            ),
+            ChildDetailsWorkflowButton(
               workflowName: "CPARA",
               onClick: () {
-                Get.to(() => CparaFormsScreen());
+                Get.to(() => CparaFormsScreen(caseLoadModel: widget.caseLoadModel));
               },
             ),
             ChildDetailsWorkflowButton(
-              workflowName: "Case Plan Template",
-              onClick: () {},
+              workflowName: "OVC Prepopulation",
+              onClick: () {
+                Get.to(() => CheckboxForm(caseLoadModel: widget.caseLoadModel));
+              },
             ),
             const SizedBox(
               height: 10,
