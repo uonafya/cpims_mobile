@@ -22,7 +22,7 @@ class CaseLoadModel {
   });
 
   CaseLoadModel.fromJson(Map<String, dynamic> json) {
-    cpimsId = json['cbo_id'].toString();
+    cpimsId = json['ovc_cpims_id'].toString();
     ovcFirstName = json['ovc_first_name'];
     ovcSurname = json['ovc_surname'];
     dateOfBirth = json['date_of_birth'];
@@ -35,7 +35,7 @@ class CaseLoadModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['cbo_id'] = cpimsId;
+    data['ovc_cpims_id'] = cpimsId;
     data['ovc_first_name'] = ovcFirstName;
     data['ovc_surname'] = ovcSurname;
     data['date_of_birth'] = dateOfBirth;
@@ -49,7 +49,7 @@ class CaseLoadModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'cbo_id': cpimsId,
+      'ovc_cpims_id': cpimsId,
       'ovc_first_name': ovcFirstName,
       'ovc_surname': ovcSurname,
       'date_of_birth': dateOfBirth,
@@ -63,7 +63,7 @@ class CaseLoadModel {
 
   factory CaseLoadModel.fromMap(Map<String, dynamic> map) {
     return CaseLoadModel(
-      cpimsId: map['cbo_id'],
+      cpimsId: map['ovc_cpims_id'],
       ovcFirstName: map['ovc_first_name'],
       ovcSurname: map['ovc_surname'],
       dateOfBirth: map['date_of_birth'],
