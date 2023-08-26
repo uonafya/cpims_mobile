@@ -20,7 +20,7 @@ class LocalDb {
     if (_database != null) return _database!;
 
     // If database don't exists, create one
-    _database = await _initDB('children_ovc4.db');
+    _database = await _initDB('children_ovc.db');
 
     return _database!;
   }
