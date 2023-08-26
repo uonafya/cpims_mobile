@@ -146,12 +146,10 @@ class Form1bProvider extends ChangeNotifier {
     print("ourData${toDbData}");
     print("criticalEventsDataForm1b${getFinalCriticalEventsFormData()}");
 
+    CustomToastWidget.showToast("Data saved");
      Form1Service.saveFormLocal("form1b", toDbData) as Bool;
 
-
-      CustomToastWidget.showToast("data saved");
-
-    notifyListeners();
+     notifyListeners();
   }
 
   //converting the various services from the domains into one Services list with domain id and service id
