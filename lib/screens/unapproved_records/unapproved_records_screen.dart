@@ -41,114 +41,36 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> selectedItems = unapprovedItems
-        .where((item) => item['title'] == selectedRecord)
-        .toList();
-
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: customAppBar(),
-        drawer: const Drawer(
-          child: CustomDrawer(),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 40,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (ctx, index) => CustomChip(
-                    title: unapprovedRecords[index],
-                    isSelected: selectedRecord == unapprovedRecords[index],
-                    onTap: () {
-                      setState(() {
-                        selectedRecord = unapprovedRecords[index];
-                      });
-                    },
-                  ),
-                  itemCount: unapprovedRecords.length,
-                  separatorBuilder: (BuildContext context, int index) =>
-                      const SizedBox(
-                    width: 12,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              const TabBar(
-                tabs: [
-                  Tab(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('SERVICES'),
-                    ),
-                  ),
-                  Tab(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('CRITICAL EVENTS'),
-                    ),
-                  ),
-                ],
-                indicatorColor: kPrimaryColor,
-                labelColor: Colors.black,
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    FormTab(
-                      selectedRecord: selectedRecord,
-                      eventType: 'SERVICES',
-                    ),
-                    FormTab(
-                      selectedRecord: selectedRecord,
-                      eventType: 'CRITICAL EVENTS',
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+    return Scaffold(
+      appBar: customAppBar(),
+      drawer: const Drawer(
+        child: CustomDrawer(),
       ),
-    );
-  }
-}
-
-class FormTab extends StatelessWidget {
-  final String selectedRecord;
-  final String eventType;
-
-  const FormTab({
-    super.key,
-    required this.selectedRecord,
-    required this.eventType,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final selectedItems = unapprovedItems
-        .where((item) =>
-            item['title'] == selectedRecord && item['eventType'] == eventType)
-        .toList();
-
-    return CustomCard(
-      title: '$selectedRecord $eventType List',
-      children: [
-        Table(
-          columnWidths: const {
-            0: FlexColumnWidth(1),
-            1: FlexColumnWidth(2),
-            2: FlexColumnWidth(1),
-          },
-          border: TableBorder.symmetric(
-            inside: BorderSide(
-              color: Colors.grey.withOpacity(0.5),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 40,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (ctx, index) => CustomChip(
+                  title: unapprovedRecords[index],
+                  isSelected: selectedRecord == unapprovedRecords[index],
+                  onTap: () {
+                    setState(() {
+                      selectedRecord = unapprovedRecords[index];
+                    });
+                  },
+                ),
+                itemCount: unapprovedRecords.length,
+                separatorBuilder: (BuildContext context, int index) =>
+                    const SizedBox(
+                  width: 12,
+                ),
+              ),
             ),
             const SizedBox(height: 10),
             if (selectedRecord == 'CPARA')
@@ -347,31 +269,9 @@ class ChildDetailsCard extends StatelessWidget {
                 ),
               ],
             ),
-            ...selectedItems
-                .map(
-                  (e) => TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8.0,
-                        ),
-                        child: Text(e['childID']),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(e['details']),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(e['date']),
-                      ),
-                    ],
-                  ),
-                )
-                .toList(),
           ],
         ),
-      ],
+      ),
     );
   }
 }
