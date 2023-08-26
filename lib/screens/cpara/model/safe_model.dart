@@ -9,7 +9,7 @@ class SafeModel {
   final String? question7;
 
   final String? question8;
-  
+
   final String? overallQuestion1;
   final String? overallQuestion2;
   final List<SafeChild>? childrenQuestions;
@@ -40,7 +40,10 @@ class SafeModel {
       question8: json['question8'],
       overallQuestion1: json['overallQuestion1'],
       overallQuestion2: json['overallQuestion2'],
-      childrenQuestions: json["childrenQuestions"] == null ? [] : List<SafeChild>.from(json["childrenQuestions"]!.map((x) => SafeChild.fromJson(x))),
+      childrenQuestions: json["childrenQuestions"] == null
+          ? []
+          : List<SafeChild>.from(
+              json["childrenQuestions"]!.map((x) => SafeChild.fromJson(x))),
     );
   }
 
@@ -53,7 +56,8 @@ class SafeModel {
       'q28': question4,
       'q29': question5,
       'q30': question6,
-      'q31': question7
+      'q31': question7,
+      "children": childrenQuestions?.map((e) => e.toJSON()).toList() ?? []
     };
   }
 
@@ -87,9 +91,11 @@ class SafeModel {
 }
 
 class SafeChild {
+  String id;
   final String? question1;
 
   SafeChild({
+    this.id = "",
     required this.question1,
   });
 
@@ -97,5 +103,9 @@ class SafeChild {
     return SafeChild(
       question1: json['question1'],
     );
+  }
+
+  Map<String, dynamic> toJSON() {
+    return {"id": id, "q1": question1};
   }
 }

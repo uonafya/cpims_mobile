@@ -34,6 +34,37 @@ class CparaModel {
     );
   }
 
+  Future<void> addChildren(
+      Database? db, List<List<Map<String, dynamic>>> data, int formID) async {
+    try {
+      // Create a batch
+      var batch = await db!.batch();
+
+      // Loop through data as adding to database
+      for (var i in data) {
+        // Now I'm getting combined data for a child
+        for (var j in i) {
+          // print('j is $j');
+          j.forEach((key, value) {
+            // print("j key is $key");
+            // print("j's value key is ${value.keys.toList()[0]}");
+            // print("j's value value is ${value.values.toList()[0]}");
+            batch.insert("ChildAnswer", {
+              "childID": key,
+              "questionID": value.keys.toList()[0],
+              "answer": value.values.toList()[0],
+              "formID": formID
+            });
+          });
+        }
+      }
+    } catch (err) {
+      print("OHH SHIT!");
+      print(err.toString());
+      print("OHH SHIT!");
+    }
+  }
+
   // This function add the portion of the form filled by the household to the database
   Future<void> addHouseholdFilledQuestionsToDB(Database? db, String houseHoldID,
       String formDate, String ovcpmsid, int formID) async {
@@ -57,6 +88,56 @@ class CparaModel {
       print(schooledJSON.toString());
       print("Stable");
       print(stableJSON.toString());
+
+      // Get children from safe and health
+      // Health
+      var healtChildren = healthJSON.remove('children');
+      print("\nHealth Children\n");
+      print(healtChildren.toString());
+
+      // Safe
+      var safeChildren = safeJSON.remove('children');
+      print("\nSafe Children\n");
+      print(safeChildren.toString());
+
+      // Convert health children to a usable format
+      List<List<Map<String, dynamic>>> usableHealthChildren = [];
+      for (var i in healtChildren) {
+        List<Map<String, dynamic>> tempList = [];
+        var id = i['id'];
+        i.forEach((key, val) {
+          if (key != "id") {
+            tempList.add({
+              id: {key: val}
+            });
+          }
+        });
+        usableHealthChildren.add(tempList);
+      }
+
+      // Convert health children to a usable format
+      List<List<Map<String, dynamic>>> usableSafeChildren = [];
+      for (var i in safeChildren) {
+        List<Map<String, dynamic>> tempList = [];
+        var id = i['id'];
+        i.forEach((key, val) {
+          if (key != "id") {
+            tempList.add({
+              id: {key: val}
+            });
+          }
+        });
+        usableSafeChildren.add(tempList);
+      }
+
+      await addChildren(db, usableHealthChildren, formID);
+      await addChildren(db, usableSafeChildren, formID);
+
+      print("\nUsable Health Children\n");
+      print(usableHealthChildren.toString());
+
+      print("\nUsable Safe Children\n");
+      print(usableSafeChildren.toString());
 
       // Merge all maps
       json.addAll(detailJSON);

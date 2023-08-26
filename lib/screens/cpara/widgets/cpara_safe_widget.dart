@@ -162,7 +162,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
     _caregiver_lived_12_months = question7Option;
 
     question8Option = safeModel.question8 == null ? question8Option : convertingStringToRadioButtonOptions(safeModel.question8!);
-    _legal_documents = question5Option;
+    _legal_documents = question8Option;
 
 
     // Overall questions
