@@ -34,6 +34,7 @@ class CparaProvider extends ChangeNotifier {
     return schooledBenchmark;
   }
 
+  // Calculate healthy benchmark
   int healthyBenchmark() {
     int finalScore = 33;
     int benchmark1 = 0;
@@ -117,6 +118,7 @@ class CparaProvider extends ChangeNotifier {
     return finalScore;
   }
 
+// Calculate stable benchmark
   int stableBenchMark() {
     int stableBenchmark = 0;
     if (stableModel?.question1 == "Yes" ||
@@ -129,34 +131,12 @@ class CparaProvider extends ChangeNotifier {
     return stableBenchmark;
   }
 
+// Calculate safe benchmark
   int safeBenchMark() {
     int schooledBenchmark = 44;
     int benchmark1 = 0;
     int benchmark2 = 0;
     int benchmark3 = 0;
-
-    print("Q1");
-    print(safeModel?.question1);
-    print("Q2");
-    print(safeModel?.question2);
-    print("Q3");
-    print(safeModel?.question3);
-    print("Q4");
-    print(safeModel?.question4);
-    print("Q5");
-    print(safeModel?.question5);
-    print("Q6");
-    print(safeModel?.question6);
-    print("Q7");
-    print(safeModel?.question7);
-    print("Q8");
-    print(safeModel?.question8);
-    print("Q9");
-    print(safeModel?.question8);
-    print("Qweqw");
-    print(safeModel?.overallQuestion1);
-    print("Qqwere");
-    print(safeModel?.overallQuestion2);
 
     List<String> childQuestions = [];
 
@@ -201,6 +181,7 @@ class CparaProvider extends ChangeNotifier {
     return schooledBenchmark;
   }
 
+// Calculate final benchmark
   int finalScore() {
     int finalBenchmarkScore = schooledBenchmark() + healthyBenchmark() + stableBenchMark() + safeBenchMark();
 

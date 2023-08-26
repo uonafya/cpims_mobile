@@ -35,8 +35,16 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
   RadioButtonOptions? _benchmark_8;
 
   // question 3 is for child
-  RadioButtonOptions? question1Option, question2Option, question3Option, question4Option,
-      question5Option, question6Option, question7Option, question8Option, overallQuestion1Option, overallQuestion2Option;
+  RadioButtonOptions? question1Option,
+      question2Option,
+      question3Option,
+      question4Option,
+      question5Option,
+      question6Option,
+      question7Option,
+      question8Option,
+      overallQuestion1Option,
+      overallQuestion2Option;
 
   List<RadioButtonOptions?> childrenQuestionsOptions = [];
 
@@ -142,44 +150,78 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
   @override
   void initState() {
-    SafeModel safeModel = context.read<CparaProvider>().safeModel ?? SafeModel();
-    question1Option = safeModel.question1 == null ? question1Option : convertingStringToRadioButtonOptions(safeModel.question1!);
+    SafeModel safeModel =
+        context.read<CparaProvider>().safeModel ?? SafeModel();
+    question1Option = safeModel.question1 == null
+        ? question1Option
+        : convertingStringToRadioButtonOptions(safeModel.question1!);
     _experienced_violence = question1Option;
-    question2Option = safeModel.question2 == null ? question2Option : convertingStringToRadioButtonOptions(safeModel.question2!);
+    question2Option = safeModel.question2 == null
+        ? question2Option
+        : convertingStringToRadioButtonOptions(safeModel.question2!);
     _child_below_12 = question2Option;
-    question3Option = safeModel.question3 == null ? question3Option : convertingStringToRadioButtonOptions(safeModel.question3!);
+    question3Option = safeModel.question3 == null
+        ? question3Option
+        : convertingStringToRadioButtonOptions(safeModel.question3!);
     _exposed_to_violence = question3Option;
 
-    question4Option = safeModel.question4 == null ? question4Option : convertingStringToRadioButtonOptions(safeModel.question4!);
+    question4Option = safeModel.question4 == null
+        ? question4Option
+        : convertingStringToRadioButtonOptions(safeModel.question4!);
     _referred_for_services = question4Option;
-    question5Option = safeModel.question5 == null ? question5Option : convertingStringToRadioButtonOptions(safeModel.question5!);
+    question5Option = safeModel.question5 == null
+        ? question5Option
+        : convertingStringToRadioButtonOptions(safeModel.question5!);
     _received_services = question5Option;
 
-    question6Option = safeModel.question6 == null ? question6Option : convertingStringToRadioButtonOptions(safeModel.question6!);
+    question6Option = safeModel.question6 == null
+        ? question6Option
+        : convertingStringToRadioButtonOptions(safeModel.question6!);
     _primary_caregiver = question6Option;
 
-    question7Option = safeModel.question7 == null ? question7Option : convertingStringToRadioButtonOptions(safeModel.question7!);
+    question7Option = safeModel.question7 == null
+        ? question7Option
+        : convertingStringToRadioButtonOptions(safeModel.question7!);
     _caregiver_lived_12_months = question7Option;
 
-    question8Option = safeModel.question8 == null ? question8Option : convertingStringToRadioButtonOptions(safeModel.question8!);
+    question8Option = safeModel.question8 == null
+        ? question8Option
+        : convertingStringToRadioButtonOptions(safeModel.question8!);
     _legal_documents = question8Option;
 
-
     // Overall questions
-    overallQuestion1Option = safeModel.overallQuestion1 == null ? overallQuestion1Option : convertingStringToRadioButtonOptions(safeModel.overallQuestion1!);
+    overallQuestion1Option = safeModel.overallQuestion1 == null
+        ? overallQuestion1Option
+        : convertingStringToRadioButtonOptions(safeModel.overallQuestion1!);
     _children_adolecent_caregiver = overallQuestion1Option;
 
-    overallQuestion2Option = safeModel.overallQuestion2 == null ? overallQuestion2Option : convertingStringToRadioButtonOptions(safeModel.overallQuestion2!);
+    overallQuestion2Option = safeModel.overallQuestion2 == null
+        ? overallQuestion2Option
+        : convertingStringToRadioButtonOptions(safeModel.overallQuestion2!);
     _adolescents_older_than_12 = overallQuestion2Option;
 
-   if(safeModel.childrenQuestions != null && safeModel.childrenQuestions!.isNotEmpty) {
-     for(var i = 0; i < (safeModel.childrenQuestions?.length ?? 0); i++) {
-       childrenQuestionsOptions.add(safeModel.childrenQuestions![i] == null ? null : convertingStringToRadioButtonOptions(safeModel.childrenQuestions![i].question1!));
-     }
-   }
-   else{
-      childrenQuestionsOptions = [null, null, null, null, null, null, null, null, null, null];
-   }
+    if (safeModel.childrenQuestions != null &&
+        safeModel.childrenQuestions!.isNotEmpty) {
+      for (var i = 0; i < (safeModel.childrenQuestions?.length ?? 0); i++) {
+        childrenQuestionsOptions.add(safeModel.childrenQuestions![i] == null
+            ? null
+            : convertingStringToRadioButtonOptions(
+                safeModel.childrenQuestions![i].question1!));
+      }
+    } else {
+      childrenQuestionsOptions = [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ];
+    }
 
     super.initState();
   }
@@ -208,14 +250,17 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 // Question 6.1 to 6.2
 // Question Main Card
         MainCardQuestion(
-          option: _children_adolecent_caregiver,
+            option: _children_adolecent_caregiver,
             card_question:
                 "Are there children, adolescents, and caregivers in the household who have experienced violence (including physical violence, emotional violence, sexual violence, gender-based violence, and neglect) in the last six months ?",
             selectedOption: (value) {
               overallQuestion1Option = value;
-              SafeModel safeModel = context.read<CparaProvider>().safeModel ?? SafeModel();
-              String selectedOption = convertingRadioButtonOptionsToString(value);
-              context.read<CparaProvider>().updateSafeModel(safeModel.copyWith(overallQuestion1: selectedOption));
+              SafeModel safeModel =
+                  context.read<CparaProvider>().safeModel ?? SafeModel();
+              String selectedOption =
+                  convertingRadioButtonOptionsToString(value);
+              context.read<CparaProvider>().updateSafeModel(
+                  safeModel.copyWith(overallQuestion1: selectedOption));
 
               // Update the state of the question
               updateQuestion("_children_adolecent_caregiver", value);
@@ -239,9 +284,12 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                 "6.1 Have you experienced violence, abuse (sexual, physical, or emotional) in the last six months?*",
             selectedOption: (value) {
               question1Option = value;
-              SafeModel safeModel = context.read<CparaProvider>().safeModel ?? SafeModel();
-              String selectedOption = convertingRadioButtonOptionsToString(value);
-              context.read<CparaProvider>().updateSafeModel(safeModel.copyWith(question1: selectedOption));
+              SafeModel safeModel =
+                  context.read<CparaProvider>().safeModel ?? SafeModel();
+              String selectedOption =
+                  convertingRadioButtonOptionsToString(value);
+              context.read<CparaProvider>().updateSafeModel(
+                  safeModel.copyWith(question1: selectedOption));
               // Update the state of the question
               updateQuestion("_experienced_violence", value);
             },
@@ -257,9 +305,12 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                 "6.2 Is there a child below 12 years who has been exposed to violence or abuse (sexual, physical or emotional), neglect, or exploitation in the last six months?*",
             selectedOption: (value) {
               question2Option = value;
-              SafeModel safeModel = context.read<CparaProvider>().safeModel ?? SafeModel();
-              String selectedOption = convertingRadioButtonOptionsToString(value);
-              context.read<CparaProvider>().updateSafeModel(safeModel.copyWith(question2: selectedOption));
+              SafeModel safeModel =
+                  context.read<CparaProvider>().safeModel ?? SafeModel();
+              String selectedOption =
+                  convertingRadioButtonOptionsToString(value);
+              context.read<CparaProvider>().updateSafeModel(
+                  safeModel.copyWith(question2: selectedOption));
               // Update the state of the question
               updateQuestion("_child_below_12", value);
             },
@@ -275,9 +326,12 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
               option: _adolescents_older_than_12,
               selectedOption: (value) {
                 overallQuestion2Option = value;
-                SafeModel safeModel = context.read<CparaProvider>().safeModel ?? SafeModel();
-                String selectedOption = convertingRadioButtonOptionsToString(value);
-                context.read<CparaProvider>().updateSafeModel(safeModel.copyWith(overallQuestion2: selectedOption));
+                SafeModel safeModel =
+                    context.read<CparaProvider>().safeModel ?? SafeModel();
+                String selectedOption =
+                    convertingRadioButtonOptionsToString(value);
+                context.read<CparaProvider>().updateSafeModel(
+                    safeModel.copyWith(overallQuestion2: selectedOption));
                 // Update the state of the question
                 updateQuestion("_adolescents_older_than_12", value);
                 if (value == RadioButtonOptions.no)
@@ -289,7 +343,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
         ),
 
 // Load Children - For the specific household
-        for(int i = 0; i < 2; i++)
+        for (int i = 0; i < 2; i++)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -339,34 +393,40 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                   ],
                 ),
               ),
-              if (_children_adolecent_caregiver == RadioButtonOptions.no || _adolescents_older_than_12 == RadioButtonOptions.no)
+              if (_children_adolecent_caregiver == RadioButtonOptions.no ||
+                  _adolescents_older_than_12 == RadioButtonOptions.no)
                 const SkipQuestion()
               else
                 OtherQuestions(
                   groupValue: childrenQuestionsOptions[i],
                   other_question:
-                  "6.3 Have you been exposed to violence, abuse (sexual, physical or emotional), neglect, or exploitation in the last six months?",
+                      "6.3 Have you been exposed to violence, abuse (sexual, physical or emotional), neglect, or exploitation in the last six months?",
                   selectedOption: (value) {
-
                     question3Option = value;
                     childrenQuestionsOptions[i] = value;
-                    SafeModel safeModel = context.read<CparaProvider>().safeModel ?? SafeModel();
-                    String selectedOption = convertingRadioButtonOptionsToString(value);
-                    List<SafeChild> childrenQuestions = safeModel.childrenQuestions ?? [SafeChild(question1: "")];
+                    SafeModel safeModel =
+                        context.read<CparaProvider>().safeModel ?? SafeModel();
+                    String selectedOption =
+                        convertingRadioButtonOptionsToString(value);
+                    List<SafeChild> childrenQuestions =
+                        safeModel.childrenQuestions ??
+                            [SafeChild(question1: "")];
 
-                    try{
-                      childrenQuestions[i] = SafeChild(question1: selectedOption);
-                    }
-                    catch(e){
-                      if(e is RangeError){
+                    try {
+                      childrenQuestions[i] =
+                          SafeChild(question1: selectedOption);
+                    } catch (e) {
+                      if (e is RangeError) {
                         childrenQuestions.add(SafeChild(question1: ""));
-                        childrenQuestions[i] = SafeChild(question1: selectedOption);
+                        childrenQuestions[i] =
+                            SafeChild(question1: selectedOption);
                       }
                     }
 
                     // childrenQuestions[i] = SafeChild(question1: selectedOption);
 
-                    context.read<CparaProvider>().updateSafeModel(safeModel.copyWith(childrenQuestions: childrenQuestions));
+                    context.read<CparaProvider>().updateSafeModel(safeModel
+                        .copyWith(childrenQuestions: childrenQuestions));
 
                     // // Update the state of the question
                     updateQuestion("_exposed_to_violence", value);
@@ -423,9 +483,12 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                   "6.4 Is there any evidence that the case has referred for services such as child protection?* ",
               selectedOption: (value) {
                 question4Option = value;
-                SafeModel safeModel = context.read<CparaProvider>().safeModel ?? SafeModel();
-                String selectedOption = convertingRadioButtonOptionsToString(value);
-                context.read<CparaProvider>().updateSafeModel(safeModel.copyWith(question4: selectedOption));
+                SafeModel safeModel =
+                    context.read<CparaProvider>().safeModel ?? SafeModel();
+                String selectedOption =
+                    convertingRadioButtonOptionsToString(value);
+                context.read<CparaProvider>().updateSafeModel(
+                    safeModel.copyWith(question4: selectedOption));
                 // Update the state of the question
                 updateQuestion("_referred_for_services", value);
               }),
@@ -440,9 +503,12 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                   "6.5 Is there documentation that they received services (e,g counseling, psycho-social, legal or health services)?* ",
               selectedOption: (value) {
                 question5Option = value;
-                SafeModel safeModel = context.read<CparaProvider>().safeModel ?? SafeModel();
-                String selectedOption = convertingRadioButtonOptionsToString(value);
-                context.read<CparaProvider>().updateSafeModel(safeModel.copyWith(question5: selectedOption));
+                SafeModel safeModel =
+                    context.read<CparaProvider>().safeModel ?? SafeModel();
+                String selectedOption =
+                    convertingRadioButtonOptionsToString(value);
+                context.read<CparaProvider>().updateSafeModel(
+                    safeModel.copyWith(question5: selectedOption));
                 // Update the state of the question
                 updateQuestion("_received_services", value);
               }),
@@ -477,9 +543,12 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             other_question: "7.1 Is the primary caregiver 18yrs and above?* ",
             selectedOption: (value) {
               question6Option = value;
-              SafeModel safeModel = context.read<CparaProvider>().safeModel ?? SafeModel();
-              String selectedOption = convertingRadioButtonOptionsToString(value);
-              context.read<CparaProvider>().updateSafeModel(safeModel.copyWith(question6: selectedOption));
+              SafeModel safeModel =
+                  context.read<CparaProvider>().safeModel ?? SafeModel();
+              String selectedOption =
+                  convertingRadioButtonOptionsToString(value);
+              context.read<CparaProvider>().updateSafeModel(
+                  safeModel.copyWith(question6: selectedOption));
               // Update the state of the question
               updateQuestion("_primary_caregiver", value);
             }),
@@ -491,9 +560,12 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                 "7.2 Has the caregiver cared for and lived in the same home as the child/adolescents for at least the last 12 months?*  ",
             selectedOption: (value) {
               question7Option = value;
-              SafeModel safeModel = context.read<CparaProvider>().safeModel ?? SafeModel();
-              String selectedOption = convertingRadioButtonOptionsToString(value);
-              context.read<CparaProvider>().updateSafeModel(safeModel.copyWith(question7: selectedOption));
+              SafeModel safeModel =
+                  context.read<CparaProvider>().safeModel ?? SafeModel();
+              String selectedOption =
+                  convertingRadioButtonOptionsToString(value);
+              context.read<CparaProvider>().updateSafeModel(
+                  safeModel.copyWith(question7: selectedOption));
               // Update the state of the question
               updateQuestion("_caregiver_lived_12_months", value);
             }),
@@ -525,9 +597,12 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                 "8.1 Do all children under the age of 18 have legal documents (birth certificate)?* ",
             selectedOption: (value) {
               question8Option = value;
-              SafeModel safeModel = context.read<CparaProvider>().safeModel ?? SafeModel();
-              String selectedOption = convertingRadioButtonOptionsToString(value);
-              context.read<CparaProvider>().updateSafeModel(safeModel.copyWith(question8: selectedOption));
+              SafeModel safeModel =
+                  context.read<CparaProvider>().safeModel ?? SafeModel();
+              String selectedOption =
+                  convertingRadioButtonOptionsToString(value);
+              context.read<CparaProvider>().updateSafeModel(
+                  safeModel.copyWith(question8: selectedOption));
               // Update the state of the question
               updateQuestion("_legal_documents", value);
             }),
@@ -602,7 +677,10 @@ class MainCardQuestion extends StatelessWidget {
   final RadioButtonOptions? option;
   final Function(RadioButtonOptions?) selectedOption;
   const MainCardQuestion(
-      {super.key, required this.card_question, required this.selectedOption, required this.option});
+      {super.key,
+      required this.card_question,
+      required this.selectedOption,
+      required this.option});
 
   @override
   Widget build(BuildContext context) {
@@ -694,17 +772,44 @@ class OtherQuestions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        if (divider == true) const Divider(),
-        const SizedBox(
-          height: large_height,
-        ),
-        Text(
-          other_question,
+    final parts = other_question.split('*'); // Split text by "*"
+    final List<InlineSpan> spans = [];
+
+    for (int i = 0; i < parts.length; i++) {
+      spans.add(
+        TextSpan(
+          text: parts[i],
           style: const TextStyle(
             fontSize: question_font_Size,
             fontWeight: question_font_weight,
+            color: Colors.black, // Default text color
+          ),
+        ),
+      );
+
+      if (i < parts.length - 1) {
+        spans.add(
+          const TextSpan(
+            text: '*', // Add back the "*" character
+            style: TextStyle(
+              fontSize: question_font_Size,
+              fontWeight: question_font_weight,
+              color: Colors.red, // Change color to red
+            ),
+          ),
+        );
+      }
+    }
+
+    return Column(
+      children: [
+        if (divider) const Divider(),
+        const SizedBox(
+          height: large_height,
+        ),
+        RichText(
+          text: TextSpan(
+            children: spans,
           ),
         ),
         const SizedBox(
