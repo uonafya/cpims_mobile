@@ -214,6 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       : CustomButton(
                           text: 'Sign In',
                           onTap: () {
+                            SystemChannels.textInput.invokeMethod('TextInput.hide');
                             _login(
                               username: userNameController.text,
                               password: passwordController.text,
