@@ -47,7 +47,8 @@ class LocalDb {
         ${OvcFields.registationDate} $textType,
         ${OvcFields.dateOfBirth} $textType,
         ${OvcFields.caregiverNames} $textType,
-        ${OvcFields.sex} $textType
+        ${OvcFields.sex} $textType,
+        ${OvcFields.caregiverCpimsId} $textType
       )
     ''');
 
@@ -143,7 +144,8 @@ class LocalDb {
   Future<void> insertCaseLoad(CaseLoadModel caseLoadModel) async {
     final db = await instance.database;
 
-    await db.insert(caseloadTable, caseLoadModel.toJson());
+    final id = await db.insert(caseloadTable, caseLoadModel.toJson());
+    print(id);
   }
 
   Future<void> insertStatistics(SummaryDataModel summaryModel) async {
@@ -470,7 +472,8 @@ class OvcFields {
     ovcSurname,
     dateOfBirth,
     caregiverNames,
-    sex
+    sex,
+    caregiverCpimsId,
   ];
 
   static const String id = '_id';
@@ -481,6 +484,7 @@ class OvcFields {
   static const String registationDate = 'registration_date';
   static const String caregiverNames = 'caregiver_names';
   static const String sex = 'sex';
+  static const String caregiverCpimsId = 'caregiver_cpims_id';
 }
 
 class SummaryFields {

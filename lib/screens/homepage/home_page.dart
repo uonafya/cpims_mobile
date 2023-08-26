@@ -1,6 +1,7 @@
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
+import 'package:cpims_mobile/screens/caregiver/caregiver.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
@@ -160,6 +161,15 @@ class _HomepageState extends State<Homepage> {
                       icon: FontAwesomeIcons.house,
                       color: const Color(0xffFE5C57),
                       secondaryColor: const Color(0xff9A3734),
+                      onTap: () {
+                        Get.to(
+                          () => const CaregiverScreen(),
+                          transition: Transition.cupertino,
+                          duration: const Duration(
+                            milliseconds: 200,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
