@@ -212,7 +212,6 @@ List<Map<String, dynamic>> personRegistryStepper = [
   },
 ];
 
-const String cpims_api_url = "https://dev.cpims.net/api/";
 const String cpimsApiUrl = "https://dev.cpims.net/api/";
 
 const Map<String, String> headers = {"Content-Type": "application/json"};
@@ -232,6 +231,31 @@ successSnackBar(BuildContext context, message) {
     duration: const Duration(seconds: 1),
   ));
 }
+
+// case plan stepper data
+List<Map<String, dynamic>> cparaStepperData = [
+  {'title': 'Details', 'subtitle': 'CPARA Base Details', 'onTap': () {}},
+  {
+    'title': 'Healthy',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Stable',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Safe',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Schooled',
+    'subtitle': '',
+    'onTap': () => {},
+  }
+];
 
 List<Map<String, dynamic>> unapprovedItems = [
   {

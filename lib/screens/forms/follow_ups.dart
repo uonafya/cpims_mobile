@@ -165,6 +165,7 @@ class _FollowUpsState extends State<FollowUps> {
   _createDataTable() {
     //return DataTable(columns: _createColumns(), rows: _createRows());
   }
+  // ignore: unused_element
   List<DataColumn> _createColumns() {
     return [
       DataColumn(label: Text('ID')),

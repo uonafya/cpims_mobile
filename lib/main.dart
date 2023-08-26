@@ -2,8 +2,12 @@ import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
+
+import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+
 import 'package:cpims_mobile/screens/initial_loader.dart';
 import 'package:cpims_mobile/screens/splash_screen.dart';
+
 import 'package:cpims_mobile/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,6 +28,7 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => ConnectivityProvider(),
         ),
+        ChangeNotifierProvider(create: (_) => CparaProvider()),
       ],
       child: const CPIMS(),
     ),
@@ -84,6 +89,7 @@ Future<Map<String, dynamic>> intialSetup(BuildContext context) async {
     return {'hasConnection': hasConnection, 'isAuthenticated': false};
   }
   final isAuthenticated =
+      // ignore: use_build_context_synchronously
       await Provider.of<AuthProvider>(context, listen: false)
           .verifyToken(context: context);
 
