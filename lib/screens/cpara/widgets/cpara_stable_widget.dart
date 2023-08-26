@@ -423,52 +423,52 @@ class PastCPARACardWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Column(
           children: [
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Feb 11, 2023", style: TextStyle(
+                Text("Feb 11, 2023", style: TextStyle(
                     fontWeight: FontWeight.bold, fontSize: 12, color: Colors.blue
                 ),),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2.0),
-                    child: Container(
-                        decoration: BoxDecoration(
-                            color: kPrimaryColor.withOpacity(0.1), shape: BoxShape.circle),
-                        child: const Padding(
-                          padding: EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0, right: 8.0),
-                          child: Center(
-                              child: Icon(
-                                CupertinoIcons.pen,
-                                color: kPrimaryColor,
-                              )),
-                        )),
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                GestureDetector(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2.0),
-                    child: Container(
-                        decoration: BoxDecoration(
-                            color: kPrimaryColor.withOpacity(0.1), shape: BoxShape.circle),
-                        child: const Padding(
-                          padding: EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0, right: 8.0),
-                          child: Center(
-                              child: Icon(
-                                CupertinoIcons.delete,
-                                color: kPrimaryColor,
-                              )),
-                        )),
-                  ),
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children: [
+            //     GestureDetector(
+            //       child: Padding(
+            //         padding: const EdgeInsets.symmetric(vertical: 2.0),
+            //         child: Container(
+            //             decoration: BoxDecoration(
+            //                 color: kPrimaryColor.withOpacity(0.1), shape: BoxShape.circle),
+            //             child: const Padding(
+            //               padding: EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0, right: 8.0),
+            //               child: Center(
+            //                   child: Icon(
+            //                     CupertinoIcons.pen,
+            //                     color: kPrimaryColor,
+            //                   )),
+            //             )),
+            //       ),
+            //     ),
+            //     const SizedBox(
+            //       width: 20,
+            //     ),
+            //     GestureDetector(
+            //       child: Padding(
+            //         padding: const EdgeInsets.symmetric(vertical: 2.0),
+            //         child: Container(
+            //             decoration: BoxDecoration(
+            //                 color: kPrimaryColor.withOpacity(0.1), shape: BoxShape.circle),
+            //             child: const Padding(
+            //               padding: EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0, right: 8.0),
+            //               child: Center(
+            //                   child: Icon(
+            //                     CupertinoIcons.delete,
+            //                     color: kPrimaryColor,
+            //                   )),
+            //             )),
+            //       ),
+            //     ),
+            //   ],
+            // ),
               ],
             ),
             const SizedBox(height: 20,),

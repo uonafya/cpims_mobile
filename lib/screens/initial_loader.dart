@@ -98,6 +98,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
                 deviceID: deviceID,
               );
             }
+
             await Provider.of<UIProvider>(context, listen: false)
                 .setCaseLoadData();
             try {

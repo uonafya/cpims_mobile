@@ -8,6 +8,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 import '../Models/caseplan_form_model.dart';
+import '../screens/cpara/model/cpara_model.dart';
 
 class LocalDb {
   static final LocalDb instance = LocalDb._init();
@@ -96,7 +97,8 @@ class LocalDb {
           ${CasePlanServices.resultsId} $textType,
           ${CasePlanServices.reasonId} $textType,
           ${CasePlanServices.completionDate} $textType,
-          FOREIGN KEY (${CasePlanServices.formId}) REFERENCES $casePlanTable(${CasePlan.id})
+          FOREIGN KEY (${CasePlanServices
+        .formId}) REFERENCES $casePlanTable(${CasePlan.id})
         )
         ''');
 
@@ -137,7 +139,8 @@ class LocalDb {
         ${Form1CriticalEvents.formId} $textType,
         ${Form1CriticalEvents.eventId} $textType,
         ${Form1CriticalEvents.eventDate} $textType,
-        FOREIGN KEY (${Form1CriticalEvents.formId}) REFERENCES $form1Table(${Form1.id})
+        FOREIGN KEY (${Form1CriticalEvents
+        .formId}) REFERENCES $form1Table(${Form1.id})
         )
       ''');
   }
@@ -145,7 +148,9 @@ class LocalDb {
   Future<void> insertCaseLoad(CaseLoadModel caseLoadModel) async {
     final db = await instance.database;
 
-    await db.insert(caseloadTable, caseLoadModel.toJson());
+    await db.insert(caseloadTable, caseLoadModel.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace
+    );
   }
 
   Future<void> insertStatistics(SummaryDataModel summaryModel) async {
@@ -164,6 +169,24 @@ class LocalDb {
     final db = await instance.database;
     final result = await db.query(statisticsTable);
     return result.map((json) => SummaryDataModel.fromJson(json)).toList();
+  }
+
+  Future<void> insertCparaData({required CparaModel cparaModelDB,
+    required String ovcId,
+    required String careProviderId}) async {
+    final db = await instance.database;
+
+    // Create form
+    cparaModelDB.createForm(db).then((value) {
+      // Get formID
+      cparaModelDB.getLatestFormID(db).then((formData) {
+        var formDate = formData.formDate;
+        var formDateString = formDate.toString().split(' ')[0];
+        var formID = formData.formID;
+        cparaModelDB.addHouseholdFilledQuestionsToDB(
+            db, formDateString, ovcId, formID);
+      });
+    });
   }
 
   // insert Metadata
@@ -186,7 +209,7 @@ class LocalDb {
     final db = await instance.database;
     const sql = 'SELECT * FROM $tableFormMetadata WHERE field_name = ?';
     final List<Map<String, dynamic>> results =
-        await db.rawQuery(sql, [fieldName]);
+    await db.rawQuery(sql, [fieldName]);
     return results;
   }
 
@@ -235,7 +258,8 @@ class LocalDb {
     try {
       final db = await instance.database;
       const sql = 'SELECT * FROM $form1Table WHERE form_type = ?';
-      final List<Map<String, dynamic>> form1Rows = await db.rawQuery(sql, [formType]);
+      final List<Map<String, dynamic>> form1Rows = await db.rawQuery(
+          sql, [formType]);
 
       List<Map<String, dynamic>> updatedForm1Rows = [];
 
@@ -274,43 +298,41 @@ class LocalDb {
     }
   }
 
-
   // get a single row(form 1a or 1b)
   Future<bool> deleteForm1Data(String formType, int id) async {
-    try{
+    try {
       final db = await instance.database;
-    final queryResults = await db.query(
-      form1Table,
-      where: '${Form1.id} = ?',
-      whereArgs: [id],
-    );
-
-    if (queryResults.isNotEmpty) {
-      final form1Id = queryResults.first[Form1.id] as int;
-      await db.delete(
-        form1ServicesTable,
-        where: 'form_id = ?',
-        whereArgs: [form1Id],
-      );
-      await db.delete(
-        form1CriticalEventsTable,
-        where: 'form_id = ?',
-        whereArgs: [form1Id],
-      );
-      final rowsAffected = await db.delete(
+      final queryResults = await db.query(
         form1Table,
         where: '${Form1.id} = ?',
-        whereArgs: [form1Id],
+        whereArgs: [id],
       );
-      return rowsAffected > 0;
-    }
-    return false;
-    } catch(e){
+
+      if (queryResults.isNotEmpty) {
+        final form1Id = queryResults.first[Form1.id] as int;
+        await db.delete(
+          form1ServicesTable,
+          where: 'form_id = ?',
+          whereArgs: [form1Id],
+        );
+        await db.delete(
+          form1CriticalEventsTable,
+          where: 'form_id = ?',
+          whereArgs: [form1Id],
+        );
+        final rowsAffected = await db.delete(
+          form1Table,
+          where: '${Form1.id} = ?',
+          whereArgs: [form1Id],
+        );
+        return rowsAffected > 0;
+      }
+      return false;
+    } catch (e) {
       print(e);
     }
     return false;
   }
-
 
 
 // inserting case plan
@@ -330,7 +352,7 @@ class LocalDb {
       // Insert the associated services
       for (var service in casePlan.services) {
         final serviceIdList =
-            service.serviceIds.join(','); // Join service IDs with commas
+        service.serviceIds.join(','); // Join service IDs with commas
         final responsibleIdList = service.responsibleIds
             .join(','); // Join responsible IDs with commas
 
@@ -389,12 +411,12 @@ class LocalDb {
             gapId: serviceRow[CasePlanServices.gapId] as String,
             priorityId: serviceRow[CasePlanServices.priorityId] as String,
             responsibleIds:
-                (serviceRow['responsible_ids'] as String).split(','),
+            (serviceRow['responsible_ids'] as String).split(','),
             // Parse comma-separated responsible IDs
             resultsId: serviceRow[CasePlanServices.resultsId] as String,
             reasonId: serviceRow[CasePlanServices.reasonId] as String,
             completionDate:
-                serviceRow[CasePlanServices.completionDate] as String,
+            serviceRow[CasePlanServices.completionDate] as String,
           ));
         }
 
@@ -451,17 +473,16 @@ class LocalDb {
       return false;
     }
   }
-
-  // table name and field names
-  static const caseloadTable = 'ovcs';
-  static const statisticsTable = 'statistics';
-  static const tableFormMetadata = 'form_metadata';
-  static const casePlanTable = 'case_plan';
-  static const casePlanServicesTable = 'case_plan_services';
-  static const form1Table = 'form1';
-  static const form1ServicesTable = 'form1_services';
-  static const form1CriticalEventsTable = 'form1_critical_events';
 }
+// table name and field names
+const caseloadTable = 'ovcs';
+const statisticsTable = 'statistics';
+const tableFormMetadata = 'form_metadata';
+const casePlanTable = 'case_plan';
+const casePlanServicesTable = 'case_plan_services';
+const form1Table = 'form1';
+const form1ServicesTable = 'form1_services';
+const form1CriticalEventsTable = 'form1_critical_events';
 
 class OvcFields {
   static final List<String> values = [
@@ -477,7 +498,7 @@ class OvcFields {
   ];
 
   static const String id = '_id';
-  static const String cboID = 'cbo_id';
+  static const String cboID = 'ovc_cpims_id';
   static const String ovcFirstName = 'ovc_first_name';
   static const String ovcSurname = 'ovc_surname';
   static const String dateOfBirth = 'date_of_birth';
