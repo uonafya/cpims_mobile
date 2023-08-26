@@ -144,7 +144,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                   }
                                   _scrollController.animateTo(
                                     0,
-                                    duration: Duration(milliseconds: 500),
+                                    duration: const Duration(milliseconds: 500),
                                     curve: Curves.easeInOut,
                                   );
                                   setState(() {
@@ -198,7 +198,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                                     const Text("Stable Model:"),
                                                     Row(
                                                       children: [
-                                                        Text("Question: 1"),
+                                                        const Text("Question: 1"),
                                                         Text(
                                                             "Answer: ${stableModel?.question1}"),
                                                       ],
@@ -221,11 +221,11 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                                     ),
 
                                                     // Health Model
-                                                    HealthModelCollected(),
+                                                    const HealthModelCollected(),
                                                     const Text("Safe Model:"),
                                                     Row(
                                                       children: [
-                                                        Text("Question: 1"),
+                                                        const Text("Question: 1"),
                                                         Text(
                                                             "Answer: ${safeModel?.question1}"),
                                                       ],
@@ -351,7 +351,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
 
                                   _scrollController.animateTo(
                                     0,
-                                    duration: Duration(milliseconds: 500),
+                                    duration: const Duration(milliseconds: 500),
                                     curve: Curves.easeInOut,
                                   );
                                   setState(() {

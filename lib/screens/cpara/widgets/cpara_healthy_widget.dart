@@ -1,5 +1,4 @@
 import 'package:cpims_mobile/constants.dart';
-import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
@@ -14,20 +13,6 @@ class CparaHealthyWidget extends StatefulWidget {
 
   @override
   State<CparaHealthyWidget> createState() => _CparaHealthyWidgetState();
-}
-
-class Children {
-  final String name;
-  // final UpdateRadioButton updateRadioButton;
-  RadioButtonOptions? hivRiskGroupValue;
-  RadioButtonOptions? protectHIVGroupvalue;
-  RadioButtonOptions? preventHIVGroupvalue;
-
-  Children(
-      {this.hivRiskGroupValue = RadioButtonOptions.na,
-      this.protectHIVGroupvalue = RadioButtonOptions.na,
-      this.preventHIVGroupvalue = RadioButtonOptions.na,
-      required this.name});
 }
 
 class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
@@ -64,6 +49,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   RadioButtonOptions? set3_2final;
   RadioButtonOptions? set3_3final;
   // List of children
+  late List<HealthChild> children;
 
   // Initiallized Data
   @override
@@ -73,6 +59,23 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
     // Get instance of model from provider
     HealthModel healthModel =
         context.read<CparaProvider>().healthModel ?? HealthModel();
+
+    // Initialize children
+    children = healthModel.childrenQuestions ??
+        [
+          HealthChild(
+              name: "Felix Ouma",
+              id: '12312312',
+              question1: "",
+              question2: "",
+              question3: ""),
+          HealthChild(
+              name: "Jane Oluocj",
+              id: '345235',
+              question1: "",
+              question2: "",
+              question3: "")
+        ];
     // Initialize Details
     q1_1ChildrenHivTested = healthModel.question1 == null
         ? q1_1ChildrenHivTested
@@ -129,9 +132,6 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
         ? q4_4Under2Immunized
         : convertingStringToRadioButtonOptions(healthModel.question18!);
   }
-
-  // Children state
-  var children = [Children(name: "FELIX OUMA"), Children(name: "EDWINE OUMA")];
 
   // Update the state of the questions
   void updateQuestion(String question, RadioButtonOptions? value) {
@@ -860,12 +860,20 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
             updateQuestion("initial_3", val);
             // if val is yes set everything to null
             if (val == RadioButtonOptions.yes) {
-              List<Children> newChildren = List.from(children);
+              List<HealthChild> newChildren = List.from(children);
               for (var i in newChildren) {
-                i.hivRiskGroupValue = null;
-                i.preventHIVGroupvalue = null;
-                i.protectHIVGroupvalue = null;
+                i.question1 = convertingRadioButtonOptionsToString(null);
+                i.question2 = convertingRadioButtonOptionsToString(null);
+                i.question3 = convertingRadioButtonOptionsToString(null);
               }
+
+              HealthModel healthmodel =
+                  Provider.of<CparaProvider>(context, listen: false)
+                          .healthModel ??
+                      HealthModel();
+              Provider.of<CparaProvider>(context, listen: false)
+                  .updateHealthModel(
+                      healthmodel.copyWith(childrenQuestions: newChildren));
 
               setState(() {
                 children = newChildren;
@@ -876,12 +884,23 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
             }
             // if val is no set all children to yes
             if (val == RadioButtonOptions.no) {
-              List<Children> newChildren = List.from(children);
+              List<HealthChild> newChildren = List.from(children);
               for (var i in newChildren) {
-                i.hivRiskGroupValue = RadioButtonOptions.yes;
-                i.preventHIVGroupvalue = RadioButtonOptions.yes;
-                i.protectHIVGroupvalue = RadioButtonOptions.yes;
+                i.question1 = convertingRadioButtonOptionsToString(
+                    RadioButtonOptions.yes);
+                i.question2 = convertingRadioButtonOptionsToString(
+                    RadioButtonOptions.yes);
+                i.question3 = convertingRadioButtonOptionsToString(
+                    RadioButtonOptions.yes);
               }
+
+              HealthModel healthmodel =
+                  Provider.of<CparaProvider>(context, listen: false)
+                          .healthModel ??
+                      HealthModel();
+              Provider.of<CparaProvider>(context, listen: false)
+                  .updateHealthModel(
+                      healthmodel.copyWith(childrenQuestions: newChildren));
 
               setState(() {
                 children = newChildren;
@@ -897,15 +916,19 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           showNAInFinalResult: false,
           finalResult: allShouldBeYes(
               children
-                  .map((e) => e.hivRiskGroupValue == RadioButtonOptions.yes &&
-                          e.preventHIVGroupvalue == RadioButtonOptions.yes &&
-                          e.protectHIVGroupvalue == RadioButtonOptions.yes
+                  .map((e) => convertingStringToRadioButtonOptions(
+                                  e.question1) ==
+                              RadioButtonOptions.yes &&
+                          convertingStringToRadioButtonOptions(e.question2) ==
+                              RadioButtonOptions.yes &&
+                          convertingStringToRadioButtonOptions(e.question3) ==
+                              RadioButtonOptions.yes
                       ? RadioButtonOptions.yes
                       : RadioButtonOptions.no)
                   .toList(), // for every child hivRisk, prevent and protect should be yes
               "Children Table"),
           updateFinalFormRadio: noChangeToRadio,
-          sections: [],
+          sections: const [],
           descriptionHeading: "Healthy: Goal 3: Reduce Risk of HIV Infection",
           descriptionText:
               "Benchmark3: All adolescents 10-17 years of age in the household have key knowledge about preventing HIV infection Adolescents aged 10-17 can describe at least two HIV infection risks in their local community, can provide at least one example of how they can protect themselves against HIV risk, and can correctly describe the location of at least one place where HIV prevention support is available.",
@@ -920,7 +943,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   groupValue: set3_1final == null
                       ? null
                       : allShouldBeYes(
-                          children.map((e) => e.hivRiskGroupValue).toList(),
+                          children
+                              .map((e) => convertingStringToRadioButtonOptions(
+                                  e.question1))
+                              .toList(),
                           "Tick yes if all q1"), // All hivRiskGroupValues should be yes
                   isTopDividerThere: false,
                   isOptional: false,
@@ -929,14 +955,17 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   isNAAvailable: false,
                   tempFix: true,
                   updateRadioButton: (RadioButtonOptions? val) {
-                    debugPrint(val.toString() + " tick if all true q1 form");
+                    debugPrint("$val tick if all true q1 form");
                   },
                 ),
                 QuestionBlock(
                   groupValue: set3_2final == null
                       ? null
                       : allShouldBeYes(
-                          children.map((e) => e.protectHIVGroupvalue).toList(),
+                          children
+                              .map((e) => convertingStringToRadioButtonOptions(
+                                  e.question2))
+                              .toList(),
                           "Tick Yes if all q2"),
                   isTopDividerThere: false,
                   isOptional: false,
@@ -950,7 +979,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   groupValue: set3_3final == null
                       ? null
                       : allShouldBeYes(
-                          children.map((e) => e.preventHIVGroupvalue).toList(),
+                          children
+                              .map((e) => convertingStringToRadioButtonOptions(
+                                  e.question3))
+                              .toList(),
                           "Tick yes if all q3"),
                   isTopDividerThere: false,
                   isOptional: false,
@@ -968,7 +1000,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   childName: children[i].name,
                   questions: [
                     QuestionBlock(
-                      groupValue: children[i].hivRiskGroupValue,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          children[i].question1),
                       isTopDividerThere: false,
                       isOptional: true,
                       tempFix: true,
@@ -976,9 +1009,18 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                           "3.1 Can you tell me two behaviors that increase risk of HIV infection?",
                       isNAAvailable: false,
                       updateRadioButton: (RadioButtonOptions? val) {
-                        List<Children> newChildren = List.from(children);
+                        List<HealthChild> newChildren = List.from(children);
 
-                        newChildren[i].hivRiskGroupValue = val;
+                        newChildren[i].question1 =
+                            convertingRadioButtonOptionsToString(val);
+
+                        HealthModel healthmodel =
+                            Provider.of<CparaProvider>(context, listen: false)
+                                    .healthModel ??
+                                HealthModel();
+                        Provider.of<CparaProvider>(context, listen: false)
+                            .updateHealthModel(healthmodel.copyWith(
+                                childrenQuestions: newChildren));
 
                         setState(() {
                           children = newChildren;
@@ -988,7 +1030,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                       },
                     ),
                     QuestionBlock(
-                      groupValue: children[i].protectHIVGroupvalue,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          children[i].question2),
                       isTopDividerThere: false,
                       isOptional: true,
                       tempFix: true,
@@ -996,9 +1039,18 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                           "3.2 Can you tell me two ways you can protect yourself/ others against HIV?",
                       isNAAvailable: false,
                       updateRadioButton: (RadioButtonOptions? val) {
-                        List<Children> newChildren = List.from(children);
+                        List<HealthChild> newChildren = List.from(children);
 
-                        newChildren[i].protectHIVGroupvalue = val;
+                        newChildren[i].question2 =
+                            convertingRadioButtonOptionsToString(val);
+
+                        HealthModel healthmodel =
+                            Provider.of<CparaProvider>(context, listen: false)
+                                    .healthModel ??
+                                HealthModel();
+                        Provider.of<CparaProvider>(context, listen: false)
+                            .updateHealthModel(healthmodel.copyWith(
+                                childrenQuestions: newChildren));
 
                         setState(() {
                           children = newChildren;
@@ -1008,7 +1060,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                       },
                     ),
                     QuestionBlock(
-                      groupValue: children[i].preventHIVGroupvalue,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          children[i].question3),
                       isTopDividerThere: false,
                       isOptional: true,
                       tempFix: true,
@@ -1016,9 +1069,18 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                           "3.3 Can you name two places in the community where you can access HIV prevention services?",
                       isNAAvailable: false,
                       updateRadioButton: (RadioButtonOptions? val) {
-                        List<Children> newChildren = List.from(children);
+                        List<HealthChild> newChildren = List.from(children);
 
-                        newChildren[i].preventHIVGroupvalue = val;
+                        newChildren[i].question3 =
+                            convertingRadioButtonOptionsToString(val);
+
+                        HealthModel healthmodel =
+                            Provider.of<CparaProvider>(context, listen: false)
+                                    .healthModel ??
+                                HealthModel();
+                        Provider.of<CparaProvider>(context, listen: false)
+                            .updateHealthModel(healthmodel.copyWith(
+                                childrenQuestions: newChildren));
 
                         setState(() {
                           children = newChildren;
@@ -1810,7 +1872,7 @@ class HealthModelCollected extends StatelessWidget {
         const Text("Health Model:"),
         Row(
           children: [
-            Text("Question: 1"),
+            const Text("Question: 1"),
             Text("Answer: ${healthModel?.question1}"),
           ],
         ),

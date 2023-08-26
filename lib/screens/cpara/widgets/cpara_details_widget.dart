@@ -10,7 +10,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
-import 'ovc_sub_population_form.dart';
 
 class CparaDetailsWidget extends StatefulWidget {
   const CparaDetailsWidget({super.key});

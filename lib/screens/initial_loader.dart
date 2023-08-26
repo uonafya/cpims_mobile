@@ -3,6 +3,9 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
+import 'package:cpims_mobile/screens/auth/login_screen.dart';
+import 'package:cpims_mobile/screens/biometric_information_screen.dart';
+import 'package:cpims_mobile/screens/connectivity_screen.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/services/dash_board_service.dart';
 import 'package:flutter/foundation.dart';
@@ -47,11 +50,26 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
         final hasConnection =
             await Provider.of<ConnectivityProvider>(context, listen: false)
                 .checkInternetConnection();
+        final prefs = await SharedPreferences.getInstance();
+
+        final hasUserSetup = prefs.getBool("hasUserSetup");
+
         if (hasConnection == false) {
+          if (hasUserSetup == null) {
+            Get.off(
+                () => const ConnectivityScreen(redirectScreen: LoginScreen()));
+            return;
+          }
           if (widget.isFromAuth == false && widget.hasBioAuth == false) {
             await _checkBiometric();
             await _getAvailableBiometric();
-            await _authenticate();
+            final isAuth = await _authenticate();
+            if (!isAuth) {
+              Get.off(() => const BiometricInformation(
+                    redirectScreen: LoginScreen(),
+                  ));
+              return;
+            }
           }
 
           final localDashData = await DashBoardService().fetchDashboardData();
@@ -136,7 +154,6 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
     setState(() {
       authorized =
           authenticated ? "Authorized success" : "Failed to authenticate";
-      successSnackBar(context, 'Auth success');
     });
     return authenticated;
   }
@@ -146,12 +163,23 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
     return Scaffold(
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const SizedBox(
+              height: 80,
+            ),
+            const Spacer(),
             SizedBox(
               height: 100,
               width: 100,
               child: Image.asset('assets/images/logo_gok.png'),
+            ),
+            const Spacer(),
+            const Text(
+              'Loading...',
+              style: TextStyle(fontSize: 20),
+            ),
+            const SizedBox(
+              height: 80,
             ),
           ],
         ),
