@@ -71,8 +71,11 @@ class LocalDb {
 
   Future<void> insertCaseLoad(CaseLoadModel caseLoadModel) async {
     final db = await instance.database;
+    
 
-    await db.insert(caseloadTable, caseLoadModel.toJson());
+    await db.insert(caseloadTable, caseLoadModel.toJson(),
+    conflictAlgorithm: ConflictAlgorithm.replace
+    );
   }
 
   Future<void> insertStatistics(SummaryDataModel summaryModel) async {

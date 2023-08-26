@@ -63,6 +63,8 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
           if (context.mounted) {
             Provider.of<UIProvider>(context, listen: false)
                 .setDashData(dashRep);
+
+              
             await CaseLoadService().fetchCaseLoadData(
               context: context,
               isForceSync: false,
