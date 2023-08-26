@@ -117,13 +117,6 @@ class _HomepageState extends State<Homepage> {
                       secondaryColor: Color(0xff2C6E80),
                     ),
                     StatisticsGridItem(
-                      title: 'HOUSEHOLDS',
-                      value: dashData.household.toString(),
-                      icon: FontAwesomeIcons.house,
-                      color: const Color(0xffFE5C57),
-                      secondaryColor: const Color(0xff9A3734),
-                    ),
-                    StatisticsGridItem(
                       title: 'Org Unit Id',
                       value: dashData.orgUnitId.toString(),
                       icon: FontAwesomeIcons.orcid,
