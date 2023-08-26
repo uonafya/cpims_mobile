@@ -48,6 +48,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
               await Provider.of<AuthProvider>(context, listen: false)
                   .logOut(context);
             }
+            else if(option.title == syncName ){
+
+            
+
+              print("Clicked sync");
+
+            }
             drawerProvider.changeDrawerOption(index);
           },
           child: option.children.isNotEmpty

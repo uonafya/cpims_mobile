@@ -38,6 +38,7 @@ class CaseLoadService {
           );
           if (kDebugMode) {
             print(caseLoadModel.caregiverNames);
+             
           }
           LocalDb.instance.insertCaseLoad(caseLoadModel);
         }
