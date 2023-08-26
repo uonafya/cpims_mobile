@@ -1,14 +1,24 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/screens/cpara/cpara_forms.dart';
+import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/case_plan.dart';
+import 'package:cpims_mobile/screens/forms/form1a/form_1A.dart';
+import 'package:cpims_mobile/screens/forms/form1b/form_1B.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
-import 'package:cpims_mobile/screens/unsynched_workflows/widgets/child_details_grid_item.dart';
+import 'package:cpims_mobile/widgets/custom_card_grid_item.dart';
 import 'package:cpims_mobile/screens/unsynched_workflows/widgets/child_details_workflow_button.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
+import 'package:cpims_mobile/widgets/custom_grid_view.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/route_manager.dart';
+import 'package:provider/provider.dart';
+
+import '../cpara/widgets/ovc_sub_population_form.dart';
 
 class OVCDetailsScreen extends StatefulWidget {
   const OVCDetailsScreen({super.key, required this.caseLoadModel});
@@ -21,6 +31,12 @@ class OVCDetailsScreen extends StatefulWidget {
 class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
   final fixedLengthList =
       List<int>.generate(3, (int index) => index * index, growable: false);
+
+  @override
+  void initState() {
+    // context.read<CparaProvider>().updateCaseLoadModel(widget.caseLoadModel);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,30 +82,30 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             CustomCard(
                 title: "CPIMIS ID: ${widget.caseLoadModel.cpimsId}",
                 children: [
-                  GridView.count(
+                  CustomGridView(
                     crossAxisCount: 2,
+                    childrenHeight: 65,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    childAspectRatio: (1 / 0.4),
                     children: [
-                      ChildDetailsGridItem(
+                      CustomCardGridItem(
                         header: "Surname",
                         details: "${widget.caseLoadModel.ovcSurname}",
                       ),
-                      ChildDetailsGridItem(
+                      CustomCardGridItem(
                         header: "Firstname",
                         details: "${widget.caseLoadModel.ovcFirstName}",
                       ),
-                      ChildDetailsGridItem(
+                      CustomCardGridItem(
                         header: "Sex",
                         details: "${widget.caseLoadModel.sex}",
                       ),
-                      ChildDetailsGridItem(
+                      CustomCardGridItem(
                         header: "Age",
                         details: calculateAge(
                             widget.caseLoadModel.dateOfBirth ?? '10/10/2008'),
                       ),
-                      ChildDetailsGridItem(
+                      CustomCardGridItem(
                         header: "Caregiver",
                         details: "${widget.caseLoadModel.caregiverNames}",
                       ),
@@ -109,20 +125,40 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
               height: 10,
             ),
             ChildDetailsWorkflowButton(
-              workflowName: "Form A",
-              onClick: () {},
+              workflowName: "Form 1A",
+              onClick: () {
+                Get.to(() => const Form1AScreen());
+              },
             ),
             ChildDetailsWorkflowButton(
-              workflowName: "Form B",
-              onClick: () {},
+              workflowName: "Form 1B",
+              onClick: () {
+                Get.to(() => const Form1BScreen());
+              },
             ),
             ChildDetailsWorkflowButton(
               workflowName: "CPARA",
-              onClick: () {},
+              onClick: () {
+                context
+                    .read<CparaProvider>()
+                    .updateCaseLoadModel(widget.caseLoadModel);
+                Get.to(() =>
+                    CparaFormsScreen(caseLoadModel: widget.caseLoadModel));
+              },
+            ),
+            ChildDetailsWorkflowButton(
+              workflowName: "OVC Prepopulation",
+              onClick: () {
+                Get.to(() => CheckboxForm(caseLoadModel: widget.caseLoadModel));
+                Get.to(() =>
+                    CparaFormsScreen(caseLoadModel: widget.caseLoadModel));
+              },
             ),
             ChildDetailsWorkflowButton(
               workflowName: "Case Plan Template",
-              onClick: () {},
+              onClick: () {
+                Get.to(() => const CasePlanTemplateScreen());
+              },
             ),
             const SizedBox(
               height: 10,

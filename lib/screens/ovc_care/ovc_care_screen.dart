@@ -106,6 +106,7 @@ class _OVCCareScreenState extends State<OVCCareScreen> {
                   setState(() {
                     selectedCriteria = val;
                   });
+                  handleSearch(caseLoadData!);
                 }),
             const SizedBox(
               height: 15,
@@ -152,7 +153,7 @@ class _OVCCardItemState extends State<OVCCardItem> {
   Widget build(BuildContext context) {
     final children = widget.allCaseLoadData
         .where((element) =>
-            element.caregiverNames == widget.caseLoadModel.caregiverNames)
+            element.caregiverCpimsId == widget.caseLoadModel.caregiverCpimsId)
         .toList();
     return Column(
       children: [

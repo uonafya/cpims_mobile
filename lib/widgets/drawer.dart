@@ -137,9 +137,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   style: const TextStyle(fontSize: 14, color: Colors.black),
                 ),
                 onTap: () {
-                  data.children[index] != null
-                      ? data.children[index].onTap!()
-                      : null;
+                  data.children[index].onTap!();
                 }),
           );
         }),

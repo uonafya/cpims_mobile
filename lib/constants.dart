@@ -227,6 +227,18 @@ List<String> graphTitles = [
   'ART Status',
   'Cacade 90-90-90'
 ];
+List<Map<String, dynamic>> form1AStepper = [
+  {
+    'title': 'Critical Event(s)',
+    'subtitle': 'Critical events details',
+    'onTap': () {}
+  },
+  {
+    'title': 'Services',
+    'subtitle': 'Services Details',
+    'onTap': () => {},
+  },
+];
 
 List<Map<String, dynamic>> organisationRegistryStepper = [
   {
@@ -279,7 +291,6 @@ List<Map<String, dynamic>> personRegistryStepper = [
   },
 ];
 
-const String cpims_api_url = "https://dev.cpims.net/api/";
 const String cpimsApiUrl = "https://dev.cpims.net/api/";
 
 const Map<String, String> headers = {"Content-Type": "application/json"};
@@ -300,35 +311,106 @@ successSnackBar(BuildContext context, message) {
   ));
 }
 
+// case plan stepper data
+List<Map<String, dynamic>> cparaStepperData = [
+  {'title': 'Details', 'subtitle': 'CPARA Base Details', 'onTap': () {}},
+  {
+    'title': 'Healthy',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Stable',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Safe',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Schooled',
+    'subtitle': '',
+    'onTap': () => {},
+  }
+];
+
 List<Map<String, dynamic>> unapprovedItems = [
   {
     'title': 'Form 1A',
+    'childID': '12340',
     'eventType': 'SERVICES',
-    'details': 'OVC Registration',
+    'details': 'OVCCare',
+    'date': '2021-09-01',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'Form 1A',
+    'childID': '67768',
+    'eventType': 'CRITICAL EVENTS',
+    'details': 'OVCCare',
+    'date': '2021-09-30',
     'onTap': () => {},
     'color': Colors.red,
     's_color': const Color(0xff9A3734),
   },
   {
     'title': 'Form 1B',
+    'childID': '07761',
     'eventType': 'SERVICES',
-    'details': 'OVC Registration',
+    'details': 'OVCCare',
+    'date': '2021-09-30',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'Form 1B',
+    'childID': '87761',
+    'eventType': 'CRITICAL EVENTS',
+    'details': 'OVCCare',
+    'date': '2021-09-30',
     'onTap': () => {},
     'color': Colors.red,
     's_color': const Color(0xff9A3734),
   },
   {
     'title': 'CPARA',
-    'eventType': 'SERVICES',
-    'details': 'OVC Registration',
+    'caregiverName': 'John Wekesa',
+    'caregiverID': '734627',
+    'date': '2021-09-30',
     'onTap': () => {},
     'color': Colors.red,
     's_color': const Color(0xff9A3734),
   },
   {
-    'title': 'CPA',
+    'title': 'CPARA',
+    'caregiverName': 'Odhiambo Nelson',
+    'caregiverID': 'O7234627',
+    'date': '2021-09-30',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'CPT',
+    'childID': '87761',
     'eventType': 'SERVICES',
-    'details': 'OVC Registration',
+    'details': 'OVCCare',
+    'date': '2021-09-30',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'CPT',
+    'childID': '57761',
+    'eventType': 'CRITICAL EVENTS',
+    'details': 'OVCCare',
+    'date': '2021-09-30',
     'onTap': () => {},
     'color': Colors.red,
     's_color': const Color(0xff9A3734),
