@@ -312,9 +312,8 @@ List<Map<String, dynamic>> unapprovedItems = [
   },
   {
     'title': 'CPARA',
-    'childID': '27761',
-    'eventType': 'SERVICES',
-    'details': 'OVCCare',
+    'caregiverName': 'John Wekesa',
+    'caregiverID': '734627',
     'date': '2021-09-30',
     'onTap': () => {},
     'color': Colors.red,
@@ -322,9 +321,8 @@ List<Map<String, dynamic>> unapprovedItems = [
   },
   {
     'title': 'CPARA',
-    'childID': '37761',
-    'eventType': 'CRITICAL EVENTS',
-    'details': 'OVCCare',
+    'caregiverName': 'Odhiambo Nelson',
+    'caregiverID': 'O7234627',
     'date': '2021-09-30',
     'onTap': () => {},
     'color': Colors.red,
