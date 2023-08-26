@@ -7,6 +7,7 @@ import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/organisation_units.dart';
 import 'package:cpims_mobile/screens/registry/persons_registry/persons_registry.dart';
 import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
+import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
@@ -17,7 +18,10 @@ const kTextGrey = Color(0XFF707478);
 const kSystemPadding = EdgeInsets.symmetric(horizontal: 20, vertical: 0);
 
 var _ovcActiveOrRegistered = '132,294 / 307,005';
-
+const syncName = "Sync";
+bool isSynching = false;
+bool _correct = true;
+dynamic snackBar;
 List<Map<String, dynamic>> homeCardsTitles = [
   {
     'title': 'OVC-ACTIVE/EVER REGISTERED',
@@ -129,9 +133,72 @@ List drawerOptions(BuildContext context) {
       ]
     },
     {
-      'title': 'Sync',
+      'title': syncName,
       'icon': FontAwesomeIcons.rotate,
-      'onTap': () => {},
+      'onTap': () async {
+        Get.back();
+
+        try {
+          CaseLoadService()
+              .fetchCaseLoadData(context: context, isForceSync: true);
+          snackBar = SnackBar(
+            content: const Text(
+              'Syncing in progress ...',
+              style: TextStyle(color: Colors.green),
+            ),
+            duration:
+                const Duration(seconds: 5), // Duration to display the Snackbar
+            action: SnackBarAction(
+              textColor: Colors.red,
+              label: 'Close',
+              onPressed: () {
+                Get.back();
+                // Action to perform when the "Close" button is pressed
+              },
+            ),
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          Future.delayed(Duration(seconds: 4));
+
+          snackBar = SnackBar(
+            content: const Text(
+              'Sync completed successfully',
+              style: TextStyle(color: Colors.green),
+            ),
+            duration:
+                const Duration(seconds: 1), // Duration to display the Snackbar
+            action: SnackBarAction(
+              textColor: Colors.red,
+              label: 'Close',
+              onPressed: () {
+                Get.back();
+                // Action to perform when the "Close" button is pressed
+              },
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } catch (e) {
+          snackBar = SnackBar(
+            content: Text(
+              'An error occured $e ...',
+              style: TextStyle(color: Colors.red),
+            ),
+            duration:
+                const Duration(seconds: 2), // Duration to display the Snackbar
+            action: SnackBarAction(
+              textColor: Colors.red,
+              label: 'Close',
+              onPressed: () {
+                Get.back();
+                // Action to perform when the "Close" button is pressed
+              },
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      },
+     
       'children': []
     },
     {

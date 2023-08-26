@@ -25,6 +25,22 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+
+   bool isSyncing = false; // Track whether syncing is in progress
+
+  // Simulate syncing process with a delay
+  void startSync() {
+    setState(() {
+      isSyncing = true; // Set syncing to true when the sync button is pressed
+    });
+
+    // Simulate a delay (you can replace this with your actual syncing logic)
+    Future.delayed(Duration(seconds: 3), () {
+      setState(() {
+        isSyncing = false; // Set syncing back to false when syncing is complete
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final SummaryDataModel dashData =

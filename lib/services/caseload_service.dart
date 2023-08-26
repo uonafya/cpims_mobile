@@ -18,10 +18,13 @@ class CaseLoadService {
     final int caseloadLastSave = preferences.getInt('caseload_last_save') ?? 0;
     final int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
     final int diff = currentTimestamp - caseloadLastSave;
-    if (!(isForceSync || diff > 60000)) {
-      // TODO : 30 days - 2592000000 milliseconds
+
+    if (!(isForceSync || diff > 2592000000)) {
+      // Todo : 30 days - 2592000000 milliseconds
+      print("CaseLoadService not sync");
       return;
     }
+      print("CaseLoadService sync");
 
     try {
       final accessToken = preferences.getString('access');
@@ -39,6 +42,7 @@ class CaseLoadService {
           );
           if (kDebugMode) {
             print(caseLoadModel.caregiverNames);
+             
           }
           LocalDb.instance.insertCaseLoad(caseLoadModel);
         }
