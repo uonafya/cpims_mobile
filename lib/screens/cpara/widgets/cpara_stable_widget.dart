@@ -1,11 +1,15 @@
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/db_provider.dart';
+import 'package:cpims_mobile/screens/cpara/model/db_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/cpara/provider/db_util.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/stable_widget_wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 class CparaStableWidget extends StatefulWidget {
   const CparaStableWidget({super.key});
@@ -394,22 +398,50 @@ class PastCPARAWidget extends StatelessWidget {
   }
 }
 
-class PastCPARAListWidget extends StatelessWidget {
+class PastCPARAListWidget extends StatefulWidget {
   const PastCPARAListWidget({super.key});
 
+  @override
+  State<PastCPARAListWidget> createState() => _PastCPARAListWidgetState();
+}
+
+class _PastCPARAListWidgetState extends State<PastCPARAListWidget> {
+  Database? database;
+
+  @override
+  void initState() {
+    initializeDbInstance();
+      super.initState();
+  }
+
+  Future<void> initializeDbInstance() async {
+    database = await LocalDb.instance.database;
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
             color: Colors.grey.shade200
         ),
-        child: ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: 1,
-            itemBuilder: (context, index){
+        child: FutureBuilder<List<CPARADatabase>>(
+          future: database != null ? getUnsynchedForms(database!) : Future.value([]),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+    return ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: 1,
+        itemBuilder: (context, index){
           return const PastCPARACardWidget();
-        }));
+        });
+    }
+    },
+    ),
+    );
   }
 }
 
