@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/providers/case_plan_provider.dart';
+import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/providers/form1b_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
@@ -68,6 +69,7 @@ class _CPIMSState extends State<CPIMS> {
           providers: [
             ChangeNotifierProvider(create: (_) => UIProvider()),
             ChangeNotifierProvider(create: (_) => Form1bProvider()),
+            ChangeNotifierProvider(create: (_) => Form1AProvider()),
             ChangeNotifierProvider(create: (_) => CasePlanProvider()),
           ],
           child: GetMaterialApp(
@@ -80,7 +82,7 @@ class _CPIMSState extends State<CPIMS> {
       },
       child:
           // const Homepage()
-          const Form1BScreen(),
+          const Form1AScreen(),
     );
   }
 }

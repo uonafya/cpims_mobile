@@ -3,7 +3,7 @@ import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/screens/forms/form1a/utils/form_1a_options.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
-import 'package:cpims_mobile/widgets/custom_date_picker.dart';
+import 'package:cpims_mobile/widgets/custom_forms_date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -17,18 +17,21 @@ class CriticalEventsScreen extends StatefulWidget {
 }
 
 class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
-  List<Map> listOfEvents = optionsEvents;
-
-  List<ValueItem> listOfCriticalEvents = optionsEvents.map((service) {
+  List<ValueItem> listOfCriticalEvents = optionsEvents.map((events) {
     return ValueItem(
-        label: "${service['event_id']}", value: service['description']);
+        label: "${events['event_description']}",
+        value: "${events['event_id']}");
   }).toList();
   List<ValueItem> selectedEvents = [];
   List<ValueItem> selectedEventsOptions = [];
+  DateTime currentEventSelectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
     Form1AProvider form1aProvider = Provider.of<Form1AProvider>(context);
+    selectedEventsOptions = form1aProvider.criticalFormData.selectedEvents;
+    currentEventSelectedDate = form1aProvider.criticalFormData.selectedDate;
+
     return StepsWrapper(
       title: 'Events',
       children: [
@@ -43,6 +46,7 @@ class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
           onOptionSelected: (selectedEvents) {
             selectedEventsOptions = selectedEvents;
             form1aProvider.setSelectedEvents(selectedEvents);
+            form1aProvider.submitCriticalData();
           },
           options: listOfCriticalEvents,
           maxItems: 13,
@@ -64,22 +68,31 @@ class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
-        const CustomDatePicker(
-          hintText: 'Select the date',
-        ),
+        CustomFormsDatePicker(
+            hintText: 'Select the date',
+            selectedDateTime: currentEventSelectedDate,
+            onDateSelected: (selectedDate) {
+              currentEventSelectedDate = selectedDate;
+              form1aProvider.setEventSelectedDate(currentEventSelectedDate);
+            }),
         const SizedBox(
           height: 15,
         ),
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Expanded(
-              child: CustomButton(text: 'Submit Event(s)'),
+              child: CustomButton(
+                text: 'Submit Event(s)',
+                onTap: () {
+                  form1aProvider.submitCriticalData();
+                },
+              ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 15,
             ),
-            Expanded(
+            const Expanded(
               child: CustomButton(text: 'Cancel', color: kTextGrey),
             ),
           ],
