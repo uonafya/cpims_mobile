@@ -106,9 +106,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                     padding: const EdgeInsets.all(10),
                     width: double.infinity,
                     color: Colors.black,
-                    child: const Text(
-                      'Case Plan Achievement Readiness Assessment || {Caregiver Name}',
-                      style: TextStyle(color: Colors.white),
+                    child:  Text(
+                      'Case Plan Achievement Readiness Assessment \n ${widget.caseLoadModel.caregiverNames}',
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                   Padding(
