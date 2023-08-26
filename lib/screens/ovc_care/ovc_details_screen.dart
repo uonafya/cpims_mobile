@@ -36,6 +36,7 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final detailProvider = Provider.of<CparaProvider>(context, listen: true);
     return Scaffold(
         appBar: customAppBar(),
         drawer: const Drawer(
@@ -143,7 +144,27 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             ChildDetailsWorkflowButton(
               workflowName: "OVC Prepopulation",
               onClick: () {
-                Get.to(() => CheckboxForm(caseLoadModel: widget.caseLoadModel));
+                if(detailProvider.detailModel?.dateOfAssessment== null){
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('CPARA'),
+                        content: const Text(
+                            'Please fill CPARA form first before proceeding'),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('OK'))
+                        ],
+                      );
+                    });
+                }else{
+                  Get.to(() => CheckboxForm(caseLoadModel: widget.caseLoadModel));
+                }
+
               },
             ),
            
