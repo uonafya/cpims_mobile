@@ -1,10 +1,12 @@
 import 'package:cpims_mobile/screens/forms/form1b/utils/form1bConstants.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:cpims_mobile/widgets/custom_date_picker.dart';
-import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../providers/form1b_provider.dart';
 
 class CriticalEventForm1b extends StatefulWidget {
   const CriticalEventForm1b({Key? key}) : super(key: key);
@@ -21,10 +23,14 @@ class _CriticalEventForm1bState extends State<CriticalEventForm1b> {
     return ValueItem(label: "- ${service['subtitle']}", value: service['title']);
   }).toList();
 
-  List<String> selectedCareGiverServices = [];
+  List<ValueItem> selectedCriticalEvents = [];
 
   @override
   Widget build(BuildContext context) {
+    Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
+    selectedCriticalEvents = form1bProvider.criticalEventDataForm1b.selectedEvents;
+
+
     return StepsWrapper(
       title: 'Caregiver critical events',
       children: [
@@ -37,10 +43,9 @@ class _CriticalEventForm1bState extends State<CriticalEventForm1b> {
           showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
-            setState(() {
-              selectedCareGiverServices = selectedServices.cast<String>().toList();
-            });
+            form1bProvider.setCriticalEventsSelectedEvents(selectedServices);
           },
+          selectedOptions: selectedCriticalEvents,
           options: careGiverCriticalItems,
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],

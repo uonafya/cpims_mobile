@@ -53,7 +53,7 @@ class _UnsyncedWorkflowsPageState extends State<UnsyncedWorkflowsPage> {
                       .map((e) =>
                   const Card(
                     child: Padding(
-                      padding: const EdgeInsets.all(5.0),
+                      padding: EdgeInsets.all(5.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -62,32 +62,32 @@ class _UnsyncedWorkflowsPageState extends State<UnsyncedWorkflowsPage> {
                             children: [
                               Text(
                                 'CPARA',
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.w600),
                               ),
-                              const SizedBox(
+                              SizedBox(
                                 height: 4,
                               ),
                               Row(
                                 children: [
-                                  const Text(
+                                  Text(
                                     'CPIMS ID: ',
                                     style: TextStyle(fontSize: 12),
                                   ),
                                   Text(
                                     '1234',
-                                    style: const TextStyle(fontSize: 12),
+                                    style: TextStyle(fontSize: 12),
                                   ),
                                 ],
                               ),
                             ],
                           ),
-                          const SizedBox(
+                          SizedBox(
                             height: 4,
                           ),
                           Row(
                             children: [
-                              const Text(
+                              Text(
                                 'Child: ',
                                 style: TextStyle(
                                     fontSize: 14,
@@ -96,16 +96,16 @@ class _UnsyncedWorkflowsPageState extends State<UnsyncedWorkflowsPage> {
                               ),
                               Text(
                                 'Firstname Middlename Lastname',
-                                style: const TextStyle(fontSize: 12),
+                                style: TextStyle(fontSize: 12),
                               ),
                             ],
                           ),
-                          const SizedBox(
+                          SizedBox(
                             height: 8,
                           ),
                           Row(
                             children: [
-                              const Text(
+                              Text(
                                 'Caregiver: ',
                                 style: TextStyle(
                                     fontSize: 14,
@@ -114,12 +114,12 @@ class _UnsyncedWorkflowsPageState extends State<UnsyncedWorkflowsPage> {
                               ),
                               Text(
                                 'Firstname Lastname',
-                                style: const TextStyle(fontSize: 12),
+                                style: TextStyle(fontSize: 12),
                               ),
                               Spacer(),
                               Text(
                                 '10/10/2023',
-                                style: const TextStyle(fontSize: 12),
+                                style: TextStyle(fontSize: 12),
                               ),
 
                             ],

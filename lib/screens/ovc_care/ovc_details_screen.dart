@@ -9,6 +9,7 @@ import 'package:cpims_mobile/widgets/custom_card_grid_item.dart';
 import 'package:cpims_mobile/screens/unsynched_workflows/widgets/child_details_workflow_button.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
+import 'package:cpims_mobile/widgets/custom_grid_view.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
@@ -71,11 +72,10 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             CustomCard(
                 title: "CPIMIS ID: ${widget.caseLoadModel.cpimsId}",
                 children: [
-                  GridView.count(
+                  CustomGridView(
                     crossAxisCount: 2,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    childAspectRatio: (1 / 0.4),
                     children: [
                       CustomCardGridItem(
                         header: "Surname",
@@ -114,13 +114,13 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
               height: 10,
             ),
             ChildDetailsWorkflowButton(
-              workflowName: "Form A",
+              workflowName: "Form 1A",
               onClick: () {
                 Get.to(() => const Form1AScreen());
               },
             ),
             ChildDetailsWorkflowButton(
-              workflowName: "Form B",
+              workflowName: "Form 1B",
               onClick: () {
                 Get.to(() => const Form1BScreen());
               },
