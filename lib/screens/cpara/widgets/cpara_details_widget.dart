@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../providers/db_provider.dart';
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
 
 class CparaDetailsWidget extends StatefulWidget {
@@ -44,6 +45,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
     ),
   ];
 
+
   @override
   void initState() {
     DetailModel detailModel =
@@ -60,6 +62,8 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             detailModel.hasHivExposedInfant!);
     // dateOfAssessment = detailModel.dateOfAssessment == null ? dateOfAssessment : DateTime.parse(detailModel.dateOfAssessment!);
     // dateOfLastAssessment = detailModel.dateOfLastAssessment == null ? dateOfLastAssessment : DateTime.parse(detailModel.dateOfLastAssessment!);
+
+
     super.initState();
   }
 
@@ -285,6 +289,7 @@ class _TextViewsColumnState extends State<TextViewsColumn> {
   @override
   void initState() {
     super.initState();
+
     caseLoadModel =
         context.read<CparaProvider>().caseLoadModel ?? CaseLoadModel();
   }

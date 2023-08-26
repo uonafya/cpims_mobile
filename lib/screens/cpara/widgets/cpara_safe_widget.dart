@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
@@ -151,8 +152,11 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
   @override
   void initState() {
+    children =  [];
     SafeModel safeModel =
         context.read<CparaProvider>().safeModel ?? SafeModel();
+    List<CaseLoadModel> models =
+        context.read<CparaProvider>().children ?? [];
     question1Option = safeModel.question1 == null
         ? question1Option
         : convertingStringToRadioButtonOptions(safeModel.question1!);
@@ -201,12 +205,21 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
         : convertingStringToRadioButtonOptions(safeModel.overallQuestion2!);
     _adolescents_older_than_12 = overallQuestion2Option;
 
-    // Initialize children
-    children = safeModel.childrenQuestions ??
-        [
-         SafeChild(id: "45", question1: "question1"),
-          SafeChild(id: "76", question1: "question1")
-        ];
+    // Initialize children--------------------------
+    // children = safeModel.childrenQuestions ??
+    //     [
+    //      SafeChild(id: "45", question1: "question1"),
+    //       SafeChild(id: "76", question1: "question1")
+    //     ];
+
+    for (CaseLoadModel model in models){
+      children.add(SafeChild(ovcId: "${model.cpimsId}", question1: "", name: "${model.ovcFirstName} ${model.ovcSurname}"));
+    }
+    // children = safeModel.childrenQuestions ??
+    //     [
+    //       // SafeChild(id: "45", question1: "question1"),
+    //       // SafeChild(id: "76", question1: "question1")
+    //     ];
 
     if (safeModel.childrenQuestions != null &&
         safeModel.childrenQuestions!.isNotEmpty) {
@@ -355,15 +368,15 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           'Child Name',
                           style: TextStyle(
                               color: Colors.grey,
@@ -371,8 +384,8 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                               fontSize: 12.0),
                         ),
                         Text(
-                          'JANE BOLO',
-                          style: TextStyle(
+                          children[i].name,
+                          style: const TextStyle(
                               color: Colors.blue,
                               fontWeight: FontWeight.w600,
                               fontSize: 16.0),
@@ -382,7 +395,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           'OVC CPIMS ID',
                           style: TextStyle(
                               color: Colors.grey,
@@ -390,8 +403,8 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                               fontSize: 12.0),
                         ),
                         Text(
-                          '1573288',
-                          style: TextStyle(
+                          children[i].ovcId,
+                          style: const TextStyle(
                               color: Colors.blue,
                               fontWeight: FontWeight.w600,
                               fontSize: 16.0),
@@ -416,23 +429,23 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                         context.read<CparaProvider>().safeModel ?? SafeModel();
                     String selectedOption =
                         convertingRadioButtonOptionsToString(value);
-                    List<SafeChild> childrenQuestions =
-                        safeModel.childrenQuestions ??
-                            [SafeChild(question1: "")];
+                    //todo: update the children questions
+                    List<SafeChild> childrenQuestions = children;
+                        // safeModel.childrenQuestions ??
+                        //     [SafeChild(question1: "")];
 
                     try {
                       childrenQuestions[i] =
-                          SafeChild(question1: selectedOption);
+                          SafeChild(question1: selectedOption, ovcId: children[i].ovcId, name: children[i].name);
                     } catch (e) {
                       if (e is RangeError) {
-                        childrenQuestions.add(SafeChild(question1: ""));
+                        childrenQuestions.add(SafeChild(question1: "", ovcId: children[i].ovcId, name: children[i].name));
                         childrenQuestions[i] =
-                            SafeChild(question1: selectedOption);
+                            SafeChild(question1: selectedOption, ovcId: children[i].ovcId, name: children[i].name);
                       }
                     }
 
-                    // childrenQuestions[i] = SafeChild(question1: selectedOption);
-
+// todo: update the children questions
                     context.read<CparaProvider>().updateSafeModel(safeModel
                         .copyWith(childrenQuestions: childrenQuestions));
 

@@ -4,6 +4,7 @@ import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
+import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -72,7 +73,7 @@ class _CheckboxFormState extends State<CheckboxForm> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(30.0),
           child: Column(
             children: [
               const SizedBox(height: 10),
@@ -101,44 +102,18 @@ class _CheckboxFormState extends State<CheckboxForm> {
                     const SizedBox(height: 15),
                   ],
                 ),
-              SizedBox(
-                width: 250,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {
-                    handleSubmit();
-                  },
-                  child: const Text("Submit", style: TextStyle(fontSize: 20)),
-                ),
+              CustomButton(
+                text: "Submit",
+                onTap: () {
+                  handleSubmit();
+                },
               ),
-              // SizedBox(
-              //   width: 250,
-              //   height: 50,
-              //   child: ElevatedButton(
-              //     onPressed: () {
-              //       fetchAndDisplayOvcPrepopulationData();
-              //     },
-              //     child: const Text("fetch", style: TextStyle(fontSize: 20)),
-              //   ),
-              // ),
             ],
           ),
         ),
       ),
     );
   }
-  // Future<void> fetchAndDisplayOvcPrepopulationData() async {
-  //   final localDb = LocalDb.instance;
-  //   List<Map<String, dynamic>> ovcPrepopulationData = await localDb.fetchOvcPrepopulationData();
-  //
-  //   for (var data in ovcPrepopulationData) {
-  //     print('UUID: ${data['uuid']}');
-  //     print('CPIMS ID: ${data['cpims_id']}');
-  //     print('Criteria: ${data['criteria']}');
-  //     print('Date of Event: ${data['date_of_event']}');
-  //     print('---');
-  //   }
-  // }
 
   void handleSubmit() async {
     final localDb = LocalDb.instance;
@@ -155,10 +130,8 @@ class _CheckboxFormState extends State<CheckboxForm> {
       // Save OVC prepopulation data without specifying formId
       String uuid = const Uuid().v4();
       String dateOfAssessment = Provider.of<CparaProvider>(context, listen: false).detailModel?.dateOfAssessment ?? "NULL";
-      await localDb.insertOvcPrepopulationData(
+      await localDb.insertOvcSubpopulationData(
           uuid, widget.caseLoadModel.cpimsId!,dateOfAssessment,selectedQuestions);
-
-      await localDb.fetchOvcPrepopulationData();
 
       // Show success dialog if the context is still mounted
       if (context.mounted) {
@@ -166,7 +139,7 @@ class _CheckboxFormState extends State<CheckboxForm> {
           context: context, // Use the context from the build method
           builder: (context) => AlertDialog(
             title: const Text('Success'),
-            content: const Text('OVC prepopulation data saved successfully.'),
+            content: const Text('OVC Sub-Population data saved successfully.'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -180,7 +153,7 @@ class _CheckboxFormState extends State<CheckboxForm> {
         );
       }
     } catch (error) {
-      print('Error saving OVC prepopulation data: $error');
+      print('Error saving OVC Sub-Population data: $error');
     }
   }
 }

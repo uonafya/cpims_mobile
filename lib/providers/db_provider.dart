@@ -3,7 +3,6 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
-import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -85,7 +84,6 @@ class LocalDb {
     await db.insert(caseloadTable, caseLoadModel.toJson());
   }
 
-
   Future<void> insertStatistics(SummaryDataModel summaryModel) async {
     final db = await instance.database;
 
@@ -122,7 +120,8 @@ class LocalDb {
       await db.execute(
           "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER, id INTEGER PRIMARY KEY, houseHoldID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (formID) REFERENCES Form(id));");
 
-
+      await db.execute(
+          "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionid TEXT, answer TEXT, FOREIGN KEY (formID) REFERENCES Form(id));");
 
     } catch (err) {
       debugPrint("OHH SHIT!");
@@ -131,25 +130,7 @@ class LocalDb {
     }
   }
 
-  Future<void> createOvcSubPopulation(Database db, int version) async {
-    try {
-      await db.execute('''
-      CREATE TABLE $ovcsubpopulation (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        uuid TEXT,
-        cpims_id TEXT,
-        criteria TEXT,
-        date_of_event TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    ''');
-    } catch (err) {
-      debugPrint(err.toString());
-    }
-  }
-
-
-  Future<void> insertCparaData({required CparaModel cparaModelDB, required String ovcId}) async {
+  Future<void> insertCparaData({required CparaModel cparaModelDB, required String ovcId, required String careProviderId}) async {
     final db = await instance.database;
 
     // Create form
@@ -167,36 +148,49 @@ class LocalDb {
         cparaModelDB
             .addHouseholdFilledQuestionsToDB(
             db,
-            "Test House",
             formDateString,
             ovcId,
             formID);
       });
     });
   }
+  Future<void> createOvcSubPopulation(Database db, int version) async {
+    try {
+      await db.execute('''
+      CREATE TABLE $ovcsubpopulation (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        uuid TEXT,
+        cpims_id TEXT,
+        criteria TEXT,
+        date_of_event TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    ''');
+    } catch (err) {
+      debugPrint(err.toString());
+    }
+  }
 
-  Future<void> insertOvcPrepopulationData(String uuid,String cpimsId,String date_of_assessment,List<CheckboxQuestion> questions) async{
+  Future<void> insertOvcSubpopulationData(String uuid,String cpimsId,String date_of_assessment,List<CheckboxQuestion> questions) async{
     final db = await instance.database;
-   for(var question in questions){
-     int value= question.isChecked! ? 1 : 0;
-     await db.insert(ovcsubpopulation, {
-       'uuid':uuid,
-       'cpims_id':cpimsId,
-       'criteria':question.questionID,
-       'date_of_event':date_of_assessment,
-     },conflictAlgorithm: ConflictAlgorithm.replace
-     );
-   }
+    for(var question in questions){
+      int value= question.isChecked! ? 1 : 0;
+      await db.insert(ovcsubpopulation, {
+        'uuid':uuid,
+        'cpims_id':cpimsId,
+        'criteria':question.questionID,
+        'date_of_event':date_of_assessment,
+      },conflictAlgorithm: ConflictAlgorithm.replace
+      );
+    }
 
   }
 
-  Future<List<Map<String, dynamic>>> fetchOvcPrepopulationData() async {
+  Future<List<Map<String, dynamic>>> fetchOvcSubPopulationData() async {
     final db = await LocalDb.instance.database;
     final result = await db.query(LocalDb.ovcsubpopulation);
     return result;
   }
-
-
 
   // table name and field names
   static const caseloadTable = 'ovcs';
@@ -268,4 +262,6 @@ class SummaryFields {
   static const String orgUnitId = 'org_unit_id';
   static const String details = 'details';
 }
+
+
 

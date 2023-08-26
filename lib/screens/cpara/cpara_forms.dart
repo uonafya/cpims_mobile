@@ -8,6 +8,7 @@ import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/cpara/provider/db_util.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_healthy_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_safe_widget.dart';
@@ -19,6 +20,7 @@ import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
@@ -55,6 +57,14 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
     // todo: update case load data in Cpara provider
     // initialize the database
     // initializeDatabase();
+    fetchChildren(caseLoadData);
+  }
+
+  fetchChildren(caseList) async{
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      // Provider.of<CparaProvider>(context, listen: false).updateChildren(caseList));
+    context.read<CparaProvider>().updateChildren(caseList);
+    });
   }
 
   // Function that creates the database and tables
@@ -108,7 +118,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     width: double.infinity,
-                    color: Colors.blue,
+                    color: Colors.black,
                     child: Text(
                       'Case Plan Achievement Readiness Assessment \n ${widget.caseLoadModel.caregiverNames}',
                       style: const TextStyle(color: Colors.white),
@@ -165,7 +175,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                 text: selectedStep == steps.length - 1
                                     ? 'Submit'
                                     : 'Next',
-                                onTap: () {
+                                onTap: () async{
                                   if (selectedStep == steps.length - 1) {
                                     // display collected data
                                     DetailModel? detailModel = context
@@ -493,17 +503,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                               ),
 
                                               const SizedBox(height: 20),
-                                              const Text(
-                                                "OVC Sub Population Form",
-                                                style: TextStyle(
-                                                  color: Colors.blue,
-                                                  fontSize: 18.0,
-                                                  fontStyle: FontStyle.italic,
-                                                  fontWeight: FontWeight.w800,
-                                                  letterSpacing: 0.1,
-                                                  height: 1.5,
-                                                ),
-                                              ),
                                               const SizedBox(height: 10),
                                             ],
                                           ),
@@ -513,6 +512,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
 
                                     try {
                                       String? ovsId = context.read<CparaProvider>().caseLoadModel?.cpimsId;
+                                      // String? careGiverId = context.read<CparaProvider>().caseLoadModel?.cpimsId;
 
                                       if(ovsId == null) throw("No CPMSID found");
                                       String ovcpmisid = ovsId ?? "0" ;
@@ -531,7 +531,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           ovcSubPopulationModel:
                                               OvcSubPopulationModel());
                                       // Create form
-                                      LocalDb.instance.insertCparaData(cparaModelDB: cparaModelDB, ovcId: ovcpmisid);
+                                      LocalDb.instance.insertCparaData(cparaModelDB: cparaModelDB, ovcId: ovcpmisid, careProviderId: ovcpmisid );
                                       // cparaModelDB
                                       //     .createForm(database)
                                       //     .then((value) {
@@ -557,6 +557,10 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                       debugPrint(err.toString());
                                       debugPrint("OHH SHIT");
                                     }
+                                  }
+                                  else{
+                                    var form = await getUnsynchedForms(await LocalDb.instance.database);
+                                    print(form);
                                   }
 
                                   _scrollController.animateTo(

@@ -91,21 +91,25 @@ class SafeModel {
 }
 
 class SafeChild {
-  String id;
+  final String  ovcId;
+  final String name;
   final String? question1;
 
   SafeChild({
-    this.id = "",
+    required this.ovcId,
+    required this.name,
     required this.question1,
   });
 
   factory SafeChild.fromJson(Map<String, dynamic> json) {
     return SafeChild(
       question1: json['question1'],
+      name: json['name'],
+      ovcId: json['id'],
     );
   }
 
   Map<String, dynamic> toJSON() {
-    return {"id": id, "q1": question1};
+    return {"id": ovcId, "q1": question1};
   }
 }
