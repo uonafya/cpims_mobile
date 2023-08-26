@@ -1,3 +1,4 @@
+
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
@@ -70,6 +71,37 @@ class CparaModel {
     }
   }
 
+  Future<void> addChildren2(List<Map<String, dynamic>> data, Database db, int formId) async{
+    try {
+      // Create a batch
+      var batch = db.batch();
+      for(Map i in data) {
+        // getting data for each child
+
+        i.forEach((key, value) {
+          if(key != "id"){
+            batch.insert("ChildAnswer", {
+              "childID": i["id"],
+              "questionID": key,
+              "answer": value,
+              "formID": formId
+            });
+          }
+        });
+        // Insert database
+
+
+
+
+      }
+      await batch.commit(noResult: true);
+    }catch(err) {
+      print("OHH SHIT!");
+      print(err.toString());
+      print("OHH SHIT!");
+    }
+  }
+
   // This function add the portion of the form filled by the household to the database
   Future<void> addHouseholdFilledQuestionsToDB(Database? db, String houseHoldID,
       String formDate, String ovcpmsid, int formID) async {
@@ -97,14 +129,17 @@ class CparaModel {
       print("OVC Sbpopulation");
       print(ovcSubPopulationModelJSON.toString());
 
+      var h = healthJSON.remove('children');
+      var s = safeJSON.remove('children');
       // Get children from safe and health
       // Health
-      var healtChildren = healthJSON.remove('children');
+      List<Map<String, dynamic>> healtChildren = healthJSON.remove('children');
       print("\nHealth Children\n");
       print(healtChildren.toString());
 
       // Safe
-      var safeChildren = safeJSON.remove('children');
+      // List<Map<String, dynamic>> safeChildren = safeJSON.remove('children');
+      List<Map<String, dynamic>> safeChildren = [{"id": "45", "q1": "ge"}];
       print("\nSafe Children\n");
       print(safeChildren.toString());
 
@@ -138,8 +173,10 @@ class CparaModel {
         usableSafeChildren.add(tempList);
       }
 
-      await addChildren(db, usableHealthChildren, formID);
-      await addChildren(db, usableSafeChildren, formID);
+      // await addChildren(db, usableHealthChildren, formID);
+      // await addChildren(db, usableSafeChildren, formID);
+      await addChildren2(healtChildren, db!, formID);
+      await addChildren2(safeChildren, db, formID);
 
       print("\nUsable Health Children\n");
       print(usableHealthChildren.toString());
