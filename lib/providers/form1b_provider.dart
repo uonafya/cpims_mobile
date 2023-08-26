@@ -182,11 +182,6 @@ class Form1bProvider extends ChangeNotifier {
 
     return eventsList;
   }
-
-
-
-
-
 }
 
 
