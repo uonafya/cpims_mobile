@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
+import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
@@ -50,7 +51,8 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
   @override
   void initState() {
     super.initState();
-
+    final caseLoadData = Provider.of<UIProvider>(context, listen: false).caseLoadData;
+    // todo: update case load data in Cpara provider
     // initialize the database
     // initializeDatabase();
   }

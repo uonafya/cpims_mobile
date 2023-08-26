@@ -33,7 +33,8 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
   RadioButtonOptions? _benchmark_7;
   RadioButtonOptions? _legal_documents;
   RadioButtonOptions? _benchmark_8;
-
+// List of children
+  late List<SafeChild> children;
   // question 3 is for child
   RadioButtonOptions? question1Option,
       question2Option,
@@ -200,6 +201,13 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
         : convertingStringToRadioButtonOptions(safeModel.overallQuestion2!);
     _adolescents_older_than_12 = overallQuestion2Option;
 
+    // Initialize children
+    children = safeModel.childrenQuestions ??
+        [
+         SafeChild(id: "45", question1: "question1"),
+          SafeChild(id: "76", question1: "question1")
+        ];
+
     if (safeModel.childrenQuestions != null &&
         safeModel.childrenQuestions!.isNotEmpty) {
       for (var i = 0; i < (safeModel.childrenQuestions?.length ?? 0); i++) {
@@ -343,7 +351,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
         ),
 
 // Load Children - For the specific household
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < children.length; i++)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
