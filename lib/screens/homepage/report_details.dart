@@ -4,7 +4,6 @@ import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class ReportDetailsScreen extends StatelessWidget {
   const ReportDetailsScreen({Key? key, required this.title}) : super(key: key);
@@ -20,7 +19,7 @@ class ReportDetailsScreen extends StatelessWidget {
             const SizedBox(height: kToolbarHeight + 40),
             Text(
               'Report details-$title',
-              style: GoogleFonts.openSans(
+              style: TextStyle(
                 fontSize: ScreenUtil().setSp(18),
                 fontWeight: FontWeight.w600,
                 color: Colors.black,
