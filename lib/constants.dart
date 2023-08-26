@@ -1,19 +1,16 @@
+import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/screens/caseload/caseload.dart';
 import 'package:cpims_mobile/screens/forms/case_record_sheet.dart';
-import 'package:cpims_mobile/screens/forms/documents_manager.dart';
 import 'package:cpims_mobile/screens/forms/follow_ups.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
+import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/organisation_units.dart';
 import 'package:cpims_mobile/screens/registry/persons_registry/persons_registry.dart';
-// import 'package:cpims_mobile/screens/forms/alternative_family_care.dart';
-// import 'package:cpims_mobile/screens/forms/follow_ups.dart';
-// import 'package:cpims_mobile/screens/forms/institutional_placement.dart';
-// import 'package:cpims_mobile/screens/forms/school_bursary.dart';
-// import 'package:cpims_mobile/screens/help_documentation/change_notes.dart';
-// import 'package:cpims_mobile/screens/reports/case_load_report.dart';
+import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
+import 'package:provider/provider.dart';
 
 const kPrimaryColor = Color(0xff00acac);
 const kTextGrey = Color(0XFF707478);
@@ -59,259 +56,102 @@ List<Map<String, dynamic>> homeCardsTitles = [
   }
 ];
 
-List<Map<String, dynamic>> drawerOptions = [
-  {
-    'title': 'Home',
-    'icon': FontAwesomeIcons.house,
-    'onTap': () => {
-          Get.off(() => const Homepage(),
-              transition: Transition.fadeIn,
-              duration: const Duration(milliseconds: 1000))
+List drawerOptions(BuildContext context) {
+  return [
+    {
+      'title': 'Home',
+      'icon': FontAwesomeIcons.house,
+      'onTap': () => {
+            Get.off(() => const Homepage(),
+                transition: Transition.fadeIn,
+                duration: const Duration(milliseconds: 1000))
+          },
+      'children': []
+    },
+    {
+      'title': 'Caseload',
+      'icon': FontAwesomeIcons.briefcase,
+      'children': [
+        {
+          'title': 'Caseload',
+          'onTap': () => {
+                Get.off(() => const CaseLoad(),
+                    transition: Transition.fadeIn,
+                    duration: const Duration(milliseconds: 1000))
+              },
         },
-  },
-
-  {
-    'title': 'Caseload',
-    'icon': FontAwesomeIcons.briefcase,
-    'children': [
-      {
-        'title': 'Caseload',
-        'onTap': () => {
-              Get.off(() => const CaseLoad(),
-                  transition: Transition.fadeIn,
-                  duration: const Duration(milliseconds: 1000))
-            },
-      },
-      {
-        'title': 'Organisational Units',
-        'onTap': () => {
-              Get.off(() => const OrganisationUnitsRegistry(),
-                  transition: Transition.fadeIn,
-                  duration: const Duration(milliseconds: 1000))
-            },
-      },
-      {
-        'title': 'Persons Registry',
-        'onTap': () => {
-              Get.off(() => const PersonsRegistry(),
-                  transition: Transition.fadeIn,
-                  duration: const Duration(milliseconds: 1000))
-            },
-      }
-    ]
-  },
-  {
-    'title': 'Forms',
-    'icon': FontAwesomeIcons.fileLines,
-    'children': [
-      {
-        'title': 'Case Record Sheet',
-        'onTap': () => {
-              Get.off(() => const CaseRecordSheet(),
-                  transition: Transition.cupertino,
-                  duration: const Duration(milliseconds: 1000))
-            },
-      },
-       {
-         'title': 'Follow-ups',
-         'onTap': () => {
-               Get.off(() => const FollowUps(),
-                   transition: Transition.cupertino,
-                   duration: const Duration(milliseconds: 1000))
-             },
-       },
-      // {
-      //   'title': 'Institutional Placement',
-      //   'onTap': () => {
-      //         Get.off(() => const InstitutionalPlacement(),
-      //             transition: Transition.cupertino,
-      //             duration: const Duration(milliseconds: 1000))
-      //       },
-      // },
-      // {
-      //   'title': 'Alternative Family Care',
-      //   'onTap': () => {
-      //         Get.off(() => const AlternativeFamilyCare(),
-      //             transition: Transition.cupertino,
-      //             duration: const Duration(milliseconds: 1000))
-      //       },
-      // },
-      // {
-      //   'title': 'School and Bursary',
-      //   'onTap': () => {
-      //         Get.off(() => const SchoolBursary(),
-      //             transition: Transition.cupertino,
-      //             duration: const Duration(milliseconds: 1000))
-      //       },
-      // },
-      // {
-      //   'title': 'Follow-ups',
-      //   'onTap': () => {
-      //         Get.off(() => const FollowUps(),
-      //             transition: Transition.cupertino,
-      //             duration: const Duration(milliseconds: 1000))
-      //       },
-      // },
-      // {
-      //   'title': 'Documents Manager',
-      //   'onTap': () => {
-      //         Get.off(() => const DocumentsManager(),
-      //             transition: Transition.cupertino,
-      //             duration: const Duration(milliseconds: 1000))
-      //       },
-      // },
-      {
-        'title': 'OVC Care(Comp)',
-        'onTap': () => {
-              Get.off(() => const DocumentsManager(),
-                  transition: Transition.cupertino,
-                  duration: const Duration(milliseconds: 1000))
-            },
-      },
-      // {
-      //   'title': 'Preventive and Family Support)',
-      //   'onTap': () => {},
-      // },
-      // {
-      //   'title': 'PMTCT',
-      //   'onTap': () => {},
-      // },
-      // {
-      //   'title': 'DREAMS',
-      //   'onTap': () => {},
-      // }
-    ]
-  },
-  // {
-  //   'title': 'Reports',
-  //   'icon': FontAwesomeIcons.fileLines,
-  //   'children': [
-  //     {
-  //       'title': 'Case Load Report',
-  //       'onTap': () => {
-  //             Get.off(() => const CaseLoadReport(),
-  //                 transition: Transition.cupertino,
-  //                 duration: const Duration(milliseconds: 1000))
-  //           },
-  //     },
-  //     {
-  //       'title': 'KNBS Report',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Institutions Population Returns Report',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Health Report',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Bursary Report',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Ad Hoc Report',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Ad Hoc Pivot Report',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Document Templates',
-  //       'onTap': () => {},
-  //     },
-  //   ]
-  // },
-  // {
-  //   'title': 'Maintenance',
-  //   'icon': FontAwesomeIcons.gears,
-  //   'children': [
-  //     {
-  //       'title': 'Reports',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Schools',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Facilities',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Raw data',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'System Settings',
-  //       'onTap': () => {},
-  //     },
-  //   ]
-  // },
-  // {
-  //   'title': 'GIS Module',
-  //   'icon': FontAwesomeIcons.mapLocationDot,
-  //   'children': [
-  //     {
-  //       'title': 'Map',
-  //       'onTap': () => {},
-  //     }
-  //   ]
-  // },
-  // {
-  //   'title': 'Gallery',
-  //   'icon': FontAwesomeIcons.camera,
-  //   'children': [
-  //     {
-  //       'title': 'Gallery One',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Gallery Two',
-  //       'onTap': () => {},
-  //     }
-  //   ]
-  // },
-  // {
-  //   'title': 'Data Quality',
-  //   'icon': FontAwesomeIcons.filter,
-  //   'children': [
-  //     {
-  //       'title': 'Age & Services',
-  //       'onTap': () => {},
-  //     },
-  //     {
-  //       'title': 'Age & Case plan',
-  //       'onTap': () => {},
-  //     },
-  //   ]
-  // },
-  // {
-  //   'title': 'Help & Documentation',
-  //   'icon': FontAwesomeIcons.briefcaseMedical,
-  //   'children': [
-  //     {
-  //       'title': 'Change Notes',
-  //       'onTap': () => {
-  //             Get.off(() => const ChangeNotesScreen(),
-  //                 transition: Transition.cupertino,
-  //                 duration: const Duration(milliseconds: 1000))
-  //           },
-  //     },
-  //     {
-  //       'title': 'Documentation',
-  //       'onTap': () => {},
-  //     }
-  //   ]
-  // },
-  // {
-  //   'title': 'OVC Dashboards',
-  //   'icon': FontAwesomeIcons.chartLine,
-  //   'children': []
-  // }
-];
+        {
+          'title': 'Organisational Units',
+          'onTap': () => {
+                Get.off(() => const OrganisationUnitsRegistry(),
+                    transition: Transition.fadeIn,
+                    duration: const Duration(milliseconds: 1000))
+              },
+        },
+        {
+          'title': 'Persons Registry',
+          'onTap': () => {
+                Get.off(() => const PersonsRegistry(),
+                    transition: Transition.fadeIn,
+                    duration: const Duration(milliseconds: 1000))
+              },
+        }
+      ]
+    },
+    {
+      'title': 'Forms',
+      'icon': FontAwesomeIcons.fileLines,
+      'children': [
+        {
+          'title': 'Case Record Sheet',
+          'onTap': () => {
+                Get.off(() => const CaseRecordSheet(),
+                    transition: Transition.cupertino,
+                    duration: const Duration(milliseconds: 1000))
+              },
+        },
+        {
+          'title': 'Follow-ups',
+          'onTap': () => {
+                Get.off(() => const FollowUps(),
+                    transition: Transition.cupertino,
+                    duration: const Duration(milliseconds: 1000))
+              },
+        },
+        {
+          'title': 'OVC Care(Comp)',
+          'onTap': () => {
+                Get.off(() => const OVCCareScreen(),
+                    transition: Transition.cupertino,
+                    duration: const Duration(milliseconds: 1000))
+              },
+        },
+      ]
+    },
+    {
+      'title': 'Sync',
+      'icon': FontAwesomeIcons.rotate,
+      'onTap': () => {},
+      'children': []
+    },
+    {
+      'title': 'Log Out',
+      'icon': FontAwesomeIcons.arrowRightFromBracket,
+      'onTap': () => {
+            Provider.of<AuthProvider>(context, listen: false).logOut(context),
+          },
+      'children': []
+    },
+    {
+      'title': 'Unapproved',
+      'icon': FontAwesomeIcons.hackerNews,
+      'onTap': () => {
+            Get.to(() => const UnapprovedRecordsScreens()),
+          },
+      'children': []
+    },
+  ];
+}
 
 List<String> graphTitles = [
   'Case Managenent(Last 21 Days)',
@@ -319,6 +159,18 @@ List<String> graphTitles = [
   'HIV Status',
   'ART Status',
   'Cacade 90-90-90'
+];
+List<Map<String, dynamic>> form1AStepper = [
+  {
+    'title': 'Critical Event(s)',
+    'subtitle': 'Critical events details',
+    'onTap': () {}
+  },
+  {
+    'title': 'Services',
+    'subtitle': 'Services Details',
+    'onTap': () => {},
+  },
 ];
 
 List<Map<String, dynamic>> organisationRegistryStepper = [
@@ -372,7 +224,6 @@ List<Map<String, dynamic>> personRegistryStepper = [
   },
 ];
 
-const String cpims_api_url = "https://dev.cpims.net/api/";
 const String cpimsApiUrl = "https://dev.cpims.net/api/";
 
 const Map<String, String> headers = {"Content-Type": "application/json"};
@@ -381,7 +232,7 @@ errorSnackBar(BuildContext context, message) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     backgroundColor: Colors.red,
     content: Text(message),
-    duration: const Duration(seconds: 1),
+    duration: const Duration(seconds: 8),
   ));
 }
 
@@ -392,3 +243,109 @@ successSnackBar(BuildContext context, message) {
     duration: const Duration(seconds: 1),
   ));
 }
+
+// case plan stepper data
+List<Map<String, dynamic>> cparaStepperData = [
+  {'title': 'Details', 'subtitle': 'CPARA Base Details', 'onTap': () {}},
+  {
+    'title': 'Healthy',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Stable',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Safe',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Schooled',
+    'subtitle': '',
+    'onTap': () => {},
+  }
+];
+
+List<Map<String, dynamic>> unapprovedItems = [
+  {
+    'title': 'Form 1A',
+    'childID': '12340',
+    'eventType': 'SERVICES',
+    'details': 'OVCCare',
+    'date': '2021-09-01',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'Form 1A',
+    'childID': '67768',
+    'eventType': 'CRITICAL EVENTS',
+    'details': 'OVCCare',
+    'date': '2021-09-30',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'Form 1B',
+    'childID': '07761',
+    'eventType': 'SERVICES',
+    'details': 'OVCCare',
+    'date': '2021-09-30',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'Form 1B',
+    'childID': '87761',
+    'eventType': 'CRITICAL EVENTS',
+    'details': 'OVCCare',
+    'date': '2021-09-30',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'CPARA',
+    'caregiverName': 'John Wekesa',
+    'caregiverID': '734627',
+    'date': '2021-09-30',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'CPARA',
+    'caregiverName': 'Odhiambo Nelson',
+    'caregiverID': 'O7234627',
+    'date': '2021-09-30',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'CPT',
+    'childID': '87761',
+    'eventType': 'SERVICES',
+    'details': 'OVCCare',
+    'date': '2021-09-30',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'CPT',
+    'childID': '57761',
+    'eventType': 'CRITICAL EVENTS',
+    'details': 'OVCCare',
+    'date': '2021-09-30',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+];
