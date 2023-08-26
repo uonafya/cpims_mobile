@@ -43,7 +43,8 @@ class LocalDb {
         ${OvcFields.dateOfBirth} $textType,
         ${OvcFields.caregiverNames} $textType,
         ${OvcFields.sex} $textType,
-        ${OvcFields.caregiverCpimsId} $textType
+        ${OvcFields.caregiverCpimsId} $textType,
+        ${OvcFields.chvCpimsId} $textType
       )
     ''');
 
@@ -75,8 +76,7 @@ class LocalDb {
   Future<void> insertCaseLoad(CaseLoadModel caseLoadModel) async {
     final db = await instance.database;
 
-    final id = await db.insert(caseloadTable, caseLoadModel.toJson());
-    print(id);
+    await db.insert(caseloadTable, caseLoadModel.toJson());
   }
 
   Future<void> insertStatistics(SummaryDataModel summaryModel) async {
@@ -97,6 +97,21 @@ class LocalDb {
     return result.map((json) => SummaryDataModel.fromJson(json)).toList();
   }
 
+  Future<void> checkFields() async {
+  final db = await instance.database;
+  final result = await db.rawQuery('SELECT sql FROM sqlite_master WHERE name = ?', [caseloadTable]);
+  if (result.isNotEmpty) {
+    final String createSql = result.first['sql'] as String;
+    final List<String> fields = OvcFields.values;
+    for (final field in fields) {
+      if (!createSql.contains(field)) {
+        return;
+      }
+    }
+  }
+  await _createTables(db, 1);
+}
+
   // table name and field names
   static const caseloadTable = 'ovcs';
   static const statisticsTable = 'statistics';
@@ -112,6 +127,7 @@ class OvcFields {
     caregiverNames,
     sex,
     caregiverCpimsId,
+    chvCpimsId,
   ];
 
   static const String id = '_id';
@@ -123,6 +139,7 @@ class OvcFields {
   static const String caregiverNames = 'caregiver_names';
   static const String sex = 'sex';
   static const String caregiverCpimsId = 'caregiver_cpims_id';
+  static const String chvCpimsId = 'chv_cpims_id';
 }
 
 class SummaryFields {
