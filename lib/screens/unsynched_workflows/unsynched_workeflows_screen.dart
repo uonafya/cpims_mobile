@@ -3,7 +3,9 @@ import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
+import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 class UnsyncedWorkflowsPage extends StatefulWidget {
@@ -15,7 +17,7 @@ class UnsyncedWorkflowsPage extends StatefulWidget {
 
 class _UnsyncedWorkflowsPageState extends State<UnsyncedWorkflowsPage> {
   final fixedLengthList =
-      List<int>.generate(3, (int index) => index * index, growable: false);
+      List<int>.generate(3, (int index) => index, growable: false);
 
   @override
   Widget build(BuildContext context) {
@@ -28,53 +30,113 @@ class _UnsyncedWorkflowsPageState extends State<UnsyncedWorkflowsPage> {
         Positioned.fill(
           child: Padding(
             padding: kSystemPadding,
-            child: CustomCard(title: "Unsynchronized Data", children: [
-              Table(
-                border: TableBorder.symmetric(
-                  inside: BorderSide(color: Colors.grey.withOpacity(0.5)),
+            child: ListView(
+              children: [
+                const SizedBox(height: 10,),
+                const Row(
+                  children: [
+                    Icon(FontAwesomeIcons.arrowsRotate, size: 16,),
+                    SizedBox(width: 10,),
+                    Text(
+                      "Unsynced Workflows",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                    ),
+                  ],
                 ),
-                children: [
-                  const TableRow(children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(
-                        "Name",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
+                const SizedBox(height: 10,),
+                CustomCard(title: "Unsynced", children: [
+                  ...List<int>.generate(9, (int index) => index + 1,
+                      growable: false)
+                      .map((e) =>
+                  const Card(
+                    child: Padding(
+                      padding: EdgeInsets.all(5.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'CPARA',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w600),
+                              ),
+                              SizedBox(
+                                height: 4,
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    'CPIMS ID: ',
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                  Text(
+                                    '1234',
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                'Child: ',
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey),
+                              ),
+                              Text(
+                                'Firstname Middlename Lastname',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                'Caregiver: ',
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey),
+                              ),
+                              Text(
+                                'Firstname Lastname',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              Spacer(),
+                              Text(
+                                '10/10/2023',
+                                style: TextStyle(fontSize: 12),
+                              ),
+
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        "Workflow",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ]),
-                  ...fixedLengthList
-                      .map((e) => const TableRow(children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.0),
-                              child: Text(
-                                "Name",
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text(
-                                "Workflow",
-                              ),
-                            ),
-                          ]))
+                  ))
                       .toList(),
-                ],
-              )
-            ]),
+                ]
+                ),
+                const Footer(),
+                const SizedBox(
+                  height: 90,
+                ),
+              ],
+            ),
           ),
         ),
         Positioned(

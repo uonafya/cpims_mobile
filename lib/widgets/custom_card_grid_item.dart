@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ChildDetailsGridItem extends StatelessWidget {
-  const ChildDetailsGridItem({
+class CustomCardGridItem extends StatelessWidget {
+  const CustomCardGridItem({
     super.key, required this.header, required this.details,
   });
 

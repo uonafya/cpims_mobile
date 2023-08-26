@@ -46,5 +46,4 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-windows/
-macos/
+/lib/screens/forms/form1a_test_screen.dart
