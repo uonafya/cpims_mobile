@@ -1,5 +1,4 @@
-import 'package:cpims_mobile/Models/form1_data_basemodel.dart';
-import 'package:cpims_mobile/Models/form_1b.dart';
+import 'package:cpims_mobile/Models/form_1_model.dart';
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -121,11 +120,7 @@ class Form1bProvider extends ChangeNotifier {
       servicesList.add(entry);
     }
 
-    Form1BDataModel toDbData = Form1BDataModel(
-        ovcCpimsId: finalServicesFormData.ovc_cpims_id,
-        dateOfEvent: finalServicesFormData.dateOfEvent,
-        services: servicesList,
-    );
+    Form1DataModel toDbData = Form1DataModel(ovcCpimsId: finalServicesFormData.ovc_cpims_id, dateOfEvent: finalServicesFormData.dateOfEvent, services: servicesList, criticalEvents: []);
     print("ourData$toDbData");
     print("criticalEventsDataForm1b${getFinalCriticalEventsFormData()}");
 
