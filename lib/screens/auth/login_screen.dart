@@ -1,13 +1,17 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
+import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/screens/auth/widgets/important_links_widget.dart';
+import 'package:cpims_mobile/screens/connectivity_screen.dart';
+import 'package:cpims_mobile/screens/initial_loader.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:get/route_manager.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,32 +31,9 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isObscure = true;
   bool _isloading = false;
 
-  void loginuser({
-    required String username,
-    required String password,
-  }) async {
-    setState(() {
-      _isloading = true;
-    });
-
-    try {
-      await Provider.of<AuthProvider>(context, listen: false).login(
-        context: context,
-        password: password,
-        username: username,
-      );
-      setState(() {
-        _isloading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isloading = false;
-      });
-    }
-  }
-
   final auth = LocalAuthentication();
   String authorized = " not authorized";
+  List<BiometricType> availableBiometric = [];
 
   Future<void> _authenticate() async {
     bool authenticated = false;
@@ -62,21 +43,21 @@ class _LoginScreenState extends State<LoginScreen> {
         localizedReason: "Scan your finger to authenticate",
       );
     } on PlatformException catch (e) {
-      errorSnackBar(context, e.message);
+      if (mounted) errorSnackBar(context, e.message);
     }
 
     setState(() {
       authorized =
           authenticated ? "Authorized success" : "Failed to authenticate";
-      successSnackBar(context, 'Auth success');
     });
+    if (!authenticated) return;
     final prefs = await SharedPreferences.getInstance();
 
     final username = prefs.getString('username');
     final password = prefs.getString('password');
 
     if (username != null && password != null) {
-      loginuser(username: username, password: password);
+      _login(username: username, password: password);
     } else {
       if (context.mounted) {
         errorSnackBar(context, 'Please login with your credentials first');
@@ -89,6 +70,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       canCheckBiometric = await auth.canCheckBiometrics;
+      if (kReleaseMode && !canCheckBiometric && mounted) {
+        errorSnackBar(context, 'Biometrics not available');
+        return;
+      }
     } on PlatformException catch (_) {
       if (context.mounted) {
         errorSnackBar(context, 'Unable to check biometrics');
@@ -101,10 +86,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future _getAvailableBiometric() async {
-    List<BiometricType> availableBiometric = [];
-
     try {
       availableBiometric = await auth.getAvailableBiometrics();
+      if (availableBiometric.isEmpty && mounted) {
+        errorSnackBar(context, 'Biometrics not available');
+        return;
+      }
     } on PlatformException catch (_) {
       if (context.mounted) {
         errorSnackBar(context, 'Unable to get available biometrics');
@@ -140,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: kToolbarHeight),
                   Text(
                     'Login',
-                    style: GoogleFonts.openSans(
+                    style: TextStyle(
                       fontSize: ScreenUtil().setSp(28),
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
@@ -148,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   Text(
                     'Directorate of Children Services (DCS)',
-                    style: GoogleFonts.openSans(
+                    style: TextStyle(
                       fontSize: ScreenUtil().setSp(12),
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
@@ -226,7 +213,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       : CustomButton(
                           text: 'Sign In',
                           onTap: () {
-                            loginuser(
+                            SystemChannels.textInput.invokeMethod('TextInput.hide');
+                            _login(
                               username: userNameController.text,
                               password: passwordController.text,
                             );
@@ -363,5 +351,68 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void _login({
+    required String username,
+    required String password,
+  }) async {
+    setState(() {
+      _isloading = true;
+    });
+    final prefs = await SharedPreferences.getInstance();
+    final hasUserSetup = prefs.getBool("hasUserSetup");
+    final hasConnection =
+        await Provider.of<ConnectivityProvider>(context, listen: false)
+            .checkInternetConnection();
+    if (!hasConnection) {
+      if (hasUserSetup == null) {
+        Get.off(() => const ConnectivityScreen(redirectScreen: LoginScreen()));
+        return;
+      }
+
+      final savedUsername = prefs.getString('username');
+      final savedPassword = prefs.getString('password');
+      if (savedUsername == null || savedPassword == null) {
+        if (mounted) {
+          errorSnackBar(context, 'Please login with your credentials first');
+        }
+        setState(() {
+          _isloading = false;
+        });
+        return;
+      }
+
+      if (username != savedUsername || password != savedPassword) {
+        if (mounted) {
+          errorSnackBar(context, 'Please login with your credentials first');
+        }
+        setState(() {
+          _isloading = false;
+        });
+        return;
+      }
+
+      Get.off(() => const InitialLoadingScreen(hasBioAuth: true),
+          transition: Transition.fadeIn,
+          duration: const Duration(microseconds: 300));
+      return;
+    }
+    try {
+      if (mounted) {
+        await Provider.of<AuthProvider>(context, listen: false).login(
+          context: context,
+          password: password,
+          username: username,
+        );
+      }
+      setState(() {
+        _isloading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isloading = false;
+      });
+    }
   }
 }

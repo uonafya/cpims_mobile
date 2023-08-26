@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class StepsWrapper extends StatelessWidget {
   final String title;
@@ -20,8 +19,7 @@ class StepsWrapper extends StatelessWidget {
         children: [
           Text(
             title,
-            style:
-                GoogleFonts.openSans(fontSize: 18, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
           const Divider(
             color: Colors.grey,

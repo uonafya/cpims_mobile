@@ -3,8 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 
 class StatisticsGridItem extends StatelessWidget {
-  const StatisticsGridItem({Key? key, required this.value, required this.title, required this.icon, required this.color, required this.secondaryColor}) : super(key: key);
-  final int value;
+  const StatisticsGridItem(
+      {Key? key,
+      required this.value,
+      required this.title,
+      required this.icon,
+      required this.color,
+      required this.secondaryColor})
+      : super(key: key);
+  final String value;
   final String title;
   final IconData icon;
   final Color color;
@@ -44,7 +51,7 @@ class StatisticsGridItem extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        value.toString(),
+                        value,
                         style: const TextStyle(
                           fontSize: 20,
                           color: Colors.white,

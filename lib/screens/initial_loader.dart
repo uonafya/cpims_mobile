@@ -1,9 +1,15 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
+import 'package:cpims_mobile/screens/auth/login_screen.dart';
+import 'package:cpims_mobile/screens/biometric_information_screen.dart';
+import 'package:cpims_mobile/screens/connectivity_screen.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/services/dash_board_service.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:cpims_mobile/services/metadata_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,14 +21,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/caseload_service.dart';
 
 class InitialLoadingScreen extends StatefulWidget {
-  const InitialLoadingScreen({super.key, this.isFromAuth = false});
+  const InitialLoadingScreen(
+      {super.key, this.isFromAuth = false, this.hasBioAuth = false});
   final bool? isFromAuth;
+  final bool? hasBioAuth;
 
   @override
   State<InitialLoadingScreen> createState() => _InitialLoadingScreenState();
 }
 
 class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
+  List<BiometricType> availableBiometric = [];
+
   @override
   void initState() {
     super.initState();
@@ -42,11 +52,26 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
         final hasConnection =
             await Provider.of<ConnectivityProvider>(context, listen: false)
                 .checkInternetConnection();
+        final prefs = await SharedPreferences.getInstance();
+
+        final hasUserSetup = prefs.getBool("hasUserSetup");
+
         if (hasConnection == false) {
-          if (widget.isFromAuth == false) {
+          if (hasUserSetup == null) {
+            Get.off(
+                () => const ConnectivityScreen(redirectScreen: LoginScreen()));
+            return;
+          }
+          if (widget.isFromAuth == false && widget.hasBioAuth == false) {
             await _checkBiometric();
             await _getAvailableBiometric();
-            await _authenticate();
+            final isAuth = await _authenticate();
+            if (!isAuth) {
+              Get.off(() => const BiometricInformation(
+                    redirectScreen: LoginScreen(),
+                  ));
+              return;
+            }
           }
 
           final localDashData = await DashBoardService().fetchDashboardData();
@@ -75,6 +100,13 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
             }
             await Provider.of<UIProvider>(context, listen: false)
                 .setCaseLoadData();
+            try {
+              await MetadataService.fetchMetadata();
+            } catch (e) {
+              if (kDebugMode) {
+                print("Error fetching metadata in init load: $e");
+              }
+            }
           }
         }
 
@@ -128,10 +160,12 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
   }
 
   Future _getAvailableBiometric() async {
-    List<BiometricType> availableBiometric = [];
-
     try {
       availableBiometric = await auth.getAvailableBiometrics();
+      if (availableBiometric.isEmpty) {
+        errorSnackBar(context, 'Biometrics not available');
+        return;
+      }
     } on PlatformException catch (_) {
       if (context.mounted) {
         errorSnackBar(context, 'Unable to get available biometrics');
@@ -160,7 +194,6 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
     setState(() {
       authorized =
           authenticated ? "Authorized success" : "Failed to authenticate";
-      successSnackBar(context, 'Auth success');
     });
     return authenticated;
   }
@@ -170,12 +203,23 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
     return Scaffold(
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const SizedBox(
+              height: 80,
+            ),
+            const Spacer(),
             SizedBox(
               height: 100,
               width: 100,
               child: Image.asset('assets/images/logo_gok.png'),
+            ),
+            const Spacer(),
+            const Text(
+              'Loading...',
+              style: TextStyle(fontSize: 20),
+            ),
+            const SizedBox(
+              height: 80,
             ),
           ],
         ),
