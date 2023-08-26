@@ -149,7 +149,7 @@ class Form1AProvider extends ChangeNotifier {
           serviceId: service['serviceId']);
       servicesList.add(entry);
       print(service);
-    }git
+    }
 
 
     Form1ADataModel toDbData = Form1ADataModel(ovcCpimsId: "1234", dateOfEvent: dateOfEvent, services: servicesList, criticalEvents: eventsList);
