@@ -1,4 +1,3 @@
-
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
@@ -10,6 +9,63 @@ import 'package:dio/dio.dart';
 
 final dio = Dio();
 
+// Models for interacting with db
+class CPARAChildQuestions {
+  String ovc_cpims_id;
+  String question_code;
+  String answer_id;
+
+  CPARAChildQuestions(
+      {this.ovc_cpims_id = "", this.question_code = "", this.answer_id = ""});
+
+  factory CPARAChildQuestions.fromJSON(Map<String, dynamic> json) {
+    return CPARAChildQuestions(
+        question_code: json['questionid'],
+        answer_id: json['answer'],
+        ovc_cpims_id: json['childid']);
+  }
+
+  Map<String, dynamic> toJSON() {
+    return {
+      "ovc_cpims_id": ovc_cpims_id,
+      "question_code": question_code,
+      "answer_id": answer_id
+    };
+  }
+}
+
+class CPARADatabaseQuestions {
+  final String question_code;
+  final String answer_id;
+
+  const CPARADatabaseQuestions({
+    required this.question_code,
+    required this.answer_id,
+  });
+
+  factory CPARADatabaseQuestions.fromJSON(Map<String, dynamic> json) {
+    return CPARADatabaseQuestions(
+        question_code: json['questionid'], answer_id: json['answer']);
+  }
+
+  Map<String, dynamic> toJSON() {
+    return {question_code: answer_id};
+  }
+}
+
+class CPARADatabase {
+  String ovc_cpims_id;
+  String date_of_event;
+  List<CPARADatabaseQuestions> questions;
+  List<CPARAChildQuestions> childQuestions;
+
+  CPARADatabase(
+      {this.ovc_cpims_id = "",
+      this.date_of_event = "",
+      this.questions = const [],
+      this.childQuestions = const []});
+}
+
 class CparaModel {
   final DetailModel detail;
   final SafeModel safe;
@@ -18,24 +74,23 @@ class CparaModel {
   final HealthModel health;
   final OvcSubPopulationModel? ovcSubPopulationModel;
 
-  CparaModel({
-    required this.detail,
-    required this.safe,
-    required this.stable,
-    required this.schooled,
-    required this.health,
-    required this.ovcSubPopulationModel
-  });
+  CparaModel(
+      {required this.detail,
+      required this.safe,
+      required this.stable,
+      required this.schooled,
+      required this.health,
+      required this.ovcSubPopulationModel});
 
   factory CparaModel.fromJson(Map<String, dynamic> json) {
     return CparaModel(
-      detail: DetailModel.fromJson(json['detail']),
-      safe: SafeModel.fromJson(json['safe']),
-      stable: StableModel.fromJson(json['stable']),
-      schooled: SchooledModel.fromJson(json['schooled']),
-      health: HealthModel.fromJson(json['health']),
-      ovcSubPopulationModel: OvcSubPopulationModel.fromJson(json['ovcSubPopulationModel'])
-    );
+        detail: DetailModel.fromJson(json['detail']),
+        safe: SafeModel.fromJson(json['safe']),
+        stable: StableModel.fromJson(json['stable']),
+        schooled: SchooledModel.fromJson(json['schooled']),
+        health: HealthModel.fromJson(json['health']),
+        ovcSubPopulationModel:
+            OvcSubPopulationModel.fromJson(json['ovcSubPopulationModel']));
   }
 
   Future<void> addChildren(
@@ -71,15 +126,16 @@ class CparaModel {
     }
   }
 
-  Future<void> addChildren2(List<Map<String, dynamic>> data, Database db, int formId) async{
+  Future<void> addChildren2(
+      List<Map<String, dynamic>> data, Database db, int formId) async {
     try {
       // Create a batch
       var batch = db.batch();
-      for(Map i in data) {
+      for (Map i in data) {
         // getting data for each child
 
         i.forEach((key, value) {
-          if(key != "id"){
+          if (key != "id") {
             batch.insert("ChildAnswer", {
               "childID": i["id"],
               "questionID": key,
@@ -89,13 +145,9 @@ class CparaModel {
           }
         });
         // Insert database
-
-
-
-
       }
       await batch.commit(noResult: true);
-    }catch(err) {
+    } catch (err) {
       print("OHH SHIT!");
       print(err.toString());
       print("OHH SHIT!");
@@ -113,7 +165,7 @@ class CparaModel {
       var safeJSON = safe.toJSON();
       var schooledJSON = schooled.toJSON();
       var stableJSON = stable.toJSON();
-      var ovcSubPopulationModelJSON=ovcSubPopulationModel?.toJSON();
+      var ovcSubPopulationModelJSON = ovcSubPopulationModel?.toJSON();
 
       // insert to database, for now debugPrint for testing
       print("Detail");
@@ -139,7 +191,9 @@ class CparaModel {
 
       // Safe
       // List<Map<String, dynamic>> safeChildren = safeJSON.remove('children');
-      List<Map<String, dynamic>> safeChildren = [{"id": "45", "q1": "ge"}];
+      List<Map<String, dynamic>> safeChildren = [
+        {"id": "45", "q1": "ge"}
+      ];
       print("\nSafe Children\n");
       print(safeChildren.toString());
 
