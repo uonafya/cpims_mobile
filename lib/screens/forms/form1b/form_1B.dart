@@ -4,12 +4,7 @@ import 'package:cpims_mobile/screens/forms/form1b/widgets/critical_event_form1b.
 import 'package:cpims_mobile/screens/forms/form1b/widgets/healthy_form1b.dart';
 import 'package:cpims_mobile/screens/forms/form1b/widgets/safe_form1b.dart';
 import 'package:cpims_mobile/screens/forms/form1b/widgets/stable_form1b.dart';
-import 'package:cpims_mobile/screens/registry/organisation_units/widgets/about_organisation_registry.dart';
-import 'package:cpims_mobile/screens/registry/organisation_units/widgets/organisation_contact_registry.dart';
-import 'package:cpims_mobile/screens/registry/organisation_units/widgets/organisation_location_registry.dart';
-import 'package:cpims_mobile/screens/registry/organisation_units/widgets/organsation_type_registry.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
-import 'package:cpims_mobile/widgets/custom_arrow_button.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
@@ -18,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/form1b_provider.dart';
-import '../../../widgets/custom_toast.dart';
 
 class Form1BScreen extends StatefulWidget {
   const Form1BScreen({super.key});

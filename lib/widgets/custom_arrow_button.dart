@@ -53,7 +53,7 @@ class CustomArrowButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (arrowDirection == ArrowDirection.backward) arrowIcon,
-                SizedBox(width: 8.0), // Add spacing between arrow and text
+                const SizedBox(width: 8.0), // Add spacing between arrow and text
                 Text(
                   text,
                   style: TextStyle(
@@ -61,7 +61,7 @@ class CustomArrowButton extends StatelessWidget {
                     color: borderColor, // Set text color to match border
                   ),
                 ),
-                SizedBox(width: 8.0), // Add spacing between text and arrow
+                const SizedBox(width: 8.0), // Add spacing between text and arrow
                 if (arrowDirection == ArrowDirection.forward) arrowIcon,
               ],
             ),

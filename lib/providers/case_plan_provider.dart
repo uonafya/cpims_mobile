@@ -1,4 +1,3 @@
-import 'package:cpims_mobile/Models/case_plan_form.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/models/case_plan_main_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -30,8 +29,8 @@ class CasePlanProvider extends ChangeNotifier {
   CasePlanModelData get cpFormData => _casePlanModelData;
 
 
-  void setFinalFormDataOvcId(String ovc_cpims_id) {
-    _casePlanModelData.ovc_cpims_id = ovc_cpims_id;
+  void setFinalFormDataOvcId(String ovcCpimsId) {
+    _casePlanModelData.ovc_cpims_id = ovcCpimsId;
     notifyListeners();
   }
 

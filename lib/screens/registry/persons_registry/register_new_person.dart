@@ -9,7 +9,6 @@ import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class RegisterNewPerson extends StatefulWidget {
@@ -53,10 +52,9 @@ class _RegisterNewPersonState extends State<RegisterNewPerson> {
           ),
           const SizedBox(height: 30),
           CustomCard(title: 'Create Person', children: [
-            Text(
+            const Text(
               'Personal Details',
-              style: GoogleFonts.openSans(
-                  fontSize: 18, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const Divider(
               color: Colors.grey,

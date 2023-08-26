@@ -12,7 +12,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/route_manager.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -128,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: kToolbarHeight),
                   Text(
                     'Login',
-                    style: GoogleFonts.openSans(
+                    style: TextStyle(
                       fontSize: ScreenUtil().setSp(28),
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
@@ -136,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   Text(
                     'Directorate of Children Services (DCS)',
-                    style: GoogleFonts.openSans(
+                    style: TextStyle(
                       fontSize: ScreenUtil().setSp(12),
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
