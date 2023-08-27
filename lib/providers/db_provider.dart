@@ -21,7 +21,7 @@ class LocalDb {
     if (_database != null) return _database!;
 
     // If database don't exists, create one
-    _database = await _initDB('children_ovc4.db');
+    _database = await _initDB('children_ovc.db');
 
     return _database!;
   }
@@ -97,6 +97,8 @@ class LocalDb {
           ${CasePlanServices.resultsId} $textType,
           ${CasePlanServices.reasonId} $textType,
           ${CasePlanServices.completionDate} $textType,
+          ${CasePlanServices.responsibleIds} $textType,
+          ${CasePlanServices.serviceIds} $textType,
           FOREIGN KEY (${CasePlanServices
         .formId}) REFERENCES $casePlanTable(${CasePlan.id})
         )
@@ -589,6 +591,8 @@ class CasePlanServices {
     resultsId,
     reasonId,
     completionDate,
+    responsibleIds,
+    serviceIds
   ];
   static const String id = '_id';
   static const String formId = 'form_id';
@@ -599,6 +603,8 @@ class CasePlanServices {
   static const String resultsId = 'results_id';
   static const String reasonId = 'reason_id';
   static const String completionDate = 'completion_date';
+  static const String responsibleIds = 'responsible_ids';
+  static const String serviceIds = 'service_ids';
 }
 
 class Form1 {
