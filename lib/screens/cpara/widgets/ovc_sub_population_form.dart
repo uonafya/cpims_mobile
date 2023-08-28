@@ -132,12 +132,12 @@ class _CheckboxFormState extends State<CheckboxForm> {
     try {
       // Save OVC prepopulation data without specifying formId
       String uuid = const Uuid().v4();
-      String dateOfAssessment = Provider
+      String? dateOfAssessment = Provider
           .of<CparaProvider>(context, listen: false)
           .detailModel
-          ?.dateOfAssessment ?? "NULL";
+          ?.dateOfAssessment;
       await localDb.insertOvcSubpopulationData(
-          uuid, widget.caseLoadModel.cpimsId!, dateOfAssessment,
+          uuid, widget.caseLoadModel.cpimsId!, dateOfAssessment!,
           selectedQuestions);
 
       // Show success dialog if the context is still mounted
