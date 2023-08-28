@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
+import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
 import 'package:cpims_mobile/screens/cpara/model/db_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
@@ -407,7 +408,7 @@ class PastCPARAListWidget extends StatefulWidget {
 
 class _PastCPARAListWidgetState extends State<PastCPARAListWidget> {
   Database? database;
-
+  List<CPARADatabase> pastCparaList = [];
   @override
   void initState() {
     initializeDbInstance();
@@ -416,6 +417,7 @@ class _PastCPARAListWidgetState extends State<PastCPARAListWidget> {
 
   Future<void> initializeDbInstance() async {
     database = await LocalDb.instance.database;
+   if(mounted) setState(() {});
   }
   @override
   Widget build(BuildContext context) {
@@ -426,18 +428,29 @@ class _PastCPARAListWidgetState extends State<PastCPARAListWidget> {
         child: FutureBuilder<List<CPARADatabase>>(
           future: database != null ? getUnsynchedForms(database!) : Future.value([]),
           builder: (context, snapshot) {
+
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else {
-    return ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: 1,
-        itemBuilder: (context, index){
-          return const PastCPARACardWidget();
-        });
+            }
+            else if(snapshot.connectionState == ConnectionState.done){
+              if(snapshot.hasData){
+                pastCparaList = snapshot.data!;
+              }
+              return
+                pastCparaList.isEmpty ? const NotFoundWidget(text: 'No past CPARA found',) :
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: pastCparaList.length,
+                  itemBuilder: (context, index){
+                    CPARADatabase cparaDatabase = pastCparaList[index];
+                    return PastCPARACardWidget(cparaDatabase: cparaDatabase,);
+                  });
+            }
+            else {
+    return const Center(child: Text('Unable to load data'));
     }
     },
     ),
@@ -446,7 +459,8 @@ class _PastCPARAListWidgetState extends State<PastCPARAListWidget> {
 }
 
 class PastCPARACardWidget extends StatelessWidget {
-  const PastCPARACardWidget({super.key});
+  final CPARADatabase cparaDatabase;
+  const PastCPARACardWidget({super.key, required this.cparaDatabase});
 
   @override
   Widget build(BuildContext context) {
@@ -455,10 +469,10 @@ class PastCPARACardWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Column(
           children: [
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Feb 11, 2023", style: TextStyle(
+                Text(cparaDatabase.date_of_event, style: const TextStyle(
                     fontWeight: FontWeight.bold, fontSize: 12, color: Colors.blue
                 ),),
             // Row(
@@ -504,6 +518,40 @@ class PastCPARACardWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20,),
+            const Text("Household questions", style: TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 16
+            ),),
+            const SizedBox(height: 10,),
+            for(int i = 0; i < cparaDatabase.questions.length; i++)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(cparaDatabase.questions[i].question_code, style: const TextStyle(
+                      fontWeight: FontWeight.normal, fontSize: 14
+                  ),),
+                  Text(cparaDatabase.questions[i].answer_id, style: const TextStyle(
+                      fontWeight: FontWeight.normal, fontSize: 14
+                  ),),
+                ],
+              ),
+            const SizedBox(height: 20,),
+            const Text("Child questions", style: TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 16
+            ),),
+            const SizedBox(height: 10,),
+            for(int i = 0; i < cparaDatabase.childQuestions.length; i++)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(cparaDatabase.childQuestions[i].question_code, style: const TextStyle(
+                    fontWeight: FontWeight.normal, fontSize: 14
+                ),),
+                Text(cparaDatabase.childQuestions[i].answer_id, style: const TextStyle(
+                    fontWeight: FontWeight.normal, fontSize: 14
+                ),),
+              ],
+            ),
+            const SizedBox(height: 10,),
             GridView.builder(
               shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -514,16 +562,16 @@ class PastCPARACardWidget extends StatelessWidget {
                     mainAxisSpacing: 10.0,
                     crossAxisSpacing: 20.0),
                 itemBuilder: (context, index) {
-                  return BenchmarkScoreWidget(index: index);
+                  return BenchmarkScoreWidget(index: index, cparaDatabase: cparaDatabase,);
                 }),
             const SizedBox(height: 10,),
-            const Row(
+             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text("Benchmark score : ", style: TextStyle(
+                const Text("Benchmark score : ", style: TextStyle(
                     fontWeight: FontWeight.normal, fontSize: 18, color: Colors.grey
                 ),),
-                Text("7", style: TextStyle(
+                Text(overallBenchMarkScoreValueFromDb(cparaDatabase: cparaDatabase), style: const TextStyle(
                     fontWeight: FontWeight.bold, fontSize: 20, color: Colors.blue
                 ),),
               ],
@@ -538,14 +586,15 @@ class PastCPARACardWidget extends StatelessWidget {
 
 class BenchmarkScoreWidget extends StatelessWidget {
   final int index;
-  const BenchmarkScoreWidget({super.key, required this.index});
+  final CPARADatabase cparaDatabase;
+  const BenchmarkScoreWidget({super.key, required this.index, required this.cparaDatabase});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Text('Benchmark ${index + 1} ', style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14.0),),
-        const Text('(Yes)', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0),),
+        Text('(${overallBenchMarkScoreFromDb(index: index + 1, cparaDatabase: cparaDatabase)})', style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0),),
       ],
     );
   }
@@ -606,4 +655,387 @@ RadioButtonOptions convertingStringToRadioButtonOptions(String savedRadioButtonO
     default:
       return RadioButtonOptions.no;
   }
+}
+
+// for health and is benchmark 1
+String benchMarkOneScoreFromDb({required CPARADatabase cparaDatabase}){
+  // there are 5 questions 1.1 to 1.5 no overall questions
+  String question1Answer = "Yes"; // 1.1
+  String question2Answer = "Yes"; // 1.2
+  String question3Answer = "Yes"; // 1.3
+  String question4Answer = "Yes"; // 1.4
+  String question5Answer = "Yes"; // 1.5
+
+
+  for(CPARADatabaseQuestions question in cparaDatabase.questions){
+    if(question.question_code == CparaQuestionIds.healthQuestion1){
+      question1Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthQuestion2){
+      question2Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthQuestion3){
+      question3Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthQuestion4){
+      question4Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthQuestion5){
+      question5Answer = question.answer_id;
+    }
+
+  }
+
+
+  List<String> answers = [question1Answer, question2Answer, question3Answer, question4Answer, question5Answer];
+
+  for(String answer in answers){
+    if("no" == answer.toLowerCase()){
+      return "No";
+    }
+  }
+
+  return "Yes";
+}
+
+// for health and is benchmark 2
+String benchMarkTwoScoreFromDb({required CPARADatabase cparaDatabase}){
+  // there are 13 questions 2.1 to 2.9 with 4 overall questions
+  String question1Answer = "Yes"; // 2.1
+  String question2Answer = "Yes"; // 2.2
+  String question3Answer = "Yes"; // 2.3
+  String question4Answer = "Yes"; // 2.4
+  String question5Answer = "Yes"; // 2.5
+  String question6Answer = "Yes"; // 2.6
+  String question7Answer = "Yes"; // 2.7
+  String question8Answer = "Yes"; // 2.8
+  String question9Answer = "Yes"; // 2.9
+  String overallQuestion1Answer = "Yes"; // Is there anyone who is HIV positive in the Household ?
+  String overallQuestion2Answer = "Yes"; // Is there a child 0 - 12 years who is HIV positive ?
+  String overallQuestion3Answer = "Yes"; // Is there an adolescents or a child above 12 years who is HIV positive ?
+  String overallQuestion4Answer = "Yes"; // Is the caregiver HIV positive ?
+
+  for(CPARADatabaseQuestions question in cparaDatabase.questions){
+    if(question.question_code == CparaQuestionIds.healthGoal2Question1){
+      question1Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthGoal2Question2){
+      question2Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthGoal2Question3){
+      question3Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthGoal2Question4){
+      question4Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthGoal2Question5){
+      question5Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthGoal2Question6){
+      question6Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthGoal2Question7){
+      question7Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthGoal2Question8){
+      question8Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthGoal2Question9){
+      question9Answer = question.answer_id;
+    }
+
+  }
+
+  List<String> answers = [question1Answer, question2Answer, question3Answer, question4Answer, question5Answer, question6Answer, question7Answer, question8Answer, question9Answer];
+
+  for(String answer in answers){
+    if("no" == answer.toLowerCase()){
+      return "No";
+    }
+  }
+
+  return "Yes";
+}
+
+// for health and is benchmark 3
+String benchMarkThreeScoreFromDb({required CPARADatabase cparaDatabase}){
+  // there are 3 child questions 3.1 to 3.3 with 1 overall questions
+  String childQuestion1Answer = "Yes"; // loops through all the children 3.1
+  String childQuestion2Answer = "Yes"; // loops through all the children 3.2
+  String childQuestion3Answer = "Yes"; // loops through all the children 3.3
+  String overallQuestion1Answer = "Yes"; // Does the household have adolescent girls and boys ?
+
+  for(CPARADatabaseQuestions question in cparaDatabase.questions){
+    if(question.question_code == CparaQuestionIds.healthGoal3ChildQuestion1){
+      childQuestion1Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthGoal3ChildQuestion2){
+      childQuestion2Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthGoal3ChildQuestion3){
+      childQuestion3Answer = question.answer_id;
+    }
+
+
+  }
+
+  List<String> answers = [childQuestion1Answer, childQuestion2Answer, childQuestion3Answer];
+
+  for(String answer in answers){
+    if("no" == answer.toLowerCase()){
+      return "No";
+    }
+  }
+
+  return "Yes";
+}
+
+// for health and is benchmark 4
+String benchMarkFourScoreFromDb({required CPARADatabase cparaDatabase}){
+  // there are 6 questions 4.1 to 4.4 with 2 overall questions
+  String question1Answer = "Yes"; // 4.1
+  String question2Answer = "Yes"; // 4.2
+  String question3Answer = "Yes"; // 4.3
+  String question4Answer = "Yes"; // 4.4
+  String overallQuestion1Answer = "Yes"; // Is there child < 5 years in the household ?
+  String overallQuestion2Answer = "Yes"; // Is there child < 2 years in the household ?
+
+  for(CPARADatabaseQuestions question in cparaDatabase.questions){
+    if(question.question_code == CparaQuestionIds.healthGoal4Question1){
+      question1Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthGoal4Question2){
+      question2Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthGoal4Question3){
+      question3Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.healthGoal4Question4){
+      question4Answer = question.answer_id;
+    }
+
+  }
+
+  List<String> answers = [question1Answer, question2Answer, question3Answer, question4Answer];
+
+  for(String answer in answers){
+    if("no" == answer.toLowerCase()){
+      return "No";
+    }
+  }
+
+  return "Yes";
+}
+
+// for stable
+String benchMarkFiveScoreFromDb({required CPARADatabase cparaDatabase}){
+  // there are 3 questions 5.1 to 5.3 no overall questions
+  String question1Answer = "Yes"; // 5.1
+  String question2Answer = "Yes"; // 5.2
+  String question3Answer = "Yes"; // 5.3
+
+  for(CPARADatabaseQuestions question in cparaDatabase.questions){
+    if(question.question_code == CparaQuestionIds.stableQuestion1){
+      question1Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.stableQuestion2){
+      question2Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.stableQuestion3){
+      question3Answer = question.answer_id;
+    }
+
+  }
+
+  List<String> answers = [question1Answer, question2Answer, question3Answer];
+
+  for(String answer in answers){
+    if("no" == answer.toLowerCase()){
+      return "No";
+    }
+  }
+
+  return "Yes";
+}
+
+// for safe and is benchmark 1
+String benchMarkSixScoreFromDb({required CPARADatabase cparaDatabase}){
+  // there are 7 questions 6.1 to 6.5 with 2 overall questions and one child question
+  String question1Answer = "Yes"; // 6.1
+  String question2Answer = "Yes"; // 6.2
+  String question3Answer = "Yes"; // 6.4
+  String question4Answer = "Yes"; // 6.5
+  String overallQuestion1Answer = "Yes"; // Are there children, adolescents, and caregivers in the household who have experienced violence
+  String overallQuestion2Answer = "Yes"; // Is there adolescents 12 years and above ?
+  String childQuestion1Answer = "Yes"; // depends on number of children 6.3 Have you been exposed to violence, abuse (sexual, physical or emotional), neglect, or exploitation in the last six months?
+
+  for(CPARADatabaseQuestions question in cparaDatabase.questions){
+    if(question.question_code == CparaQuestionIds.safeQuestion1){
+      question1Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.safeQuestion2){
+      question2Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.safeQuestion3){
+      question3Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.safeQuestion4){
+      question4Answer = question.answer_id;
+    }
+
+  }
+
+  List<String> answers = [question1Answer, question2Answer, question3Answer, question4Answer];
+
+  for(String answer in answers){
+    if("no" == answer.toLowerCase()){
+      return "No";
+    }
+  }
+
+  return "Yes";
+}
+
+// for safe and is benchmark 2
+String benchMarkSevenScoreFromDb({required CPARADatabase cparaDatabase}){
+  // there are 2 questions 7.1 to 7.2 with no overall questions
+  String question1Answer = "Yes"; // 7.1
+  String question2Answer = "Yes"; // 7.2
+
+for(CPARADatabaseQuestions question in cparaDatabase.questions){
+    if(question.question_code == CparaQuestionIds.safeQuestion5){
+      question1Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.safeQuestion6){
+      question2Answer = question.answer_id;
+    }
+  }
+
+  List<String> answers = [question1Answer, question2Answer];
+
+  for(String answer in answers){
+    if("no" == answer.toLowerCase()){
+      return "No";
+    }
+  }
+
+  return "Yes";
+}
+
+// for safe and is benchmark 3
+String benchMarkEightScoreFromDb({required CPARADatabase cparaDatabase}){
+  // there are 1 questions 8.1 with no overall questions
+  String question1Answer = "Yes"; // 8.1
+
+  for(CPARADatabaseQuestions question in cparaDatabase.questions){
+    if(question.question_code == CparaQuestionIds.safeQuestion7){
+      question1Answer = question.answer_id;
+    }
+  }
+  List<String> answers = [question1Answer];
+
+  for(String answer in answers){
+    if("no" == answer.toLowerCase()){
+      return "No";
+    }
+  }
+
+  return "Yes";
+}
+
+// for schooled
+String benchMarkNineScoreFromDb({required CPARADatabase cparaDatabase}){
+  // there are 6 questions 9.1 to 9.4 with 2 overall questions
+  String question1Answer = "Yes"; // 9.1
+  String question2Answer = "Yes"; // 9.2
+  String question3Answer = "Yes"; // 9.3
+  String question4Answer = "Yes"; // 9.4
+  String overallQuestion1Answer = "Yes"; // are there school going children
+  String overallQuestion2Answer = "Yes"; // is there a child btw 4-5 years and ECDE in the area
+
+  for(CPARADatabaseQuestions question in cparaDatabase.questions){
+    if(question.question_code == CparaQuestionIds.schooledQuestion1){
+      question1Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.schooledQuestion2){
+      question2Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.schooledQuestion3){
+      question3Answer = question.answer_id;
+    }
+    else if(question.question_code == CparaQuestionIds.schooledQuestion4){
+      question4Answer = question.answer_id;
+    }
+
+  }
+
+//   if(overallQuestion1Answer.toLowerCase() ==  "no"){
+//     // skip question 9.1 and 9.2
+// question1Answer = "No";
+// question2Answer = "No";
+//   }
+//
+//   if(overallQuestion2Answer.toLowerCase() ==  "no"){
+//     // skip question 9.3
+// question3Answer = "No";
+//
+//   }
+
+  List<String> answers = [question1Answer, question2Answer, question3Answer, question4Answer,];
+
+  for(String answer in answers){
+    if("no" == answer.toLowerCase()){
+      return "No";
+    }
+  }
+
+  return "Yes";
+}
+
+String overallBenchMarkScoreFromDb({required int index, required CPARADatabase cparaDatabase}){
+  switch(index){
+    case 1:
+      return benchMarkOneScoreFromDb(cparaDatabase: cparaDatabase);
+    case 2:
+      return benchMarkTwoScoreFromDb(cparaDatabase: cparaDatabase);
+    case 3:
+      return benchMarkThreeScoreFromDb(cparaDatabase: cparaDatabase);
+    case 4:
+      return benchMarkFourScoreFromDb(cparaDatabase: cparaDatabase);
+    case 5:
+      return benchMarkFiveScoreFromDb(cparaDatabase: cparaDatabase);
+    case 6:
+      return benchMarkSixScoreFromDb(cparaDatabase: cparaDatabase);
+    case 7:
+      return benchMarkSevenScoreFromDb(cparaDatabase: cparaDatabase);
+    case 8:
+      return benchMarkEightScoreFromDb(cparaDatabase: cparaDatabase);
+    case 9:
+      return benchMarkNineScoreFromDb(cparaDatabase: cparaDatabase);
+    default:
+      return "No";
+  }
+}
+
+String overallBenchMarkScoreValueFromDb({required CPARADatabase cparaDatabase}){
+  int score = 0;
+
+  List<String> answers = [benchMarkOneScoreFromDb(cparaDatabase: cparaDatabase),
+    benchMarkTwoScoreFromDb(cparaDatabase: cparaDatabase),
+    benchMarkThreeScoreFromDb(cparaDatabase: cparaDatabase),
+    benchMarkFourScoreFromDb(cparaDatabase: cparaDatabase),
+    benchMarkFiveScoreFromDb(cparaDatabase: cparaDatabase),
+    benchMarkSixScoreFromDb(cparaDatabase: cparaDatabase),
+    benchMarkSevenScoreFromDb(cparaDatabase: cparaDatabase),
+    benchMarkEightScoreFromDb(cparaDatabase: cparaDatabase),
+    benchMarkNineScoreFromDb(cparaDatabase: cparaDatabase)];
+
+
+  for(String answer in answers){
+    if("yes" == answer.toLowerCase()){
+      score++;
+    }
+  }
+
+      return score.toString();
 }

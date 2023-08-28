@@ -1,3 +1,5 @@
+import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
+
 class SafeModel {
   final String? question1;
   final String? question2;
@@ -50,13 +52,13 @@ class SafeModel {
   // Converts the detail model to json. This is particulary going to be used for the sake of the database
   Map<String, dynamic> toJSON() {
     return {
-      'q25': question1,
-      'q26': question2,
-      'q27': question3,
-      'q28': question4,
-      'q29': question5,
-      'q30': question6,
-      'q31': question7,
+      CparaQuestionIds.safeQuestion1: question1,
+      CparaQuestionIds.safeQuestion2: question2,
+      CparaQuestionIds.safeQuestion3: question3,
+      CparaQuestionIds.safeQuestion4: question4,
+      CparaQuestionIds.safeQuestion5: question5,
+      CparaQuestionIds.safeQuestion6: question6,
+      CparaQuestionIds.safeQuestion7: question7,
       "children": childrenQuestions?.map((e) => e.toJSON()).toList() ?? []
     };
   }
@@ -110,6 +112,6 @@ class SafeChild {
   }
 
   Map<String, dynamic> toJSON() {
-    return {"id": ovcId, "q1": question1};
+    return {"id": ovcId, CparaQuestionIds.safeChildQuestion1: question1};
   }
 }

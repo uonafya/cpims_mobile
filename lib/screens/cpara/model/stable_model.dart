@@ -1,3 +1,5 @@
+import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
+
 class StableModel {
   final String? question1;
   final String? question2;
@@ -19,9 +21,9 @@ class StableModel {
 
   Map<String, dynamic> toJSON() {
     return {
-      "q36": question1,
-      "q37": question2,
-      "q38": question3,
+      CparaQuestionIds.stableQuestion1: question1,
+      CparaQuestionIds.stableQuestion2: question2,
+      CparaQuestionIds.stableQuestion3: question3,
     };
   }
 
