@@ -146,14 +146,30 @@ class _CheckboxFormState extends State<CheckboxForm> {
                   Get.back(); // Close the dialog
                   Get.back(); // Go back to the previous screen
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           ),
         );
       }
     } catch (error) {
-      print('Error saving OVC Sub-Population data: $error');
+      // Show error dialog if the context is still mounted
+      if (context.mounted) {
+        showDialog(
+          context: context, // Use the context from the build method
+          builder: (context) => AlertDialog(
+            title: const Text('Error'),
+            content: Text('An error occurred: $error'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Get.back(); // Close the dialog
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
     }
   }
 }
