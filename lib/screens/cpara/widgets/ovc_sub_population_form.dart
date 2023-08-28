@@ -65,7 +65,9 @@ class _CheckboxFormState extends State<CheckboxForm> {
 
   @override
   Widget build(BuildContext context) {
-    DetailModel detailModel= Provider.of<CparaProvider>(context, listen: false).detailModel?? DetailModel();
+    DetailModel detailModel = Provider
+        .of<CparaProvider>(context, listen: false)
+        .detailModel ?? DetailModel();
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -80,7 +82,8 @@ class _CheckboxFormState extends State<CheckboxForm> {
               const ReusableTitleText(title: "OVC Sub Population Form"),
               const SizedBox(height: 10),
               Text(
-                  'Child Name: ${widget.caseLoadModel.ovcFirstName} ${widget.caseLoadModel.ovcSurname}'),
+                  'Child Name: ${widget.caseLoadModel.ovcFirstName} ${widget
+                      .caseLoadModel.ovcSurname}'),
               const SizedBox(height: 10),
               Text('OVC CPIMS ID: ${widget.caseLoadModel.cpimsId}'),
               for (var question in questions)
@@ -90,7 +93,7 @@ class _CheckboxFormState extends State<CheckboxForm> {
                   children: [
                     Expanded(
                         child:
-                            ReusableTitleText(title: question.question ?? "")),
+                        ReusableTitleText(title: question.question ?? "")),
                     Checkbox(
                       value: question.isChecked,
                       onChanged: (value) {
@@ -129,27 +132,33 @@ class _CheckboxFormState extends State<CheckboxForm> {
     try {
       // Save OVC prepopulation data without specifying formId
       String uuid = const Uuid().v4();
-      String dateOfAssessment = Provider.of<CparaProvider>(context, listen: false).detailModel?.dateOfAssessment ?? "NULL";
+      String dateOfAssessment = Provider
+          .of<CparaProvider>(context, listen: false)
+          .detailModel
+          ?.dateOfAssessment ?? "NULL";
       await localDb.insertOvcSubpopulationData(
-          uuid, widget.caseLoadModel.cpimsId!,dateOfAssessment,selectedQuestions);
+          uuid, widget.caseLoadModel.cpimsId!, dateOfAssessment,
+          selectedQuestions);
 
       // Show success dialog if the context is still mounted
       if (context.mounted) {
         showDialog(
           context: context, // Use the context from the build method
-          builder: (context) => AlertDialog(
-            title: const Text('Success'),
-            content: const Text('OVC Sub-Population data saved successfully.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Get.back(); // Close the dialog
-                  Get.back(); // Go back to the previous screen
-                },
-                child: const Text('OK'),
+          builder: (context) =>
+              AlertDialog(
+                title: const Text('Success'),
+                content: const Text(
+                    'OVC Sub-Population data saved successfully.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Get.back(); // Close the dialog
+                      Get.back(); // Go back to the previous screen
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
               ),
-            ],
-          ),
         );
       }
     } catch (error) {
@@ -157,19 +166,21 @@ class _CheckboxFormState extends State<CheckboxForm> {
       if (context.mounted) {
         showDialog(
           context: context, // Use the context from the build method
-          builder: (context) => AlertDialog(
-            title: const Text('Error'),
-            content: Text('An error occurred: $error'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Get.back(); // Close the dialog
-                },
-                child: const Text('OK'),
+          builder: (context) =>
+              AlertDialog(
+                title: const Text('Error'),
+                content: Text('An error occurred: $error'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Get.back(); // Close the dialog
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
               ),
-            ],
-          ),
         );
+      }
     }
   }
 }
