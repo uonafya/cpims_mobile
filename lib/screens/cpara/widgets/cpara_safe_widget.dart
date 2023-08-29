@@ -450,6 +450,10 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 // todo: update the children questions
                     context.read<CparaProvider>().updateSafeModel(safeModel
                         .copyWith(childrenQuestions: childrenQuestions));
+//                     context.read<CparaProvider>().updateSafeModel(safeModel
+//                         .copyWith(childrenQuestions: [SafeChild(question1: selectedOption, ovcId: "35273283", name: "Okello Enos"),
+//                       SafeChild(question1: "No", ovcId: "0716229563", name: "Nakato Sarah"),
+//                       ...childrenQuestions]));
 
                     // // Update the state of the question
                     updateQuestion("_exposed_to_violence", value);

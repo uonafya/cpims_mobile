@@ -1,4 +1,6 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
+import 'package:cpims_mobile/Models/statistic_model.dart';
+import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
@@ -290,69 +292,72 @@ class TextViewsColumn extends StatefulWidget {
 
 class _TextViewsColumnState extends State<TextViewsColumn> {
   CaseLoadModel caseLoadModel = CaseLoadModel();
-
+  // SummaryDataModel dashData = SummaryDataModel();
   @override
   void initState() {
     super.initState();
 
     caseLoadModel =
         context.read<CparaProvider>().caseLoadModel ?? CaseLoadModel();
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final SummaryDataModel dashData =
+    context.select((UIProvider provider) => provider.getDashData);
+
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ReusableTitleText(title: 'Name of Organisation(LIP)'),
-        SizedBox(height: 10),
-        // Text('${caseLoadModel.caregiverNames}'),
-        Text('Catholic Diocese of Nakuru'),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Date enrolled in the project'),
-        SizedBox(height: 10),
-        Text("details.ovcEnrollmentDate"),
-        SizedBox(height: 10),
-        ReusableTitleText(title: "County"),
-        SizedBox(height: 10),
-        Text("details.wardName"),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Sub County'),
-        SizedBox(height: 10),
-        Text("details.wardName"),
-        SizedBox(height: 10),
-        ReusableTitleText(
+        const ReusableTitleText(title: 'Name of Organisation(LIP)'),
+        const SizedBox(height: 10),
+        Text(dashData.orgUnit),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Date enrolled in the project'),
+        const SizedBox(height: 10),
+        Text("${caseLoadModel.registrationDate}"),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: "County"),
+        const SizedBox(height: 10),
+        Text("details.countyName *"),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Sub County'),
+        const SizedBox(height: 10),
+        Text("details.subCountyName *"),
+        const SizedBox(height: 10),
+        const ReusableTitleText(
             title: 'Name of caseworker/CHV conducting assessment'),
-        SizedBox(height: 10),
-        Text("details.chvNames"),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Name of SDP staff/Case Manager'),
-        SizedBox(height: 10),
-        Text("details.cboName"),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Name of Caregiver'),
-        SizedBox(height: 10),
-        Text("details.caregiverNames"),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Caregiver ID Number'),
-        SizedBox(height: 10),
-        Text("details.caregiverCpimsId.toString()"),
-        SizedBox(height: 10),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Caregiver Gender'),
-        SizedBox(height: 10),
-        Text("Female"),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Caregiver DOB'),
-        SizedBox(height: 10),
-        Text('August 21, 1973'),
-        SizedBox(height: 10),
-        ReusableTitleText(title: 'Caregiver Phone Number'),
-        SizedBox(height: 10),
-        Text('708568702'),
-        SizedBox(height: 10),
-        Divider(height: 20, thickness: 2),
-        SizedBox(height: 20),
+        const SizedBox(height: 10),
+        Text("details.chvNames *"),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Name of SDP staff/Case Manager'),
+        const SizedBox(height: 10),
+        Text(dashData.orgUnit),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Name of Caregiver'),
+        const SizedBox(height: 10),
+        Text("${caseLoadModel.caregiverNames}"),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Caregiver ID Number'),
+        const SizedBox(height: 10),
+        Text("${caseLoadModel.caregiverCpimsId}"),
+        const SizedBox(height: 10),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Caregiver Gender'),
+        const SizedBox(height: 10),
+        Text("Female *"),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Caregiver DOB'),
+        const SizedBox(height: 10),
+        Text('August 21, 1973 *'),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Caregiver Phone Number'),
+        const SizedBox(height: 10),
+        Text('708568702 *'),
+        const SizedBox(height: 10),
+        const Divider(height: 20, thickness: 2),
+        const SizedBox(height: 20),
       ],
     );
   }

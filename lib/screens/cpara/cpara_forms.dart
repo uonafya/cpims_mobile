@@ -58,7 +58,13 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
     // todo: update case load data in Cpara provider
     // initialize the database
     // initializeDatabase();
+    // initializeDbInstance();
     fetchChildren(caseLoadData);
+  }
+
+  Future<void> initializeDbInstance() async {
+    database = await LocalDb.instance.database;
+    if(mounted) setState(() {});
   }
 
   fetchChildren(caseList) async{
@@ -185,6 +191,8 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                     HealthModel? healthModel = context
                                         .read<CparaProvider>()
                                         .healthModel;
+                                    // context.read<CparaProvider>().updateHealthModel((healthModel ?? HealthModel()
+                                    //     ));
                                     StableModel? stableModel = context
                                         .read<CparaProvider>()
                                         .stableModel;
@@ -528,7 +536,13 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                                   question2: "question2",
                                                   question3: "question3",
                                                   question4: "question4"),
-                                          health: healthModel ?? HealthModel(),
+                                          health: (healthModel ?? HealthModel()
+                                          // ).copyWith(childrenQuestions: [
+                                          //   HealthChild(question1: "No", question2: "Yes",question3: "No", id: "35273283", name: "Okello Enos"),
+                                          //   HealthChild(question1: "Yes", question2: "No",question3: "No", id: "0716229563", name: "Nakato Sarah"),
+                                          //   HealthChild(question1: "Yes", question2: "Yes",question3: "No", id: "2012593", name: "LUCAS OWUOR"),
+                                          // ]
+                                          ),
                                           // ovcSubPopulationModel:
                                           //     OvcSubPopulationModel()
                                               );

@@ -464,6 +464,24 @@ class PastCPARACardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Map<String, List<CPARAChildQuestions>> separatedChildren = {};
+
+    for (var child in cparaDatabase.childQuestions) {
+      if (!separatedChildren.containsKey(child.ovc_cpims_id)) {
+        separatedChildren[child.ovc_cpims_id] = [];
+      }
+      separatedChildren[child.ovc_cpims_id]!.add(child);
+    }
+
+    // Printing the separated children
+    separatedChildren.forEach((id, childrenList) {
+      print("Children with ID $id:");
+      for (var child in childrenList) {
+        print("  ${child.question_code} - ${child.answer_id}");
+      }
+    });
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -518,40 +536,81 @@ class PastCPARACardWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20,),
-            const Text("Household questions", style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 16
-            ),),
-            const SizedBox(height: 10,),
-            for(int i = 0; i < cparaDatabase.questions.length; i++)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(cparaDatabase.questions[i].question_code, style: const TextStyle(
-                      fontWeight: FontWeight.normal, fontSize: 14
-                  ),),
-                  Text(cparaDatabase.questions[i].answer_id, style: const TextStyle(
-                      fontWeight: FontWeight.normal, fontSize: 14
-                  ),),
-                ],
-              ),
-            const SizedBox(height: 20,),
-            const Text("Child questions", style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 16
-            ),),
-            const SizedBox(height: 10,),
-            for(int i = 0; i < cparaDatabase.childQuestions.length; i++)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(cparaDatabase.childQuestions[i].question_code, style: const TextStyle(
-                    fontWeight: FontWeight.normal, fontSize: 14
-                ),),
-                Text(cparaDatabase.childQuestions[i].answer_id, style: const TextStyle(
-                    fontWeight: FontWeight.normal, fontSize: 14
-                ),),
-              ],
-            ),
-            const SizedBox(height: 10,),
+            // const Text("Household questions", style: TextStyle(
+            //     fontWeight: FontWeight.bold, fontSize: 16
+            // ),),
+            // const SizedBox(height: 10,),
+            // for(int i = 0; i < cparaDatabase.questions.length; i++)
+            //   Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Text(cparaDatabase.questions[i].question_code, style: const TextStyle(
+            //           fontWeight: FontWeight.normal, fontSize: 14
+            //       ),),
+            //       Text(cparaDatabase.questions[i].answer_id, style: const TextStyle(
+            //           fontWeight: FontWeight.normal, fontSize: 14
+            //       ),),
+            //     ],
+            //   ),
+            // const SizedBox(height: 20,),
+            // const Text("Child questions", style: TextStyle(
+            //     fontWeight: FontWeight.bold, fontSize: 16
+            // ),),
+            // const SizedBox(height: 10,),
+            // for(int i = 0; i < cparaDatabase.childQuestions.length; i++)
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     Text(cparaDatabase.childQuestions[i].question_code, style: const TextStyle(
+            //         fontWeight: FontWeight.normal, fontSize: 14
+            //     ),),
+            //     Text(cparaDatabase.childQuestions[i].answer_id, style: const TextStyle(
+            //         fontWeight: FontWeight.normal, fontSize: 14
+            //     ),),
+            //   ],
+            // ),
+            // const SizedBox(height: 10,),
+            // const Text("Child questions v2", style: TextStyle(
+            //     fontWeight: FontWeight.bold, fontSize: 16
+            // ),),
+            // const SizedBox(height: 10,),
+            // ListView.builder(itemBuilder: (
+            //     context, index){
+            //   String childId = separatedChildren.keys.elementAt(index);
+            //   List<CPARAChildQuestions> data = separatedChildren[childId]!;
+            //   for(int i = 0; i < data.length; i++) {
+            //     return Column(
+            //       mainAxisSize: MainAxisSize.min,
+            //       children: [
+            //         Text("Child ID ${data.length}: $childId", style: const TextStyle(
+            //             fontWeight: FontWeight.bold, fontSize: 16 , color: Colors.blue
+            //         ),),
+            //         ListView.builder(
+            //             shrinkWrap: true,
+            //             physics: const NeverScrollableScrollPhysics(),
+            //             itemCount: data.length,
+            //             itemBuilder: (context, index){
+            //           return Row(
+            //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //             children: [
+            //               Text(data[index].question_code, style: const TextStyle(
+            //                   fontWeight: FontWeight.normal, fontSize: 14
+            //               ),),
+            //               Text(data[index].answer_id, style: const TextStyle(
+            //                   fontWeight: FontWeight.normal, fontSize: 14
+            //               ),),
+            //             ],
+            //           );
+            //         }),
+            //       ],
+            //     );
+            //   }
+            // },
+            //   itemCount: separatedChildren.length,
+            //   shrinkWrap: true,
+            //   physics: const NeverScrollableScrollPhysics(),
+            // ),
+            // const SizedBox(height: 10,),
             GridView.builder(
               shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -765,21 +824,42 @@ String benchMarkThreeScoreFromDb({required CPARADatabase cparaDatabase}){
   String childQuestion3Answer = "Yes"; // loops through all the children 3.3
   String overallQuestion1Answer = "Yes"; // Does the household have adolescent girls and boys ?
 
+  // // grouping the children by their ids
+  // Map<String, List<CPARAChildQuestions>> separatedChildren = {};
+  //
+  // for (var child in cparaDatabase.childQuestions) {
+  //   if (!separatedChildren.containsKey(child.ovc_cpims_id)) {
+  //     separatedChildren[child.ovc_cpims_id] = [];
+  //   }
+  //   separatedChildren[child.ovc_cpims_id]!.add(child);
+  // }
+  //
+  // // Printing the separated children
+  // separatedChildren.forEach((id, childrenList) {
+  //   print("Children with ID $id:");
+  //   for (var child in childrenList) {
+  //     print("  ${child.question_code} - ${child.answer_id}");
+  //   }
+  // });
+  List<String> answers = [];
   for(CPARADatabaseQuestions question in cparaDatabase.questions){
     if(question.question_code == CparaQuestionIds.healthGoal3ChildQuestion1){
       childQuestion1Answer = question.answer_id;
+      answers.add(childQuestion1Answer);
     }
     else if(question.question_code == CparaQuestionIds.healthGoal3ChildQuestion2){
       childQuestion2Answer = question.answer_id;
+      answers.add(childQuestion2Answer);
     }
     else if(question.question_code == CparaQuestionIds.healthGoal3ChildQuestion3){
       childQuestion3Answer = question.answer_id;
+      answers.add(childQuestion3Answer);
     }
 
 
   }
 
-  List<String> answers = [childQuestion1Answer, childQuestion2Answer, childQuestion3Answer];
+  // List<String> answers = [childQuestion1Answer, childQuestion2Answer, childQuestion3Answer];
 
   for(String answer in answers){
     if("no" == answer.toLowerCase()){
@@ -868,7 +948,7 @@ String benchMarkSixScoreFromDb({required CPARADatabase cparaDatabase}){
   String overallQuestion1Answer = "Yes"; // Are there children, adolescents, and caregivers in the household who have experienced violence
   String overallQuestion2Answer = "Yes"; // Is there adolescents 12 years and above ?
   String childQuestion1Answer = "Yes"; // depends on number of children 6.3 Have you been exposed to violence, abuse (sexual, physical or emotional), neglect, or exploitation in the last six months?
-
+List<String> childAnswers = [];
   for(CPARADatabaseQuestions question in cparaDatabase.questions){
     if(question.question_code == CparaQuestionIds.safeQuestion1){
       question1Answer = question.answer_id;
@@ -885,7 +965,21 @@ String benchMarkSixScoreFromDb({required CPARADatabase cparaDatabase}){
 
   }
 
-  List<String> answers = [question1Answer, question2Answer, question3Answer, question4Answer];
+  for(CPARAChildQuestions question in cparaDatabase.childQuestions){
+    if(question.question_code == CparaQuestionIds.safeChildQuestion1){
+      childAnswers.add(question.answer_id);
+    }
+
+  }
+
+  // for child answers
+  for(String answer in childAnswers){
+    if("no" == answer.toLowerCase()){
+      childQuestion1Answer = "No";
+    }
+  }
+
+  List<String> answers = [question1Answer, question2Answer, question3Answer, question4Answer, childQuestion1Answer];
 
   for(String answer in answers){
     if("no" == answer.toLowerCase()){
