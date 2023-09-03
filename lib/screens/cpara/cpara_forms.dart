@@ -185,339 +185,58 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                 onTap: () async{
                                   if (selectedStep == steps.length - 1) {
                                     // display collected data
-                                    DetailModel? detailModel = context
+                                    DetailModel detailModel = context
                                         .read<CparaProvider>()
-                                        .detailModel;
-                                    HealthModel? healthModel = context
+                                        .detailModel ?? DetailModel();
+                                    HealthModel healthModel = context
                                         .read<CparaProvider>()
-                                        .healthModel;
+                                        .healthModel ?? HealthModel();
                                     // context.read<CparaProvider>().updateHealthModel((healthModel ?? HealthModel()
                                     //     ));
-                                    StableModel? stableModel = context
+                                    StableModel stableModel = context
                                         .read<CparaProvider>()
-                                        .stableModel;
-                                    SafeModel? safeModel =
-                                        context.read<CparaProvider>().safeModel;
-                                    SchooledModel? schooledModel = context
+                                        .stableModel ?? StableModel();
+                                    SafeModel safeModel =
+                                        context.read<CparaProvider>().safeModel ??
+                                            SafeModel();
+                                    SchooledModel schooledModel = context
                                         .read<CparaProvider>()
-                                        .schooledModel;
+                                        .schooledModel ?? SchooledModel();
+
+                                    // number of children
+                                    List<CaseLoadModel> children = context
+                                        .read<CparaProvider>()
+                                        .children;
+
+                                    if(safeModel.childrenQuestions == null){
+                                      List<SafeChild> childrenQuestions = [];
+                                      for(int i = 0; i < children.length; i++){
+                                        childrenQuestions.add(SafeChild(question1: null,
+                                            ovcId: "${children[i].cpimsId}",
+                                            name: "${children[i].ovcFirstName} ${children[i].ovcSurname}"));
+                                      }
+
+                                      safeModel = safeModel.copyWith(childrenQuestions: childrenQuestions);
+                                      context.read<CparaProvider>().updateSafeModel(safeModel);
+                                    }
+
+                                    if(healthModel.childrenQuestions == null){
+                                      List<HealthChild> childrenQuestions = [];
+                                      for(int i = 0; i < children.length; i++){
+                                        childrenQuestions.add(HealthChild(question1: "",
+                                            question2: '',
+                                            question3: '',
+                                            id: "${children[i].cpimsId}",
+                                            name: "${children[i].ovcFirstName} ${children[i].ovcSurname}"));
+                                      }
+healthModel = healthModel.copyWith(childrenQuestions: childrenQuestions);
+                                      context.read<CparaProvider>().updateHealthModel(healthModel);
+                                    }
+
                                     CparaModel? cparaModel = context
                                         .read<CparaProvider>()
                                         .cparaModel;
 
-                                    // showDialog(
-                                    //   context: context,
-                                    //   builder: (_) => AlertDialog(
-                                    //     backgroundColor: Colors.white,
-                                    //     title: const Text(
-                                    //       'CPARA Form Collected Data',
-                                    //       style: TextStyle(
-                                    //         color: Colors.blue,
-                                    //         fontSize: 20,
-                                    //         fontWeight: FontWeight.bold,
-                                    //       ),
-                                    //     ),
-                                    //     content: SingleChildScrollView(
-                                    //       child: Column(
-                                    //         crossAxisAlignment:
-                                    //             CrossAxisAlignment.start,
-                                    //         children: [
-                                    //           const Text(
-                                    //             "Stable Model:",
-                                    //             style: TextStyle(
-                                    //               color: Colors.blue,
-                                    //               fontSize: 30.0,
-                                    //               fontWeight: FontWeight.w800,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           const Text(
-                                    //             "Question: 1",
-                                    //             style: TextStyle(
-                                    //               color: Colors.blue,
-                                    //               fontSize: 18.0,
-                                    //               fontStyle: FontStyle.italic,
-                                    //               fontWeight: FontWeight.w800,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           Text(
-                                    //             "Answer: ${stableModel?.question1}",
-                                    //             style: const TextStyle(
-                                    //               color: Colors.black,
-                                    //               fontSize: 18.0,
-                                    //               fontWeight: FontWeight.w400,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           const Text(
-                                    //             "Question: 2",
-                                    //             style: TextStyle(
-                                    //               color: Colors.blue,
-                                    //               fontSize: 18.0,
-                                    //               fontStyle: FontStyle.italic,
-                                    //               fontWeight: FontWeight.w800,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           Text(
-                                    //             "Answer: ${stableModel?.question2}",
-                                    //             style: const TextStyle(
-                                    //               color: Colors.black,
-                                    //               fontSize: 18.0,
-                                    //               fontWeight: FontWeight.w400,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           const Text(
-                                    //             "Question: 3",
-                                    //             style: TextStyle(
-                                    //               color: Colors.blue,
-                                    //               fontSize: 18.0,
-                                    //               fontStyle: FontStyle.italic,
-                                    //               fontWeight: FontWeight.w800,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           Text(
-                                    //             "Answer: ${stableModel?.question3}",
-                                    //             style: const TextStyle(
-                                    //               color: Colors.black,
-                                    //               fontSize: 18.0,
-                                    //               fontWeight: FontWeight.w400,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //
-                                    //           // Health Model
-                                    //           const HealthModelCollected(),
-                                    //           // Safe model
-                                    //           const Text(
-                                    //             "Safe Model:",
-                                    //             style: TextStyle(
-                                    //               color: Colors.blue,
-                                    //               fontSize: 30.0,
-                                    //               fontWeight: FontWeight.w800,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           const Text(
-                                    //             "Question: 1",
-                                    //             style: TextStyle(
-                                    //               color: Colors.blue,
-                                    //               fontSize: 18.0,
-                                    //               fontStyle: FontStyle.italic,
-                                    //               fontWeight: FontWeight.w800,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           Text(
-                                    //             "Answer: ${safeModel?.question1}",
-                                    //             style: const TextStyle(
-                                    //               color: Colors.black,
-                                    //               fontSize: 18.0,
-                                    //               fontWeight: FontWeight.w400,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           const Text(
-                                    //             "Question: 2",
-                                    //             style: TextStyle(
-                                    //               color: Colors.blue,
-                                    //               fontSize: 18.0,
-                                    //               fontStyle: FontStyle.italic,
-                                    //               fontWeight: FontWeight.w800,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           Text(
-                                    //             "Answer: ${stableModel?.question2}",
-                                    //             style: const TextStyle(
-                                    //               color: Colors.black,
-                                    //               fontSize: 18.0,
-                                    //               fontWeight: FontWeight.w400,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           const Text(
-                                    //             "Question: 3",
-                                    //             style: TextStyle(
-                                    //               color: Colors.blue,
-                                    //               fontSize: 18.0,
-                                    //               fontStyle: FontStyle.italic,
-                                    //               fontWeight: FontWeight.w800,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           Text(
-                                    //             "Answer: ${stableModel?.question3}",
-                                    //             style: const TextStyle(
-                                    //               color: Colors.black,
-                                    //               fontSize: 18.0,
-                                    //               fontWeight: FontWeight.w400,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           const Text("Detail model:",
-                                    //             style: TextStyle(
-                                    //               color: Colors.blue,
-                                    //               fontSize: 30.0,
-                                    //               fontWeight: FontWeight.w800,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),),
-                                    //
-                                    //           const Text(
-                                    //             'Date of Assessment',
-                                    //             style: TextStyle(
-                                    //               color: Colors.blue,
-                                    //               fontSize: 18.0,
-                                    //               fontStyle: FontStyle.italic,
-                                    //               fontWeight: FontWeight.w800,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           Text(
-                                    //             'Answer: ${detailModel?.dateOfAssessment}',
-                                    //             style: const TextStyle(
-                                    //               color: Colors.black,
-                                    //               fontSize: 18.0,
-                                    //               fontWeight: FontWeight.w400,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //
-                                    //           const Text(
-                                    //             'Is this first case plan readiness assessment?',
-                                    //             style: TextStyle(
-                                    //               color: Colors.blue,
-                                    //               fontSize: 18.0,
-                                    //               fontStyle: FontStyle.italic,
-                                    //               fontWeight: FontWeight.w800,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           Text(
-                                    //             'Answer: ${detailModel?.isFirstAssessment}',
-                                    //             style: const TextStyle(
-                                    //               color: Colors.black,
-                                    //               fontSize: 18.0,
-                                    //               fontWeight: FontWeight.w400,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           const Text(
-                                    //             'Date of Previous Assessment',
-                                    //             style: TextStyle(
-                                    //               color: Colors.blue,
-                                    //               fontSize: 18.0,
-                                    //               fontStyle: FontStyle.italic,
-                                    //               fontWeight: FontWeight.w800,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           Text(
-                                    //             'Answer: ${detailModel?.dateOfLastAssessment}',
-                                    //             style: const TextStyle(
-                                    //               color: Colors.black,
-                                    //               fontSize: 18.0,
-                                    //               fontWeight: FontWeight.w400,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           const Text(
-                                    //             'Is the child headed household?',
-                                    //             style: TextStyle(
-                                    //               color: Colors.blue,
-                                    //               fontSize: 18.0,
-                                    //               fontStyle: FontStyle.italic,
-                                    //               fontWeight: FontWeight.w800,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           Text(
-                                    //             'Answer: ${detailModel?.isChildHeaded}',
-                                    //             style: const TextStyle(
-                                    //               color: Colors.black,
-                                    //               fontSize: 18.0,
-                                    //               fontWeight: FontWeight.w400,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //
-                                    //           const Text(
-                                    //             'Does the child have an HIV exposed infant?',
-                                    //             style: TextStyle(
-                                    //               color: Colors.blue,
-                                    //               fontSize: 18.0,
-                                    //               fontStyle: FontStyle.italic,
-                                    //               fontWeight: FontWeight.w800,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           Text(
-                                    //             'Answer: ${detailModel?.hasHivExposedInfant}',
-                                    //             style: const TextStyle(
-                                    //               color: Colors.black,
-                                    //               fontSize: 18.0,
-                                    //               fontWeight: FontWeight.w400,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //
-                                    //           const Text(
-                                    //             'Does this HH currently have a pregnant and/or breastfeeding woman/adolescent?',
-                                    //             style: TextStyle(
-                                    //               color: Colors.blue,
-                                    //               fontSize: 18.0,
-                                    //               fontStyle: FontStyle.italic,
-                                    //               fontWeight: FontWeight.w800,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //           Text(
-                                    //             'Answer: ${detailModel?.hasPregnantOrBreastfeedingWoman}',
-                                    //             style: const TextStyle(
-                                    //               color: Colors.black,
-                                    //               fontSize: 18.0,
-                                    //               fontWeight: FontWeight.w400,
-                                    //               letterSpacing: 0.1,
-                                    //               height: 1.5,
-                                    //             ),
-                                    //           ),
-                                    //
-                                    //           const SizedBox(height: 20),
-                                    //           const SizedBox(height: 10),
-                                    //         ],
-                                    //       ),
-                                    //     ),
-                                    //   ),
-                                    // );
 
                                     try {
                                       String? ovsId = context.read<CparaProvider>().caseLoadModel?.cpimsId;
@@ -527,28 +246,16 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                       String ovcpmisid = ovsId ?? "0" ;
                                       // Insert to db
                                       CparaModel cparaModelDB = CparaModel(
-                                          detail: detailModel ?? DetailModel(),
-                                          safe: safeModel ?? SafeModel(),
-                                          stable: stableModel ?? StableModel(),
-                                          schooled: schooledModel ??
-                                              SchooledModel(
-                                                  question1: "",
-                                                  question2: "question2",
-                                                  question3: "question3",
-                                                  question4: "question4"),
-                                          health: (healthModel ?? HealthModel()
-                                          // ).copyWith(childrenQuestions: [
-                                          //   HealthChild(question1: "No", question2: "Yes",question3: "No", id: "35273283", name: "Okello Enos"),
-                                          //   HealthChild(question1: "Yes", question2: "No",question3: "No", id: "0716229563", name: "Nakato Sarah"),
-                                          //   HealthChild(question1: "Yes", question2: "Yes",question3: "No", id: "2012593", name: "LUCAS OWUOR"),
-                                          // ]
+                                          detail: detailModel,
+                                          safe: safeModel,
+                                          stable: stableModel,
+                                          schooled: schooledModel ,
+                                          health: (healthModel
                                           ),
-                                          // ovcSubPopulationModel:
-                                          //     OvcSubPopulationModel()
                                               );
                                       // Create form
                                       await LocalDb.instance.insertCparaData(cparaModelDB: cparaModelDB, ovcId: ovcpmisid, careProviderId: ovcpmisid );
-// if(!context.mounted)
+
                                       if (context.mounted) {
                                         context.read<CparaProvider>().clearCparaProvider();
                                         showDialog(

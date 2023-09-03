@@ -9,9 +9,9 @@ class CPARAChildQuestions {
 
   factory CPARAChildQuestions.fromJSON(Map<String, dynamic> json) {
     return CPARAChildQuestions(
-        question_code: json['questionid'],
-        answer_id: json['answer'],
-        ovc_cpims_id: json['childID']);
+        question_code: "${json['questionid']}",
+        answer_id: "${json['answer']}",
+        ovc_cpims_id: "${json['childID']}");
   }
 
   Map<String, dynamic> toJSON() {

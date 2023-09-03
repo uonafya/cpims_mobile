@@ -6,11 +6,9 @@ class SafeModel {
   final String? question3;
   final String? question4;
   final String? question5;
-
   final String? question6;
   final String? question7;
-
-  final String? question8;
+  // final String? question8;
 
   final String? overallQuestion1;
   final String? overallQuestion2;
@@ -24,7 +22,7 @@ class SafeModel {
     this.question5,
     this.question6,
     this.question7,
-    this.question8,
+    // this.question8,
     this.overallQuestion1,
     this.overallQuestion2,
     this.childrenQuestions,
@@ -39,7 +37,7 @@ class SafeModel {
       question5: json['question5'],
       question6: json['question6'],
       question7: json['question7'],
-      question8: json['question8'],
+      // question8: json['question8'],
       overallQuestion1: json['overallQuestion1'],
       overallQuestion2: json['overallQuestion2'],
       childrenQuestions: json["childrenQuestions"] == null
@@ -59,6 +57,7 @@ class SafeModel {
       CparaQuestionIds.safeQuestion5: question5,
       CparaQuestionIds.safeQuestion6: question6,
       CparaQuestionIds.safeQuestion7: question7,
+      // CparaQuestionIds.safeQuestion8: question3,
       "children": childrenQuestions?.map((e) => e.toJSON()).toList() ?? []
     };
   }
@@ -71,7 +70,7 @@ class SafeModel {
     String? question5,
     String? question6,
     String? question7,
-    String? question8,
+    // String? question8,
     String? overallQuestion1,
     String? overallQuestion2,
     List<SafeChild>? childrenQuestions,
@@ -84,7 +83,7 @@ class SafeModel {
       question5: question5 ?? this.question5,
       question6: question6 ?? this.question6,
       question7: question7 ?? this.question7,
-      question8: question8 ?? this.question8,
+      // question8: question8 ?? this.question8,
       overallQuestion1: overallQuestion1 ?? this.overallQuestion1,
       overallQuestion2: overallQuestion2 ?? this.overallQuestion2,
       childrenQuestions: childrenQuestions ?? this.childrenQuestions,
