@@ -16,7 +16,7 @@ class CparaModel {
   final StableModel stable;
   final SchooledModel schooled;
   final HealthModel health;
-  final OvcSubPopulationModel? ovcSubPopulationModel;
+  // final OvcSubPopulationModel? ovcSubPopulationModel;
 
   CparaModel({
     required this.detail,
@@ -24,7 +24,7 @@ class CparaModel {
     required this.stable,
     required this.schooled,
     required this.health,
-    required this.ovcSubPopulationModel
+    // required this.ovcSubPopulationModel
   });
 
   factory CparaModel.fromJson(Map<String, dynamic> json) {
@@ -34,7 +34,7 @@ class CparaModel {
       stable: StableModel.fromJson(json['stable']),
       schooled: SchooledModel.fromJson(json['schooled']),
       health: HealthModel.fromJson(json['health']),
-      ovcSubPopulationModel: OvcSubPopulationModel.fromJson(json['ovcSubPopulationModel'])
+      // ovcSubPopulationModel: OvcSubPopulationModel.fromJson(json['ovcSubPopulationModel'])
     );
   }
 
@@ -113,7 +113,7 @@ class CparaModel {
       var safeJSON = safe.toJSON();
       var schooledJSON = schooled.toJSON();
       var stableJSON = stable.toJSON();
-      var ovcSubPopulationModelJSON=ovcSubPopulationModel?.toJSON();
+      // var ovcSubPopulationModelJSON=ovcSubPopulationModel?.toJSON();
 
       // insert to database, for now debugPrint for testing
       print("Detail");
@@ -126,8 +126,8 @@ class CparaModel {
       print(schooledJSON.toString());
       print("Stable");
       print(stableJSON.toString());
-      print("OVC Sbpopulation");
-      print(ovcSubPopulationModelJSON.toString());
+      // print("OVC Sbpopulation");
+      // print(ovcSubPopulationModelJSON.toString());
 
       // var h = healthJSON.remove('children');
       // var s = safeJSON.remove('children');
@@ -190,7 +190,7 @@ class CparaModel {
       json.addAll(safeJSON);
       json.addAll(schooledJSON);
       json.addAll(stableJSON);
-      json.addAll(ovcSubPopulationModelJSON!);
+      // json.addAll(ovcSubPopulationModelJSON!);
       print(json);
 
       // Send request
@@ -235,7 +235,7 @@ class CparaModel {
 
       await batch.commit(noResult: true);
 
-       print("Local Db Data end");
+       print("Local Db Data end KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
       // Send request later
       var prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getString('access');

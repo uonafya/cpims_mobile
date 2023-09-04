@@ -4,9 +4,11 @@ import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
+import '../Models/case_plan_form.dart';
 import '../Models/caseplan_form_model.dart';
 import '../screens/cpara/model/cpara_model.dart';
 
@@ -142,6 +144,9 @@ class LocalDb {
         .formId}) REFERENCES $form1Table(${Form1.id})
         )
       ''');
+
+    await creatingCparaTables(db, version);
+    await createOvcSubPopulation(db, version);
   }
 
   Future<void> insertCaseLoad(CaseLoadModel caseLoadModel) async {
@@ -170,9 +175,39 @@ class LocalDb {
     return result.map((json) => SummaryDataModel.fromJson(json)).toList();
   }
 
-  Future<void> insertCparaData({required CparaModel cparaModelDB,
-    required String ovcId,
-    required String careProviderId}) async {
+  Future<void> creatingCparaTables(Database db, int version) async {
+    try {
+      debugPrint("Creating Cpara tables");
+      await db.execute(
+          "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT);");
+
+      // await db.execute(
+      //     "CREATE TABLE IF NOT EXISTS Child(childOVCCPMISID TEXT PRIMARY KEY, childName TEXT, childAge TEXT, childGender TEXT, childSchool TEXT, childOVCRegistered TEXT);");
+
+      // await db.execute(
+      //     "CREATE TABLE IF NOT EXISTS Household(householdID TEXT PRIMARY KEY);");
+
+      // await db.execute(
+      //     "CREATE TABLE IF NOT EXISTS HouseholdChild(childID TEXT, householdID TEXT, FOREIGN KEY (householdID) REFERENCES Household(householdID), PRIMARY KEY(childID, householdID));");
+
+      await db.execute(
+          "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER, id INTEGER PRIMARY KEY, houseHoldID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (formID) REFERENCES Form(id));");
+
+      await db.execute(
+          "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionid TEXT, answer TEXT, FOREIGN KEY (formID) REFERENCES Form(id));");
+
+    } catch (err) {
+      debugPrint("OHH SHIT!");
+      debugPrint(err.toString());
+      debugPrint("OHH SHIT");
+    }
+  }
+
+  Future<void> insertCparaData(
+      {required CparaModel cparaModelDB,
+      required String ovcId,
+      required String careProviderId}) async {
+
     final db = await instance.database;
 
     // Create form
@@ -186,6 +221,44 @@ class LocalDb {
             db, formDateString, ovcId, formID);
       });
     });
+  }
+
+  Future<void> createOvcSubPopulation(Database db, int version) async {
+    try {
+      await db.execute('''
+      CREATE TABLE $ovcsubpopulation (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        uuid TEXT,
+        cpims_id TEXT,
+        criteria TEXT,
+        date_of_event TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    ''');
+    } catch (err) {
+      debugPrint(err.toString());
+    }
+  }
+
+  Future<void> insertOvcSubpopulationData(String uuid,String cpimsId,String date_of_assessment,List<CheckboxQuestion> questions) async{
+    final db = await instance.database;
+    for(var question in questions){
+      int value= question.isChecked! ? 1 : 0;
+      await db.insert(ovcsubpopulation, {
+        'uuid':uuid,
+        'cpims_id':cpimsId,
+        'criteria':question.questionID,
+        'date_of_event':date_of_assessment,
+      },conflictAlgorithm: ConflictAlgorithm.replace
+      );
+    }
+
+  }
+
+  Future<List<Map<String, dynamic>>> fetchOvcSubPopulationData() async {
+    final db = await LocalDb.instance.database;
+    final result = await db.query(ovcsubpopulation);
+    return result;
   }
 
   // insert Metadata
@@ -472,6 +545,7 @@ class LocalDb {
       return false;
     }
   }
+
 }
 
 // table name and field names
@@ -483,6 +557,7 @@ const casePlanServicesTable = 'case_plan_services';
 const form1Table = 'form1';
 const form1ServicesTable = 'form1_services';
 const form1CriticalEventsTable = 'form1_critical_events';
+const ovcsubpopulation='ovcsubpopulation';
 
 class OvcFields {
   static final List<String> values = [
