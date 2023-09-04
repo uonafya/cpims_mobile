@@ -8,8 +8,9 @@ import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart'
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
 import '../Models/case_plan_form.dart';
+import '../Models/caseplan_form_model.dart';
+import '../screens/cpara/model/cpara_model.dart';
 
 class LocalDb {
   static final LocalDb instance = LocalDb._init();
@@ -22,7 +23,7 @@ class LocalDb {
     if (_database != null) return _database!;
 
     // If database don't exists, create one
-    _database = await _initDB('children_ovc.db');
+    _database = await _initDB('children_ovc4.db');
 
     return _database!;
   }
@@ -98,7 +99,8 @@ class LocalDb {
           ${CasePlanServices.resultsId} $textType,
           ${CasePlanServices.reasonId} $textType,
           ${CasePlanServices.completionDate} $textType,
-          FOREIGN KEY (${CasePlanServices.formId}) REFERENCES $casePlanTable(${CasePlan.id})
+          FOREIGN KEY (${CasePlanServices
+        .formId}) REFERENCES $casePlanTable(${CasePlan.id})
         )
         ''');
 
@@ -117,7 +119,8 @@ class LocalDb {
         CREATE TABLE $form1Table (
           ${Form1.id} $idType,
           ${Form1.ovcCpimsId} $textType,
-          ${Form1.dateOfEvent} $textType
+          ${Form1.dateOfEvent} $textType,
+          ${Form1.formType} $textType
         )
         ''');
 
@@ -135,9 +138,10 @@ class LocalDb {
       CREATE TABLE $form1CriticalEventsTable (
         ${Form1CriticalEvents.id} $idType,
         ${Form1CriticalEvents.formId} $textType,
-        ${Form1CriticalEvents.domainId} $textType,
-        ${Form1CriticalEvents.serviceId} $textType,
-        FOREIGN KEY (${Form1CriticalEvents.formId}) REFERENCES $form1Table(${Form1.id})
+        ${Form1CriticalEvents.eventId} $textType,
+        ${Form1CriticalEvents.eventDate} $textType,
+        FOREIGN KEY (${Form1CriticalEvents
+        .formId}) REFERENCES $form1Table(${Form1.id})
         )
       ''');
 
@@ -147,10 +151,9 @@ class LocalDb {
 
   Future<void> insertCaseLoad(CaseLoadModel caseLoadModel) async {
     final db = await instance.database;
-    
 
     await db.insert(caseloadTable, caseLoadModel.toJson(),
-    conflictAlgorithm: ConflictAlgorithm.replace
+        conflictAlgorithm: ConflictAlgorithm.replace
     );
   }
 
@@ -204,6 +207,7 @@ class LocalDb {
       {required CparaModel cparaModelDB,
       required String ovcId,
       required String careProviderId}) async {
+
     final db = await instance.database;
 
     // Create form
@@ -277,55 +281,93 @@ class LocalDb {
     final db = await instance.database;
     const sql = 'SELECT * FROM $tableFormMetadata WHERE field_name = ?';
     final List<Map<String, dynamic>> results =
-        await db.rawQuery(sql, [fieldName]);
+    await db.rawQuery(sql, [fieldName]);
     return results;
   }
 
   // insert formData(either form1a or form1b)
   Future<void> insertForm1Data(String formType, formData) async {
-    final db = await instance.database;
-    final formId = await db.insert(
-      form1Table,
-      {
-        'ovc_cpims_id': formData.ovcCpimsId,
-        'date_of_event': formData.dateOfEvent,
-        'form_type': formType,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-    // insert services
-    for (var service in formData.services) {
-      await db.insert(
-        form1ServicesTable,
+    try {
+      final db = await instance.database;
+      final formId = await db.insert(
+        form1Table,
         {
-          'form_id': formId,
-          'domain_id': service['domain_id'],
-          'service_id': service['service_id'],
+          'ovc_cpims_id': formData.ovcCpimsId,
+          'date_of_event': formData.dateOfEvent,
+          'form_type': formType,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-    }
-    for (var criticalEvent in formData.criticalEvents) {
-      await db.insert(
-        form1CriticalEventsTable,
-        {
-          'form_id': formId,
-          'domain_id': criticalEvent['domain_id'],
-          'service_id': criticalEvent['service_id'],
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      // insert services
+      for (var service in formData.services) {
+        await db.insert(
+          form1ServicesTable,
+          {
+            'form_id': formId,
+            'domain_id': service.domainId,
+            'service_id': service.serviceId,
+          },
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      for (var criticalEvent in formData.criticalEvents) {
+        await db.insert(
+          form1CriticalEventsTable,
+          {
+            'form_id': formId,
+            'event_id': criticalEvent.eventId,
+            'event_date': criticalEvent.eventDate,
+          },
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+    } catch (e) {
+      print(">>>>>>>>>>>>>$e");
     }
   }
 
-  // get all form1a or form1b data
-  // including their services and critical events
   Future<List<Map<String, dynamic>>> queryAllForm1Rows(String formType) async {
-    final db = await instance.database;
-    const sql = 'SELECT * FROM $form1Table WHERE form_type = ?';
-    final List<Map<String, dynamic>> results =
-        await db.rawQuery(sql, [formType]);
-    return results;
+    try {
+      final db = await instance.database;
+      const sql = 'SELECT * FROM $form1Table WHERE form_type = ?';
+      final List<Map<String, dynamic>> form1Rows = await db.rawQuery(
+          sql, [formType]);
+
+      List<Map<String, dynamic>> updatedForm1Rows = [];
+
+      for (var form1row in form1Rows) {
+        int formId = form1row['_id'];
+
+        // Fetch associated services
+        final List<Map<String, dynamic>> services = await db.query(
+          form1ServicesTable,
+          where: '${Form1Services.formId} = ?',
+          whereArgs: [formId],
+        );
+
+        // Fetch associated critical events
+        final List<Map<String, dynamic>> criticalEvents = await db.query(
+          form1CriticalEventsTable,
+          where: '${Form1CriticalEvents.formId} = ?',
+          whereArgs: [formId],
+        );
+
+        // Create a new map that includes existing form1row data, services, and critical_events
+        Map<String, dynamic> updatedForm1Row = {
+          ...form1row,
+          'services': services,
+          'critical_events': criticalEvents,
+        };
+
+        // Add the updated map to the list
+        updatedForm1Rows.add(updatedForm1Row);
+      }
+
+      return updatedForm1Rows;
+    } catch (e) {
+      print("Error querying form1 data: $e");
+      return [];
+    }
   }
 
   // get a single row(form 1a or 1b)
@@ -341,12 +383,17 @@ class LocalDb {
       if (queryResults.isNotEmpty) {
         final form1Id = queryResults.first[Form1.id] as int;
         await db.delete(
-          casePlanServicesTable,
+          form1ServicesTable,
+          where: 'form_id = ?',
+          whereArgs: [form1Id],
+        );
+        await db.delete(
+          form1CriticalEventsTable,
           where: 'form_id = ?',
           whereArgs: [form1Id],
         );
         final rowsAffected = await db.delete(
-          casePlanTable,
+          form1Table,
           where: '${Form1.id} = ?',
           whereArgs: [form1Id],
         );
@@ -355,9 +402,10 @@ class LocalDb {
       return false;
     } catch (e) {
       print(e);
-      return false;
     }
+    return false;
   }
+
 
 // inserting case plan
   Future<bool> insertCasePlan(CasePlanModel casePlan) async {
@@ -376,7 +424,7 @@ class LocalDb {
       // Insert the associated services
       for (var service in casePlan.services) {
         final serviceIdList =
-            service.serviceIds.join(','); // Join service IDs with commas
+        service.serviceIds.join(','); // Join service IDs with commas
         final responsibleIdList = service.responsibleIds
             .join(','); // Join responsible IDs with commas
 
@@ -435,12 +483,12 @@ class LocalDb {
             gapId: serviceRow[CasePlanServices.gapId] as String,
             priorityId: serviceRow[CasePlanServices.priorityId] as String,
             responsibleIds:
-                (serviceRow['responsible_ids'] as String).split(','),
+            (serviceRow['responsible_ids'] as String).split(','),
             // Parse comma-separated responsible IDs
             resultsId: serviceRow[CasePlanServices.resultsId] as String,
             reasonId: serviceRow[CasePlanServices.reasonId] as String,
             completionDate:
-                serviceRow[CasePlanServices.completionDate] as String,
+            serviceRow[CasePlanServices.completionDate] as String,
           ));
         }
 
@@ -636,7 +684,7 @@ class Form1 {
     dateOfEvent,
   ];
 
-  static const String id = "_d";
+  static const String id = "_id";
   static const String formType = "form_type";
   static const String ovcCpimsId = "ovc_cpims_id";
   static const String dateOfEvent = 'date_of_event';
@@ -660,12 +708,12 @@ class Form1CriticalEvents {
   static final List<String> values = [
     id,
     formId,
-    domainId,
-    serviceId,
+    eventId,
+    eventDate,
   ];
 
   static const String id = "_id";
   static const String formId = "form_id";
-  static const String domainId = "domain_id";
-  static const String serviceId = "service_id";
+  static const String eventId = "event_id";
+  static const String eventDate = "event_date";
 }
