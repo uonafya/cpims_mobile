@@ -1,11 +1,14 @@
+import 'package:cpims_mobile/Models/form_1_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/caregiver/caregiver.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
+import 'package:cpims_mobile/services/form_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_grid_view.dart';
@@ -25,22 +28,71 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-
-   bool isSyncing = false; // Track whether syncing is in progress
-
-  // Simulate syncing process with a delay
-  void startSync() {
-    setState(() {
-      isSyncing = true; // Set syncing to true when the sync button is pressed
-    });
-
-    // Simulate a delay (you can replace this with your actual syncing logic)
-    Future.delayed(Duration(seconds: 3), () {
-      setState(() {
-        isSyncing = false; // Set syncing back to false when syncing is complete
-      });
-    });
+  List<Map<String, String>> formsList = [
+    {'formType': 'form1a', 'endpoint': 'form1a/'},
+    {'formType': 'form1b', 'endpoint': 'form1b/'},
+  ];
+  @override
+  void initState() {
+    super.initState();
+    syncWorkflows();
   }
+
+  bool isSyncing = false;
+
+  Future<void> syncWorkflows() async {
+    // check for internet connection
+    final isConnected =
+        await Provider.of<ConnectivityProvider>(context, listen: false)
+            .checkInternetConnection();
+    if (isConnected) {
+      setState(() {
+        isSyncing = true;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Syncing forms...'),
+            duration: Duration(days: 1), // Show indefinitely
+          ),
+        );
+      }
+      // sync workflows
+
+      for (var formType in formsList) {
+        List<dynamic> forms = await Form1Service.getAllForms(
+          formType['formType']!,
+        );
+
+        for (var formData in forms) {
+          await Form1Service.postFormRemote(
+            formData,
+            formType['endpoint']!,
+          );
+        }
+      }
+
+      setState(() {
+        isSyncing = false;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .removeCurrentSnackBar(); // Remove the indefinite snackbar
+      }
+      _showSyncSnackbar();
+    }
+  }
+
+  void _showSyncSnackbar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Forms synchronized successfully.'),
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final SummaryDataModel dashData =
