@@ -1,3 +1,5 @@
+import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
+
 class DetailModel {
   final String? isFirstAssessment;
   final String? isChildHeaded;
@@ -29,12 +31,12 @@ class DetailModel {
   // Converts the detail model to json. This is particulary going to be used for the sake of the database
   Map<String, dynamic> toJSON() {
     return {
-      'q1': isFirstAssessment,
-      'q2': isChildHeaded,
-      'q3': hasHivExposedInfant,
-      'q4': hasPregnantOrBreastfeedingWoman,
-      'q5': dateOfAssessment,
-      // 'q6': dateOfLastAssessment // This is sent as its own parameter in the request
+      CparaQuestionIds.isThisFirstCasePlanAssessment: isFirstAssessment,
+      CparaQuestionIds.houseChildHeaded: isChildHeaded,
+      CparaQuestionIds.houseHoldHavingHivExposedInfant: hasHivExposedInfant,
+      CparaQuestionIds.houseHoldHavingPregnantWoman : hasPregnantOrBreastfeedingWoman,
+      CparaQuestionIds.detailDateOfAssessment : dateOfAssessment,
+      CparaQuestionIds.previousCasePlanAssessment: dateOfLastAssessment // This is sent as its own parameter in the request
     };
   }
 
@@ -93,18 +95,18 @@ class OvcSubPopulationModel {
   }
 
   //to json
-  Map<String, dynamic> toJSON() {
-    return {
-      'q1': question1,
-      'q2': question2,
-      'q3': question3,
-      'q4': question4,
-      'q5': question5,
-      'q6': question6,
-      'q7': question7,
-      'q8': question8,
-    };
-  }
+  // Map<String, dynamic> toJSON() {
+  //   return {
+  //     'q1': question1,
+  //     'q2': question2,
+  //     'q3': question3,
+  //     'q4': question4,
+  //     'q5': question5,
+  //     'q6': question6,
+  //     'q7': question7,
+  //     'q8': question8,
+  //   };
+  // }
 
 
 }

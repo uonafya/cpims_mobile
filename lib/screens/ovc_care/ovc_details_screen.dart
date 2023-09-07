@@ -22,6 +22,7 @@ import '../cpara/widgets/ovc_sub_population_form.dart';
 
 class OVCDetailsScreen extends StatefulWidget {
   const OVCDetailsScreen({super.key, required this.caseLoadModel});
+
   final CaseLoadModel caseLoadModel;
 
   @override
@@ -40,6 +41,7 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final detailProvider = Provider.of<CparaProvider>(context, listen: true);
     return Scaffold(
         appBar: customAppBar(),
         drawer: const Drawer(
@@ -147,11 +149,29 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
               },
             ),
             ChildDetailsWorkflowButton(
-              workflowName: "OVC Prepopulation",
+              workflowName: "OVC Sub Population",
               onClick: () {
-                Get.to(() => CheckboxForm(caseLoadModel: widget.caseLoadModel));
-                Get.to(() =>
-                    CparaFormsScreen(caseLoadModel: widget.caseLoadModel));
+                if (detailProvider.detailModel?.dateOfAssessment == null) {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('CPARA'),
+                          content: const Text(
+                              'Please fill CPARA form first before proceeding'),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('OK'))
+                          ],
+                        );
+                      });
+                } else {
+                  Get.to(
+                      () => CheckboxForm(caseLoadModel: widget.caseLoadModel));
+                }
               },
             ),
             ChildDetailsWorkflowButton(

@@ -1,3 +1,5 @@
+import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
+
 class HealthModel {
   final String? question1;
   final String? question2;
@@ -112,24 +114,24 @@ class HealthModel {
   // Converts the detail model to json. This is particulary going to be used for the sake of the database
   Map<String, dynamic> toJSON() {
     return {
-      'q7': question1,
-      'q8': question2,
-      'q9': question3,
-      'q10': question4,
-      'q11': question5,
-      'q12': question6,
-      'q13': question7,
-      'q14': question8,
-      'q15': question9,
-      'q16': question10,
-      'q17': question11,
-      'q18': question12,
-      'q19': question13,
-      'q20': question14,
-      'q21': question15,
-      'q22': question16,
-      'q23': question17,
-      'q24': question18,
+      CparaQuestionIds.healthQuestion1: question1,
+      CparaQuestionIds.healthQuestion2: question2,
+      CparaQuestionIds.healthQuestion3: question3,
+      CparaQuestionIds.healthQuestion4: question4,
+      CparaQuestionIds.healthQuestion5: question5,
+      CparaQuestionIds.healthGoal2Question1: question6,
+      CparaQuestionIds.healthGoal2Question2: question7,
+      CparaQuestionIds.healthGoal2Question3: question8,
+      CparaQuestionIds.healthGoal2Question4: question9,
+      CparaQuestionIds.healthGoal2Question5: question10,
+      CparaQuestionIds.healthGoal2Question6: question11,
+      CparaQuestionIds.healthGoal2Question7: question12,
+      CparaQuestionIds.healthGoal2Question8: question13,
+      CparaQuestionIds.healthGoal2Question9: question14,
+      CparaQuestionIds.healthGoal4Question1: question15,
+      CparaQuestionIds.healthGoal4Question2: question16,
+      CparaQuestionIds.healthGoal4Question3: question17,
+      CparaQuestionIds.healthGoal4Question4: question18,
       "children": childrenQuestions?.map((e) => e.toJSON()).toList() ?? []
     };
   }
@@ -161,6 +163,9 @@ class HealthChild {
   }
 
   Map<String, dynamic> toJSON() {
-    return {"id": id, "q1": question1, "q2": question2, "q3": question3};
+    return {"id": id,
+      CparaQuestionIds.healthGoal3ChildQuestion1: question1,
+      CparaQuestionIds.healthGoal3ChildQuestion2: question2,
+      CparaQuestionIds.healthGoal3ChildQuestion3: question3};
   }
 }

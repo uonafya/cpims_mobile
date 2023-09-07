@@ -22,7 +22,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
   RadioButtonOptions? _child_below_12;
   RadioButtonOptions? _adolescents_older_than_12;
   RadioButtonOptions? _exposed_to_violence;
-  RadioButtonOptions? _no_siblings_over_10;
+  // RadioButtonOptions? _no_siblings_over_10;
   RadioButtonOptions? _referred_for_services;
   RadioButtonOptions? _tick_Yes;
   RadioButtonOptions? _received_services;
@@ -60,7 +60,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             _child_below_12 = RadioButtonOptions.yes;
             _adolescents_older_than_12 = RadioButtonOptions.yes;
             _exposed_to_violence = RadioButtonOptions.yes;
-            _no_siblings_over_10 = RadioButtonOptions.yes;
+            // _no_siblings_over_10 = RadioButtonOptions.yes;
             _referred_for_services = RadioButtonOptions.yes;
             _received_services = RadioButtonOptions.yes;
           }
@@ -70,7 +70,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             _child_below_12 = null;
             _adolescents_older_than_12 = null;
             _exposed_to_violence = null;
-            _no_siblings_over_10 = null;
+            // _no_siblings_over_10 = null;
             _referred_for_services = null;
             _received_services = null;
           }
@@ -89,6 +89,17 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
       case "_adolescents_older_than_12":
         setState(() {
           _adolescents_older_than_12 = value;
+
+          if (value == RadioButtonOptions.no) {
+            // Set values of radio buttons for questions 6.3 and 6.5 to yes
+            _exposed_to_violence = RadioButtonOptions.yes;
+            // _no_siblings_over_10 = RadioButtonOptions.yes;
+          }
+          if (value == RadioButtonOptions.yes) {
+            // Set values of radio buttons for questions 6.3 and 6.5 to null
+            _exposed_to_violence = null;
+            // _no_siblings_over_10 = null;
+          }
         });
         break;
       case "_exposed_to_violence":
@@ -96,11 +107,11 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
           _exposed_to_violence = value;
         });
         break;
-      case "_no_siblings_over_10":
-        setState(() {
-          _no_siblings_over_10 = value;
-        });
-        break;
+      // case "_no_siblings_over_10":
+      //   setState(() {
+      //     _no_siblings_over_10 = value;
+      //   });
+      //   break;
       case "_referred_for_services":
         setState(() {
           _referred_for_services = value;
@@ -163,33 +174,33 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
         ? question2Option
         : convertingStringToRadioButtonOptions(safeModel.question2!);
     _child_below_12 = question2Option;
-    question3Option = safeModel.question3 == null
-        ? question3Option
-        : convertingStringToRadioButtonOptions(safeModel.question3!);
-    _exposed_to_violence = question3Option;
+    // question3Option = safeModel.question3 == null
+    //     ? question3Option
+    //     : convertingStringToRadioButtonOptions(safeModel.question3!);
+    // _exposed_to_violence = question3Option;
 
-    question4Option = safeModel.question4 == null
+    question4Option = safeModel.question3 == null
         ? question4Option
-        : convertingStringToRadioButtonOptions(safeModel.question4!);
+        : convertingStringToRadioButtonOptions(safeModel.question3!);
     _referred_for_services = question4Option;
-    question5Option = safeModel.question5 == null
+    question5Option = safeModel.question4 == null
         ? question5Option
-        : convertingStringToRadioButtonOptions(safeModel.question5!);
+        : convertingStringToRadioButtonOptions(safeModel.question4!);
     _received_services = question5Option;
 
-    question6Option = safeModel.question6 == null
+    question6Option = safeModel.question5 == null
         ? question6Option
-        : convertingStringToRadioButtonOptions(safeModel.question6!);
+        : convertingStringToRadioButtonOptions(safeModel.question5!);
     _primary_caregiver = question6Option;
 
-    question7Option = safeModel.question7 == null
+    question7Option = safeModel.question6 == null
         ? question7Option
-        : convertingStringToRadioButtonOptions(safeModel.question7!);
+        : convertingStringToRadioButtonOptions(safeModel.question6!);
     _caregiver_lived_12_months = question7Option;
 
-    question8Option = safeModel.question8 == null
+    question8Option = safeModel.question7 == null
         ? question8Option
-        : convertingStringToRadioButtonOptions(safeModel.question8!);
+        : convertingStringToRadioButtonOptions(safeModel.question7!);
     _legal_documents = question8Option;
 
     // Overall questions
@@ -450,6 +461,10 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 // todo: update the children questions
                     context.read<CparaProvider>().updateSafeModel(safeModel
                         .copyWith(childrenQuestions: childrenQuestions));
+//                     context.read<CparaProvider>().updateSafeModel(safeModel
+//                         .copyWith(childrenQuestions: [SafeChild(question1: selectedOption, ovcId: "35273283", name: "Okello Enos"),
+//                       SafeChild(question1: "No", ovcId: "0716229563", name: "Nakato Sarah"),
+//                       ...childrenQuestions]));
 
                     // // Update the state of the question
                     updateQuestion("_exposed_to_violence", value);
@@ -512,7 +527,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                 String selectedOption =
                     convertingRadioButtonOptionsToString(value);
                 context.read<CparaProvider>().updateSafeModel(
-                    safeModel.copyWith(question4: selectedOption));
+                    safeModel.copyWith(question3: selectedOption));
                 // Update the state of the question
                 updateQuestion("_referred_for_services", value);
               }),
@@ -532,7 +547,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                 String selectedOption =
                     convertingRadioButtonOptionsToString(value);
                 context.read<CparaProvider>().updateSafeModel(
-                    safeModel.copyWith(question5: selectedOption));
+                    safeModel.copyWith(question4: selectedOption));
                 // Update the state of the question
                 updateQuestion("_received_services", value);
               }),
@@ -543,7 +558,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
               _experienced_violence,
               _child_below_12,
               _exposed_to_violence,
-              _no_siblings_over_10,
+              // _no_siblings_over_10,
               _referred_for_services,
               _received_services,
             ], "message"),
@@ -572,7 +587,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
               String selectedOption =
                   convertingRadioButtonOptionsToString(value);
               context.read<CparaProvider>().updateSafeModel(
-                  safeModel.copyWith(question6: selectedOption));
+                  safeModel.copyWith(question5: selectedOption));
               // Update the state of the question
               updateQuestion("_primary_caregiver", value);
             }),
@@ -589,7 +604,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
               String selectedOption =
                   convertingRadioButtonOptionsToString(value);
               context.read<CparaProvider>().updateSafeModel(
-                  safeModel.copyWith(question7: selectedOption));
+                  safeModel.copyWith(question6: selectedOption));
               // Update the state of the question
               updateQuestion("_caregiver_lived_12_months", value);
             }),
@@ -626,7 +641,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
               String selectedOption =
                   convertingRadioButtonOptionsToString(value);
               context.read<CparaProvider>().updateSafeModel(
-                  safeModel.copyWith(question8: selectedOption));
+                  safeModel.copyWith(question7: selectedOption));
               // Update the state of the question
               updateQuestion("_legal_documents", value);
             }),
@@ -967,7 +982,7 @@ RadioButtonOptions allShouldBeYes(
   if (members.isEmpty) {
     return RadioButtonOptions.no;
   } else if (members
-      .any((element) => element != RadioButtonOptions.yes || element == null)) {
+      .any((element) => element == RadioButtonOptions.no || element == null)) {
     return RadioButtonOptions.no;
   } else {
     return RadioButtonOptions.yes;

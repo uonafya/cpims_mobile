@@ -503,7 +503,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
     if (members.isEmpty) {
       return RadioButtonOptions.no;
     } else if (members.any(
-        (element) => element != RadioButtonOptions.yes || element == null)) {
+        (element) => element == RadioButtonOptions.no || element == null)) {
       return RadioButtonOptions.no;
     } else {
       return RadioButtonOptions.yes;
@@ -618,7 +618,6 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                 ),
               ],
             ),
-
             // Question 1.4 and 1.5
             QuestionsSection(
               doesSectionDependOnInitialAnswer: false,
@@ -847,6 +846,60 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
         HealthyGoalBlock(
           doesSectionDependOnInitialAnswer: true,
           initalQuestionValue: goal3InitialAnswer,
+          // updateInitialQuestion: (RadioButtonOptions? val) {
+          //   updateQuestion("initial_3", val);
+          //   // if val is yes set everything to null
+          //   if (val == RadioButtonOptions.yes) {
+          //     List<HealthChild> newChildren = List.from(children);
+          //     for (var i in newChildren) {
+          //       i.question1 = convertingRadioButtonOptionsToString(null);
+          //       i.question2 = convertingRadioButtonOptionsToString(null);
+          //       i.question3 = convertingRadioButtonOptionsToString(null);
+          //     }
+          //
+          //     HealthModel healthmodel =
+          //         Provider.of<CparaProvider>(context, listen: false)
+          //             .healthModel ??
+          //             HealthModel();
+          //     Provider.of<CparaProvider>(context, listen: false)
+          //         .updateHealthModel(
+          //         healthmodel.copyWith(childrenQuestions: newChildren));
+          //
+          //     setState(() {
+          //       children = newChildren;
+          //       set3_1final = null;
+          //       set3_2final = null;
+          //       set3_3final = null;
+          //     });
+          //   }
+          //   // if val is no set all children to yes
+          //   if (val == RadioButtonOptions.no) {
+          //     List<HealthChild> newChildren = List.from(children);
+          //     for (var i in newChildren) {
+          //       i.question1 = convertingRadioButtonOptionsToString(
+          //           RadioButtonOptions.yes);
+          //       i.question2 = convertingRadioButtonOptionsToString(
+          //           RadioButtonOptions.yes);
+          //       i.question3 = convertingRadioButtonOptionsToString(
+          //           RadioButtonOptions.yes);
+          //     }
+          //
+          //     HealthModel healthmodel =
+          //         Provider.of<CparaProvider>(context, listen: false)
+          //             .healthModel ??
+          //             HealthModel();
+          //     Provider.of<CparaProvider>(context, listen: false)
+          //         .updateHealthModel(
+          //         healthmodel.copyWith(childrenQuestions: newChildren));
+          //
+          //     setState(() {
+          //       children = newChildren;
+          //       set3_1final = RadioButtonOptions.na;
+          //       set3_2final = RadioButtonOptions.na;
+          //       set3_3final = RadioButtonOptions.na;
+          //     });
+          //   }
+          // },
           updateInitialQuestion: (RadioButtonOptions? val) {
             updateQuestion("initial_3", val);
             // if val is yes set everything to null

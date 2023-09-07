@@ -1,3 +1,5 @@
+import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
+
 class SchooledModel{
    final String? mainquestion1;
   final String? question1;
@@ -46,10 +48,10 @@ class SchooledModel{
 
   Map<String, dynamic> toJSON() {
     return {
-      'q32': question1,
-      'q33': question2,
-      'q34': question3,
-      'q35': question4,
+      CparaQuestionIds.schooledQuestion1: question1,
+      CparaQuestionIds.schooledQuestion2: question2,
+      CparaQuestionIds.schooledQuestion3: question3,
+      CparaQuestionIds.schooledQuestion4: question4,
     };
   }
 }
