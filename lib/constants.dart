@@ -300,11 +300,11 @@ const String cpimsApiUrl = "https://dev.cpims.net/api/";
 
 const Map<String, String> headers = {"Content-Type": "application/json"};
 
-errorSnackBar(BuildContext context, message) {
+void errorSnackBar(BuildContext context, String message, {Duration duration = const Duration(seconds: 8)}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     backgroundColor: Colors.red,
     content: Text(message),
-    duration: const Duration(seconds: 8),
+    duration: duration,
   ));
 }
 
