@@ -10,8 +10,12 @@ import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Models/case_load_model.dart';
+
 class Form1AScreen extends StatefulWidget {
-  const Form1AScreen({super.key});
+  const Form1AScreen({super.key,required this.caseLoadModel});
+
+  final CaseLoadModel caseLoadModel;
 
   @override
   State<Form1AScreen> createState() => _Form1AScreenState();
@@ -60,9 +64,9 @@ class _Form1AScreenState extends State<Form1AScreen> {
                     padding: const EdgeInsets.all(10),
                     width: double.infinity,
                     color: Colors.black,
-                    child: const Text(
-                      'Form 1A Details  {Ovc_Cpims_Child}',
-                      style: TextStyle(color: Colors.white),
+                    child:  Text(
+                      'Form 1A Details ${widget.caseLoadModel.cpimsId}',
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                   Padding(
