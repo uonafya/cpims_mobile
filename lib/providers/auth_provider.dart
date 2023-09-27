@@ -129,58 +129,121 @@ class AuthProvider with ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
 
       String? refreshToken = prefs.getString('refresh');
-
       int? authTokenTimestamp = prefs.getInt('authTokenTimestamp');
 
-      if (refreshToken != null && authTokenTimestamp != null) {
-        int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
-        int tokenExpiryDuration =
-            1800 * 1000; // Token expires after 30 minutes (in milliseconds)
+      if (refreshToken == null || authTokenTimestamp == null) {
+        if (context.mounted) {
+          errorSnackBar(context, "Invalid Token Please login");
+        }
+        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+        return false;
+      }
 
-        if (currentTimestamp - authTokenTimestamp > tokenExpiryDuration) {
-          // Token has expired -- refresh token
+      int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
+      int tokenExpiryDuration = 1800 * 1000;
 
-          // get new token
-          final http.Response response = await http.post(
-            Uri.parse(
-              '${cpimsApiUrl}token/refresh/',
-            ),
-            body: {
-              'refresh': refreshToken,
+      if (currentTimestamp - authTokenTimestamp > tokenExpiryDuration) {
+        final http.Response response = await http.post(
+          Uri.parse('${cpimsApiUrl}token/refresh/'),
+          body: {
+            'refresh': refreshToken,
+          },
+        );
+
+        if (context.mounted) {
+          httpReponseHandler(
+            response: response,
+            context: context,
+            onSuccess: () async {
+              final responseData = json.decode(response.body);
+              await prefs.remove('access');
+              await prefs.setString('access', responseData['access']);
+
+              if (context.mounted) {
+                setUser(UserModel(
+                  username: user!.username,
+                  accessToken: responseData['access'],
+                  refreshToken: refreshToken,
+                ));
+              }
             },
           );
-
-          if (context.mounted) {
-            httpReponseHandler(
-              response: response,
-              context: context,
-              onSuccess: () async {
-                final responseData = json.decode(response.body);
-                await prefs.remove('access');
-                await prefs.setString('access', responseData['access']);
-
-                if (context.mounted) {
-                  setUser(UserModel(
-                    username: user!.username,
-                    accessToken: responseData['access'],
-                    refreshToken: refreshToken,
-                  ));
-                }
-              },
-            );
-          }
           return true;
         } else {
           setAccessToken(refreshToken);
           return true;
         }
       }
+
+      // If none of the conditions above are met, return false or null.
+      return false; // You can return null if you prefer.
     } catch (e) {
       if (context.mounted) {
         errorSnackBar(context, e.toString());
       }
       return false;
     }
-    return false;
   }
+
+// Future<bool> verifyToken({
+//   required BuildContext context,
+// }) async {
+//   try {
+//     final prefs = await SharedPreferences.getInstance();
+//
+//     String? refreshToken = prefs.getString('refresh');
+//
+//     int? authTokenTimestamp = prefs.getInt('authTokenTimestamp');
+//
+//     if (refreshToken != null && authTokenTimestamp != null) {
+//       int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
+//       int tokenExpiryDuration =
+//           1800 * 1000; // Token expires after 30 minutes (in milliseconds)
+//
+//       if (currentTimestamp - authTokenTimestamp > tokenExpiryDuration) {
+//         // Token has expired -- refresh token
+//
+//         // get new token
+//         final http.Response response = await http.post(
+//           Uri.parse(
+//             '${cpimsApiUrl}token/refresh/',
+//           ),
+//           body: {
+//             'refresh': refreshToken,
+//           },
+//         );
+//
+//         if (context.mounted) {
+//           httpReponseHandler(
+//             response: response,
+//             context: context,
+//             onSuccess: () async {
+//               final responseData = json.decode(response.body);
+//               await prefs.remove('access');
+//               await prefs.setString('access', responseData['access']);
+//
+//               if (context.mounted) {
+//                 setUser(UserModel(
+//                   username: user!.username,
+//                   accessToken: responseData['access'],
+//                   refreshToken: refreshToken,
+//                 ));
+//               }
+//             },
+//           );
+//         }
+//         return true;
+//       } else {
+//         setAccessToken(refreshToken);
+//         return true;
+//       }
+//     }
+//   } catch (e) {
+//     if (context.mounted) {
+//       errorSnackBar(context, e.toString());
+//     }
+//     return false;
+//   }
+//   return false;
+// }
 }

@@ -83,7 +83,7 @@ class Form1AProvider extends ChangeNotifier {
       criticalEvent["event_id"] = valueItem.value;
       criticalEvents.add(criticalEvent);
       eventData = criticalEvents;
-      print(criticalEvents);
+      print("Here are the critical events that were submmited $eventData");
     }
   }
 
@@ -101,6 +101,7 @@ class Form1AProvider extends ChangeNotifier {
         data.add(item);
         print(data);
         serviceData = data;
+        print("Here is the service data that was submitted $serviceData");
       }
     }
   }
@@ -112,6 +113,7 @@ class Form1AProvider extends ChangeNotifier {
     String dateOfEvent =
     DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
     Map<String, dynamic> payload = {};
+    // todo add the ovc_cpims_id
     payload.addAll({
       'ovc_cpims_id': 12344,
       'date_of_event': dateOfEvent,
@@ -119,7 +121,7 @@ class Form1AProvider extends ChangeNotifier {
       'critical_events': eventData,
     });
     String form1A = jsonEncode(payload);
-    print(form1A);
+    print("Fom one A JSON $form1A");
 
     // After submission reset the form
     setSelectedEvents([]);

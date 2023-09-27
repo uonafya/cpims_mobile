@@ -4,6 +4,7 @@ import 'package:cpims_mobile/screens/forms/form1a/utils/form_1a_options.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_forms_date_picker.dart';
+import 'package:cpims_mobile/widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -86,21 +87,37 @@ class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
                 text: 'Submit Event(s)',
                 onTap: () {
                   form1aProvider.submitCriticalData();
+                  print(
+                      "The data from form one A is ${form1aProvider.criticalFormData.selectedEvents}");
+                  print("This button for submitting form One A was clicked");
                 },
               ),
             ),
             const SizedBox(
               width: 15,
             ),
-            const Expanded(
-              child: CustomButton(text: 'Cancel', color: kTextGrey),
+            Expanded(
+              child: CustomButton(
+                text: 'Cancel',
+                color: kTextGrey,
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
             ),
           ],
         ),
         const SizedBox(
           height: 15,
         ),
-        const CustomButton(text: 'History Event(s)'),
+        CustomButton(
+          text: 'History Event(s)',
+          onTap: () {
+            //   Toast this message "Will fetch all the events for this child"
+            CustomToastWidget.showToast(
+                'Will fetch all the events for this child');
+          },
+        ),
       ],
     );
   }

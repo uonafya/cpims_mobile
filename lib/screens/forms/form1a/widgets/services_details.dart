@@ -60,6 +60,7 @@ class _ServicesDetailsState extends State<ServicesDetails> {
   }
 
   String domainValue = "";
+
   @override
   Widget build(BuildContext context) {
     listOfSubDomains = filteredSubdomains(domainId: domainValue);

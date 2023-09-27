@@ -23,9 +23,6 @@ class CparaProvider extends ChangeNotifier {
   // Calculate schooled benchmark
   int schooledBenchmark() {
     int schooledBenchmark = 0;
-
-
-
     if (schooledModel?.question1 == "Yes" &&
             schooledModel?.question2 == "Yes" &&
             schooledModel?.question3 == "Yes" &&
@@ -80,7 +77,6 @@ class CparaProvider extends ChangeNotifier {
     } else {
       benchmark1 = 0;
     }
-
 // Health BenchMark 2 result
     if (healthModel?.question6 == "Yes" && (healthModel?.question7 == "Yes" ||
         healthModel?.question7 == "N/A") &&
