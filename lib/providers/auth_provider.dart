@@ -71,8 +71,6 @@ class AuthProvider with ChangeNotifier {
           await prefs.setString('refresh', responseData['refresh']);
           await prefs.setBool("hasUserSetup", true);
 
-          print("Here is access token ${responseData['access']}");
-
           await prefs.setInt(
             'authTokenTimestamp',
             DateTime.now().millisecondsSinceEpoch,
@@ -85,8 +83,6 @@ class AuthProvider with ChangeNotifier {
             accessToken: responseData['access'],
             refreshToken: responseData['refresh'],
           );
-          print("The user model is $userModel and the username is $username");
-
           if (context.mounted) {
             setUser(userModel);
           }
@@ -97,6 +93,9 @@ class AuthProvider with ChangeNotifier {
           Get.off(() => const InitialLoadingScreen(isFromAuth: true),
               transition: Transition.fadeIn,
               duration: const Duration(microseconds: 300));
+        },
+        onFailure: () {
+          // clearUser();
         },
       );
     }
@@ -132,7 +131,6 @@ class AuthProvider with ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
 
       String? refreshToken = prefs.getString('refresh');
-      print("The refresh token is $refreshToken");
 
       int? authTokenTimestamp = prefs.getInt('authTokenTimestamp');
 
@@ -152,8 +150,6 @@ class AuthProvider with ChangeNotifier {
               'refresh': refreshToken,
             },
           );
-          print(
-              "Making this request for new token ${cpimsApiUrl}token/refresh/");
           if (context.mounted) {
             httpReponseHandler(
               response: response,
@@ -172,13 +168,7 @@ class AuthProvider with ChangeNotifier {
                 }
               },
               onFailure: () async {
-                if (context.mounted) {
-                  Get.off(
-                        () => const LoginScreen(),
-                    transition: Transition.fadeIn,
-                    duration: const Duration(microseconds: 300),
-                  );
-                }
+                await logOut(context);
               },
             );
           }
@@ -190,7 +180,7 @@ class AuthProvider with ChangeNotifier {
       }
     } catch (e) {
       if (context.mounted) {
-        errorSnackBar(context, "Here error occurred");
+        errorSnackBar(context, e.toString());
       }
 
       return false;

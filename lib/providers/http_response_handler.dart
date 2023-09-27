@@ -15,11 +15,11 @@ void httpReponseHandler({
       onSuccess();
       break;
     case 401:
-      // errorSnackBar(context, json.decode(response.body)['detail']);
+      errorSnackBar(context, json.decode(response.body)['detail']);
       onFailure();
       break;
     case 500:
-      // errorSnackBar(context, json.decode(response.body)['detail']);
+      errorSnackBar(context, json.decode(response.body)['detail']);
       onFailure();
   }
 }
