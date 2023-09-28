@@ -343,9 +343,9 @@ class LocalDb {
             'priority_id': service.priorityId,
             'results_id': service.resultsId,
             'reason_id': service.reasonId,
-            'completion_id': service.completionDate,
-            'service_ids': serviceIdList,
-            'responsible_ids': responsibleIdList,
+            'completion_date': service.completionDate,
+            //'service_id': serviceIdList,
+            //'responsible_ids': responsibleIdList,
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
