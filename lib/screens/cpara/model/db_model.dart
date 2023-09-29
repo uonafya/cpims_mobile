@@ -43,13 +43,16 @@ class CPARADatabaseQuestions {
 }
 
 class CPARADatabase {
+  int cpara_form_id;
   String ovc_cpims_id;
   String date_of_event;
   List<CPARADatabaseQuestions> questions;
   List<CPARAChildQuestions> childQuestions;
 
   CPARADatabase(
-      {this.ovc_cpims_id = "",
+      {
+        this.cpara_form_id = 0,
+        this.ovc_cpims_id = "",
         this.date_of_event = "",
         this.questions = const [],
         this.childQuestions = const []});

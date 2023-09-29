@@ -310,6 +310,9 @@ healthModel = healthModel.copyWith(childrenQuestions: childrenQuestions);
               )),
           const SizedBox(height: 20),
           const PastCPARAWidget(),
+          ElevatedButton(onPressed: ()async{
+            await submitCparaToUpstream();
+          }, child: const Text("Sync")),
           const Footer(),
         ],
       ),
