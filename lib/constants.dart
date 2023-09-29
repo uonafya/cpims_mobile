@@ -7,6 +7,8 @@ import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/organisation_units.dart';
 import 'package:cpims_mobile/screens/registry/persons_registry/persons_registry.dart';
 import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
+import 'package:cpims_mobile/services/caseload_service.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
@@ -17,7 +19,10 @@ const kTextGrey = Color(0XFF707478);
 const kSystemPadding = EdgeInsets.symmetric(horizontal: 20, vertical: 0);
 
 var _ovcActiveOrRegistered = '132,294 / 307,005';
-
+const syncName = "Sync";
+bool isSynching = false;
+bool _correct = true;
+dynamic snackBar;
 List<Map<String, dynamic>> homeCardsTitles = [
   {
     'title': 'OVC-ACTIVE/EVER REGISTERED',
@@ -129,9 +134,76 @@ List drawerOptions(BuildContext context) {
       ]
     },
     {
-      'title': 'Sync',
+      'title': syncName,
       'icon': FontAwesomeIcons.rotate,
-      'onTap': () => {},
+      'onTap': () async {
+        Get.back();
+        String deviceId = '';
+        final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+
+        try {
+          final AndroidDeviceInfo androidDeviceInfo =
+              await deviceInfoPlugin.androidInfo;
+          deviceId = androidDeviceInfo.id;
+          CaseLoadService().fetchCaseLoadData(
+              context: context, isForceSync: true, deviceID: deviceId);
+          snackBar = SnackBar(
+            content: const Text(
+              'Syncing in progress ...',
+              style: TextStyle(color: Colors.green),
+            ),
+            duration:
+                const Duration(seconds: 5), // Duration to display the Snackbar
+            action: SnackBarAction(
+              textColor: Colors.red,
+              label: 'Close',
+              onPressed: () {
+                Get.back();
+                // Action to perform when the "Close" button is pressed
+              },
+            ),
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          Future.delayed(Duration(seconds: 4));
+
+          snackBar = SnackBar(
+            content: const Text(
+              'Sync completed successfully',
+              style: TextStyle(color: Colors.green),
+            ),
+            duration:
+                const Duration(seconds: 1), // Duration to display the Snackbar
+            action: SnackBarAction(
+              textColor: Colors.red,
+              label: 'Close',
+              onPressed: () {
+                Get.back();
+                // Action to perform when the "Close" button is pressed
+              },
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } catch (e) {
+          snackBar = SnackBar(
+            content: Text(
+              'An error occured $e ...',
+              style: TextStyle(color: Colors.red),
+            ),
+            duration:
+                const Duration(seconds: 2), // Duration to display the Snackbar
+            action: SnackBarAction(
+              textColor: Colors.red,
+              label: 'Close',
+              onPressed: () {
+                Get.back();
+                // Action to perform when the "Close" button is pressed
+              },
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      },
       'children': []
     },
     {
@@ -228,11 +300,11 @@ const String cpimsApiUrl = "https://dev.cpims.net/api/";
 
 const Map<String, String> headers = {"Content-Type": "application/json"};
 
-errorSnackBar(BuildContext context, message) {
+void errorSnackBar(BuildContext context, String message, {Duration duration = const Duration(seconds: 8)}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     backgroundColor: Colors.red,
     content: Text(message),
-    duration: const Duration(seconds: 8),
+    duration: duration,
   ));
 }
 
@@ -272,32 +344,78 @@ List<Map<String, dynamic>> cparaStepperData = [
 List<Map<String, dynamic>> unapprovedItems = [
   {
     'title': 'Form 1A',
+    'childID': '12340',
     'eventType': 'SERVICES',
-    'details': 'OVC Registration',
+    'details': 'OVCCare',
+    'date': '2021-09-01',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'Form 1A',
+    'childID': '67768',
+    'eventType': 'CRITICAL EVENTS',
+    'details': 'OVCCare',
+    'date': '2021-09-30',
     'onTap': () => {},
     'color': Colors.red,
     's_color': const Color(0xff9A3734),
   },
   {
     'title': 'Form 1B',
+    'childID': '07761',
     'eventType': 'SERVICES',
-    'details': 'OVC Registration',
+    'details': 'OVCCare',
+    'date': '2021-09-30',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'Form 1B',
+    'childID': '87761',
+    'eventType': 'CRITICAL EVENTS',
+    'details': 'OVCCare',
+    'date': '2021-09-30',
     'onTap': () => {},
     'color': Colors.red,
     's_color': const Color(0xff9A3734),
   },
   {
     'title': 'CPARA',
-    'eventType': 'SERVICES',
-    'details': 'OVC Registration',
+    'caregiverName': 'John Wekesa',
+    'caregiverID': '734627',
+    'date': '2021-09-30',
     'onTap': () => {},
     'color': Colors.red,
     's_color': const Color(0xff9A3734),
   },
   {
-    'title': 'CPA',
+    'title': 'CPARA',
+    'caregiverName': 'Odhiambo Nelson',
+    'caregiverID': 'O7234627',
+    'date': '2021-09-30',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'CPT',
+    'childID': '87761',
     'eventType': 'SERVICES',
-    'details': 'OVC Registration',
+    'details': 'OVCCare',
+    'date': '2021-09-30',
+    'onTap': () => {},
+    'color': Colors.red,
+    's_color': const Color(0xff9A3734),
+  },
+  {
+    'title': 'CPT',
+    'childID': '57761',
+    'eventType': 'CRITICAL EVENTS',
+    'details': 'OVCCare',
+    'date': '2021-09-30',
     'onTap': () => {},
     'color': Colors.red,
     's_color': const Color(0xff9A3734),

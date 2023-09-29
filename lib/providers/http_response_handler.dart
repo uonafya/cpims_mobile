@@ -8,6 +8,7 @@ void httpReponseHandler({
   required http.Response response,
   required BuildContext context,
   required VoidCallback onSuccess,
+  required VoidCallback onFailure,
 }) {
   switch (response.statusCode) {
     case 200:
@@ -15,8 +16,10 @@ void httpReponseHandler({
       break;
     case 401:
       errorSnackBar(context, json.decode(response.body)['detail']);
+      onFailure();
       break;
     case 500:
       errorSnackBar(context, json.decode(response.body)['detail']);
+      onFailure();
   }
 }

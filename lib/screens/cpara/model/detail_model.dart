@@ -1,9 +1,10 @@
+import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
+
 class DetailModel {
   final String? isFirstAssessment;
   final String? isChildHeaded;
   final String? hasHivExposedInfant;
   final String? hasPregnantOrBreastfeedingWoman;
-  final List<DetailChild>? childrenQuestions;
   final String? dateOfAssessment;
   final String? dateOfLastAssessment;
 
@@ -12,7 +13,6 @@ class DetailModel {
     this.isChildHeaded,
     this.hasHivExposedInfant,
     this.hasPregnantOrBreastfeedingWoman,
-    this.childrenQuestions,
     this.dateOfAssessment,
     this.dateOfLastAssessment,
   });
@@ -23,8 +23,6 @@ class DetailModel {
       isChildHeaded: json['question2'],
       hasHivExposedInfant: json['question3'],
       hasPregnantOrBreastfeedingWoman: json['question4'],
-      childrenQuestions: List<DetailChild>.from(
-          json["childrenQuestions"]!.map((x) => DetailChild.fromJson(x))),
       dateOfAssessment: json['dateOfAssessment'],
       dateOfLastAssessment: json['dateOfLastAssessment'],
     );
@@ -33,12 +31,12 @@ class DetailModel {
   // Converts the detail model to json. This is particulary going to be used for the sake of the database
   Map<String, dynamic> toJSON() {
     return {
-      'q1': isFirstAssessment,
-      'q2': isChildHeaded,
-      'q3': hasHivExposedInfant,
-      'q4': hasPregnantOrBreastfeedingWoman,
-      'q5': dateOfAssessment,
-      // 'q6': dateOfLastAssessment // This is sent as its own parameter in the request
+      CparaQuestionIds.isThisFirstCasePlanAssessment: isFirstAssessment,
+      CparaQuestionIds.houseChildHeaded: isChildHeaded,
+      CparaQuestionIds.houseHoldHavingHivExposedInfant: hasHivExposedInfant,
+      CparaQuestionIds.houseHoldHavingPregnantWoman : hasPregnantOrBreastfeedingWoman,
+      CparaQuestionIds.detailDateOfAssessment : dateOfAssessment,
+      CparaQuestionIds.previousCasePlanAssessment: dateOfLastAssessment // This is sent as its own parameter in the request
     };
   }
 
@@ -47,7 +45,6 @@ class DetailModel {
     String? isChildHeaded,
     String? hasHivExposedInfant,
     String? hasPregnantOrBreastfeedingWoman,
-    List<DetailChild>? childrenQuestions,
     String? dateOfAssessment,
     String? dateOfLastAssessment,
   }) {
@@ -57,36 +54,35 @@ class DetailModel {
       hasHivExposedInfant: hasHivExposedInfant ?? this.hasHivExposedInfant,
       hasPregnantOrBreastfeedingWoman: hasPregnantOrBreastfeedingWoman ??
           this.hasPregnantOrBreastfeedingWoman,
-      childrenQuestions: childrenQuestions ?? this.childrenQuestions,
       dateOfAssessment: dateOfAssessment ?? this.dateOfAssessment,
       dateOfLastAssessment: dateOfLastAssessment ?? this.dateOfLastAssessment,
     );
   }
 }
 
-class DetailChild {
-  final String question1;
-  final String question2;
-  final String question3;
-  final String question4;
-  final String question5;
-  final String question6;
-  final String question7;
-  final String question8;
+class OvcSubPopulationModel {
+  final String? question1;
+  final String? question2;
+  final String? question3;
+  final String? question4;
+  final String? question5;
+  final String? question6;
+  final String? question7;
+  final String? question8;
 
-  DetailChild({
-    required this.question1,
-    required this.question2,
-    required this.question3,
-    required this.question4,
-    required this.question5,
-    required this.question6,
-    required this.question7,
-    required this.question8,
+  OvcSubPopulationModel({
+    this.question1,
+    this.question2,
+    this.question3,
+    this.question4,
+    this.question5,
+    this.question6,
+    this.question7,
+    this.question8,
   });
 
-  factory DetailChild.fromJson(Map<String, dynamic> json) {
-    return DetailChild(
+  factory OvcSubPopulationModel.fromJson(Map<String, dynamic> json) {
+    return OvcSubPopulationModel(
       question1: json['question1'],
       question2: json['question2'],
       question3: json['question3'],
@@ -97,4 +93,20 @@ class DetailChild {
       question8: json['question8'],
     );
   }
+
+  //to json
+  // Map<String, dynamic> toJSON() {
+  //   return {
+  //     'q1': question1,
+  //     'q2': question2,
+  //     'q3': question3,
+  //     'q4': question4,
+  //     'q5': question5,
+  //     'q6': question6,
+  //     'q7': question7,
+  //     'q8': question8,
+  //   };
+  // }
+
+
 }

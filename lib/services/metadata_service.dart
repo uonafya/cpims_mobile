@@ -21,7 +21,7 @@ class MetadataService {
       for (var data in responseData) {
         Metadata metadata = Metadata.fromJson(data);
         await db.insertMetadata(metadata);
-        print(metadata);
+        print(metadata.toJson());
       }
       return true;
     } catch (e) {

@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
         localizedReason: "Scan your finger to authenticate",
       );
     } on PlatformException catch (e) {
-      if (mounted) errorSnackBar(context, e.message);
+      if (mounted) errorSnackBar(context, e.message.toString());
     }
 
     setState(() {
@@ -360,6 +360,16 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isloading = true;
     });
+    if (username.isEmpty || password.isEmpty) {
+      if (mounted) {
+        errorSnackBar(context, 'Please enter your username and password', duration: const Duration(seconds: 3));
+      }
+      setState(() {
+        _isloading = false;
+      });
+      return;
+    }
+
     final prefs = await SharedPreferences.getInstance();
     final hasUserSetup = prefs.getBool("hasUserSetup");
     final hasConnection =

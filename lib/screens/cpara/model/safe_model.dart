@@ -1,15 +1,15 @@
+import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
+
 class SafeModel {
   final String? question1;
   final String? question2;
   final String? question3;
   final String? question4;
   final String? question5;
-
   final String? question6;
   final String? question7;
+  // final String? question8;
 
-  final String? question8;
-  
   final String? overallQuestion1;
   final String? overallQuestion2;
   final List<SafeChild>? childrenQuestions;
@@ -22,7 +22,7 @@ class SafeModel {
     this.question5,
     this.question6,
     this.question7,
-    this.question8,
+    // this.question8,
     this.overallQuestion1,
     this.overallQuestion2,
     this.childrenQuestions,
@@ -37,23 +37,28 @@ class SafeModel {
       question5: json['question5'],
       question6: json['question6'],
       question7: json['question7'],
-      question8: json['question8'],
+      // question8: json['question8'],
       overallQuestion1: json['overallQuestion1'],
       overallQuestion2: json['overallQuestion2'],
-      childrenQuestions: json["childrenQuestions"] == null ? [] : List<SafeChild>.from(json["childrenQuestions"]!.map((x) => SafeChild.fromJson(x))),
+      childrenQuestions: json["childrenQuestions"] == null
+          ? []
+          : List<SafeChild>.from(
+              json["childrenQuestions"]!.map((x) => SafeChild.fromJson(x))),
     );
   }
 
   // Converts the detail model to json. This is particulary going to be used for the sake of the database
   Map<String, dynamic> toJSON() {
     return {
-      'q25': question1,
-      'q26': question2,
-      'q27': question3,
-      'q28': question4,
-      'q29': question5,
-      'q30': question6,
-      'q31': question7
+      CparaQuestionIds.safeQuestion1: question1,
+      CparaQuestionIds.safeQuestion2: question2,
+      CparaQuestionIds.safeQuestion3: question3,
+      CparaQuestionIds.safeQuestion4: question4,
+      CparaQuestionIds.safeQuestion5: question5,
+      CparaQuestionIds.safeQuestion6: question6,
+      CparaQuestionIds.safeQuestion7: question7,
+      // CparaQuestionIds.safeQuestion8: question3,
+      "children": childrenQuestions?.map((e) => e.toJSON()).toList() ?? []
     };
   }
 
@@ -65,7 +70,7 @@ class SafeModel {
     String? question5,
     String? question6,
     String? question7,
-    String? question8,
+    // String? question8,
     String? overallQuestion1,
     String? overallQuestion2,
     List<SafeChild>? childrenQuestions,
@@ -78,7 +83,7 @@ class SafeModel {
       question5: question5 ?? this.question5,
       question6: question6 ?? this.question6,
       question7: question7 ?? this.question7,
-      question8: question8 ?? this.question8,
+      // question8: question8 ?? this.question8,
       overallQuestion1: overallQuestion1 ?? this.overallQuestion1,
       overallQuestion2: overallQuestion2 ?? this.overallQuestion2,
       childrenQuestions: childrenQuestions ?? this.childrenQuestions,
@@ -87,15 +92,25 @@ class SafeModel {
 }
 
 class SafeChild {
+  final String  ovcId;
+  final String name;
   final String? question1;
 
   SafeChild({
+    required this.ovcId,
+    required this.name,
     required this.question1,
   });
 
   factory SafeChild.fromJson(Map<String, dynamic> json) {
     return SafeChild(
       question1: json['question1'],
+      name: json['name'],
+      ovcId: json['id'],
     );
+  }
+
+  Map<String, dynamic> toJSON() {
+    return {"id": ovcId, CparaQuestionIds.safeChildQuestion1: question1};
   }
 }

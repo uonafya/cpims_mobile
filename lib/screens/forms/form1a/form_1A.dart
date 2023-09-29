@@ -1,4 +1,6 @@
+import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/screens/forms/form1a/widgets/critical_events_details.dart';
 import 'package:cpims_mobile/screens/forms/form1a/widgets/services_details.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
@@ -7,9 +9,11 @@ import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Form1AScreen extends StatefulWidget {
   const Form1AScreen({super.key});
+
 
   @override
   State<Form1AScreen> createState() => _Form1AScreenState();
@@ -17,11 +21,12 @@ class Form1AScreen extends StatefulWidget {
 
 class _Form1AScreenState extends State<Form1AScreen> {
   int selectedStep = 0;
-
   List<Widget> steps = [const CriticalEventsScreen(), const ServicesDetails()];
 
   @override
   Widget build(BuildContext context) {
+    Form1AProvider form1aProvider = Provider.of<Form1AProvider>(context);
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -57,7 +62,7 @@ class _Form1AScreenState extends State<Form1AScreen> {
                     width: double.infinity,
                     color: Colors.black,
                     child: const Text(
-                      'Form 1A Details',
+                      'Form 1A Details  {Ovc_Cpims_Child}',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -110,6 +115,10 @@ class _Form1AScreenState extends State<Form1AScreen> {
                                   setState(() {
                                     if (selectedStep < steps.length - 1) {
                                       selectedStep++;
+                                    }
+
+                                    if (selectedStep == steps.length - 1) {
+                                      form1aProvider.submitCriticalServices();
                                     }
                                   });
                                 },

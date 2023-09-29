@@ -1,11 +1,17 @@
+import 'package:cpims_mobile/Models/form_1_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
+import 'package:cpims_mobile/screens/caregiver/caregiver.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
+import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
+import 'package:cpims_mobile/services/form_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
+import 'package:cpims_mobile/widgets/custom_grid_view.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -22,10 +28,85 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  List<Map<String, String>> formsList = [
+    {'formType': 'form1a', 'endpoint': 'form1a/'},
+    {'formType': 'form1b', 'endpoint': 'form1b/'},
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    syncWorkflows();
+  }
+
+  bool isSyncing = false;
+
+  Future<void> syncWorkflows() async {
+    // check for internet connection
+    final isConnected =
+        await Provider.of<ConnectivityProvider>(context, listen: false)
+            .checkInternetConnection();
+    if (isConnected) {
+      setState(() {
+        isSyncing = true;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Syncing forms...'),
+            duration: Duration(days: 1), // Show indefinitely
+          ),
+        );
+      }
+      // sync workflows
+
+      for (var formType in formsList) {
+        List<dynamic> forms = await Form1Service.getAllForms(
+          formType['formType']!,
+        );
+
+        for (var formData in forms) {
+          await Form1Service.postFormRemote(
+            formData,
+            formType['endpoint']!,
+          );
+        }
+      }
+
+      setState(() {
+        isSyncing = false;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .removeCurrentSnackBar(); // Remove the indefinite snackbar
+      }
+      _showSyncSnackbar();
+    }
+  }
+
+  void _showSyncSnackbar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Forms synchronized successfully.'),
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final SummaryDataModel dashData =
         context.select((UIProvider provider) => provider.getDashData);
+
+    if (dashData == null) {
+      return const Center(
+        child: SnackBar(
+          content: Text("Failed to sync dashboard data"),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: customAppBar(),
@@ -74,10 +155,13 @@ class _HomepageState extends State<Homepage> {
                   form1BCount: 3,
                   cpaCount: 2,
                   cparaCount: 1,
-                  onClick: () {},
+                  onClick: () {
+                    Get.to(() => const UnapprovedRecordsScreens());
+                  },
                 ),
-                GridView.count(
+                CustomGridView(
                   crossAxisCount: 2,
+                  childrenHeight: 180,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
@@ -115,13 +199,6 @@ class _HomepageState extends State<Homepage> {
                       icon: FontAwesomeIcons.heart,
                       color: Color(0xff49B6D5),
                       secondaryColor: Color(0xff2C6E80),
-                    ),
-                    StatisticsGridItem(
-                      title: 'HOUSEHOLDS',
-                      value: dashData.household.toString(),
-                      icon: FontAwesomeIcons.house,
-                      color: const Color(0xffFE5C57),
-                      secondaryColor: const Color(0xff9A3734),
                     ),
                     StatisticsGridItem(
                       title: 'Org Unit Id',
@@ -164,6 +241,15 @@ class _HomepageState extends State<Homepage> {
                       icon: FontAwesomeIcons.house,
                       color: const Color(0xffFE5C57),
                       secondaryColor: const Color(0xff9A3734),
+                      onTap: () {
+                        Get.to(
+                          () => const CaregiverScreen(),
+                          transition: Transition.cupertino,
+                          duration: const Duration(
+                            milliseconds: 200,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

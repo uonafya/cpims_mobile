@@ -1,13 +1,18 @@
+import 'package:cpims_mobile/Models/case_load_model.dart';
+import 'package:cpims_mobile/Models/statistic_model.dart';
+import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
+import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../providers/db_provider.dart';
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
 
 class CparaDetailsWidget extends StatefulWidget {
@@ -24,38 +29,53 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
   RadioButtonOptions? hasHivExposedInfant;
   RadioButtonOptions? hasPregnantOrBreastfeedingWoman;
 
-  final List<ChildDetails> children = [
-    ChildDetails(
-      name: 'John Doe',
-      age: 10,
-      gender: 'Male',
-      uniqueNumber: '123456789',
-      schoolLevel: 'Primary',
-      registeredInProgram: true,
-    ),
-    ChildDetails(
-      name: 'Jane Doe',
-      age: 8,
-      gender: 'Female',
-      uniqueNumber: '987654321',
-      schoolLevel: 'Kindergarten',
-      registeredInProgram: false,
-    ),
+  // final List<ChildDetails> children = [
+  //   ChildDetails(
+  //     name: 'John Doe',
+  //     age: 10,
+  //     gender: 'Male',
+  //     uniqueNumber: '123456789',
+  //     schoolLevel: 'Primary',
+  //     registeredInProgram: true,
+  //   ),
+  //   ChildDetails(
+  //     name: 'Jane Doe',
+  //     age: 8,
+  //     gender: 'Female',
+  //     uniqueNumber: '987654321',
+  //     schoolLevel: 'Kindergarten',
+  //     registeredInProgram: false,
+  //   ),
+  // ];
+
+  List<CaseLoadModel> children = [
   ];
 
   @override
-  void initState(){
-    DetailModel detailModel = context.read<CparaProvider>().detailModel ?? DetailModel();
-    isFirstAssessment = detailModel.isFirstAssessment == null ? isFirstAssessment : convertingStringToRadioButtonOptions(detailModel.isFirstAssessment!);
-    isChildHeaded = detailModel.isChildHeaded == null ? isChildHeaded : convertingStringToRadioButtonOptions(detailModel.isChildHeaded!);
-    hasHivExposedInfant = detailModel.hasHivExposedInfant == null ? hasHivExposedInfant : convertingStringToRadioButtonOptions(detailModel.hasHivExposedInfant!);
+  void initState() {
+    DetailModel detailModel =
+        context.read<CparaProvider>().detailModel ?? DetailModel();
+    isFirstAssessment = detailModel.isFirstAssessment == null
+        ? isFirstAssessment
+        : convertingStringToRadioButtonOptions(detailModel.isFirstAssessment!);
+    isChildHeaded = detailModel.isChildHeaded == null
+        ? isChildHeaded
+        : convertingStringToRadioButtonOptions(detailModel.isChildHeaded!);
+    hasHivExposedInfant = detailModel.hasHivExposedInfant == null
+        ? hasHivExposedInfant
+        : convertingStringToRadioButtonOptions(
+            detailModel.hasHivExposedInfant!);
     // dateOfAssessment = detailModel.dateOfAssessment == null ? dateOfAssessment : DateTime.parse(detailModel.dateOfAssessment!);
     // dateOfLastAssessment = detailModel.dateOfLastAssessment == null ? dateOfLastAssessment : DateTime.parse(detailModel.dateOfLastAssessment!);
+    List<CaseLoadModel> models =
+        context.read<CparaProvider>().children ?? [];
+    children = models;
+
     super.initState();
   }
 
   void _getDataAndMoveToNext() {
-    print('Is first assessment: $isFirstAssessment');
+    print('Is first assessment: $widget');
     print('Is child headed: $isChildHeaded');
     print('Has HIV exposed infant: $hasHivExposedInfant');
     print(
@@ -74,21 +94,6 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
         ? DateFormat('yyyy-MM-dd').format(dateOfPreviousAssessment)
         : '';
     print('Date of previous assessment: $formattedDateOfPreviousAssessment');
-
-    // Iterate through the children and collect OVC sub-population data
-    // for (var child in children) {
-    //   print('Child Name: ${child.name}');
-    //   print('Child OVC CPIMS ID: ${child.uniqueNumber}');
-    //   // Retrieve CheckboxQuestion objects for the current child
-    //   List<CheckboxQuestion> childQuestions = questions1.map((questions1) =>
-    //       CheckboxQuestion(id: questions1.id, question: questions1.question, isChecked: questions1.isChecked))
-    //       .toList();
-    //
-    //   // Print the checkbox values for the current child
-    //   for (var question in childQuestions) {
-    //     print('${question.question}: ${question.isChecked}');
-    //   }
-    // }
   }
 
   final GlobalKey<_DateTextFieldState> _dateTextFieldKey = GlobalKey();
@@ -158,7 +163,9 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
           physics: const NeverScrollableScrollPhysics(),
           itemCount: children.length,
           itemBuilder: (context, index) {
-            return ChildCard(childDetails: children[index]);
+            return ExpansionTile(title: Text('${children[index].ovcFirstName!} ${children[index].ovcSurname!}'), children: [
+              ChildCard(childDetails: children[index]),
+            ]);
           },
         ),
         QuestionWidget(
@@ -205,24 +212,6 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             },
             isNaAvailable: false),
         const SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: _getDataAndMoveToNext,
-          child: const Text('Next'),
-        ),
-        // for (var child in children)
-        //   ExpansionTile(title: Text(child.name), children: [
-        //     CheckboxForm(
-        //       childName: child.name,
-        //       ovcCpimsId: child.uniqueNumber,
-        //       onCheckboxSelected: (id) {
-        //         DetailModel detailModel =
-        //             context.read<CparaProvider>().detailModel ?? DetailModel();
-        //         context.read<CparaProvider>().updateDetailModel(
-        //             detailModel.copyWith(childrenQuestions: id));
-        //       },
-        //     ),
-        //   ]),
-        // const SizedBox(height: 20),
       ],
     );
   }
@@ -302,97 +291,91 @@ class TextViewsColumn extends StatefulWidget {
 }
 
 class _TextViewsColumnState extends State<TextViewsColumn> {
-  late Future<CparaOvcDetails> _ovcDetails;
-
+  CaseLoadModel caseLoadModel = CaseLoadModel();
+  // SummaryDataModel dashData = SummaryDataModel();
   @override
   void initState() {
-    DetailModel detailModel =
-        context.read<CparaProvider>().detailModel ?? DetailModel();
-
-
     super.initState();
-    _ovcDetails = ApiService.fetchOvcDetails(
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkyOTc3ODM4LCJpYXQiOjE2OTI5NzQyMzgsImp0aSI6IjFlZDVkMGYzNWI1ZDQ2MmM5YTkyMDUxYWFmM2NiOTdkIiwidXNlcl9pZCI6ODg4fQ.RKzW5BJYb3eorTlqZMAABs6sejTvQtWeFlZeFc5r6ZA',
-        '2457100');
+
+    caseLoadModel =
+        context.read<CparaProvider>().caseLoadModel ?? CaseLoadModel();
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<CparaOvcDetails>(
-      future: _ovcDetails,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator(); // or any loading widget
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          final details = snapshot.data!;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const ReusableTitleText(title: 'Name of Organisation(LIP)'),
-              const SizedBox(height: 10),
-              Text(details.cboName),
-              const SizedBox(height: 10),
-              const ReusableTitleText(title: 'Date enrolled in the project'),
-              const SizedBox(height: 10),
-              Text(details.ovcEnrollmentDate),
-              const SizedBox(height: 10),
-              const ReusableTitleText(title: "County"),
-              const SizedBox(height: 10),
-              Text(details.wardName),
-              const SizedBox(height: 10),
-              const ReusableTitleText(title: 'Sub County'),
-              const SizedBox(height: 10),
-              Text(details.wardName),
-              const SizedBox(height: 10),
-              const ReusableTitleText(
-                  title: 'Name of caseworker/CHV conducting assessment'),
-              const SizedBox(height: 10),
-              Text(details.chvNames),
-              const SizedBox(height: 10),
-              const ReusableTitleText(title: 'Name of SDP staff/Case Manager'),
-              const SizedBox(height: 10),
-              Text(details.cboName),
-              const SizedBox(height: 10),
-              const ReusableTitleText(title: 'Name of Caregiver'),
-              const SizedBox(height: 10),
-              Text(details.caregiverNames),
-              const SizedBox(height: 10),
-              const ReusableTitleText(title: 'Caregiver ID Number'),
-              const SizedBox(height: 10),
-              Text(details.caregiverCpimsId.toString()),
-              const SizedBox(height: 10),
-              const SizedBox(height: 10),
-              const ReusableTitleText(title: 'Caregiver Gender'),
-              const SizedBox(height: 10),
-              const Text("Female"),
-              const SizedBox(height: 10),
-              const ReusableTitleText(title: 'Caregiver DOB'),
-              const SizedBox(height: 10),
-              const Text('August 21, 1973'),
-              const SizedBox(height: 10),
-              const ReusableTitleText(title: 'Caregiver Phone Number'),
-              const SizedBox(height: 10),
-              const Text('708568702'),
-              const SizedBox(height: 10),
-              const Divider(height: 20, thickness: 2),
-              const SizedBox(height: 20),
-            ],
-          );
-        }
-      },
+    final SummaryDataModel dashData =
+    context.select((UIProvider provider) => provider.getDashData);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const ReusableTitleText(title: 'Name of Organisation(LIP)'),
+        const SizedBox(height: 10),
+        Text(dashData.orgUnit),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Date enrolled in the project'),
+        const SizedBox(height: 10),
+        Text("${caseLoadModel.registrationDate}"),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: "County"),
+        const SizedBox(height: 10),
+        Text("details.countyName *"),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Sub County'),
+        const SizedBox(height: 10),
+        Text("details.subCountyName *"),
+        const SizedBox(height: 10),
+        const ReusableTitleText(
+            title: 'Name of caseworker/CHV conducting assessment'),
+        const SizedBox(height: 10),
+        Text("details.chvNames *"),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Name of SDP staff/Case Manager'),
+        const SizedBox(height: 10),
+        Text(dashData.orgUnit),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Name of Caregiver'),
+        const SizedBox(height: 10),
+        Text("${caseLoadModel.caregiverNames}"),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Caregiver ID Number'),
+        const SizedBox(height: 10),
+        Text("${caseLoadModel.caregiverCpimsId}"),
+        const SizedBox(height: 10),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Caregiver Gender'),
+        const SizedBox(height: 10),
+        Text("Female *"),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Caregiver DOB'),
+        const SizedBox(height: 10),
+        Text('August 21, 1973 *'),
+        const SizedBox(height: 10),
+        const ReusableTitleText(title: 'Caregiver Phone Number'),
+        const SizedBox(height: 10),
+        Text('708568702 *'),
+        const SizedBox(height: 10),
+        const Divider(height: 20, thickness: 2),
+        const SizedBox(height: 20),
+      ],
     );
   }
 }
 
 class ChildCard extends StatelessWidget {
   const ChildCard({Key? key, required this.childDetails}) : super(key: key);
-
-  final ChildDetails childDetails;
+  // CaseLoadModel caseLoadModel = CaseLoadModel();
+  final CaseLoadModel childDetails;
 
   @override
   Widget build(BuildContext context) {
+    // caseLoadModel =
+    //     context.read<CparaProvider>().caseLoadModel ?? CaseLoadModel();
+    // final careGiverChildren = allCaseLoadData
+    //     .where((element) =>
+    // element.caregiverNames == widget.caseLoadModel.caregiverNames)
+    //     .toList();
     return Card(
       margin: const EdgeInsets.all(10),
       elevation: 5,
@@ -415,8 +398,8 @@ class ChildCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(childDetails.name),
-                Text(childDetails.age.toString()),
+                Text('${childDetails.ovcFirstName!} ${childDetails.ovcSurname!}'),
+                Text("${calculateAge(childDetails.dateOfBirth!)} years"),
               ],
             ),
             const SizedBox(height: 8),
@@ -430,8 +413,8 @@ class ChildCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(childDetails.gender),
-                Text(childDetails.uniqueNumber),
+                Text(childDetails.sex!),
+                Text(childDetails.cpimsId!),
               ],
             ),
             const SizedBox(height: 8),
@@ -443,10 +426,11 @@ class ChildCard extends StatelessWidget {
                 ),
               ],
             ),
-            Row(
+            //todo: change to be dynamic
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(childDetails.schoolLevel),
+                Text(""),
               ],
             ),
             const Row(
@@ -457,10 +441,11 @@ class ChildCard extends StatelessWidget {
                         title: 'Registered in this OVC Program')),
               ],
             ),
-            Row(
+            //todo: change to be dynamic
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(childDetails.registeredInProgram.toString()),
+                Text("Yes"),
               ],
             ),
           ],

@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/screens/forms/form1b/utils/form1bConstants.dart';
 import 'package:cpims_mobile/screens/forms/form1b/widgets/critical_event_form1b.dart';
@@ -15,7 +16,8 @@ import 'package:provider/provider.dart';
 import '../../../providers/form1b_provider.dart';
 
 class Form1BScreen extends StatefulWidget {
-  const Form1BScreen({super.key});
+  const Form1BScreen({super.key, required this.caseLoad});
+  final CaseLoadModel caseLoad;
 
   @override
   State<Form1BScreen> createState() =>
@@ -31,9 +33,24 @@ class _Form1BScreen extends State<Form1BScreen> {
     const StableForm1b(),
     const CriticalEventForm1b(),
   ];
+
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration.zero,(){
+      Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context,listen: false);
+      form1bProvider.setFinalFormDataOvcId(widget.caseLoad.cpimsId!);
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
+    Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context,listen: false);
+
 
     return Scaffold(
       appBar: customAppBar(),
