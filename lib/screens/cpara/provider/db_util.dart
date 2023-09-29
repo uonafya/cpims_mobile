@@ -130,7 +130,7 @@ Future<void> submitCparaToUpstream() async{
   for(CPARADatabase cparaForm in cparaFormsInDb){
     try{
       // submission
-      await singleCparaFormSubmission(cparaForm: cparaForm, authorization: basicAuth);
+      await singleCparaFormSubmission(cparaForm: cparaForm, authorization: bearerAuth);
       // remove from local db
       purgeForm(cparaForm.cpara_form_id, database);
     }
@@ -192,6 +192,7 @@ Future<void> singleCparaFormSubmission({required CPARADatabase cparaForm, requir
     "individual_questions": individualQuestions,
     "scores": scoreList,
   };
+  debugPrint(json.encode(cparaMapData));
 
   var response = await dio.post("https://dev.cpims.net/api/form/CPR/",
       data: cparaMapData,
