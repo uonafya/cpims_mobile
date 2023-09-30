@@ -172,7 +172,24 @@ class _Form1BScreen extends State<Form1BScreen> {
                               ),
                             )
                           ]
-                        )
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                            children: [
+                              Expanded(
+                                child: CustomButton(
+                                    text: 'Cancel',
+                                    color: kTextGrey,
+                                    onTap: () {
+                                      Navigator.of(context).pop();
+                                    }
+                                ),
+
+                              )
+                            ]
+                        ),
                       ],
                     ),
                   ),
