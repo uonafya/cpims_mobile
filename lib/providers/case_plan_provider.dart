@@ -16,8 +16,8 @@ class CasePlanProvider extends ChangeNotifier {
     selectedNeed: [],
     selectedPriorityAction: [],
     selectedResult: [],
-    ovc_cpims_id: "", selectedDate: DateTime.now(),
-
+    ovc_cpims_id: "",
+    selectedDate: DateTime.now(),
   );
 
   List csDomainList = casePlanDomainList;
@@ -58,6 +58,7 @@ class CasePlanProvider extends ChangeNotifier {
   }
 
   void setSelectedPriorityAction(List<ValueItem> priorityAction) {
+    _casePlanModelData.selectedPriorityAction.clear();
     _casePlanModelData.selectedPriorityAction.addAll(priorityAction);
     notifyListeners();
   }
@@ -86,11 +87,6 @@ class CasePlanProvider extends ChangeNotifier {
     _casePlanModelData.selectedReason = reason;
     notifyListeners();
   }
-
-
-
-
-
 
 
 
@@ -129,30 +125,30 @@ class CasePlanProvider extends ChangeNotifier {
     String resultsId = "";
     String completionDate = "";
     completionDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    if(cpFormData.selectedPriorityAction.isNotEmpty){
-      priorityId = cpFormData.selectedPriorityAction[0].value!;
+    if(_casePlanModelData.selectedPriorityAction.isNotEmpty){
+      priorityId = _casePlanModelData.selectedPriorityAction[0].value!;
     }
-    if(cpFormData.selectedDomain.isNotEmpty){
-      domainId = cpFormData.selectedPriorityAction[0].value!;
+    if(_casePlanModelData.selectedDomain.isNotEmpty){
+      domainId = _casePlanModelData.selectedDomain[0].value!;
     }
-    if(cpFormData.selectedGoal.isNotEmpty){
-      goalId = cpFormData.selectedGoal[0].value!;
+    if(_casePlanModelData.selectedGoal.isNotEmpty){
+      goalId = _casePlanModelData.selectedGoal[0].value!;
     }
-    if(cpFormData.selectedNeed.isNotEmpty){
-      gapId = cpFormData.selectedNeed[0].value!;
+    if(_casePlanModelData.selectedNeed.isNotEmpty){
+      gapId = _casePlanModelData.selectedNeed[0].value!;
     }
-    if(cpFormData.selectedResult.isNotEmpty){
-      resultsId = cpFormData.selectedResult[0].value!;
+    if(_casePlanModelData.selectedResult.isNotEmpty){
+      resultsId = _casePlanModelData.selectedResult[0].value!;
     }
 
 
 
-    print("goal$goalId");
-    print("goal$priorityId");
-    print("goal$domainId");
-    print("gap$gapId");
-    print("payload$gapId");
-    print("payload$resultsId");
+    // print("goal --->${cpFormData.selectedGoal[0].value}");
+    print("priority ---> ${_casePlanModelData.selectedPriorityAction}");
+    print("goal ---> ${_casePlanModelData.selectedGoal}");
+    print("domain ---> $domainId");
+    print("gap ---> $gapId");
+    print("results   ----> $resultsId");
 
 
 
@@ -161,7 +157,7 @@ class CasePlanProvider extends ChangeNotifier {
       'date_of_event': DateFormat('yyyy-MM-dd').format(DateTime.now()),
       'services': [
         {
-          'domain_id': domainId,
+          'domain_id': domainId ?? String,
           'service_id': services,
           'goal_id': goalId,
           'gap_id': gapId,
@@ -174,18 +170,40 @@ class CasePlanProvider extends ChangeNotifier {
       ]
     };
 
-    print("casePlan Payload$payload");
+    print("casePlan Payload------>$payload");
     return payload;
 
   }
 
-  void saveCasaPlanDataLocally() {
+  Future<bool> saveCasaPlanDataLocally() async{
     Map<String, dynamic> payload = generatePayload();
-    // CustomToastWidget.showToast("CasePlan saved");
-    print(payload);
-    CasePlanService.saveCasePlanLocal(CasePlanModel.fromJson(payload));
-    //now send the data for local saving
 
+    // CustomToastWidget.showToast("CasePlan saved");
+    print("the payload:==========>$payload");
+    bool isFormSaved = await CasePlanService.saveCasePlanLocal(CasePlanModel.fromJson(payload));
+
+    if(isFormSaved == true){
+      resetFormData();
+      CustomToastWidget.showToast("Data saved");
+
+      notifyListeners();
+    }
+
+    return isFormSaved;
+  }
+
+  void resetFormData() {
+    _casePlanModelData.selectedDomain.clear();
+    _casePlanModelData.selectedServices.clear();
+    _casePlanModelData.selectedPersonsResponsible.clear();
+    _casePlanModelData.selectedGoal.clear();
+    _casePlanModelData.selectedNeed.clear();
+    _casePlanModelData.selectedPriorityAction.clear();
+    _casePlanModelData.selectedResult.clear();
+    _casePlanModelData.ovc_cpims_id = "";
+    _casePlanModelData.selectedDate = DateTime.now();
+
+    notifyListeners();
   }
 
 
