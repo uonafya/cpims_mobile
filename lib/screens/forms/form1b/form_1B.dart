@@ -8,6 +8,7 @@ import 'package:cpims_mobile/screens/forms/form1b/widgets/stable_form1b.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
+import 'package:cpims_mobile/widgets/custom_toast.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
@@ -156,10 +157,17 @@ class _Form1BScreen extends State<Form1BScreen> {
                             Expanded(
                               child: CustomButton(
                                 text: "Submit",
-                                onTap: () {
+                                onTap: () async{
                                   // form1bProvider.setSelectedServices(['Service 1', 'Service 2']);
                                   // form1bProvider.setSelectedDate(DateTime.now());
-                                  form1bProvider.saveForm1bData(form1bProvider.formData);
+                                  bool isFormSaved = await form1bProvider.saveForm1bData(form1bProvider.formData);
+                                  if(isFormSaved == true){
+                                    CustomToastWidget.showToast("Form saved successfully");
+                                    setState(() {
+                                      selectedStep = 0;
+                                      });
+
+                                  }
                                 },
                               ),
                             )

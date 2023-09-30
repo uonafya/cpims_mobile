@@ -110,7 +110,7 @@ class Form1bProvider extends ChangeNotifier {
 
 
 
-  void saveForm1bData(HealthFormData healthFormData) {
+  Future<bool> saveForm1bData(HealthFormData healthFormData) async{
     List<MasterServicesFormData> masterServicesList = convertToMasterServicesFormData();
     //creating our data to be sent for saving
     setFinalFormDataServices(masterServicesList);
@@ -147,9 +147,14 @@ class Form1bProvider extends ChangeNotifier {
     // print("criticalEventsDataForm1b${getFinalCriticalEventsFormData()}");
 
 
-    Form1Service.saveFormLocal("form1b", toDbData) as Bool;
-    CustomToastWidget.showToast("Data saved");
-     notifyListeners();
+    bool isFormSaved = await Form1Service.saveFormLocal("form1b", toDbData);
+    if(isFormSaved == true){
+      CustomToastWidget.showToast("Data saved");
+      resetFormData();
+      notifyListeners();
+    }
+
+     return isFormSaved;
   }
 
   //converting the various services from the domains into one Services list with domain id and service id
@@ -203,6 +208,27 @@ class Form1bProvider extends ChangeNotifier {
     }
 
     return eventsList;
+  }
+
+  void resetFormData() {
+    _formData.selectedServices.clear();
+    _formData.selectedDate = DateTime.now();
+    _formData.domainId = '1234';
+
+    _stableFormData.selectedServices.clear();
+    _stableFormData.domainId = '';
+
+    _safeFormData.selectedServices.clear();
+    _safeFormData.domainId = '';
+
+    _finalServicesFormData.masterServicesList.clear();
+    _finalServicesFormData.dateOfEvent = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    _finalServicesFormData.ovc_cpims_id = '';
+
+    _criticalEventDataForm1b.selectedEvents.clear();
+    _criticalEventDataForm1b.selectedDate = DateTime.now();
+
+    notifyListeners();
   }
 }
 
