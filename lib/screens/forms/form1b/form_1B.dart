@@ -38,7 +38,6 @@ class _Form1BScreen extends State<Form1BScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Future.delayed(Duration.zero,(){
       Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context,listen: false);
@@ -133,17 +132,18 @@ class _Form1BScreen extends State<Form1BScreen> {
                               width: 50,
                             ),
                             Expanded(
-                              child: CustomButton(
-                                text: selectedStep == steps.length - 1
-                                    ? 'Submit'
-                                    : 'Next',
-                                onTap: () {
-                                  setState(() {
-                                    if (selectedStep < steps.length - 1) {
-                                      selectedStep++;
-                                    }
-                                  });
-                                },
+                              child: Visibility(
+                                visible: selectedStep < steps.length - 1, // Hide the button when selectedStep is equal to steps.length - 1
+                                child: CustomButton(
+                                  text: 'Next',
+                                  onTap: () {
+                                    setState(() {
+                                      if (selectedStep < steps.length - 1) {
+                                        selectedStep++;
+                                      }
+                                    });
+                                  },
+                                ),
                               ),
                             )
                           ],

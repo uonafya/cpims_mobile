@@ -143,13 +143,12 @@ class Form1bProvider extends ChangeNotifier {
         services: servicesList,
       criticalEvents: criticalEventsList
     );
-    print("ourData${toDbData}");
-    print("criticalEventsDataForm1b${getFinalCriticalEventsFormData()}");
+    // print("ourData${toDbData}");
+    // print("criticalEventsDataForm1b${getFinalCriticalEventsFormData()}");
 
-    CustomToastWidget.showToast("Data saved");
+
     Form1Service.saveFormLocal("form1b", toDbData) as Bool;
-
-
+    CustomToastWidget.showToast("Data saved");
      notifyListeners();
   }
 
@@ -205,11 +204,6 @@ class Form1bProvider extends ChangeNotifier {
 
     return eventsList;
   }
-
-
-
-
-
 }
 
 

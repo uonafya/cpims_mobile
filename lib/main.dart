@@ -72,6 +72,7 @@ class _CPIMSState extends State<CPIMS> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const SplashScreen();
                   }
+
                   return snapshot.data!['hasConnection'] == false ||
                           snapshot.data!['isAuthenticated']
                       ? const InitialLoadingScreen()
