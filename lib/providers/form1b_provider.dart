@@ -149,7 +149,7 @@ class Form1bProvider extends ChangeNotifier {
 
     bool isFormSaved = await Form1Service.saveFormLocal("form1b", toDbData);
     if(isFormSaved == true){
-      CustomToastWidget.showToast("Data saved");
+      CustomToastWidget.showToast("Saving...");
       resetFormData();
       notifyListeners();
     }

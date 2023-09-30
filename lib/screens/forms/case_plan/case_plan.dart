@@ -402,6 +402,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                                     // CustomToastWidget.showToast("Form saved successfully :  ${casePlanProvider.cpFormData.selectedPriorityAction.isEmpty}");
                                     if(isFormSaved == true){
                                       CustomToastWidget.showToast("Form saved successfully!!");
+                                      await Future.delayed(const Duration(seconds: 2));
                                       Navigator.of(context).pop();
                                     }
                                   },
@@ -412,12 +413,20 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                         const SizedBox(
                           height: 15,
                         ),
-                        const SizedBox(
-                          width: 300, // Adjust the width value as needed
-                          child: CustomButton(
-                            text: 'Cancel',
-                            color: kTextGrey,
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                             // Adjust the width value as needed
+                                child: CustomButton(
+                                  text: 'Cancel',
+                                  color: kTextGrey,
+                                  onTap: () {
+                                    Navigator.of(context).pop();
+                                  }
+                                ),
+
+                                )
+                          ]
                         ),
                         const SizedBox(height: 20),
                         const SizedBox(
