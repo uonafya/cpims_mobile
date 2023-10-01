@@ -96,12 +96,10 @@ class LocalDb {
           ${CasePlanServices.priorityId} $textType,
           ${CasePlanServices.gapId} $textType,
           ${CasePlanServices.serviceIds} $textType,
-          ${CasePlanServices.responsibleIds} $textType,
           ${CasePlanServices.resultsId} $textType,
           ${CasePlanServices.reasonId} $textType,
           ${CasePlanServices.completionDate} $textType,
           ${CasePlanServices.responsibleIds} $textType,
-          ${CasePlanServices.serviceIds} $textType,
           FOREIGN KEY (${CasePlanServices
         .formId}) REFERENCES $casePlanTable(${CasePlan.id})
         )
@@ -681,8 +679,6 @@ class CasePlanServices {
   static const String responsibleIds = 'responsible_ids';
   static const String reasonId = 'reason_id';
   static const String completionDate = 'completion_date';
-  static const String responsibleIds = 'responsible_ids';
-  static const String serviceIds = 'service_ids';
 }
 
 class Form1 {
