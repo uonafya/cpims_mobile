@@ -135,7 +135,9 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             ChildDetailsWorkflowButton(
               workflowName: "Form 1B",
               onClick: () {
-                Get.to(() => const Form1BScreen());
+                Get.to(() => Form1BScreen(
+                  caseLoad: widget.caseLoadModel,
+                ));
               },
             ),
             ChildDetailsWorkflowButton(

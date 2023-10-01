@@ -32,6 +32,7 @@ class _HomepageState extends State<Homepage> {
     {'formType': 'form1a', 'endpoint': 'form1a/'},
     {'formType': 'form1b', 'endpoint': 'form1b/'},
   ];
+
   @override
   void initState() {
     super.initState();
@@ -97,6 +98,15 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     final SummaryDataModel dashData =
         context.select((UIProvider provider) => provider.getDashData);
+
+    if (dashData == null) {
+      return const Center(
+        child: SnackBar(
+          content: Text("Failed to sync dashboard data"),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: customAppBar(),

@@ -83,7 +83,6 @@ class AuthProvider with ChangeNotifier {
             accessToken: responseData['access'],
             refreshToken: responseData['refresh'],
           );
-
           if (context.mounted) {
             setUser(userModel);
           }
@@ -94,6 +93,9 @@ class AuthProvider with ChangeNotifier {
           Get.off(() => const InitialLoadingScreen(isFromAuth: true),
               transition: Transition.fadeIn,
               duration: const Duration(microseconds: 300));
+        },
+        onFailure: () {
+          // clearUser();
         },
       );
     }
@@ -139,7 +141,6 @@ class AuthProvider with ChangeNotifier {
 
         if (currentTimestamp - authTokenTimestamp > tokenExpiryDuration) {
           // Token has expired -- refresh token
-
           // get new token
           final http.Response response = await http.post(
             Uri.parse(
@@ -149,7 +150,6 @@ class AuthProvider with ChangeNotifier {
               'refresh': refreshToken,
             },
           );
-
           if (context.mounted) {
             httpReponseHandler(
               response: response,
@@ -167,6 +167,9 @@ class AuthProvider with ChangeNotifier {
                   ));
                 }
               },
+              onFailure: () async {
+                await logOut(context);
+              },
             );
           }
           return true;
@@ -179,6 +182,7 @@ class AuthProvider with ChangeNotifier {
       if (context.mounted) {
         errorSnackBar(context, e.toString());
       }
+
       return false;
     }
     return false;

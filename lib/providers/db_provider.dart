@@ -1,5 +1,4 @@
 // ignore_for_file: depend_on_referenced_packages
-
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
@@ -96,6 +95,8 @@ class LocalDb {
           ${CasePlanServices.goalId} $textType,
           ${CasePlanServices.priorityId} $textType,
           ${CasePlanServices.gapId} $textType,
+          ${CasePlanServices.serviceIds} $textType,
+          ${CasePlanServices.responsibleIds} $textType,
           ${CasePlanServices.resultsId} $textType,
           ${CasePlanServices.reasonId} $textType,
           ${CasePlanServices.completionDate} $textType,
@@ -440,7 +441,7 @@ class LocalDb {
             'priority_id': service.priorityId,
             'results_id': service.resultsId,
             'reason_id': service.reasonId,
-            'completion_id': service.completionDate,
+            'completion_date': service.completionDate,
             'service_ids': serviceIdList,
             'responsible_ids': responsibleIdList,
           },
@@ -676,6 +677,8 @@ class CasePlanServices {
   static const String priorityId = 'priority_id';
   static const String gapId = 'gap_id';
   static const String resultsId = 'results_id';
+  static const String serviceIds = 'service_ids';
+  static const String responsibleIds = 'responsible_ids';
   static const String reasonId = 'reason_id';
   static const String completionDate = 'completion_date';
   static const String responsibleIds = 'responsible_ids';

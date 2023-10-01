@@ -1,12 +1,20 @@
 
+import 'dart:convert';
+
+import 'package:cpims_mobile/screens/cpara/model/db_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
+
+import '../../../providers/db_provider.dart';
+import '../provider/db_util.dart';
+import '../widgets/cpara_stable_widget.dart';
 
 final dio = Dio();
 
@@ -236,19 +244,7 @@ class CparaModel {
       await batch.commit(noResult: true);
 
        print("Local Db Data end KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
-      // Send request later
-      var prefs = await SharedPreferences.getInstance();
-      var accessToken = prefs.getString('access');
 
-      var response = await dio.request("https://dev.cpims.net/api/form/CPR/",
-          data: jsonToSend,
-          options: Options(
-              method: 'POST',
-              contentType: 'application/json',
-              headers: {"Authorization": "Bearer $accessToken"}));
-
-      print(response.statusCode);
-      print(response.data.toString());
 
       // // Insert database
       // // Create a batch
@@ -302,6 +298,108 @@ class CparaModel {
       throw ("Get Latest ID error");
     }
   }
+
+//   // submit to upstream
+// Future<void> submitCparaToUpstream() async{
+//   var prefs = await SharedPreferences.getInstance();
+//   var accessToken = prefs.getString('access');
+//   var savedUsername = prefs.getString('username');
+//   var savedPassword = prefs.getString('password');
+//
+//   // Encode your username and password as Basic Auth credentials
+//   String username = savedUsername ?? "";
+//   String password = savedPassword ?? "";
+//   String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+//   String bearerAuth = "Bearer $accessToken";
+//
+//
+//   // local db initialization
+//   Database database = await LocalDb.instance.database;
+//   // cpara data from local db
+//   List<CPARADatabase> cparaFormsInDb = await getUnsynchedForms(database);
+//
+//   for(CPARADatabase cparaForm in cparaFormsInDb){
+//     try{
+//       // submission
+//       await singleCparaFormSubmission(cparaForm: cparaForm, authorization: basicAuth);
+//       // remove from local db
+//       // purgeForm(formID, database);
+//     }
+//         catch(e){
+//           debugPrint("Cpara form with ovs cpims id : ${cparaForm.ovc_cpims_id} failed submission to upstream");
+//       continue;
+//         }
+//   }
+//
+// }
+//
+// Future<void> singleCparaFormSubmission({required CPARADatabase cparaForm, required String authorization}) async {
+//   Map<String, List<CPARAChildQuestions>> separatedChildren = {};
+//
+//   for (var child in cparaForm.childQuestions) {
+//     if (!separatedChildren.containsKey(child.ovc_cpims_id)) {
+//       separatedChildren[child.ovc_cpims_id] = [];
+//     }
+//     separatedChildren[child.ovc_cpims_id]!.add(child);
+//   }
+//
+//   // Printing the separated children
+//   separatedChildren.forEach((id, childrenList) {
+//     print("Children with ID $id:");
+//     for (var child in childrenList) {
+//       print("  ${child.question_code} - ${child.answer_id}");
+//     }
+//   });
+//
+// // household questions
+//   for(int i = 0; i < cparaForm.questions.length; i++){
+//     debugPrint("Question ${cparaForm.questions[i].question_code} - ${cparaForm.questions[i].answer_id}");
+//   }
+//
+//   // child questions
+//   for(int i = 0; i < cparaForm.childQuestions.length; i++){
+//     debugPrint("Child ID ${cparaForm.childQuestions[i].ovc_cpims_id}: ${cparaForm.childQuestions[i].question_code} - ${cparaForm.childQuestions[i].answer_id}");
+//   }
+//
+//   // Child questions v2
+//   for(int i = 0; i < separatedChildren.length; i++){
+//     String childId = separatedChildren.keys.elementAt(i);
+//     List<CPARAChildQuestions> data = separatedChildren[childId]!;
+//     for(int i = 0; i < data.length; i++) {
+//       debugPrint("Child ID $childId: ${data[i].question_code} - ${data[i].answer_id}");
+//     }
+//   }
+//
+//   // scores value
+//   String b1 = benchMarkOneScoreFromDb(cparaDatabase: cparaForm);
+//   String b2 = benchMarkTwoScoreFromDb(cparaDatabase: cparaForm);
+//     String b3 = benchMarkThreeScoreFromDb(cparaDatabase: cparaForm);
+//   String b4 = benchMarkFourScoreFromDb(cparaDatabase: cparaForm);
+//   String b5 = benchMarkFiveScoreFromDb(cparaDatabase: cparaForm);
+//   String b6 = benchMarkSixScoreFromDb(cparaDatabase: cparaForm);
+//   String b7 = benchMarkSevenScoreFromDb(cparaDatabase: cparaForm);
+//   String b8 =  benchMarkEightScoreFromDb(cparaDatabase: cparaForm);
+//    String b9 = benchMarkNineScoreFromDb(cparaDatabase: cparaForm);
+//
+//     var cparaMapData = {};
+//     // var response = await dio.request("https://dev.cpims.net/api/form/CPR/",
+//     //     data: cparaMapData,
+//     //     options: Options(
+//     //         method: 'POST',
+//     //         contentType: 'application/json',
+//     //         headers: {"Authorization": "Bearer $accessToken"}));
+//       var response = await dio.post("https://dev.cpims.net/api/form/CPR/",
+//           data: cparaMapData,
+//           options: Options(
+//               contentType: 'application/json',
+//               headers: {"Authorization": authorization}));
+//
+//       if(response.statusCode != 200){
+//         throw ("Submission to upstream failed");
+//       }
+//       debugPrint("${response.statusCode}");
+//       debugPrint(response.data.toString());
+// }
 }
 
 class FormData {

@@ -261,15 +261,15 @@ class CparaProvider extends ChangeNotifier {
   }
 
   void clearCparaProvider(){
-    // cparaModel = null;
-    // detailModel = null;
-    // healthModel = null;
-    // stableModel = null;
-    // safeModel = null;
-    // schooledModel = null;
-    // // ovcSubPopulationModel = null;
-    // // caseLoadModel = null;
-    // // children = [];
-    // notifyListeners();
+    cparaModel = null;
+    detailModel = null;
+    healthModel = null;
+    stableModel = null;
+    safeModel = null;
+    schooledModel = null;
+    // ovcSubPopulationModel = null;
+    // caseLoadModel = null;
+    // children = [];
+    notifyListeners();
   }
 }
