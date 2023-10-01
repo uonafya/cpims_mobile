@@ -116,7 +116,7 @@ class Form1bProvider extends ChangeNotifier {
     setFinalFormDataServices(masterServicesList);
     setFinalFormDataOvcId(_finalServicesFormData.ovc_cpims_id);
     setFinalFormDataDOE(formData.selectedDate);
-    getFinalCriticalEventsFormData();
+    List<Form1CriticalEventsModel> criticalEventsFormData = getFinalCriticalEventsFormData();
 
 
 
@@ -128,7 +128,7 @@ class Form1bProvider extends ChangeNotifier {
     }
 
     List<Form1CriticalEventsModel> criticalEventsList = [];
-    for (var criticalEvent in criticalEventsList) {
+    for (var criticalEvent in criticalEventsFormData) {
       Form1CriticalEventsModel entry = Form1CriticalEventsModel(
           eventId: criticalEvent.eventId,
           eventDate: criticalEvent.eventDate
@@ -146,6 +146,7 @@ class Form1bProvider extends ChangeNotifier {
     // print("ourData${toDbData}");
     // print("criticalEventsDataForm1b${getFinalCriticalEventsFormData()}");
 
+    print("form1b payload:==========>$criticalEventsList");
 
     bool isFormSaved = await Form1Service.saveFormLocal("form1b", toDbData);
     if(isFormSaved == true){

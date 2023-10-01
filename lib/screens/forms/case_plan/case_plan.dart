@@ -96,7 +96,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
 
         Consumer<CasePlanProvider>(
                 builder: (context, casePlanProvider, child) {
-                  print(">>>>>>>>>>>>>>>>>Container rebuilt]]]]]]]]]]]]");
+                  // print(">>>>>>>>>>>>>>>>>Container rebuilt]]]]]]]]]]]]");
                 return Container(
                     decoration: BoxDecoration(color: Colors.white, boxShadow: [
                       BoxShadow(
