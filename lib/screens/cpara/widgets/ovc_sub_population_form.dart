@@ -1,18 +1,21 @@
-
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
+import 'package:cpims_mobile/widgets/custom_date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Models/case_load_model.dart';
+import '../../../providers/connection_provider.dart';
 import '../../../widgets/drawer.dart';
+import '../provider/db_util.dart';
 
 class CheckboxQuestion {
   final int? id;
@@ -30,25 +33,20 @@ class CheckboxQuestion {
 class CheckboxForm extends StatefulWidget {
   final CaseLoadModel caseLoadModel;
 
-
   // final Function? onCheckboxSelected;
 
-  const CheckboxForm({Key? key, required this.caseLoadModel
-  }) : super(key: key);
+  const CheckboxForm({Key? key, required this.caseLoadModel}) : super(key: key);
 
   @override
   _CheckboxFormState createState() => _CheckboxFormState();
-
-
 }
 
 class _CheckboxFormState extends State<CheckboxForm> {
+  DateTime? selectedDate;
 
   @override
   void initState() {
     super.initState();
-    // DetailModel detailModel= context.read<CparaProvider>().detailModel?? DetailModel();
-    // DetailModel detailModel= Provider.of<CparaProvider>(context, listen: false).detailModel?? DetailModel();
   }
 
   List<CheckboxQuestion> questions = [
@@ -65,9 +63,6 @@ class _CheckboxFormState extends State<CheckboxForm> {
 
   @override
   Widget build(BuildContext context) {
-    DetailModel detailModel = Provider
-        .of<CparaProvider>(context, listen: false)
-        .detailModel ?? DetailModel();
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -82,8 +77,7 @@ class _CheckboxFormState extends State<CheckboxForm> {
               const ReusableTitleText(title: "OVC Sub Population Form"),
               const SizedBox(height: 10),
               Text(
-                  'Child Name: ${widget.caseLoadModel.ovcFirstName} ${widget
-                      .caseLoadModel.ovcSurname}'),
+                  'Child Name: ${widget.caseLoadModel.ovcFirstName} ${widget.caseLoadModel.ovcSurname}'),
               const SizedBox(height: 10),
               Text('OVC CPIMS ID: ${widget.caseLoadModel.cpimsId}'),
               for (var question in questions)
@@ -93,7 +87,7 @@ class _CheckboxFormState extends State<CheckboxForm> {
                   children: [
                     Expanded(
                         child:
-                        ReusableTitleText(title: question.question ?? "")),
+                            ReusableTitleText(title: question.question ?? "")),
                     Checkbox(
                       value: question.isChecked,
                       onChanged: (value) {
@@ -105,10 +99,23 @@ class _CheckboxFormState extends State<CheckboxForm> {
                     const SizedBox(height: 15),
                   ],
                 ),
+              const SizedBox(height: 15),
+              DateTextField(
+                label: 'Date of Assessment',
+                enabled: true,
+                onDateSelected: (date) {
+                  print('Date selected: $date');
+                  setState(() {
+                    selectedDate = date;
+                  });
+                },
+                identifier: DateTextFieldIdentifier.dateOfAssessment,
+              ),
+              const SizedBox(height: 15),
               CustomButton(
                 text: "Submit",
                 onTap: () {
-                  handleSubmit();
+                  handleSubmit(context);
                 },
               ),
             ],
@@ -118,8 +125,14 @@ class _CheckboxFormState extends State<CheckboxForm> {
     );
   }
 
-  void handleSubmit() async {
+  void handleSubmit(BuildContext context) async {
     final localDb = LocalDb.instance;
+    final hasConnection = await Provider.of<ConnectivityProvider>(
+      context,
+      listen: false,
+    ).checkInternetConnection();
+
+    final currentContext = context; // Store the context in a local variable
 
     List<CheckboxQuestion> selectedQuestions = [];
     for (var question in questions) {
@@ -127,58 +140,53 @@ class _CheckboxFormState extends State<CheckboxForm> {
         selectedQuestions.add(question);
       }
     }
-    final context = this.context; // Store the context
-
     try {
-      // Save OVC prepopulation data without specifying formId
       String uuid = const Uuid().v4();
-      String? dateOfAssessment = Provider
-          .of<CparaProvider>(context, listen: false)
-          .detailModel
-          ?.dateOfAssessment;
-      await localDb.insertOvcSubpopulationData(uuid, widget.caseLoadModel.cpimsId!, dateOfAssessment!, selectedQuestions);
-
-      // Update date of assessment to null
-      Provider.of<CparaProvider>(context, listen: false).detailModel?.dateOfAssessment = null;
-      // Show success dialog if the context is still mounted
-      if (context.mounted) {
+      String? dateOfAssessment = selectedDate != null
+          ? DateFormat('yyyy-MM-dd').format(selectedDate!)
+          : null;
+      await localDb.insertOvcSubpopulationData(uuid,
+          widget.caseLoadModel.cpimsId!, dateOfAssessment!, selectedQuestions);
+      if (hasConnection) {
+        fetchAndPostToServerOvcSubpopulationData();
+      } else {
+        print("No Internet Connection here");
+      }
+      if (currentContext.mounted) {
         showDialog(
-          context: context, // Use the context from the build method
-          builder: (context) =>
-              AlertDialog(
-                title: const Text('Success'),
-                content: const Text(
-                    'OVC Sub-Population data saved successfully.'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Get.back(); // Close the dialog
-                      Get.back(); // Go back to the previous screen
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
+          context: currentContext, // Use the local context
+          builder: (context) => AlertDialog(
+            title: const Text('Success'),
+            content: const Text('OVC Sub-Population data saved successfully.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Get.back(); // Close the dialog
+                  Get.back(); // Go back to the previous screen
+                },
+                child: const Text('OK'),
               ),
+            ],
+          ),
         );
       }
     } catch (error) {
       // Show error dialog if the context is still mounted
-      if (context.mounted) {
+      if (currentContext.mounted) {
         showDialog(
-          context: context, // Use the context from the build method
-          builder: (context) =>
-              AlertDialog(
-                title: const Text('Error'),
-                content: Text('An error occurred: $error'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Get.back(); // Close the dialog
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
+          context: currentContext, // Use the local context
+          builder: (context) => AlertDialog(
+            title: const Text('Error'),
+            content: Text('An error occurred: $error'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Get.back(); // Close the dialog
+                },
+                child: const Text('OK'),
               ),
+            ],
+          ),
         );
       }
     }
