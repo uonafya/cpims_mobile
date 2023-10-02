@@ -247,7 +247,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                                 hint: 'Please select the Priority Actions',
                                 onOptionSelected: (selectedEvents) {
                                   casePlanProvider.setSelectedPriorityAction(selectedEvents);
-                                  CustomToastWidget.showToast("selected PA: ${casePlanProvider.cpFormData.selectedPriorityAction[0].value}");
+                                  // CustomToastWidget.showToast("selected PA: ${casePlanProvider.cpFormData.selectedPriorityAction[0].value}");
 
                                 },
                                 options: casePlanProviderPriorityActionList,

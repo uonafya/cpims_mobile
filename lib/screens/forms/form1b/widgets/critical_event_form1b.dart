@@ -45,7 +45,7 @@ class _CriticalEventForm1bState extends State<CriticalEventForm1b> {
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             form1bProvider.setCriticalEventsSelectedEvents(selectedServices);
-            CustomToastWidget.showToast(form1bProvider.criticalEventDataForm1b.selectedEvents[0].label);
+            // CustomToastWidget.showToast(form1bProvider.criticalEventDataForm1b.selectedEvents[0].label);
           },
           selectedOptions: selectedCriticalEvents,
           options: careGiverCriticalItems,
