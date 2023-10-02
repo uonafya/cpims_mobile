@@ -5,7 +5,7 @@ class DetailModel {
   final String? isChildHeaded;
   final String? hasHivExposedInfant;
   final String? hasPregnantOrBreastfeedingWoman;
-  final String? dateOfAssessment;
+  String? dateOfAssessment;
   final String? dateOfLastAssessment;
 
   DetailModel({

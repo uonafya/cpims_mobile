@@ -136,10 +136,10 @@ class _CheckboxFormState extends State<CheckboxForm> {
           .of<CparaProvider>(context, listen: false)
           .detailModel
           ?.dateOfAssessment;
-      await localDb.insertOvcSubpopulationData(
-          uuid, widget.caseLoadModel.cpimsId!, dateOfAssessment!,
-          selectedQuestions);
+      await localDb.insertOvcSubpopulationData(uuid, widget.caseLoadModel.cpimsId!, dateOfAssessment!, selectedQuestions);
 
+      // Update date of assessment to null
+      Provider.of<CparaProvider>(context, listen: false).detailModel?.dateOfAssessment = null;
       // Show success dialog if the context is still mounted
       if (context.mounted) {
         showDialog(
