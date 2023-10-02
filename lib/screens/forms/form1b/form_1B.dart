@@ -184,7 +184,8 @@ class _Form1BScreen extends State<Form1BScreen> {
                                     text: 'Cancel',
                                     color: kTextGrey,
                                     onTap: () {
-                                      Navigator.of(context).pop();
+                                      // Navigator.of(context).pop();
+                                      form1bProvider.fetchSavedDataFromDb();
                                     }
                                 ),
 

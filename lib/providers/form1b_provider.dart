@@ -1,11 +1,5 @@
-// import 'package:cpims_mobile/Models/form1_data_basemodel.dart';
-// import 'package:cpims_mobile/Models/form_1b.dart';
-import 'dart:ffi';
-
-import 'package:cpims_mobile/screens/forms/form1b/widgets/critical_event_form1b.dart';
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import '../Models/form_1_model.dart';
@@ -210,6 +204,21 @@ class Form1bProvider extends ChangeNotifier {
 
     return eventsList;
   }
+
+  List<Map<String, dynamic>> form1bFetchedData = [];
+  Future<void> fetchSavedDataFromDb() async {
+    try {
+      List<Map<String, dynamic>> updatedForm1Rows = await Form1Service.getAllForms("form1b");
+
+      form1bFetchedData = updatedForm1Rows;
+
+      print(form1bFetchedData);
+      notifyListeners();
+    } catch (e) {
+      print("Error fetching form1b data: $e");
+    }
+  }
+
 
   void resetFormData() {
     _formData.selectedServices.clear();
