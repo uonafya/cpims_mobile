@@ -46,7 +46,7 @@ class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
           onOptionSelected: (selectedEvents) {
             selectedEventsOptions = selectedEvents;
             form1aProvider.setSelectedEvents(selectedEvents);
-            form1aProvider.submitCriticalData();
+            // form1aProvider.submitCriticalData();
           },
           options: listOfCriticalEvents,
           maxItems: 13,
@@ -86,6 +86,7 @@ class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
                 text: 'Submit Event(s)',
                 onTap: () {
                   form1aProvider.submitCriticalData();
+                  print('Critical Event(s) submitted and the data is ${form1aProvider.criticalFormData.selectedEvents} and date is ${form1aProvider.criticalFormData.selectedDate}');
                 },
               ),
             ),
@@ -100,7 +101,7 @@ class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
         const SizedBox(
           height: 15,
         ),
-        const CustomButton(text: 'History Event(s)'),
+        // const CustomButton(text: 'History Event(s)'),
       ],
     );
   }

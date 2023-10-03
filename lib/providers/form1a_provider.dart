@@ -82,14 +82,16 @@ class Form1AProvider extends ChangeNotifier {
     DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
 
     List<Map<String, dynamic>> criticalEvents = [];
-    Map<String, dynamic> criticalEvent = {};
+
     for (var valueItem in _criticalFormData.selectedEvents) {
+      Map<String, dynamic> criticalEvent = {}; // Create a new map for each event
       criticalEvent["event_date"] = formattedDate;
       criticalEvent["event_id"] = valueItem.value;
       criticalEvents.add(criticalEvent);
-      eventData = criticalEvents;
-      print(criticalEvents);
     }
+
+    eventData = criticalEvents;
+    print("Here is the critical events data $criticalEvents");
   }
 
 // <<<<<<<<<<<<<Submit Services >>>>>>>>>>>>>>>>>>>>>>>
