@@ -112,7 +112,7 @@ class Form1AProvider extends ChangeNotifier {
       'ovc_cpims_id': cpimsId,
       'date_of_event': dateOfEvent,
       'services': services,
-      'critical_events': eventData,
+      // 'critical_events': eventData,
     };
     String form1A = jsonEncode(payload);
     print(form1A);
@@ -120,13 +120,14 @@ class Form1AProvider extends ChangeNotifier {
     List<Form1ServicesModel> servicesList = [];
     List<Form1CriticalEventsModel> eventsList = [];
 
-    for (var event in eventsList) {
-      Form1CriticalEventsModel entry = Form1CriticalEventsModel(
-        eventId: event.eventId,
-        eventDate: event.eventDate,
-      );
-      eventsList.add(entry);
-      print(entry);
+    for (var event in eventData ?? []) {
+      if (event != null && event['event_id'] != null && event['event_date'] != null) {
+        Form1CriticalEventsModel entry = Form1CriticalEventsModel(
+          eventId: event['event_id'],
+          eventDate: dateOfEvent,
+        );
+        eventsList.add(entry);
+      }
     }
 
     for (var service in services) {
@@ -135,7 +136,6 @@ class Form1AProvider extends ChangeNotifier {
         serviceId: service['serviceId'],
       );
       servicesList.add(entry1);
-      print(service);
     }
 
     Form1DataModel toDbData = Form1DataModel(
@@ -144,13 +144,12 @@ class Form1AProvider extends ChangeNotifier {
       services: servicesList,
       criticalEvents: eventsList,
     );
-    // print("ourData${toDbData}");
+    print("ourData${toDbData}");
 
     Form1Service.saveFormLocal("form1a", toDbData);
 
     notifyListeners();
   }
-
   // CaseLoad
 
   late CaseLoadModel _caseLoadModel;
