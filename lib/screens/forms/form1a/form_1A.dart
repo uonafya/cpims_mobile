@@ -12,7 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Form1AScreen extends StatefulWidget {
-  const Form1AScreen({super.key});
+  final CaseLoadModel caseLoadModel;
+  const Form1AScreen({super.key, required this.caseLoadModel});
 
 
   @override
@@ -61,9 +62,9 @@ class _Form1AScreenState extends State<Form1AScreen> {
                     padding: const EdgeInsets.all(10),
                     width: double.infinity,
                     color: Colors.black,
-                    child: const Text(
-                      'Form 1A Details  {Ovc_Cpims_Child}',
-                      style: TextStyle(color: Colors.white),
+                    child: Text(
+                      ' FORM 1A DETAILS \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n CPIMIS ID: ${widget.caseLoadModel.cpimsId}',
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                   Padding(
@@ -108,17 +109,14 @@ class _Form1AScreenState extends State<Form1AScreen> {
                             ),
                             Expanded(
                               child: CustomButton(
-                                text: selectedStep == steps.length - 1
-                                    ? 'Submit'
-                                    : 'Next',
+                                text: selectedStep == steps.length - 1 ? 'Submit Form1A' : 'Next',
                                 onTap: () {
                                   setState(() {
                                     if (selectedStep < steps.length - 1) {
                                       selectedStep++;
-                                    }
-
-                                    if (selectedStep == steps.length - 1) {
-                                      form1aProvider.submitCriticalServices();
+                                    } else {
+                                      var cpimsId = widget.caseLoadModel.cpimsId;
+                                      form1aProvider.submitCriticalServices(cpimsId);
                                     }
                                   });
                                 },

@@ -139,17 +139,17 @@ class _ServicesDetailsState extends State<ServicesDetails> {
         const SizedBox(
           height: 15,
         ),
-        CustomButton(
-          text: 'Add',
-          color: kTextGrey,
-          onTap: () {
-            form1aProvider.submitServicesData();
-          },
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        const CustomButton(text: 'History Event(s)'),
+        // CustomButton(
+        //   text: 'Add',
+        //   color: kTextGrey,
+        //   onTap: () {
+        //     form1aProvider.submitServicesData();
+        //   },
+        // ),
+        // const SizedBox(
+        //   height: 5,
+        // ),
+        // const CustomButton(text: 'History Event(s)'),
       ],
     );
   }
