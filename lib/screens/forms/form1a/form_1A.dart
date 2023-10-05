@@ -9,6 +9,8 @@ import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
 
 class Form1AScreen extends StatefulWidget {
@@ -117,6 +119,19 @@ class _Form1AScreenState extends State<Form1AScreen> {
                                     } else {
                                       var cpimsId = widget.caseLoadModel.cpimsId;
                                       form1aProvider.submitCriticalServices(cpimsId);
+                                      Get.snackbar(
+                                        'Success',
+                                        'Form1A data saved successfully.',
+                                        duration: const Duration(seconds: 6),
+                                        snackPosition: SnackPosition.TOP, // Display at the top of the screen
+                                        backgroundColor: Colors.green,
+                                        colorText: Colors.white,
+                                        margin: const EdgeInsets.all(16),
+                                        borderRadius: 8,
+                                      );
+                                      Navigator.pop(context);
+                                      Provider.of<Form1AProvider>(context, listen: false).clear_Form1A();
+
                                     }
                                   });
                                 },

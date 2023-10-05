@@ -163,4 +163,9 @@ class Form1AProvider extends ChangeNotifier {
     _caseLoadModel = caseLoadModel;
     notifyListeners();
   }
+  void clear_Form1A() {
+    services.clear();
+    eventData.clear();
+    notifyListeners(); // Notify listeners that the data has changed
+  }
 }
