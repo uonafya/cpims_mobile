@@ -126,6 +126,7 @@ class _Form1AScreenState extends State<Form1AScreen> {
                                       selectedStep++;
                                     } else {
                                       var cpimsId = widget.caseLoadModel.cpimsId;
+
                                       form1aProvider.submitCriticalServices(cpimsId);
                                       Get.snackbar(
                                         'Success',

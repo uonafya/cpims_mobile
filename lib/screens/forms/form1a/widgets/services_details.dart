@@ -19,6 +19,7 @@ class ServicesDetails extends StatefulWidget {
   const ServicesDetails({super.key, required this.caseLoadModel});
 
 
+
   @override
   State<ServicesDetails> createState() => _ServicesDetailsState();
 }
@@ -110,6 +111,7 @@ class _ServicesDetailsState extends State<ServicesDetails> {
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
+
         MultiSelectDropDown(
           showClearIcon: true,
           hint: 'Please select the Services',

@@ -8,6 +8,7 @@ import 'package:multi_dropdown/models/value_item.dart';
 
 import '../Models/case_load_model.dart';
 import '../Models/form_1_model.dart';
+import 'db_provider.dart';
 
 class CriticalFormData {
   late List<ValueItem> selectedEvents;
@@ -104,19 +105,8 @@ class Form1AProvider extends ChangeNotifier {
   List<Map<String, dynamic>> services = [];
 
   void submitCriticalServices(cpimsId) {
-    print(cpimsId);
     String dateOfEvent =
     DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
-
-    Map<String, dynamic> payload = {
-      'ovc_cpims_id': cpimsId,
-      'date_of_event': dateOfEvent,
-      'services': services,
-      // 'critical_events': eventData,
-    };
-    String form1A = jsonEncode(payload);
-    print(form1A);
-
     List<Form1ServicesModel> servicesList = [];
     List<Form1CriticalEventsModel> eventsList = [];
 
@@ -144,10 +134,9 @@ class Form1AProvider extends ChangeNotifier {
       services: servicesList,
       criticalEvents: eventsList,
     );
-    print("ourData${toDbData}");
+    // print("ourData${toDbData}");
 
     Form1Service.saveFormLocal("form1a", toDbData);
-    Form1Service.getAllForms("form1a");
 
     _criticalFormData.selectedEvents.clear();
     _serviceFormData.selectedDomain.clear();
