@@ -130,8 +130,6 @@ class _Form1AScreenState extends State<Form1AScreen> {
                                         borderRadius: 8,
                                       );
                                       Navigator.pop(context);
-                                      Provider.of<Form1AProvider>(context, listen: false).clear_Form1A();
-
                                     }
                                   });
                                 },

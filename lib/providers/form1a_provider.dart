@@ -147,7 +147,11 @@ class Form1AProvider extends ChangeNotifier {
     print("ourData${toDbData}");
 
     Form1Service.saveFormLocal("form1a", toDbData);
-
+    _criticalFormData.selectedEvents.clear();
+    _serviceFormData.selectedDomain.clear();
+    _serviceFormData.selectedService.clear();
+    _serviceFormData.selectedEventDate = DateTime.now();
+    _criticalFormData.selectedDate = DateTime.now();
     notifyListeners();
   }
   // CaseLoad
@@ -162,10 +166,5 @@ class Form1AProvider extends ChangeNotifier {
   void updateCaseLoadModel(CaseLoadModel caseLoadModel) {
     _caseLoadModel = caseLoadModel;
     notifyListeners();
-  }
-  void clear_Form1A() {
-    services.clear();
-    eventData.clear();
-    notifyListeners(); // Notify listeners that the data has changed
   }
 }

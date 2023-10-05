@@ -1,11 +1,14 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/form1a_provider.dart';
+import 'package:cpims_mobile/screens/forms/form1a/form1A_history.dart';
 import 'package:cpims_mobile/screens/forms/form1a/utils/form_1a_options.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_forms_date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
@@ -149,7 +152,15 @@ class _ServicesDetailsState extends State<ServicesDetails> {
         // const SizedBox(
         //   height: 5,
         // ),
-        // const CustomButton(text: 'History Event(s)'),
+        CustomButton(text: 'Form1A Past Assessment(s)',
+        onTap: (){
+          setState(() {
+            // context
+            //     .read<Form1AProvider>()
+            //     .updateCaseLoadModel(widget.caseLoadModel);
+            Get.to(() => HistoryForm1A());
+          });
+        },),
       ],
     );
   }
