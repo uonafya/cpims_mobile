@@ -69,7 +69,6 @@ class _CriticalEventForm1bState extends State<CriticalEventForm1b> {
         const CustomDatePicker(
           hintText: 'Select date',
         )
-
       ],
     );
   }

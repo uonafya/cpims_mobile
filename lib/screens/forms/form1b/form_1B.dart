@@ -86,9 +86,9 @@ class _Form1BScreen extends State<Form1BScreen> {
                     padding: const EdgeInsets.all(10),
                     width: double.infinity,
                     color: Colors.black,
-                    child: const Text(
-                      'Form 1B Details',
-                      style: TextStyle(color: Colors.white),
+                    child: Text(
+                      'Form 1B : ${widget.caseLoad.ovcFirstName} ${widget.caseLoad.ovcSurname}',
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                   Padding(
@@ -141,6 +141,8 @@ class _Form1BScreen extends State<Form1BScreen> {
                                   setState(() {
                                     if (selectedStep < steps.length - 1) {
                                       selectedStep++;
+                                    }else{
+                                     form1bProvider.saveForm1bData();
                                     }
                                   });
                                 },
@@ -151,20 +153,6 @@ class _Form1BScreen extends State<Form1BScreen> {
                         const SizedBox(
                           height: 30,
                         ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: CustomButton(
-                                text: "Submit",
-                                onTap: () {
-                                  // form1bProvider.setSelectedServices(['Service 1', 'Service 2']);
-                                  // form1bProvider.setSelectedDate(DateTime.now());
-                                  form1bProvider.saveForm1bData(form1bProvider.formData);
-                                },
-                              ),
-                            )
-                          ]
-                        )
                       ],
                     ),
                   ),

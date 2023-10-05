@@ -43,7 +43,13 @@ class Form1DataModel {
       'critical_events': criticalEvents.map((event) => event.toJson()).toList(),
     };
   }
+
+  @override
+  String toString() {
+    return 'Form1DataModel{ovcCpimsId: $ovcCpimsId, dateOfEvent: $dateOfEvent, services: $services, criticalEvents: $criticalEvents}';
+  }
 }
+
 
 class Form1ServicesModel {
   final String domainId;
@@ -67,28 +73,39 @@ class Form1ServicesModel {
       'service_id': serviceId,
     };
   }
+
+  @override
+  String toString() {
+    return 'Form1ServicesModel{domainId: $domainId, serviceId: $serviceId}';
+  }
 }
 
+
 class Form1CriticalEventsModel {
-  final String eventId;
-  final String eventDate;
+  final String event_id;
+  final String event_date;
 
   Form1CriticalEventsModel({
-    required this.eventId,
-    required this.eventDate,
+    required this.event_id,
+    required this.event_date,
   });
 
   factory Form1CriticalEventsModel.fromJson(Map<String, dynamic> json) {
     return Form1CriticalEventsModel(
-      eventId: json['event_id'] as String,
-      eventDate: json['event_date'],
+      event_id: json['event_id'] as String,
+      event_date: json['event_date'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'event_id': eventId,
-      'event_date': eventDate,
+      'event_id': event_id,
+      'event_date': event_date,
     };
+  }
+
+  @override
+  String toString() {
+    return 'Form1CriticalEventsModel{eventId: $event_id, eventDate: $event_date}';
   }
 }

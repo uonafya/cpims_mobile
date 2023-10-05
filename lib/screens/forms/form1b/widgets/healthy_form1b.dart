@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/providers/form1b_provider.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
+import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,13 +18,10 @@ class HealthyForm1b extends StatefulWidget {
 }
 
 class _HealthyForm1bState extends State<HealthyForm1b> {
-  // HealthFormData formData = HealthFormData(selectedServices: [], selectedDate: DateTime.now());
 
-  // List<Map> careGiverServices = careGiverHealthServices;
   List<ValueItem> caregiverHealthServiceItems =
-      careGiverHealthServices.map((service) {
-    return ValueItem(
-        label: "- ${service['subtitle']}", value: service['title']);
+  careGiverHealthServices.map((service) {
+    return ValueItem(label: service['item_description'], value: service['item_id']);
   }).toList();
 
   List<ValueItem> selectedCareGiverServices = [];
@@ -35,7 +33,8 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
     Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
     selectedCareGiverServicesOptions = form1bProvider.formData.selectedServices;
     currentlySelectedDate = form1bProvider.formData.selectedDate;
-    String domainId = ServiceDomains[0]['id'];
+    String healthDomainId = domainsList[1]['item_id'];
+
 
     return StepsWrapper(
       title: 'Caregiver health and nutrition status',
@@ -50,10 +49,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             selectedCareGiverServices = selectedServices;
-            form1bProvider.setSelectedHealthServices(
-                selectedCareGiverServices, domainId);
-            CustomToastWidget.showToast(
-                "hii${form1bProvider.formData.selectedServices}");
+            form1bProvider.setSelectedHealthServices(selectedCareGiverServices, healthDomainId);
           },
           options: caregiverHealthServiceItems,
           maxItems: 13,
@@ -79,10 +75,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           selectedDateTime: currentlySelectedDate,
           onDateSelected: (selectedDate) {
             currentlySelectedDate = selectedDate;
-            // final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
-            // currentlySelectedDate = formattedDate;
             form1bProvider.setSelectedDate(currentlySelectedDate);
-            // CustomToastWidget.showToast(form1bProvider.formData.selectedDate as String);
           },
         ),
       ],
