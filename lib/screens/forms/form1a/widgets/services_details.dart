@@ -12,8 +12,12 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../Models/case_load_model.dart';
+
 class ServicesDetails extends StatefulWidget {
-  const ServicesDetails({Key? key}) : super(key: key);
+  final CaseLoadModel caseLoadModel;
+  const ServicesDetails({super.key, required this.caseLoadModel});
+
 
   @override
   State<ServicesDetails> createState() => _ServicesDetailsState();
@@ -155,10 +159,7 @@ class _ServicesDetailsState extends State<ServicesDetails> {
         CustomButton(text: 'Form1A Past Assessment(s)',
         onTap: (){
           setState(() {
-            // context
-            //     .read<Form1AProvider>()
-            //     .updateCaseLoadModel(widget.caseLoadModel);
-            Get.to(() => HistoryForm1A());
+            Get.to(() => HistoryForm1A(caseLoadModel: widget.caseLoadModel,));
           });
         },),
       ],

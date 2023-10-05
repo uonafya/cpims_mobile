@@ -24,8 +24,16 @@ class Form1AScreen extends StatefulWidget {
 
 class _Form1AScreenState extends State<Form1AScreen> {
   int selectedStep = 0;
-  List<Widget> steps = [const CriticalEventsScreen(), const ServicesDetails()];
+  List<Widget> steps = [];
 
+  @override
+  void initState() {
+    super.initState();
+    steps = [
+      const CriticalEventsScreen(),
+      ServicesDetails(caseLoadModel: widget.caseLoadModel),
+    ];
+  }
   @override
   Widget build(BuildContext context) {
     Form1AProvider form1aProvider = Provider.of<Form1AProvider>(context);

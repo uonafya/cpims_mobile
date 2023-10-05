@@ -147,6 +147,8 @@ class Form1AProvider extends ChangeNotifier {
     print("ourData${toDbData}");
 
     Form1Service.saveFormLocal("form1a", toDbData);
+    Form1Service.getAllForms("form1a");
+
     _criticalFormData.selectedEvents.clear();
     _serviceFormData.selectedDomain.clear();
     _serviceFormData.selectedService.clear();
