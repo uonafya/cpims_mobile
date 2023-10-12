@@ -1,6 +1,8 @@
 // import 'package:cpims_mobile/Models/form1_data_basemodel.dart';
 // import 'package:cpims_mobile/Models/form_1b.dart';
 
+import 'dart:convert';
+
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -137,6 +139,8 @@ class Form1bProvider extends ChangeNotifier {
         services: servicesList,
         criticalEvents: criticalEventsList
     );
+    String data = jsonEncode(toDbData);
+    print("The json data for form 1 b is $data");
     // print("ourData${toDbData}");
     // print("criticalEventsDataForm1b${getFinalCriticalEventsFormData()}");
 

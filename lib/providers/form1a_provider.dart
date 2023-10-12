@@ -135,7 +135,9 @@ class Form1AProvider extends ChangeNotifier {
       services: servicesList,
       criticalEvents: eventsList,
     );
-    // print("ourData${toDbData}");
+    //json encode the data
+    String data = jsonEncode(toDbData);
+    print("The json data is $data");
 
     Form1Service.saveFormLocal("form1a", toDbData);
 

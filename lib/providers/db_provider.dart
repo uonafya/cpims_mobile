@@ -140,7 +140,7 @@ class LocalDb {
         ${Form1CriticalEvents.id} $idType,
         ${Form1CriticalEvents.formId} $textType,
         ${Form1CriticalEvents.eventId} $textType,
-        ${Form1CriticalEvents.eventDate} $textType,
+        ${Form1CriticalEvents.event_date} $textType,
         FOREIGN KEY (${Form1CriticalEvents
         .formId}) REFERENCES $form1Table(${Form1.id})
         )
@@ -317,7 +317,7 @@ class LocalDb {
           {
             'form_id': formId,
             'event_id': criticalEvent.event_id,
-            'event_date': criticalEvent.eventDate,
+            'event_date': criticalEvent.event_date
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
@@ -714,11 +714,11 @@ class Form1CriticalEvents {
     id,
     formId,
     eventId,
-    eventDate,
+    event_date,
   ];
 
   static const String id = "_id";
   static const String formId = "form_id";
   static const String eventId = "event_id";
-  static const String eventDate = "event_date";
+  static const String event_date = "event_date";
 }

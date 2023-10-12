@@ -192,6 +192,8 @@ Future<void> singleCparaFormSubmission({required CPARADatabase cparaForm, requir
     "scores": scoreList,
   };
   debugPrint(json.encode(cparaMapData));
+  String cparaJsonData= json.encode(cparaMapData);
+  print("Cpara data is $cparaJsonData");
 
   var response = await dio.post("https://dev.cpims.net/api/form/CPR/",
       data: cparaMapData,
