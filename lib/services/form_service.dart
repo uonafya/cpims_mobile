@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 
 class Form1Service {
 
+
   // save form to local storage
   static _saveValues(String formType, formData) async {
 //save the form data that is in the form of a map to  a local database
@@ -47,8 +48,6 @@ class Form1Service {
     }
     return [];
   }
-
-
   static _postForm(formData, String formEndpoint) async {
     var data = formData.toMap();
     try {

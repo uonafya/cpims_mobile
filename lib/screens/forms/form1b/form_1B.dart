@@ -8,8 +8,10 @@ import 'package:cpims_mobile/screens/forms/form1b/widgets/stable_form1b.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
+import 'package:cpims_mobile/widgets/custom_toast.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,7 +40,6 @@ class _Form1BScreen extends State<Form1BScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Future.delayed(Duration.zero,(){
       Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context,listen: false);
@@ -133,17 +134,18 @@ class _Form1BScreen extends State<Form1BScreen> {
                               width: 50,
                             ),
                             Expanded(
-                              child: CustomButton(
-                                text: selectedStep == steps.length - 1
-                                    ? 'Submit'
-                                    : 'Next',
-                                onTap: () {
-                                  setState(() {
-                                    if (selectedStep < steps.length - 1) {
-                                      selectedStep++;
-                                    }
-                                  });
-                                },
+                              child: Visibility(
+                                visible: selectedStep < steps.length - 1, // Hide the button when selectedStep is equal to steps.length - 1
+                                child: CustomButton(
+                                  text: 'Next',
+                                  onTap: () {
+                                    setState(() {
+                                      if (selectedStep < steps.length - 1) {
+                                        selectedStep++;
+                                      }
+                                    });
+                                  },
+                                ),
                               ),
                             )
                           ],
@@ -156,15 +158,45 @@ class _Form1BScreen extends State<Form1BScreen> {
                             Expanded(
                               child: CustomButton(
                                 text: "Submit",
-                                onTap: () {
+                                onTap: () async{
                                   // form1bProvider.setSelectedServices(['Service 1', 'Service 2']);
                                   // form1bProvider.setSelectedDate(DateTime.now());
-                                  form1bProvider.saveForm1bData(form1bProvider.formData);
+                                  bool isFormSaved = await form1bProvider.saveForm1bData(form1bProvider.formData);
+                                  if(isFormSaved == true){
+                                    CustomToastWidget.showToast("Form saved successfully");
+                                    setState(() {
+                                      selectedStep = 0;
+                                      });
+
+                                  }
                                 },
                               ),
                             )
                           ]
-                        )
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                            children: [
+                              Expanded(
+                                child: CustomButton(
+                                    text: 'Cancel',
+                                    color: kTextGrey,
+                                    onTap: () {
+                                      // Navigator.of(context).pop();
+                                      form1bProvider.fetchSavedDataFromDb();
+                                    }
+                                ),
+
+                              )
+                            ]
+                        ),
+                        const SizedBox(height: 20),
+                        const SizedBox(
+                            width: 300, // Adjust the width value as needed
+                            child: HistoryAssessmentListWidget()
+                        ),
                       ],
                     ),
                   ),
@@ -173,6 +205,56 @@ class _Form1BScreen extends State<Form1BScreen> {
           const Footer(),
         ],
       ),
+    );
+  }
+}
+
+
+
+class HistoryAssessmentListWidget extends StatelessWidget {
+  const HistoryAssessmentListWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 4,
+        itemBuilder: (context, index) {
+          return const AssessmentItemWidget();
+        });
+  }
+}
+
+
+class AssessmentItemWidget extends StatelessWidget {
+  const AssessmentItemWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        Expanded(
+          child: Text(
+            'Child not Adhering to ARVs',
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+        ),
+        SizedBox(
+          height: 50,
+        ),
+        Expanded(
+          child: Text(
+            '28-Aug-2023',
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+        ),
+        SizedBox(width: 10),
+        Icon(
+          CupertinoIcons.delete,
+          color: Colors.red,
+        )
+      ],
     );
   }
 }

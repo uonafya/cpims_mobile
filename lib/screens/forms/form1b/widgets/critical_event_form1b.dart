@@ -1,6 +1,7 @@
 import 'package:cpims_mobile/screens/forms/form1b/utils/form1bConstants.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:cpims_mobile/widgets/custom_date_picker.dart';
+import 'package:cpims_mobile/widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -44,6 +45,7 @@ class _CriticalEventForm1bState extends State<CriticalEventForm1b> {
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             form1bProvider.setCriticalEventsSelectedEvents(selectedServices);
+            // CustomToastWidget.showToast(form1bProvider.criticalEventDataForm1b.selectedEvents[0].label);
           },
           selectedOptions: selectedCriticalEvents,
           options: careGiverCriticalItems,
