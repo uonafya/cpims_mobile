@@ -157,27 +157,7 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             ChildDetailsWorkflowButton(
               workflowName: "OVC Sub Population",
               onClick: () {
-                if (detailProvider.detailModel?.dateOfAssessment == null) {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('CPARA'),
-                          content: const Text(
-                              'Please fill CPARA form first before proceeding'),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('OK'))
-                          ],
-                        );
-                      });
-                } else {
-                  Get.to(
-                      () => CheckboxForm(caseLoadModel: widget.caseLoadModel));
-                }
+                Get.to(() => CheckboxForm(caseLoadModel: widget.caseLoadModel));
               },
             ),
             ChildDetailsWorkflowButton(

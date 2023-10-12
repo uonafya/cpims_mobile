@@ -81,25 +81,25 @@ class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            // Expanded(
-            //   // child: CustomButton(
-            //   //   text: 'Submit Event(s)',
-            //   //   onTap: () {
-            //   //     form1aProvider.submitCriticalData();
-            //   //   },
-            //   // ),
-            // ),
-            // const SizedBox(
-            //   width: 15,
-            // ),
-            // const Expanded(
-            //   child: CustomButton(text: 'Cancel', color: kTextGrey),
-            // ),
+            Expanded(
+              child: CustomButton(
+                text: 'Submit Event(s)',
+                onTap: () {
+                  form1aProvider.submitCriticalData();
+                },
+              ),
+            ),
+            const SizedBox(
+              width: 15,
+            ),
+            const Expanded(
+              child: CustomButton(text: 'Cancel', color: kTextGrey),
+            ),
           ],
         ),
-        // const SizedBox(
-        //   height: 15,
-        // ),
+        const SizedBox(
+          height: 15,
+        ),
         // const CustomButton(text: 'History Event(s)'),
       ],
     );
