@@ -131,7 +131,7 @@ class Form1AProvider extends ChangeNotifier {
 
     Form1DataModel toDbData = Form1DataModel(
       ovcCpimsId: cpimsId,
-      dateOfEvent: dateOfEvent,
+      date_of_event: dateOfEvent,
       services: servicesList,
       criticalEvents: eventsList,
     );

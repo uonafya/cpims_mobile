@@ -133,7 +133,7 @@ class Form1bProvider extends ChangeNotifier {
 
     Form1DataModel toDbData = Form1DataModel(
         ovcCpimsId: finalServicesFormData.ovc_cpims_id,
-        dateOfEvent: finalServicesFormData.date_of_event,
+        date_of_event: finalServicesFormData.date_of_event,
         services: servicesList,
         criticalEvents: criticalEventsList
     );

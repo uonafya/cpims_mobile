@@ -1,12 +1,12 @@
 class Form1DataModel {
   final String ovcCpimsId;
-  final String dateOfEvent;
+  final String date_of_event;
   final List<Form1ServicesModel> services;
   final List<Form1CriticalEventsModel> criticalEvents;
 
   Form1DataModel({
     required this.ovcCpimsId,
-    required this.dateOfEvent,
+    required this.date_of_event,
     required this.services,
     required this.criticalEvents,
   });
@@ -29,7 +29,7 @@ class Form1DataModel {
 
     return Form1DataModel(
       ovcCpimsId: json['ovc_cpims_id'] as String,
-      dateOfEvent: json['date_of_event'] as String,
+      date_of_event: json['date_of_event'] as String,
       services: services,
       criticalEvents: criticalEvents,
     );
@@ -38,15 +38,26 @@ class Form1DataModel {
   Map<String, dynamic> toJson() {
     return {
       'ovc_cpims_id': ovcCpimsId,
-      'date_of_event': dateOfEvent,
+      'date_of_event': date_of_event,
       'services': services.map((service) => service.toJson()).toList(),
       'critical_events': criticalEvents.map((event) => event.toJson()).toList(),
     };
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      'ovc_cpims_id': ovcCpimsId,
+      'date_of_event': date_of_event,
+      'services': services.map((service) => service.toMap()).toList(),
+      'critical_events': criticalEvents.map((event) => event.toMap()).toList(),
+    };
+  }
+
+
+
   @override
   String toString() {
-    return 'Form1DataModel{ovcCpimsId: $ovcCpimsId, dateOfEvent: $dateOfEvent, services: $services, criticalEvents: $criticalEvents}';
+    return 'Form1DataModel{ovcCpimsId: $ovcCpimsId, dateOfEvent: $date_of_event, services: $services, criticalEvents: $criticalEvents}';
   }
 }
 
@@ -78,6 +89,13 @@ class Form1ServicesModel {
   String toString() {
     return 'Form1ServicesModel{domainId: $domainId, serviceId: $serviceId}';
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'domain_id': domainId,
+      'service_id': serviceId,
+    };
+  }
 }
 
 
@@ -104,8 +122,15 @@ class Form1CriticalEventsModel {
     };
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      'event_id': event_id,
+      'event_date': event_date,
+    };
+  }
+
   @override
   String toString() {
-    return 'Form1CriticalEventsModel{eventId: $event_id, eventDate: $event_date}';
+    return 'Form1CriticalEventsModel{event_id: $event_id, event_date: $event_date}';
   }
 }
