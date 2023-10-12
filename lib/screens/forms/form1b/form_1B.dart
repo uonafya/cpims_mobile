@@ -8,7 +8,6 @@ import 'package:cpims_mobile/screens/forms/form1b/widgets/stable_form1b.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
-import 'package:cpims_mobile/widgets/custom_toast.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/form1b_provider.dart';
+import '../../../widgets/custom_toast.dart';
 
 class Form1BScreen extends StatefulWidget {
   const Form1BScreen({super.key, required this.caseLoad});
@@ -40,6 +40,7 @@ class _Form1BScreen extends State<Form1BScreen> {
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
     Future.delayed(Duration.zero,(){
       Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context,listen: false);
@@ -87,9 +88,9 @@ class _Form1BScreen extends State<Form1BScreen> {
                     padding: const EdgeInsets.all(10),
                     width: double.infinity,
                     color: Colors.black,
-                    child: const Text(
-                      'Form 1B Details',
-                      style: TextStyle(color: Colors.white),
+                    child: Text(
+                      'Form 1B : ${widget.caseLoad.ovcFirstName} ${widget.caseLoad.ovcSurname}',
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                   Padding(

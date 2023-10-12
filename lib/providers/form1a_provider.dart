@@ -114,8 +114,8 @@ class Form1AProvider extends ChangeNotifier {
     for (var event in eventData ?? []) {
       if (event != null && event['event_id'] != null && event['event_date'] != null) {
         Form1CriticalEventsModel entry = Form1CriticalEventsModel(
-          eventId: event['event_id'],
-          eventDate: dateOfEvent,
+          event_id: event['event_id'],
+          event_date: dateOfEvent,
         );
         eventsList.add(entry);
       }

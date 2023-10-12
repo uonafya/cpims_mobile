@@ -294,7 +294,7 @@ class LocalDb {
         form1Table,
         {
           'ovc_cpims_id': formData.ovcCpimsId,
-          'date_of_event': formData.dateOfEvent,
+          'date_of_event': formData.date_of_event,
           'form_type': formType,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
@@ -316,7 +316,7 @@ class LocalDb {
           form1CriticalEventsTable,
           {
             'form_id': formId,
-            'event_id': criticalEvent.eventId,
+            'event_id': criticalEvent.event_id,
             'event_date': criticalEvent.eventDate,
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
