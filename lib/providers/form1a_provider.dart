@@ -1,14 +1,18 @@
 import 'dart:convert';
 
 import 'package:cpims_mobile/services/form_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'packag'
     'e:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Models/case_load_model.dart';
 import '../Models/form_1_model.dart';
+import 'connection_provider.dart';
 import 'db_provider.dart';
 
 class CriticalFormData {
@@ -25,13 +29,13 @@ class ServiceFormData {
 
   ServiceFormData(
       {required this.selectedDomain,
-        required this.selectedEventDate,
-        required this.selectedService});
+      required this.selectedEventDate,
+      required this.selectedService});
 }
 
 class Form1AProvider extends ChangeNotifier {
   final CriticalFormData _criticalFormData =
-  CriticalFormData(selectedEvents: [], selectedDate: DateTime.now());
+      CriticalFormData(selectedEvents: [], selectedDate: DateTime.now());
 
   final ServiceFormData _serviceFormData = ServiceFormData(
       selectedDomain: [],
@@ -39,6 +43,7 @@ class Form1AProvider extends ChangeNotifier {
       selectedService: []);
 
   CriticalFormData get criticalFormData => _criticalFormData;
+
   ServiceFormData get serviceFormData => _serviceFormData;
 
   void setSelectedEvents(List<ValueItem> selectedEvents) {
@@ -71,7 +76,7 @@ class Form1AProvider extends ChangeNotifier {
 
   void submitCriticalData() {
     String formattedDate =
-    DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
+        DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
 
     List<Map<String, dynamic>> criticalEvents = [];
     for (var valueItem in _criticalFormData.selectedEvents) {
@@ -107,12 +112,14 @@ class Form1AProvider extends ChangeNotifier {
 
   void submitCriticalServices(cpimsId) {
     String dateOfEvent =
-    DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
+        DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
     List<Form1ServicesModel> servicesList = [];
     List<Form1CriticalEventsModel> eventsList = [];
 
     for (var event in eventData ?? []) {
-      if (event != null && event['event_id'] != null && event['event_date'] != null) {
+      if (event != null &&
+          event['event_id'] != null &&
+          event['event_date'] != null) {
         Form1CriticalEventsModel entry = Form1CriticalEventsModel(
           event_id: event['event_id'],
           event_date: dateOfEvent,
@@ -138,8 +145,11 @@ class Form1AProvider extends ChangeNotifier {
     //json encode the data
     String data = jsonEncode(toDbData);
     print("The json data is $data");
+    handleSubmitToServer(data, cpimsId,toDbData);
+    //POST DATA TO SERVER using dio the endpoint is /api/form1a but first check if there is internet connection
+    //if there is no internet connection save the data to local storage
 
-    Form1Service.saveFormLocal("form1a", toDbData);
+    // Form1Service.saveFormLocal("form1a", toDbData);
 
     _criticalFormData.selectedEvents.clear();
     _serviceFormData.selectedDomain.clear();
@@ -148,6 +158,7 @@ class Form1AProvider extends ChangeNotifier {
     _criticalFormData.selectedDate = DateTime.now();
     notifyListeners();
   }
+
   // CaseLoad
 
   late CaseLoadModel _caseLoadModel;
@@ -160,5 +171,56 @@ class Form1AProvider extends ChangeNotifier {
   void updateCaseLoadModel(CaseLoadModel caseLoadModel) {
     _caseLoadModel = caseLoadModel;
     notifyListeners();
+  }
+
+  Future<void> handleSubmitToServer(String data, String cpimsId,
+      Form1DataModel toDbFormOneData
+      ) async {
+    final localDb = LocalDb.instance;
+    var prefs = await SharedPreferences.getInstance();
+    var accessToken = prefs.getString('access');
+    String bearerAuth = "Bearer $accessToken";
+
+    final dio = Dio();
+    const apiEndpoint = "https://dev.cpims.net/api/form/F1A/";
+
+    final options = Options(
+      headers: {"Authorization": bearerAuth},
+    );
+
+    final hasConnection = await Provider.of<ConnectivityProvider>(
+      Get.context!,
+      listen: false,
+    ).checkInternetConnection();
+
+    try {
+      if (hasConnection) {
+        final formOneApiResponse =
+            await dio.post(apiEndpoint, data: data, options: options);
+        if (formOneApiResponse.statusCode == 200) {
+          print("Data posted  successfully to server is $data");
+          Get.snackbar(
+            'Success',
+            'Form 1A submitted successfully',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+          );
+        } else {
+          Get.snackbar(
+            'Failed',
+            'No Internet Connection.Try again',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
+      } else {
+        //NO INTERNET CONNECTION SAVE DATA LOCALLY
+        Form1Service.saveFormLocal("form1a", toDbFormOneData);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }
