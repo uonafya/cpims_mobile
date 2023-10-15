@@ -19,11 +19,11 @@ import '../../../widgets/custom_toast.dart';
 
 class Form1BScreen extends StatefulWidget {
   const Form1BScreen({super.key, required this.caseLoad});
+
   final CaseLoadModel caseLoad;
 
   @override
-  State<Form1BScreen> createState() =>
-      _Form1BScreen();
+  State<Form1BScreen> createState() => _Form1BScreen();
 }
 
 class _Form1BScreen extends State<Form1BScreen> {
@@ -36,23 +36,21 @@ class _Form1BScreen extends State<Form1BScreen> {
     const CriticalEventForm1b(),
   ];
 
-
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration.zero,(){
-      Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context,listen: false);
+    Future.delayed(Duration.zero, () {
+      Form1bProvider form1bProvider =
+          Provider.of<Form1bProvider>(context, listen: false);
       form1bProvider.setFinalFormDataOvcId(widget.caseLoad.cpimsId!);
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
-    Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context,listen: false);
-
+    Form1bProvider form1bProvider =
+        Provider.of<Form1bProvider>(context, listen: false);
 
     return Scaffold(
       appBar: customAppBar(),
@@ -89,7 +87,7 @@ class _Form1BScreen extends State<Form1BScreen> {
                     width: double.infinity,
                     color: Colors.black,
                     child: Text(
-                      'Form 1B : ${widget.caseLoad.ovcFirstName} ${widget.caseLoad.ovcSurname}',
+                      ' FORM 1B DETAILS \n CARE GIVER: ${widget.caseLoad.caregiverNames} \n CPIMIS ID: ${widget.caseLoad.cpimsId}',
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),
@@ -136,7 +134,8 @@ class _Form1BScreen extends State<Form1BScreen> {
                             ),
                             Expanded(
                               child: Visibility(
-                                visible: selectedStep < steps.length - 1, // Hide the button when selectedStep is equal to steps.length - 1
+                                visible: selectedStep < steps.length - 1,
+                                // Hide the button when selectedStep is equal to steps.length - 1
                                 child: CustomButton(
                                   text: 'Next',
                                   onTap: () {
@@ -154,50 +153,44 @@ class _Form1BScreen extends State<Form1BScreen> {
                         const SizedBox(
                           height: 30,
                         ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: CustomButton(
-                                text: "Submit",
-                                onTap: () async{
-                                  // form1bProvider.setSelectedServices(['Service 1', 'Service 2']);
-                                  // form1bProvider.setSelectedDate(DateTime.now());
-                                  bool isFormSaved = await form1bProvider.saveForm1bData(form1bProvider.formData);
-                                  if(isFormSaved == true){
-                                    CustomToastWidget.showToast("Form saved successfully");
-                                    setState(() {
-                                      selectedStep = 0;
-                                      });
-
-                                  }
-                                },
-                              ),
-                            )
-                          ]
-                        ),
+                        Row(children: [
+                          Expanded(
+                            child: CustomButton(
+                              text: "Submit",
+                              onTap: () async {
+                                // form1bProvider.setSelectedServices(['Service 1', 'Service 2']);
+                                // form1bProvider.setSelectedDate(DateTime.now());
+                                bool isFormSaved = await form1bProvider
+                                    .saveForm1bData(form1bProvider.formData);
+                                if (isFormSaved == true) {
+                                  CustomToastWidget.showToast(
+                                      "Form saved successfully");
+                                  setState(() {
+                                    selectedStep = 0;
+                                  });
+                                }
+                              },
+                            ),
+                          )
+                        ]),
                         const SizedBox(
                           height: 15,
                         ),
-                        Row(
-                            children: [
-                              Expanded(
-                                child: CustomButton(
-                                    text: 'Cancel',
-                                    color: kTextGrey,
-                                    onTap: () {
-                                      // Navigator.of(context).pop();
-                                      form1bProvider.fetchSavedDataFromDb();
-                                    }
-                                ),
-
-                              )
-                            ]
-                        ),
+                        Row(children: [
+                          Expanded(
+                            child: CustomButton(
+                                text: 'Cancel',
+                                color: kTextGrey,
+                                onTap: () {
+                                  // Navigator.of(context).pop();
+                                  form1bProvider.fetchSavedDataFromDb();
+                                }),
+                          )
+                        ]),
                         const SizedBox(height: 20),
                         const SizedBox(
                             width: 300, // Adjust the width value as needed
-                            child: HistoryAssessmentListWidget()
-                        ),
+                            child: HistoryAssessmentListWidget()),
                       ],
                     ),
                   ),
@@ -209,8 +202,6 @@ class _Form1BScreen extends State<Form1BScreen> {
     );
   }
 }
-
-
 
 class HistoryAssessmentListWidget extends StatelessWidget {
   const HistoryAssessmentListWidget({super.key});
@@ -226,7 +217,6 @@ class HistoryAssessmentListWidget extends StatelessWidget {
         });
   }
 }
-
 
 class AssessmentItemWidget extends StatelessWidget {
   const AssessmentItemWidget({super.key});

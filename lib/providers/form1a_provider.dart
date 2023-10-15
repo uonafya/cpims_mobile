@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -144,7 +145,7 @@ class Form1AProvider extends ChangeNotifier {
     //json encode the data
     String data = jsonEncode(toDbData);
     print("The json data is $data");
-    handleSubmitToServer(data, cpimsId,toDbData);
+    handleSubmitToServer(data, cpimsId, toDbData);
     //POST DATA TO SERVER using dio the endpoint is /api/form1a but first check if there is internet connection
     //if there is no internet connection save the data to local storage
 
@@ -172,16 +173,16 @@ class Form1AProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> handleSubmitToServer(String data, String cpimsId,
-      Form1DataModel toDbFormOneData
-      ) async {
+  Future<void> handleSubmitToServer(
+      String data, String cpimsId, Form1DataModel toDbFormOneData) async {
     final localDb = LocalDb.instance;
     var prefs = await SharedPreferences.getInstance();
     var accessToken = prefs.getString('access');
     String bearerAuth = "Bearer $accessToken";
 
     final dio = Dio();
-    const apiEndpoint = "https://dev.cpims.net/api/form/F1A/";
+    dio.interceptors.add(LogInterceptor());
+    const formoneAEndpoint = "${cpimsApiUrl}form/F1A/";
 
     final options = Options(
       headers: {"Authorization": bearerAuth},
@@ -195,7 +196,7 @@ class Form1AProvider extends ChangeNotifier {
     try {
       if (hasConnection) {
         final formOneApiResponse =
-            await dio.post(apiEndpoint, data: data, options: options);
+            await dio.post(formoneAEndpoint, data: data, options: options);
         if (formOneApiResponse.statusCode == 200) {
           print("Data posted  successfully to server is $data");
           Get.snackbar(
