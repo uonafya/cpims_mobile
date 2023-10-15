@@ -30,6 +30,7 @@ import '../../Models/case_load_model.dart';
 
 class CparaFormsScreen extends StatefulWidget {
   final CaseLoadModel caseLoadModel;
+
   const CparaFormsScreen({super.key, required this.caseLoadModel});
 
   @override
@@ -50,55 +51,26 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
 
   Database? database;
   static const databaseName = "CPARAv2.db";
+
   // Initialize database
   @override
   void initState() {
     super.initState();
-    final caseLoadData = Provider.of<UIProvider>(context, listen: false).caseLoadData;
+    final caseLoadData =
+        Provider.of<UIProvider>(context, listen: false).caseLoadData;
     // todo: update case load data in Cpara provider
-    // initialize the database
-    // initializeDatabase();
-    // initializeDbInstance();
     fetchChildren(caseLoadData);
   }
 
   Future<void> initializeDbInstance() async {
     database = await LocalDb.instance.database;
-    if(mounted) setState(() {});
+    if (mounted) setState(() {});
   }
 
-  fetchChildren(caseList) async{
+  fetchChildren(caseList) async {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      // Provider.of<CparaProvider>(context, listen: false).updateChildren(caseList));
-    context.read<CparaProvider>().updateChildren(caseList);
+      context.read<CparaProvider>().updateChildren(caseList);
     });
-  }
-
-  // Function that creates the database and tables
-  void initializeDatabase() async {
-    try {
-      debugPrint("This has been created");
-      database =
-          await openDatabase(p.join(await getDatabasesPath(), databaseName),
-              onCreate: (db, version) async {
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT);");
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS Child(childOVCCPMISID TEXT PRIMARY KEY, childName TEXT, childAge TEXT, childGender TEXT, childSchool TEXT, childOVCRegistered TEXT);");
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS Household(householdID TEXT PRIMARY KEY);");
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS HouseholdChild(childID TEXT, householdID TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (householdID) REFERENCES Household(householdID), PRIMARY KEY(childID, householdID));");
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER, id INTEGER PRIMARY KEY, houseHoldID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (houseHoldID) REFERENCES Household(householdid), FOREIGN KEY (formID) REFERENCES Form(id));");
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionid TEXT, answer TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (formID) REFERENCES Form(id));");
-      }, version: 2);
-    } catch (err) {
-      debugPrint("OHH SHIT!");
-      debugPrint(err.toString());
-      debugPrint("OHH SHIT");
-    }
   }
 
   @override
@@ -182,99 +154,125 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                 text: selectedStep == steps.length - 1
                                     ? 'Submit'
                                     : 'Next',
-                                onTap: () async{
+                                onTap: () async {
                                   if (selectedStep == steps.length - 1) {
                                     // display collected data
                                     DetailModel detailModel = context
-                                        .read<CparaProvider>()
-                                        .detailModel ?? DetailModel();
+                                            .read<CparaProvider>()
+                                            .detailModel ??
+                                        DetailModel();
                                     HealthModel healthModel = context
-                                        .read<CparaProvider>()
-                                        .healthModel ?? HealthModel();
+                                            .read<CparaProvider>()
+                                            .healthModel ??
+                                        HealthModel();
                                     // context.read<CparaProvider>().updateHealthModel((healthModel ?? HealthModel()
                                     //     ));
                                     StableModel stableModel = context
-                                        .read<CparaProvider>()
-                                        .stableModel ?? StableModel();
-                                    SafeModel safeModel =
-                                        context.read<CparaProvider>().safeModel ??
-                                            SafeModel();
+                                            .read<CparaProvider>()
+                                            .stableModel ??
+                                        StableModel();
+                                    SafeModel safeModel = context
+                                            .read<CparaProvider>()
+                                            .safeModel ??
+                                        SafeModel();
                                     SchooledModel schooledModel = context
-                                        .read<CparaProvider>()
-                                        .schooledModel ?? SchooledModel();
+                                            .read<CparaProvider>()
+                                            .schooledModel ??
+                                        SchooledModel();
 
                                     // number of children
-                                    List<CaseLoadModel> children = context
-                                        .read<CparaProvider>()
-                                        .children;
+                                    List<CaseLoadModel> children =
+                                        context.read<CparaProvider>().children;
 
-                                    if(safeModel.childrenQuestions == null){
+                                    if (safeModel.childrenQuestions == null) {
                                       List<SafeChild> childrenQuestions = [];
-                                      for(int i = 0; i < children.length; i++){
-                                        childrenQuestions.add(SafeChild(question1: null,
+                                      for (int i = 0;
+                                          i < children.length;
+                                          i++) {
+                                        childrenQuestions.add(SafeChild(
+                                            question1: null,
                                             ovcId: "${children[i].cpimsId}",
-                                            name: "${children[i].ovcFirstName} ${children[i].ovcSurname}"));
+                                            name:
+                                                "${children[i].ovcFirstName} ${children[i].ovcSurname}"));
                                       }
 
-                                      safeModel = safeModel.copyWith(childrenQuestions: childrenQuestions);
-                                      context.read<CparaProvider>().updateSafeModel(safeModel);
+                                      safeModel = safeModel.copyWith(
+                                          childrenQuestions: childrenQuestions);
+                                      context
+                                          .read<CparaProvider>()
+                                          .updateSafeModel(safeModel);
                                     }
 
-                                    if(healthModel.childrenQuestions == null){
+                                    if (healthModel.childrenQuestions == null) {
                                       List<HealthChild> childrenQuestions = [];
-                                      for(int i = 0; i < children.length; i++){
-                                        childrenQuestions.add(HealthChild(question1: "",
+                                      for (int i = 0;
+                                          i < children.length;
+                                          i++) {
+                                        childrenQuestions.add(HealthChild(
+                                            question1: "",
                                             question2: '',
                                             question3: '',
                                             id: "${children[i].cpimsId}",
-                                            name: "${children[i].ovcFirstName} ${children[i].ovcSurname}"));
+                                            name:
+                                                "${children[i].ovcFirstName} ${children[i].ovcSurname}"));
                                       }
-healthModel = healthModel.copyWith(childrenQuestions: childrenQuestions);
-                                      context.read<CparaProvider>().updateHealthModel(healthModel);
+                                      healthModel = healthModel.copyWith(
+                                          childrenQuestions: childrenQuestions);
+                                      context
+                                          .read<CparaProvider>()
+                                          .updateHealthModel(healthModel);
                                     }
 
                                     CparaModel? cparaModel = context
                                         .read<CparaProvider>()
                                         .cparaModel;
 
-
                                     try {
-                                      String? ovsId = context.read<CparaProvider>().caseLoadModel?.cpimsId;
+                                      String? ovsId = context
+                                          .read<CparaProvider>()
+                                          .caseLoadModel
+                                          ?.cpimsId;
                                       // String? careGiverId = context.read<CparaProvider>().caseLoadModel?.cpimsId;
 
-                                      if(ovsId == null) throw("No CPMSID found");
-                                      String ovcpmisid = ovsId ?? "0" ;
+                                      if (ovsId == null)
+                                        throw ("No CPMSID found");
+                                      String ovcpmisid = ovsId ?? "0";
                                       // Insert to db
                                       CparaModel cparaModelDB = CparaModel(
-                                          detail: detailModel,
-                                          safe: safeModel,
-                                          stable: stableModel,
-                                          schooled: schooledModel ,
-                                          health: (healthModel
-                                          ),
-                                              );
+                                        detail: detailModel,
+                                        safe: safeModel,
+                                        stable: stableModel,
+                                        schooled: schooledModel,
+                                        health: (healthModel),
+                                      );
                                       // Create form
-                                      await LocalDb.instance.insertCparaData(cparaModelDB: cparaModelDB, ovcId: ovcpmisid, careProviderId: ovcpmisid );
+                                      await LocalDb.instance.insertCparaData(
+                                          cparaModelDB: cparaModelDB,
+                                          ovcId: ovcpmisid,
+                                          careProviderId: ovcpmisid);
 
+                                      debugPrint("Here is the cpara data being saved $cparaModelDB");
                                       if (context.mounted) {
-                                        context.read<CparaProvider>().clearCparaProvider();
+                                        context
+                                            .read<CparaProvider>()
+                                            .clearCparaProvider();
                                         showDialog(
-                                          context: context, // Use the context from the build method
-                                          builder: (context) =>
-                                              AlertDialog(
-                                                title: const Text('Success'),
-                                                content: const Text(
-                                                    'CPARA data saved successfully.'),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Get.back(); // Close the dialog
-                                                      Get.back(); // Go back to the previous screen
-                                                    },
-                                                    child: const Text('OK'),
-                                                  ),
-                                                ],
+                                          context: context,
+                                          // Use the context from the build method
+                                          builder: (context) => AlertDialog(
+                                            title: const Text('Success'),
+                                            content: const Text(
+                                                'CPARA data saved successfully.'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Get.back(); // Close the dialog
+                                                  Get.back(); // Go back to the previous screen
+                                                },
+                                                child: const Text('OK'),
                                               ),
+                                            ],
+                                          ),
                                         );
                                       }
                                     } catch (err) {
@@ -310,9 +308,11 @@ healthModel = healthModel.copyWith(childrenQuestions: childrenQuestions);
               )),
           const SizedBox(height: 20),
           const PastCPARAWidget(),
-          ElevatedButton(onPressed: ()async{
-            await submitCparaToUpstream();
-          }, child: const Text("Sync")),
+          ElevatedButton(
+              onPressed: () async {
+                await submitCparaToUpstream();
+              },
+              child: const Text("Sync")),
           const Footer(),
         ],
       ),

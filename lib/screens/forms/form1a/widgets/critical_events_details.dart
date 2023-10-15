@@ -100,7 +100,7 @@ class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
         const SizedBox(
           height: 15,
         ),
-        const CustomButton(text: 'History Event(s)'),
+        // const CustomButton(text: 'History Event(s)'),
       ],
     );
   }

@@ -28,6 +28,18 @@ class DetailModel {
     );
   }
 
+  @override
+  String toString() {
+    return 'DetailModel {\n'
+        '  isFirstAssessment: $isFirstAssessment,\n'
+        '  isChildHeaded: $isChildHeaded,\n'
+        '  hasHivExposedInfant: $hasHivExposedInfant,\n'
+        '  hasPregnantOrBreastfeedingWoman: $hasPregnantOrBreastfeedingWoman,\n'
+        '  dateOfAssessment: $dateOfAssessment,\n'
+        '  dateOfLastAssessment: $dateOfLastAssessment,\n'
+        '}';
+  }
+
   // Converts the detail model to json. This is particulary going to be used for the sake of the database
   Map<String, dynamic> toJSON() {
     return {

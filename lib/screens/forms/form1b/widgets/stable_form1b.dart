@@ -17,8 +17,9 @@ class StableForm1b extends StatefulWidget {
 
 class _StableForm1bState extends State<StableForm1b> {
 
-  List<ValueItem> caregiverEconomicItems = careGiverEconomicServices.map((service) {
-    return ValueItem(label: "- ${service['subtitle']}", value: service['title']);
+  List<ValueItem> caregiverEconomicItems =
+  careGiverEconomicServices.map((service) {
+    return ValueItem(label: service['item_description'], value: service['item_id']);
   }).toList();
 
   List<ValueItem> selectedCareGiverStableServices = [];
@@ -28,7 +29,7 @@ class _StableForm1bState extends State<StableForm1b> {
   Widget build(BuildContext context) {
     Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
     selectedCareGiverStableServicesOptions = form1bProvider.stableFormData.selectedServices;
-    String domainId = ServiceDomains[2]['id'];
+    String domainId = domainsList[2]['item_id'];
 
 
     return StepsWrapper(

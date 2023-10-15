@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/screens/cpara/cpara_forms.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/case_plan.dart';
@@ -129,7 +130,10 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             ChildDetailsWorkflowButton(
               workflowName: "Form 1A",
               onClick: () {
-                Get.to(() => const Form1AScreen());
+                context
+                    .read<Form1AProvider>()
+                    .updateCaseLoadModel(widget.caseLoadModel);
+                Get.to(() => Form1AScreen(caseLoadModel: widget.caseLoadModel));
               },
             ),
             ChildDetailsWorkflowButton(
@@ -153,27 +157,7 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             ChildDetailsWorkflowButton(
               workflowName: "OVC Sub Population",
               onClick: () {
-                if (detailProvider.detailModel?.dateOfAssessment == null) {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('CPARA'),
-                          content: const Text(
-                              'Please fill CPARA form first before proceeding'),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('OK'))
-                          ],
-                        );
-                      });
-                } else {
-                  Get.to(
-                      () => CheckboxForm(caseLoadModel: widget.caseLoadModel));
-                }
+                Get.to(() => CheckboxForm(caseLoadModel: widget.caseLoadModel));
               },
             ),
             ChildDetailsWorkflowButton(

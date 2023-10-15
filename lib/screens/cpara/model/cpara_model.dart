@@ -35,6 +35,17 @@ class CparaModel {
     // required this.ovcSubPopulationModel
   });
 
+  @override
+  String toString() {
+    return 'CparaModel {\n'
+        '  detail: $detail,\n'
+        '  safe: $safe,\n'
+        '  stable: $stable,\n'
+        '  schooled: $schooled,\n'
+        '  health: $health,\n'
+        '}';
+  }
+
   factory CparaModel.fromJson(Map<String, dynamic> json) {
     return CparaModel(
       detail: DetailModel.fromJson(json['detail']),

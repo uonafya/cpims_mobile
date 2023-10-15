@@ -14,10 +14,10 @@ class SafeForm1b extends StatefulWidget {
 }
 
 class _SafeForm1bState extends State<SafeForm1b> {
+
   List<ValueItem> caregiverProtectionItems =
-      careGiverProtectionServices.map((service) {
-    return ValueItem(
-        label: "- ${service['subtitle']}", value: service['title']);
+  careGiverProtectionServices.map((service) {
+    return ValueItem(label: service['item_description'], value: service['item_id']);
   }).toList();
 
   List<ValueItem> selectedCareGiverProtectionServices = [];
@@ -29,7 +29,7 @@ class _SafeForm1bState extends State<SafeForm1b> {
     selectedCareGiverProtectionServicesOptions =
         form1bProvider.safeFormData.selectedServices;
 
-    String domainId = ServiceDomains[1]['id'];
+    String domainId = domainsList[3]['item_id'];
 
     return StepsWrapper(
       title: 'Caregiver protection service',

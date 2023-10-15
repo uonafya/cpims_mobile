@@ -38,4 +38,13 @@ class StableModel {
       question3: question3 ?? this.question3,
     );
   }
+
+  @override
+  String toString() {
+    return 'StableModel {\n'
+        '  question1: $question1,\n'
+        '  question2: $question2,\n'
+        '  question3: $question3,\n'
+        '}';
+  }
 }

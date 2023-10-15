@@ -1,16 +1,24 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/form1a_provider.dart';
+import 'package:cpims_mobile/screens/forms/form1a/form1A_history.dart';
 import 'package:cpims_mobile/screens/forms/form1a/utils/form_1a_options.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_forms_date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../Models/case_load_model.dart';
+
 class ServicesDetails extends StatefulWidget {
-  const ServicesDetails({Key? key}) : super(key: key);
+  final CaseLoadModel caseLoadModel;
+  const ServicesDetails({super.key, required this.caseLoadModel});
+
+
 
   @override
   State<ServicesDetails> createState() => _ServicesDetailsState();
@@ -103,6 +111,7 @@ class _ServicesDetailsState extends State<ServicesDetails> {
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
+
         MultiSelectDropDown(
           showClearIcon: true,
           hint: 'Please select the Services',
@@ -139,17 +148,22 @@ class _ServicesDetailsState extends State<ServicesDetails> {
         const SizedBox(
           height: 15,
         ),
-        CustomButton(
-          text: 'Add',
-          color: kTextGrey,
-          onTap: () {
-            form1aProvider.submitServicesData();
-          },
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        const CustomButton(text: 'History Event(s)'),
+        // CustomButton(
+        //   text: 'Add',
+        //   color: kTextGrey,
+        //   onTap: () {
+        //     form1aProvider.submitServicesData();
+        //   },
+        // ),
+        // const SizedBox(
+        //   height: 5,
+        // ),
+        CustomButton(text: 'Form1A Past Assessment(s)',
+        onTap: (){
+          setState(() {
+            Get.to(() => HistoryForm1A(caseLoadModel: widget.caseLoadModel,));
+          });
+        },),
       ],
     );
   }

@@ -139,7 +139,6 @@ Future<void> submitCparaToUpstream() async{
       continue;
     }
   }
-
 }
 
 Future<void> singleCparaFormSubmission({required CPARADatabase cparaForm, required String authorization}) async {
@@ -193,7 +192,10 @@ Future<void> singleCparaFormSubmission({required CPARADatabase cparaForm, requir
     "scores": scoreList,
   };
   debugPrint(json.encode(cparaMapData));
+  String cparaJsonData= json.encode(cparaMapData);
+  print("Cpara data is $cparaJsonData");
 
+  dio.interceptors.add(LogInterceptor());
   var response = await dio.post("https://dev.cpims.net/api/form/CPR/",
       data: cparaMapData,
       options: Options(
@@ -207,6 +209,70 @@ Future<void> singleCparaFormSubmission({required CPARADatabase cparaForm, requir
   debugPrint(response.data.toString());
 }
 
+void fetchAndPostToServerOvcSubpopulationData() async {
+  // Call the fetchOvcSubPopulationData function to get the result
+  List<Map<String, dynamic>> result = await fetchOvcSubPopulationData();
+  print("The result is $result");
+
+  List<Map<String, dynamic>> ovcSubPopulationList = [];
+  for (var row in result) {
+    ovcSubPopulationList.add({
+      // Map the row data to your desired structure
+      'id': row['id'],
+      'uuid': row['uuid'],
+      'cpims_id': row['cpims_id'],
+      'criteria': row['criteria'],
+      'date_of_event': row['date_of_event'],
+      'created_at': row['created_at'],
+    });
+  }
+  var ovcPostToServer = {
+    "ovc_subpopulation": ovcSubPopulationList,
+  };
+  print("The ovc posted to server is $ovcPostToServer");
+  await postOvcToServer(ovcPostToServer);
+}
+
+Future<List<Map<String, dynamic>>> fetchOvcSubPopulationData() async {
+  final db = await LocalDb.instance.database;
+  final result = await db.query(ovcsubpopulation);
+  return result;
+}
+
+Future<void> postOvcToServer(Map<String, dynamic> data) async {
+  var prefs = await SharedPreferences.getInstance();
+  String? username = prefs.getString('username');
+  String? password = prefs.getString('password');
+  String basicAuth =
+      'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+
+  try {
+    final response = await dio.post(
+      'https://dev.cpims.net/api/form/CPR/',
+      data: data, // Pass the data directly as the request body
+      options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': basicAuth, // Add Basic Auth header
+        },
+      ),
+    );
+    if (response.statusCode == 200) {
+      print('Data posted to server successfully');
+    } else {
+      print(
+          'Failed to post data to server. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error posting data to server: $e');
+  }
+}
+//
+// Future<void> submitOvcSubPopultaionForm async(){
+//
+//
+//
+// }
 
 // Future<void> singleCparaFormSubmission({required CPARADatabase cparaForm, required String authorization}) async {
 //   Map<String, List<CPARAChildQuestions>> separatedChildren = {};

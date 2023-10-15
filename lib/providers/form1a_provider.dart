@@ -1,13 +1,19 @@
 import 'dart:convert';
 
+import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/services/form_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Models/case_load_model.dart';
 import '../Models/form_1_model.dart';
-
+import 'connection_provider.dart';
+import 'db_provider.dart';
 
 class CriticalFormData {
   late List<ValueItem> selectedEvents;
@@ -23,29 +29,23 @@ class ServiceFormData {
 
   ServiceFormData(
       {required this.selectedDomain,
-        required this.selectedEventDate,
-        required this.selectedService});
+      required this.selectedEventDate,
+      required this.selectedService});
 }
 
 class Form1AProvider extends ChangeNotifier {
-  // <<<<<<<<<<<critical events >>>>>>>>>>>>>>>>>>>>>>>>>>>>
   final CriticalFormData _criticalFormData =
-  CriticalFormData(selectedEvents: [], selectedDate: DateTime.now());
+      CriticalFormData(selectedEvents: [], selectedDate: DateTime.now());
 
-  // <<<<<<<<<<<< Service >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   final ServiceFormData _serviceFormData = ServiceFormData(
       selectedDomain: [],
       selectedEventDate: DateTime.now(),
       selectedService: []);
 
-//<<<<<<<<<<<<<<<<<<<<<Critical events >>>>>>>>>>>>>>>>>>>>>
-
   CriticalFormData get criticalFormData => _criticalFormData;
+
   ServiceFormData get serviceFormData => _serviceFormData;
 
-  // <<<<<<<<<<<<<<<Set Methods >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-  // <<<<<<<<<<<<<<<Critical methods >>>>>>>>>>>>>>>>>>>>>>>>
   void setSelectedEvents(List<ValueItem> selectedEvents) {
     _criticalFormData.selectedEvents.clear();
     _criticalFormData.selectedEvents.addAll(selectedEvents);
@@ -53,12 +53,9 @@ class Form1AProvider extends ChangeNotifier {
   }
 
   void setEventSelectedDate(DateTime selectedDate) {
-    criticalFormData.selectedDate = selectedDate;
+    _criticalFormData.selectedDate = selectedDate;
     notifyListeners();
   }
-
-  // <<<<<<<<<<<<<<<<<<<<Services >>>>>>>>>>>>>>>>>>>>>>>>>>>
-  // <<<<<<<<<<<<<<<Domain >>>>>>>>>>>>>>>>>>>>>>>>>>>
 
   void setSelectedDomain(List<ValueItem> selectedDomain) {
     _serviceFormData.selectedDomain.clear();
@@ -74,25 +71,25 @@ class Form1AProvider extends ChangeNotifier {
 
   void setServiceSelectedDate(DateTime selectedEventDate) {
     _serviceFormData.selectedEventDate = selectedEventDate;
+    notifyListeners();
   }
 
-  // <<<<<<<<<<<<<<<Submit critical >>>>>>>>>>>>>>>>>>>
   void submitCriticalData() {
     String formattedDate =
-    DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
+        DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
 
     List<Map<String, dynamic>> criticalEvents = [];
-    Map<String, dynamic> criticalEvent = {};
     for (var valueItem in _criticalFormData.selectedEvents) {
-      criticalEvent["event_date"] = formattedDate;
-      criticalEvent["event_id"] = valueItem.value;
+      Map<String, dynamic> criticalEvent = {
+        "event_date": formattedDate,
+        "event_id": valueItem.value,
+      };
       criticalEvents.add(criticalEvent);
-      eventData = criticalEvents;
-      print(criticalEvents);
     }
+    eventData = criticalEvents;
+    print(criticalEvents);
   }
 
-// <<<<<<<<<<<<<Submit Services >>>>>>>>>>>>>>>>>>>>>>>
   void submitServicesData() {
     List<Map<String, dynamic>> service_of_domains = [];
     for (var valueItem in _serviceFormData.selectedDomain) {
@@ -112,71 +109,118 @@ class Form1AProvider extends ChangeNotifier {
 
   List<Map<String, dynamic>> eventData = [];
   List<Map<String, dynamic>> services = [];
-  // <<<<<<<<<<initializes >>>>>>>>>>>>>>>>>>>
-  // List<Form1ServicesModel> servicesList = [];
 
-  void submitCriticalServices() {
-
+  void submitCriticalServices(cpimsId) {
     String dateOfEvent =
-    DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
-    // Form1ADataModel toDbData = Form1ADataModel(ovcCpimsId: "123", dateOfEvent: dateOfEvent, services: services, criticalEvents: eventData);
-    // print("ourData${toDbData}");
-    Map<String, dynamic> payload = {};
-    payload.addAll({
-    'ovc_cpims_id': 12344,
-    'date_of_event': dateOfEvent,
-    'services': services,
-    'critical_events': eventData,
-    });
-    String form1A = jsonEncode(payload);
-    // print(form1A);
-
+        DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
     List<Form1ServicesModel> servicesList = [];
     List<Form1CriticalEventsModel> eventsList = [];
 
-    for(var event in eventsList){
-      Form1CriticalEventsModel entry = Form1CriticalEventsModel(
-         eventId: event.eventId,
-          eventDate: event.eventDate
-      );
-      eventsList.add(entry);
-      // print(entry);
+    for (var event in eventData ?? []) {
+      if (event != null &&
+          event['event_id'] != null &&
+          event['event_date'] != null) {
+        Form1CriticalEventsModel entry = Form1CriticalEventsModel(
+          event_id: event['event_id'],
+          event_date: dateOfEvent,
+        );
+        eventsList.add(entry);
+      }
     }
 
     for (var service in services) {
-      Form1ServicesModel entry = Form1ServicesModel(
-          domainId: service['domainId'],
-          serviceId: service['serviceId']);
-      servicesList.add(entry);
-      print(service);
+      Form1ServicesModel entry1 = Form1ServicesModel(
+        domainId: service['domainId'],
+        serviceId: service['serviceId'],
+      );
+      servicesList.add(entry1);
     }
 
+    Form1DataModel toDbData = Form1DataModel(
+      ovcCpimsId: cpimsId,
+      date_of_event: dateOfEvent,
+      services: servicesList,
+      criticalEvents: eventsList,
+    );
+    //json encode the data
+    String data = jsonEncode(toDbData);
+    print("The json data is $data");
+    handleSubmitToServer(data, cpimsId, toDbData);
+    //POST DATA TO SERVER using dio the endpoint is /api/form1a but first check if there is internet connection
+    //if there is no internet connection save the data to local storage
 
-    Form1DataModel toDbData = Form1DataModel(ovcCpimsId: "1234", dateOfEvent: dateOfEvent, services: servicesList, criticalEvents: eventsList);
-    print("ourData${toDbData}");
+    // Form1Service.saveFormLocal("form1a", toDbData);
 
-    Form1Service.saveFormLocal("form1a", toDbData);
-
-
-
-// Form1Service.getAllForms('form1a').then((forms) {
-//   print('Retrieved Form1A data: $forms');
-// });
-    // <<<<<<<<<<<<Saving the form 1A to DB >>>>>>>>>>>
-
-
-
-    // <<<<<<<<<<< Rest Form >>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
+    _criticalFormData.selectedEvents.clear();
+    _serviceFormData.selectedDomain.clear();
+    _serviceFormData.selectedService.clear();
+    _serviceFormData.selectedEventDate = DateTime.now();
+    _criticalFormData.selectedDate = DateTime.now();
     notifyListeners();
   }
+
+  // CaseLoad
+
+  late CaseLoadModel _caseLoadModel;
+
+  set caseLoadModel(CaseLoadModel value) {
+    _caseLoadModel = value;
+    notifyListeners();
+  }
+
+  void updateCaseLoadModel(CaseLoadModel caseLoadModel) {
+    _caseLoadModel = caseLoadModel;
+    notifyListeners();
+  }
+
+  Future<void> handleSubmitToServer(
+      String data, String cpimsId, Form1DataModel toDbFormOneData) async {
+    final localDb = LocalDb.instance;
+    var prefs = await SharedPreferences.getInstance();
+    var accessToken = prefs.getString('access');
+    String bearerAuth = "Bearer $accessToken";
+
+    final dio = Dio();
+    dio.interceptors.add(LogInterceptor());
+    const formoneAEndpoint = "${cpimsApiUrl}form/F1A/";
+
+    final options = Options(
+      headers: {"Authorization": bearerAuth},
+    );
+
+    final hasConnection = await Provider.of<ConnectivityProvider>(
+      Get.context!,
+      listen: false,
+    ).checkInternetConnection();
+
+    try {
+      if (hasConnection) {
+        final formOneApiResponse =
+            await dio.post(formoneAEndpoint, data: data, options: options);
+        if (formOneApiResponse.statusCode == 200) {
+          print("Data posted  successfully to server is $data");
+          Get.snackbar(
+            'Success',
+            'Form 1A submitted successfully',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+          );
+        } else {
+          Get.snackbar(
+            'Failed',
+            'No Internet Connection.Try again',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
+      } else {
+        //NO INTERNET CONNECTION SAVE DATA LOCALLY
+        Form1Service.saveFormLocal("form1a", toDbFormOneData);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 }
-// <<<<<<<<<<<<< testing code >>>>>>>>>>>>>>>>
-
-
-//    setSelectedEvents([]);
-//     setSelectedDomain([]);
-//     setSelectedSubDomain([]);
-//     setEventSelectedDate(DateTime.now());
-//     setServiceSelectedDate(DateTime.now());

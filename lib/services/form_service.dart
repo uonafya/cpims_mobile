@@ -7,13 +7,13 @@ import 'package:http/http.dart' as http;
 
 class Form1Service {
 
+
   // save form to local storage
   static _saveValues(String formType, formData) async {
 //save the form data that is in the form of a map to  a local database
     final db = LocalDb.instance;
     try {
       await db.insertForm1Data(formType, formData);
-      print(">>>>>>>>>>>>>>>>>>>>form saved<<<<<<<<<<<<<<<<");
       return true;
     } catch (e) {
       print(e);
@@ -26,7 +26,6 @@ class Form1Service {
     final db = LocalDb.instance;
     try {
       await db.deleteForm1Data(formType, id);
-      print(">>>>>>>>>>>>>>>>form deleted<<<<<<<<<<<<<<<<<");
       return true;
     } catch (e) {
       print(e);
@@ -39,26 +38,21 @@ class Form1Service {
     final db = LocalDb.instance;
     try {
       List<Map<String, dynamic>> maps = await db.queryAllForm1Rows(formType);
-      print(">>>>>>>>>$maps");
       List<Form1DataModel> forms = [];
       for (var map in maps) {
         forms.add(Form1DataModel.fromJson(map));
       }
-      print(">>>>>>>>>>>>> fetching all form data $forms ");
       return forms;
-
     } catch (e) {
-      print(">>>>>>>>>>>>>>>>>>>>>>>>>$e");
+      print(">>>>>>>>>>>>>>>>>>>>>>>>> $e");
     }
     return [];
   }
-
-
   static _postForm(formData, String formEndpoint) async {
     var data = formData.toMap();
     try {
       http.Response response = await ApiService().postSecData(data, formEndpoint);
-      print(response.body);
+      print(">>>>>>>>>>>>>>>>>>>>>>>>>> ${response.body}");
       return response;
     } catch (e) {
       print(e);
@@ -93,7 +87,6 @@ class CasePlanService {
     final db = LocalDb.instance;
     try {
       await db.insertCasePlan(formData);
-      print(">>>>>>>>>>>>>>>>>>>>form saved<<<<<<<<<<<<<<<<");
       return true;
     } catch (e) {
       print(e);
@@ -106,7 +99,6 @@ class CasePlanService {
     final db = LocalDb.instance;
     try {
       await db.deleteCasePlan(ovcCpimsId);
-      print(">>>>>>>>>>>>>>>>form deleted<<<<<<<<<<<<<<<<<");
       return true;
     } catch (e) {
       print(e);
@@ -123,9 +115,7 @@ class CasePlanService {
       List<Map<String, dynamic>?> casePlanList = [];
       casePlanList.add(casePlanMap);
 
-      print(">>>>>>>>>>>>> fetching all form data $casePlanList ");
       return casePlanList;
-
     } catch (e) {
       print(">>>>>>>>>>>>>>>>>>>>>>>>>$e");
     }

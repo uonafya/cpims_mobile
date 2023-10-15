@@ -135,6 +135,31 @@ class HealthModel {
       "children": childrenQuestions?.map((e) => e.toJSON()).toList() ?? []
     };
   }
+
+  @override
+  String toString() {
+    return 'HealthModel {\n'
+        '  question1: $question1,\n'
+        '  question2: $question2,\n'
+        '  question3: $question3,\n'
+        '  question4: $question4,\n'
+        '  question5: $question5,\n'
+        '  question6: $question6,\n'
+        '  question7: $question7,\n'
+        '  question8: $question8,\n'
+        '  question9: $question9,\n'
+        '  question10: $question10,\n'
+        '  question11: $question11,\n'
+        '  question12: $question12,\n'
+        '  question13: $question13,\n'
+        '  question14: $question14,\n'
+        '  question15: $question15,\n'
+        '  question16: $question16,\n'
+        '  question17: $question17,\n'
+        '  question18: $question18,\n'
+        '  childrenQuestions: $childrenQuestions,\n'
+        '}';
+  }
 }
 
 class HealthChild {
@@ -167,5 +192,16 @@ class HealthChild {
       CparaQuestionIds.healthGoal3ChildQuestion1: question1,
       CparaQuestionIds.healthGoal3ChildQuestion2: question2,
       CparaQuestionIds.healthGoal3ChildQuestion3: question3};
+  }
+
+  @override
+  String toString() {
+    return 'HealthChild {\n'
+        '  id: $id,\n'
+        '  name: $name,\n'
+        '  question1: $question1,\n'
+        '  question2: $question2,\n'
+        '  question3: $question3,\n'
+        '}';
   }
 }

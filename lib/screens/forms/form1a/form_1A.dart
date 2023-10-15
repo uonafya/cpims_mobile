@@ -9,10 +9,13 @@ import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
 
 class Form1AScreen extends StatefulWidget {
-  const Form1AScreen({super.key});
+  final CaseLoadModel caseLoadModel;
+  const Form1AScreen({super.key, required this.caseLoadModel});
 
 
   @override
@@ -21,8 +24,16 @@ class Form1AScreen extends StatefulWidget {
 
 class _Form1AScreenState extends State<Form1AScreen> {
   int selectedStep = 0;
-  List<Widget> steps = [const CriticalEventsScreen(), const ServicesDetails()];
+  List<Widget> steps = [];
 
+  @override
+  void initState() {
+    super.initState();
+    steps = [
+      const CriticalEventsScreen(),
+      ServicesDetails(caseLoadModel: widget.caseLoadModel),
+    ];
+  }
   @override
   Widget build(BuildContext context) {
     Form1AProvider form1aProvider = Provider.of<Form1AProvider>(context);
@@ -61,9 +72,9 @@ class _Form1AScreenState extends State<Form1AScreen> {
                     padding: const EdgeInsets.all(10),
                     width: double.infinity,
                     color: Colors.black,
-                    child: const Text(
-                      'Form 1A Details  {Ovc_Cpims_Child}',
-                      style: TextStyle(color: Colors.white),
+                    child: Text(
+                      ' FORM 1A DETAILS \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n CPIMIS ID: ${widget.caseLoadModel.cpimsId}',
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                   Padding(
@@ -108,17 +119,26 @@ class _Form1AScreenState extends State<Form1AScreen> {
                             ),
                             Expanded(
                               child: CustomButton(
-                                text: selectedStep == steps.length - 1
-                                    ? 'Submit'
-                                    : 'Next',
+                                text: selectedStep == steps.length - 1 ? 'Submit Form1A' : 'Next',
                                 onTap: () {
                                   setState(() {
                                     if (selectedStep < steps.length - 1) {
                                       selectedStep++;
-                                    }
+                                    } else {
+                                      var cpimsId = widget.caseLoadModel.cpimsId;
 
-                                    if (selectedStep == steps.length - 1) {
-                                      form1aProvider.submitCriticalServices();
+                                      form1aProvider.submitCriticalServices(cpimsId);
+                                      // Get.snackbar(
+                                      //   'Success',
+                                      //   'Form1A data saved successfully.',
+                                      //   duration: const Duration(seconds: 6),
+                                      //   snackPosition: SnackPosition.TOP, // Display at the top of the screen
+                                      //   backgroundColor: Colors.green,
+                                      //   colorText: Colors.white,
+                                      //   margin: const EdgeInsets.all(16),
+                                      //   borderRadius: 8,
+                                      // );
+                                      Navigator.pop(context);
                                     }
                                   });
                                 },

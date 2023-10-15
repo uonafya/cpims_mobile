@@ -1,5 +1,4 @@
 // ignore_for_file: depend_on_referenced_packages
-
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
@@ -8,7 +7,7 @@ import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart'
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import '../Models/case_plan_form.dart';
+// import '../Models/case_plan_form.dart';
 import '../Models/caseplan_form_model.dart';
 import '../screens/cpara/model/cpara_model.dart';
 
@@ -96,9 +95,11 @@ class LocalDb {
           ${CasePlanServices.goalId} $textType,
           ${CasePlanServices.priorityId} $textType,
           ${CasePlanServices.gapId} $textType,
+          ${CasePlanServices.serviceIds} $textType,
           ${CasePlanServices.resultsId} $textType,
           ${CasePlanServices.reasonId} $textType,
           ${CasePlanServices.completionDate} $textType,
+          ${CasePlanServices.responsibleIds} $textType,
           FOREIGN KEY (${CasePlanServices
         .formId}) REFERENCES $casePlanTable(${CasePlan.id})
         )
@@ -139,7 +140,7 @@ class LocalDb {
         ${Form1CriticalEvents.id} $idType,
         ${Form1CriticalEvents.formId} $textType,
         ${Form1CriticalEvents.eventId} $textType,
-        ${Form1CriticalEvents.eventDate} $textType,
+        ${Form1CriticalEvents.event_date} $textType,
         FOREIGN KEY (${Form1CriticalEvents
         .formId}) REFERENCES $form1Table(${Form1.id})
         )
@@ -293,7 +294,7 @@ class LocalDb {
         form1Table,
         {
           'ovc_cpims_id': formData.ovcCpimsId,
-          'date_of_event': formData.dateOfEvent,
+          'date_of_event': formData.date_of_event,
           'form_type': formType,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
@@ -315,8 +316,8 @@ class LocalDb {
           form1CriticalEventsTable,
           {
             'form_id': formId,
-            'event_id': criticalEvent.eventId,
-            'event_date': criticalEvent.eventDate,
+            'event_id': criticalEvent.event_id,
+            'event_date': criticalEvent.event_date
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
@@ -438,7 +439,7 @@ class LocalDb {
             'priority_id': service.priorityId,
             'results_id': service.resultsId,
             'reason_id': service.reasonId,
-            'completion_id': service.completionDate,
+            'completion_date': service.completionDate,
             'service_ids': serviceIdList,
             'responsible_ids': responsibleIdList,
           },
@@ -664,6 +665,8 @@ class CasePlanServices {
     resultsId,
     reasonId,
     completionDate,
+    responsibleIds,
+    serviceIds
   ];
   static const String id = '_id';
   static const String formId = 'form_id';
@@ -672,6 +675,8 @@ class CasePlanServices {
   static const String priorityId = 'priority_id';
   static const String gapId = 'gap_id';
   static const String resultsId = 'results_id';
+  static const String serviceIds = 'service_ids';
+  static const String responsibleIds = 'responsible_ids';
   static const String reasonId = 'reason_id';
   static const String completionDate = 'completion_date';
 }
@@ -709,11 +714,11 @@ class Form1CriticalEvents {
     id,
     formId,
     eventId,
-    eventDate,
+    event_date,
   ];
 
   static const String id = "_id";
   static const String formId = "form_id";
   static const String eventId = "event_id";
-  static const String eventDate = "event_date";
+  static const String event_date = "event_date";
 }
