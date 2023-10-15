@@ -54,4 +54,16 @@ class SchooledModel{
       CparaQuestionIds.schooledQuestion4: question4,
     };
   }
+
+   @override
+   String toString() {
+     return 'SchooledModel {\n'
+         '  mainquestion1: $mainquestion1,\n'
+         '  question1: $question1,\n'
+         '  question2: $question2,\n'
+         '  mainquestion2: $mainquestion2,\n'
+         '  question3: $question3,\n'
+         '  question4: $question4,\n'
+         '}';
+   }
 }

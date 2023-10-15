@@ -47,6 +47,22 @@ class SafeModel {
     );
   }
 
+  @override
+  String toString() {
+    return 'SafeModel {\n'
+        '  question1: $question1,\n'
+        '  question2: $question2,\n'
+        '  question3: $question3,\n'
+        '  question4: $question4,\n'
+        '  question5: $question5,\n'
+        '  question6: $question6,\n'
+        '  question7: $question7,\n'
+        '  overallQuestion1: $overallQuestion1,\n'
+        '  overallQuestion2: $overallQuestion2,\n'
+        '  childrenQuestions: $childrenQuestions,\n'
+        '}';
+  }
+
   // Converts the detail model to json. This is particulary going to be used for the sake of the database
   Map<String, dynamic> toJSON() {
     return {
@@ -112,5 +128,14 @@ class SafeChild {
 
   Map<String, dynamic> toJSON() {
     return {"id": ovcId, CparaQuestionIds.safeChildQuestion1: question1};
+  }
+
+  @override
+  String toString() {
+    return 'SafeChild {\n'
+        '  ovcId: $ovcId,\n'
+        '  name: $name,\n'
+        '  question1: $question1,\n'
+        '}';
   }
 }
