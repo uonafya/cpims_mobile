@@ -156,6 +156,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                     : 'Next',
                                 onTap: () async {
                                   if (selectedStep == steps.length - 1) {
+                                    handleSubmitCparaToUpstream();
                                     // display collected data
                                     DetailModel detailModel = context
                                             .read<CparaProvider>()
@@ -276,9 +277,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                         );
                                       }
                                     } catch (err) {
-                                      debugPrint("OHH SHIT!");
-                                      debugPrint(err.toString());
-                                      debugPrint("OHH SHIT");
+                                      debugPrint("Error saving cpara data ${err.toString()}");
                                     }
                                   }
                                   // else{
@@ -317,5 +316,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
         ],
       ),
     );
+  }
+
+  void handleSubmitCparaToUpstream() {
+    print("I was called");
   }
 }

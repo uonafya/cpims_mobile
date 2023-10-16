@@ -22,10 +22,8 @@ Future<List<CPARADatabase>> getUnsynchedForms(Database db) async {
     }
     return forms;
   } catch (err) {
-    print("OHH SHIT!");
+   throw ("Could Not Get Unsynced Forms ${err.toString()}");
     print(err.toString());
-    print("OHH SHIT!");
-    throw ("Could Not Get Unsynced Forms");
   }
 }
 
@@ -70,10 +68,7 @@ form.cpara_form_id = formID;
     form.childQuestions = childQuestions;
     return form;
   } catch (err) {
-    print("OHH SHIT!");
-    print(err.toString());
-    print("OHH SHIT!");
-    throw ("Could Not Get Form");
+    throw ("Could Not Get Form From DB ${err.toString()}");
   }
 }
 
@@ -87,7 +82,7 @@ Future<void> purgeForm(int formID, Database db) async {
     await db.rawDelete("DELETE FROM ChildAnswer WHERE formID = ?", [formID]);
 
     // Form
-    await db.rawDelete("DELTE FROM Form WHERE id = ?", [formID]);
+    await db.rawDelete("DELETE FROM Form WHERE id = ?", [formID]);
   } catch (err) {}
 }
 
@@ -101,10 +96,8 @@ Future<int> getCountOfForms(Database? db) async {
     int total = fetchResults[0]['total'];
     return total;
   } catch (err) {
-    print("OHH SHIT!");
     print(err.toString());
-    print("OHH SHIT!");
-    throw ("Could Not Get Count");
+    throw ("Could Not Get Count ${err.toString()}");
   }
 }
 
