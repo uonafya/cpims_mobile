@@ -84,9 +84,7 @@ class CparaModel {
         }
       }
     } catch (err) {
-      print("OHH SHIT!");
-      print(err.toString());
-      print("OHH SHIT!");
+      print("Error adding children ${err.toString()}");
     }
   }
 
@@ -108,16 +106,10 @@ class CparaModel {
           }
         });
         // Insert database
-
-
-
-
       }
       await batch.commit(noResult: true);
     }catch(err) {
-      print("OHH SHIT!");
-      print(err.toString());
-      print("OHH SHIT!");
+      print("Error adding children ${err.toString()}");
     }
   }
 
@@ -274,9 +266,7 @@ class CparaModel {
       //
       // await batch.commit(noResult: true);
     } catch (err) {
-      print("OHH SHIT!");
-      print(err.toString());
-      print("OHH SHIT!");
+      print("Error adding household filled questions to db ${err.toString()}");
     }
   }
 
@@ -286,9 +276,7 @@ class CparaModel {
       // Insert entry to db
       db!.insert("Form", {"date": DateTime.now().toString().split(' ')[0]});
     } catch (err) {
-      print("OHH SHIT!");
-      print(err.toString());
-      print("OHH SHIT!");
+      print("Error creating form ${err.toString()}");
     }
   }
 
@@ -303,10 +291,7 @@ class CparaModel {
       int formID = fetchResults[0]['id'];
       return FormData(formID: formID, formDate: formDate);
     } catch (err) {
-      print("OHH SHIT!");
-      print(err.toString());
-      print("OHH SHIT!");
-      throw ("Get Latest ID error");
+      throw ("Error getting latest form date ${err.toString()}");
     }
   }
 

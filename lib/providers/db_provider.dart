@@ -198,9 +198,7 @@ class LocalDb {
           "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionid TEXT, answer TEXT, FOREIGN KEY (formID) REFERENCES Form(id));");
 
     } catch (err) {
-      debugPrint("OHH SHIT!");
-      debugPrint(err.toString());
-      debugPrint("OHH SHIT");
+      debugPrint("Error creating Cpara tables: $err");
     }
   }
 
