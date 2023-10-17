@@ -28,8 +28,8 @@ class _ServicesDetailsState extends State<ServicesDetails> {
   // Domain
   List<ValueItem> listOfDomains = optionDomains.map((domain) {
     return ValueItem(
-        label: "${domain['domain_description']}",
-        value: "${domain['domain_id']}");
+        label: "${domain['item_description']}",
+        value: "${domain['item_id']}");
   }).toList();
 
   List<ValueItem> selectedDomain = [];
@@ -44,8 +44,8 @@ class _ServicesDetailsState extends State<ServicesDetails> {
 
   List<ValueItem> listOfSubDomains = optionSubDomains.map((subdomain) {
     return ValueItem(
-        label: "${subdomain['service_description']}",
-        value: "${subdomain['service_id']}");
+        label: "${subdomain['item_description']}",
+        value: "${subdomain['item_id']}");
   }).toList();
 
   List<ValueItem> selectedService = [];
@@ -60,8 +60,8 @@ class _ServicesDetailsState extends State<ServicesDetails> {
 
     List<ValueItem> listOfFilteredSubDomains = filtered.map((subdomain) {
       return ValueItem(
-          label: "${subdomain['service_description']}",
-          value: "${subdomain['service_id']}");
+          label: "${subdomain['item_description']}",
+          value: "${subdomain['item_id']}");
     }).toList();
 
     return listOfFilteredSubDomains;
