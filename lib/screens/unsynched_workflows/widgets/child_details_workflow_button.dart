@@ -48,7 +48,7 @@ class ChildDetailsWorkflowButton extends StatelessWidget {
                 child: const Padding(
                   padding: EdgeInsets.all(3),
                   child: Text(
-                    "10",
+                    "-",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 10,

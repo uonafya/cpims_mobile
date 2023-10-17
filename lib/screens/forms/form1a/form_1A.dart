@@ -13,10 +13,12 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
 
+import 'form1A_history.dart';
+
 class Form1AScreen extends StatefulWidget {
   final CaseLoadModel caseLoadModel;
-  const Form1AScreen({super.key, required this.caseLoadModel});
 
+  const Form1AScreen({super.key, required this.caseLoadModel});
 
   @override
   State<Form1AScreen> createState() => _Form1AScreenState();
@@ -30,10 +32,11 @@ class _Form1AScreenState extends State<Form1AScreen> {
   void initState() {
     super.initState();
     steps = [
-      const CriticalEventsScreen(),
       ServicesDetails(caseLoadModel: widget.caseLoadModel),
+      const CriticalEventsScreen(),
     ];
   }
+
   @override
   Widget build(BuildContext context) {
     Form1AProvider form1aProvider = Provider.of<Form1AProvider>(context);
@@ -119,15 +122,19 @@ class _Form1AScreenState extends State<Form1AScreen> {
                             ),
                             Expanded(
                               child: CustomButton(
-                                text: selectedStep == steps.length - 1 ? 'Submit Form1A' : 'Next',
+                                text: selectedStep == steps.length - 1
+                                    ? 'Submit Form1A'
+                                    : 'Next',
                                 onTap: () {
                                   setState(() {
                                     if (selectedStep < steps.length - 1) {
                                       selectedStep++;
                                     } else {
-                                      var cpimsId = widget.caseLoadModel.cpimsId;
+                                      var cpimsId =
+                                          widget.caseLoadModel.cpimsId;
 
-                                      form1aProvider.submitCriticalServices(cpimsId);
+                                      form1aProvider
+                                          .submitCriticalServices(cpimsId);
                                       // Get.snackbar(
                                       //   'Success',
                                       //   'Form1A data saved successfully.',
@@ -146,9 +153,35 @@ class _Form1AScreenState extends State<Form1AScreen> {
                             )
                           ],
                         ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Get.to(() => HistoryForm1A(caseLoadModel: widget.caseLoadModel));
+                          },
+                          child: const Row(
+                            children: [
+                              Text(
+                                'Past Assessments',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                size: 15,
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               )),
           const Footer(),

@@ -82,41 +82,45 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             const SizedBox(
               height: 10,
             ),
-            CustomCard(
-                title: "CPIMIS ID: ${widget.caseLoadModel.cpimsId}",
-                children: [
-                  CustomGridView(
-                    crossAxisCount: 2,
-                    childrenHeight: 65,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      CustomCardGridItem(
-                        header: "Surname",
-                        details: "${widget.caseLoadModel.ovcSurname}",
-                      ),
-                      CustomCardGridItem(
-                        header: "Firstname",
-                        details: "${widget.caseLoadModel.ovcFirstName}",
-                      ),
-                      CustomCardGridItem(
-                        header: "Sex",
-                        details: "${widget.caseLoadModel.sex}",
-                      ),
-                      CustomCardGridItem(
-                        header: "Age",
-                        details: calculateAge(
-                            widget.caseLoadModel.dateOfBirth ?? '10/10/2008'),
-                      ),
-                      CustomCardGridItem(
-                        header: "Caregiver",
-                        details: "${widget.caseLoadModel.caregiverNames}",
-                      ),
-                    ],
-                  )
-                ]),
+          Wrap(
+            children: [
+              CustomCard(
+                  title: "CPIMIS ID: ${widget.caseLoadModel.cpimsId}",
+                  children: [
+                    CustomGridView(
+                      crossAxisCount: 2,
+                      childrenHeight: 65,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        CustomCardGridItem(
+                          header: "Surname",
+                          details: "${widget.caseLoadModel.ovcSurname}",
+                        ),
+                        CustomCardGridItem(
+                          header: "Firstname",
+                          details: "${widget.caseLoadModel.ovcFirstName}",
+                        ),
+                        CustomCardGridItem(
+                          header: "Sex",
+                          details: "${widget.caseLoadModel.sex}",
+                        ),
+                        CustomCardGridItem(
+                          header: "Age",
+                          details: calculateAge(
+                              widget.caseLoadModel.dateOfBirth ?? '10/10/2008'),
+                        ),
+                        CustomCardGridItem(
+                          header: "Caregiver",
+                          details: "${widget.caseLoadModel.caregiverNames}",
+                        ),
+                      ],
+                    )
+                  ])
+            ],
+          ),
             const SizedBox(
-              height: 20,
+              height: 30,
             ),
             const Text(
               "Available Forms",
@@ -140,8 +144,8 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
               workflowName: "Form 1B",
               onClick: () {
                 Get.to(() => Form1BScreen(
-                  caseLoad: widget.caseLoadModel,
-                ));
+                      caseLoad: widget.caseLoadModel,
+                    ));
               },
             ),
             ChildDetailsWorkflowButton(

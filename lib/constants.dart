@@ -234,15 +234,15 @@ List<String> graphTitles = [
 ];
 List<Map<String, dynamic>> form1AStepper = [
   {
-    'title': 'Critical Event(s)',
-    'subtitle': 'Critical events details',
-    'onTap': () {}
-  },
-  {
     'title': 'Services',
     'subtitle': 'Services Details',
     'onTap': () => {},
   },
+  {
+    'title': 'Critical Event(s)',
+    'subtitle': 'Critical events details',
+    'onTap': () {}
+  }
 ];
 
 List<Map<String, dynamic>> organisationRegistryStepper = [
