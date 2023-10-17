@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../unsynched_workflows/unsynched_workeflows_screen.dart';
 
@@ -29,8 +30,8 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   List<Map<String, String>> formsList = [
-    {'formType': 'form1a', 'endpoint': 'form1a/'},
-    {'formType': 'form1b', 'endpoint': 'form1b/'},
+    {'formType': 'form1a', 'endpoint': 'F1A/'},
+    {'formType': 'form1b', 'endpoint': 'F1B/'},
   ];
 
   @override
@@ -41,12 +42,13 @@ class _HomepageState extends State<Homepage> {
 
   bool isSyncing = false;
 
+  bool noFormsToSync = true;
+
   Future<void> syncWorkflows() async {
-    // check for internet connection
-    final isConnected =
-        await Provider.of<ConnectivityProvider>(context, listen: false)
-            .checkInternetConnection();
+    final isConnected = await Provider.of<ConnectivityProvider>(context, listen: false).checkInternetConnection();
     if (isConnected) {
+      var prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getString('access');
       setState(() {
         isSyncing = true;
       });
@@ -54,22 +56,52 @@ class _HomepageState extends State<Homepage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Syncing forms...'),
-            duration: Duration(days: 1), // Show indefinitely
+            duration: Duration(seconds: 3), // Show indefinitely
           ),
         );
       }
-      // sync workflows
-
+      // Reset the noFormsToSync flag before checking each form type
+      noFormsToSync = false;
       for (var formType in formsList) {
         List<dynamic> forms = await Form1Service.getAllForms(
           formType['formType']!,
         );
+        debugPrint("The forms are $forms");
+
+        if (forms.isEmpty) {
+          noFormsToSync = true;
+          debugPrint("No forms to sync");
+        }
 
         for (var formData in forms) {
-          await Form1Service.postFormRemote(
+          var response = await Form1Service.postFormRemote(
             formData,
             formType['endpoint']!,
+            accessToken!,
           );
+          // handle the response here
+          if (response.statusCode == 200) {
+            // delete the form from local storage
+            await Form1Service.deleteFormLocal(
+              formType['formType']!,
+              formData.id,
+            );
+            Get.snackbar(
+              'Success',
+              'Successfully synced forms',
+              backgroundColor: Colors.green,
+              colorText: Colors.white,
+            );
+          } else {
+            debugPrint(
+                "Failed to sync ${formType['formType']} and error is ${response.data}");
+            Get.snackbar(
+              'Error',
+              'Failed to sync ${formType['formType']} and code is ${response.statusCode}',
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+            );
+          }
         }
       }
 
@@ -77,11 +109,19 @@ class _HomepageState extends State<Homepage> {
         isSyncing = false;
       });
 
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-            .removeCurrentSnackBar(); // Remove the indefinite snackbar
+      if (noFormsToSync) {
+        // Show the "No forms to sync" snack bar only once
+        Get.snackbar(
+          'Info',
+          'No forms to sync',
+          backgroundColor: Colors.orange,
+          colorText: Colors.black,
+        );
       }
-      _showSyncSnackbar();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).removeCurrentSnackBar(); // Remove the indefinite snackbar
+      }
     }
   }
 

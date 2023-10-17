@@ -7,6 +7,7 @@ import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart'
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+
 // import '../Models/case_plan_form.dart';
 import '../Models/caseplan_form_model.dart';
 import '../screens/cpara/model/cpara_model.dart';
@@ -100,8 +101,7 @@ class LocalDb {
           ${CasePlanServices.reasonId} $textType,
           ${CasePlanServices.completionDate} $textType,
           ${CasePlanServices.responsibleIds} $textType,
-          FOREIGN KEY (${CasePlanServices
-        .formId}) REFERENCES $casePlanTable(${CasePlan.id})
+          FOREIGN KEY (${CasePlanServices.formId}) REFERENCES $casePlanTable(${CasePlan.id})
         )
         ''');
 
@@ -141,8 +141,7 @@ class LocalDb {
         ${Form1CriticalEvents.formId} $textType,
         ${Form1CriticalEvents.eventId} $textType,
         ${Form1CriticalEvents.event_date} $textType,
-        FOREIGN KEY (${Form1CriticalEvents
-        .formId}) REFERENCES $form1Table(${Form1.id})
+        FOREIGN KEY (${Form1CriticalEvents.formId}) REFERENCES $form1Table(${Form1.id})
         )
       ''');
 
@@ -154,8 +153,7 @@ class LocalDb {
     final db = await instance.database;
 
     await db.insert(caseloadTable, caseLoadModel.toJson(),
-        conflictAlgorithm: ConflictAlgorithm.replace
-    );
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<void> insertStatistics(SummaryDataModel summaryModel) async {
@@ -196,7 +194,6 @@ class LocalDb {
 
       await db.execute(
           "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionid TEXT, answer TEXT, FOREIGN KEY (formID) REFERENCES Form(id));");
-
     } catch (err) {
       debugPrint("Error creating Cpara tables: $err");
     }
@@ -206,7 +203,6 @@ class LocalDb {
       {required CparaModel cparaModelDB,
       required String ovcId,
       required String careProviderId}) async {
-
     final db = await instance.database;
 
     // Create form
@@ -239,19 +235,21 @@ class LocalDb {
     }
   }
 
-  Future<void> insertOvcSubpopulationData(String uuid,String cpimsId,String date_of_assessment,List<CheckboxQuestion> questions) async{
+  Future<void> insertOvcSubpopulationData(String uuid, String cpimsId,
+      String date_of_assessment, List<CheckboxQuestion> questions) async {
     final db = await instance.database;
-    for(var question in questions){
-      int value= question.isChecked! ? 1 : 0;
-      await db.insert(ovcsubpopulation, {
-        'uuid':uuid,
-        'cpims_id':cpimsId,
-        'criteria':question.questionID,
-        'date_of_event':date_of_assessment,
-      },conflictAlgorithm: ConflictAlgorithm.replace
-      );
+    for (var question in questions) {
+      int value = question.isChecked! ? 1 : 0;
+      await db.insert(
+          ovcsubpopulation,
+          {
+            'uuid': uuid,
+            'cpims_id': cpimsId,
+            'criteria': question.questionID,
+            'date_of_event': date_of_assessment,
+          },
+          conflictAlgorithm: ConflictAlgorithm.replace);
     }
-
   }
 
   Future<List<Map<String, dynamic>>> fetchOvcSubPopulationData() async {
@@ -280,7 +278,7 @@ class LocalDb {
     final db = await instance.database;
     const sql = 'SELECT * FROM $tableFormMetadata WHERE field_name = ?';
     final List<Map<String, dynamic>> results =
-    await db.rawQuery(sql, [fieldName]);
+        await db.rawQuery(sql, [fieldName]);
     return results;
   }
 
@@ -329,8 +327,8 @@ class LocalDb {
     try {
       final db = await instance.database;
       const sql = 'SELECT * FROM $form1Table WHERE form_type = ?';
-      final List<Map<String, dynamic>> form1Rows = await db.rawQuery(
-          sql, [formType]);
+      final List<Map<String, dynamic>> form1Rows =
+          await db.rawQuery(sql, [formType]);
 
       List<Map<String, dynamic>> updatedForm1Rows = [];
 
@@ -400,11 +398,10 @@ class LocalDb {
       }
       return false;
     } catch (e) {
-      print(e);
+      debugPrint("Error deleting form1 data: $e");
     }
     return false;
   }
-
 
 // inserting case plan
   Future<bool> insertCasePlan(CasePlanModel casePlan) async {
@@ -423,7 +420,7 @@ class LocalDb {
       // Insert the associated services
       for (var service in casePlan.services) {
         final serviceIdList =
-        service.serviceIds.join(','); // Join service IDs with commas
+            service.serviceIds.join(','); // Join service IDs with commas
         final responsibleIdList = service.responsibleIds
             .join(','); // Join responsible IDs with commas
 
@@ -482,12 +479,12 @@ class LocalDb {
             gapId: serviceRow[CasePlanServices.gapId] as String,
             priorityId: serviceRow[CasePlanServices.priorityId] as String,
             responsibleIds:
-            (serviceRow['responsible_ids'] as String).split(','),
+                (serviceRow['responsible_ids'] as String).split(','),
             // Parse comma-separated responsible IDs
             resultsId: serviceRow[CasePlanServices.resultsId] as String,
             reasonId: serviceRow[CasePlanServices.reasonId] as String,
             completionDate:
-            serviceRow[CasePlanServices.completionDate] as String,
+                serviceRow[CasePlanServices.completionDate] as String,
           ));
         }
 
@@ -544,7 +541,6 @@ class LocalDb {
       return false;
     }
   }
-
 }
 
 // table name and field names
@@ -556,7 +552,7 @@ const casePlanServicesTable = 'case_plan_services';
 const form1Table = 'form1';
 const form1ServicesTable = 'form1_services';
 const form1CriticalEventsTable = 'form1_critical_events';
-const ovcsubpopulation='ovcsubpopulation';
+const ovcsubpopulation = 'ovcsubpopulation';
 
 class OvcFields {
   static final List<String> values = [

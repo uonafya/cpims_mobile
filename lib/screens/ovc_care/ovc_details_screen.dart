@@ -85,7 +85,7 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
           Wrap(
             children: [
               CustomCard(
-                  title: "CPIMIS ID: ${widget.caseLoadModel.cpimsId}",
+                  title: " OVC DETAILS \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n CPIMIS ID: ${widget.caseLoadModel.cpimsId}",
                   children: [
                     CustomGridView(
                       crossAxisCount: 2,

@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:cpims_mobile/Models/caseplan_form_model.dart';
 import 'package:cpims_mobile/Models/form_1_model.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/services/api_service.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_interceptor/models/interceptor_contract.dart';
 
+import '../constants.dart';
 
 class Form1Service {
-
-
   // save form to local storage
   static _saveValues(String formType, formData) async {
 //save the form data that is in the form of a map to  a local database
@@ -28,7 +32,7 @@ class Form1Service {
       await db.deleteForm1Data(formType, id);
       return true;
     } catch (e) {
-      print(e);
+      debugPrint("An error on deleteValue ${e.toString()}");
     }
     return false;
   }
@@ -42,22 +46,41 @@ class Form1Service {
       for (var map in maps) {
         forms.add(Form1DataModel.fromJson(map));
       }
+      debugPrint("_getAllValues: $forms");
       return forms;
     } catch (e) {
-      print(">>>>>>>>>>>>>>>>>>>>>>>>> $e");
+      print("An error on getallValues ${e.toString()}");
     }
     return [];
   }
-  static _postForm(formData, String formEndpoint) async {
-    var data = formData.toMap();
+
+  static Future<Response> _postForm(
+      formData, String formEndpoint, String authToken) async {
+    var data = jsonEncode(formData);
+
+    final dio = Dio();
+    dio.interceptors.add(LogInterceptor());
+    dio.options.headers['Authorization'] =
+        'Bearer $authToken'; // Add Bearer token
+    dio.options.headers['Content-Type'] = 'application/json';
+    dio.options.headers['Accept'] = 'application/json';
+
     try {
-      http.Response response = await ApiService().postSecData(data, formEndpoint);
-      print(">>>>>>>>>>>>>>>>>>>>>>>>>> ${response.body}");
+      final response = await dio.post(formEndpoint, data: data);
+      if (response.statusCode == 200) {
+        debugPrint("Data posted  successfully to server is $data");
+        return response;
+      } else {
+        debugPrint("Failed to form one data to server ${response.statusCode}");
+      }
       return response;
     } catch (e) {
-      print(e);
+      debugPrint("Failed to post form one data: ${e.toString()}");
+      return Response(
+          data: "An error occurred: ${e.toString()}",
+          statusCode: 500,
+          requestOptions: RequestOptions(path: formEndpoint));
     }
-    return http.Response("error", 500);
   }
 
   static Future<dynamic> saveFormLocal(String formType, formData) {
@@ -73,14 +96,14 @@ class Form1Service {
   }
 
   // send form to server
-  static Future<http.Response> postFormRemote(formData, String formType) {
-    String formEndpoint = "$formType/";
-    return _postForm(formData, formEndpoint);
+  static Future<Response> postFormRemote(
+      formData, String formType, String authToken) async {
+    String formOneEndpoint = "${cpimsApiUrl}form/${formType}";
+    return _postForm(formData, formOneEndpoint, authToken);
   }
 }
 
 class CasePlanService {
-
   // save form to local storage
   static saveCasePlanLocal(formData) async {
 //save the form data that is in the form of a map to  a local database
@@ -122,10 +145,12 @@ class CasePlanService {
     return [];
   }
 
-  static postCasePlanRemote(CasePlanModel casePlanRecord, String formEndpoint) async {
+  static postCasePlanRemote(
+      CasePlanModel casePlanRecord, String formEndpoint) async {
     var data = casePlanRecord.toJson();
     try {
-      http.Response response = await ApiService().postSecData(data, formEndpoint);
+      http.Response response =
+          await ApiService().postSecData(data, formEndpoint);
       print(response.body);
       return response;
     } catch (e) {
