@@ -1,10 +1,12 @@
 class Form1DataModel {
+  final int? id;
   final String ovcCpimsId;
   final String date_of_event;
   final List<Form1ServicesModel> services;
   final List<Form1CriticalEventsModel> criticalEvents;
 
   Form1DataModel({
+     this.id,
     required this.ovcCpimsId,
     required this.date_of_event,
     required this.services,
@@ -28,6 +30,7 @@ class Form1DataModel {
     }
 
     return Form1DataModel(
+      id: json['id'] as int,
       ovcCpimsId: json['ovc_cpims_id'] as String,
       date_of_event: json['date_of_event'] as String,
       services: services,

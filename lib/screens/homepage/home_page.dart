@@ -82,6 +82,7 @@ class _HomepageState extends State<Homepage> {
           // handle the response here
           if (response.statusCode == 200) {
             // delete the form from local storage
+            debugPrint("The form data here is $formData");
             await Form1Service.deleteFormLocal(
               formType['formType']!,
               formData.id,

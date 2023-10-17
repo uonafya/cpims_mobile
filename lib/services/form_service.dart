@@ -26,7 +26,7 @@ class Form1Service {
   }
 
 // delete a form from local storage
-  static _deleteValue(String formType, int id) async {
+  static Future<bool> _deleteValue(String formType, int id) async {
     final db = LocalDb.instance;
     try {
       await db.deleteForm1Data(formType, id);

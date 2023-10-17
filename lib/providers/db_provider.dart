@@ -323,12 +323,54 @@ class LocalDb {
     }
   }
 
+  // Future<List<Map<String, dynamic>>> queryAllForm1Rows(String formType) async {
+  //   try {
+  //     final db = await instance.database;
+  //     const sql = 'SELECT * FROM $form1Table WHERE form_type = ?';
+  //     final List<Map<String, dynamic>> form1Rows =
+  //         await db.rawQuery(sql, [formType]);
+  //
+  //     List<Map<String, dynamic>> updatedForm1Rows = [];
+  //
+  //     for (var form1row in form1Rows) {
+  //       int formId = form1row['_id'];
+  //
+  //       // Fetch associated services
+  //       final List<Map<String, dynamic>> services = await db.query(
+  //         form1ServicesTable,
+  //         where: '${Form1Services.formId} = ?',
+  //         whereArgs: [formId],
+  //       );
+  //
+  //       // Fetch associated critical events
+  //       final List<Map<String, dynamic>> criticalEvents = await db.query(
+  //         form1CriticalEventsTable,
+  //         where: '${Form1CriticalEvents.formId} = ?',
+  //         whereArgs: [formId],
+  //       );
+  //
+  //       // Create a new map that includes existing form1row data, services, and critical_events
+  //       Map<String, dynamic> updatedForm1Row = {
+  //         ...form1row,
+  //         'services': services,
+  //         'critical_events': criticalEvents,
+  //       };
+  //
+  //       // Add the updated map to the list
+  //       updatedForm1Rows.add(updatedForm1Row);
+  //     }
+  //
+  //     return updatedForm1Rows;
+  //   } catch (e) {
+  //     print("Error querying form1 data: $e");
+  //     return [];
+  //   }
+  // }
   Future<List<Map<String, dynamic>>> queryAllForm1Rows(String formType) async {
     try {
       final db = await instance.database;
       const sql = 'SELECT * FROM $form1Table WHERE form_type = ?';
-      final List<Map<String, dynamic>> form1Rows =
-          await db.rawQuery(sql, [formType]);
+      final List<Map<String, dynamic>> form1Rows = await db.rawQuery(sql, [formType]);
 
       List<Map<String, dynamic>> updatedForm1Rows = [];
 
@@ -349,16 +391,18 @@ class LocalDb {
           whereArgs: [formId],
         );
 
-        // Create a new map that includes existing form1row data, services, and critical_events
+        // Create a new map that includes existing form1row data, services, critical_events, and ID
         Map<String, dynamic> updatedForm1Row = {
           ...form1row,
           'services': services,
           'critical_events': criticalEvents,
+          'id': formId,
         };
 
         // Add the updated map to the list
         updatedForm1Rows.add(updatedForm1Row);
       }
+      debugPrint("Updated form1 rows: $updatedForm1Rows");
 
       return updatedForm1Rows;
     } catch (e) {
@@ -366,7 +410,6 @@ class LocalDb {
       return [];
     }
   }
-
   // get a single row(form 1a or 1b)
   Future<bool> deleteForm1Data(String formType, int id) async {
     try {
