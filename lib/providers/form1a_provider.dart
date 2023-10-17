@@ -142,14 +142,7 @@ class Form1AProvider extends ChangeNotifier {
       services: servicesList,
       criticalEvents: eventsList,
     );
-    //json encode the data
-    String data = jsonEncode(toDbData);
-    print("The json data is $data");
-    handleSubmitToServer(data, cpimsId, toDbData);
-    //POST DATA TO SERVER using dio the endpoint is /api/form1a but first check if there is internet connection
-    //if there is no internet connection save the data to local storage
-
-    // Form1Service.saveFormLocal("form1a", toDbData);
+    Form1Service.saveFormLocal("form1a", toDbData);
 
     _criticalFormData.selectedEvents.clear();
     _serviceFormData.selectedDomain.clear();
@@ -171,56 +164,5 @@ class Form1AProvider extends ChangeNotifier {
   void updateCaseLoadModel(CaseLoadModel caseLoadModel) {
     _caseLoadModel = caseLoadModel;
     notifyListeners();
-  }
-
-  Future<void> handleSubmitToServer(
-      String data, String cpimsId, Form1DataModel toDbFormOneData) async {
-    final localDb = LocalDb.instance;
-    var prefs = await SharedPreferences.getInstance();
-    var accessToken = prefs.getString('access');
-    String bearerAuth = "Bearer $accessToken";
-
-    final dio = Dio();
-    dio.interceptors.add(LogInterceptor());
-    const formoneAEndpoint = "${cpimsApiUrl}form/F1A/";
-
-    final options = Options(
-      headers: {"Authorization": bearerAuth},
-    );
-
-    final hasConnection = await Provider.of<ConnectivityProvider>(
-      Get.context!,
-      listen: false,
-    ).checkInternetConnection();
-
-    try {
-      if (hasConnection) {
-        final formOneApiResponse =
-            await dio.post(formoneAEndpoint, data: data, options: options);
-        if (formOneApiResponse.statusCode == 200) {
-          print("Data posted  successfully to server is $data");
-          Get.snackbar(
-            'Success',
-            'Form 1A submitted successfully',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.green,
-            colorText: Colors.white,
-          );
-        } else {
-          Get.snackbar(
-            'Failed',
-            'No Internet Connection.Try again',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
-        }
-      } else {
-        //NO INTERNET CONNECTION SAVE DATA LOCALLY
-        Form1Service.saveFormLocal("form1a", toDbFormOneData);
-      }
-    } catch (e) {
-      print(e);
-    }
   }
 }

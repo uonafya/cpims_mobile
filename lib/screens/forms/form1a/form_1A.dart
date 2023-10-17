@@ -135,16 +135,16 @@ class _Form1AScreenState extends State<Form1AScreen> {
 
                                       form1aProvider
                                           .submitCriticalServices(cpimsId);
-                                      // Get.snackbar(
-                                      //   'Success',
-                                      //   'Form1A data saved successfully.',
-                                      //   duration: const Duration(seconds: 6),
-                                      //   snackPosition: SnackPosition.TOP, // Display at the top of the screen
-                                      //   backgroundColor: Colors.green,
-                                      //   colorText: Colors.white,
-                                      //   margin: const EdgeInsets.all(16),
-                                      //   borderRadius: 8,
-                                      // );
+                                      Get.snackbar(
+                                        'Success',
+                                        'Form1A data saved successfully.',
+                                        duration: const Duration(seconds: 2),
+                                        snackPosition: SnackPosition.TOP, // Display at the top of the screen
+                                        backgroundColor: Colors.green,
+                                        colorText: Colors.white,
+                                        margin: const EdgeInsets.all(16),
+                                        borderRadius: 8,
+                                      );
                                       Navigator.pop(context);
                                     }
                                   });
