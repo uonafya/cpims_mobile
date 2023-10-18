@@ -140,68 +140,63 @@ List drawerOptions(BuildContext context) {
         Get.back();
         String deviceId = '';
         final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+        final inContext = Get.context;
 
         try {
           final AndroidDeviceInfo androidDeviceInfo =
               await deviceInfoPlugin.androidInfo;
           deviceId = androidDeviceInfo.id;
-          CaseLoadService().fetchCaseLoadData(
+
+          bool syncSuccess = await CaseLoadService().fetchCaseLoadData(
               context: context, isForceSync: true, deviceID: deviceId);
-          snackBar = SnackBar(
-            content: const Text(
-              'Syncing in progress ...',
-              style: TextStyle(color: Colors.green),
-            ),
-            duration:
-                const Duration(seconds: 5), // Duration to display the Snackbar
-            action: SnackBarAction(
-              textColor: Colors.red,
-              label: 'Close',
-              onPressed: () {
-                Get.back();
-                // Action to perform when the "Close" button is pressed
-              },
-            ),
-          );
 
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          Future.delayed(Duration(seconds: 4));
+          if (syncSuccess) {
+            snackBar = SnackBar(
+              content: const Text(
+                'Sync completed successfully',
+                style: TextStyle(color: Colors.green),
+              ),
+              duration: const Duration(seconds: 1),
+              action: SnackBarAction(
+                textColor: Colors.red,
+                label: 'Close',
+                onPressed: () {
+                  Get.back();
+                },
+              ),
+            );
+          } else {
+            snackBar = SnackBar(
+              content: const Text(
+                'Failed to sync.Try again later',
+                style: TextStyle(color: Colors.green),
+              ),
+              duration: const Duration(seconds: 5),
+              action: SnackBarAction(
+                textColor: Colors.red,
+                label: 'Close',
+                onPressed: () {
+                  Get.back();
+                },
+              ),
+            );
+          }
 
-          snackBar = SnackBar(
-            content: const Text(
-              'Sync completed successfully',
-              style: TextStyle(color: Colors.green),
-            ),
-            duration:
-                const Duration(seconds: 1), // Duration to display the Snackbar
-            action: SnackBarAction(
-              textColor: Colors.red,
-              label: 'Close',
-              onPressed: () {
-                Get.back();
-                // Action to perform when the "Close" button is pressed
-              },
-            ),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          if (context.mounted) {
+            ScaffoldMessenger.of(inContext!).showSnackBar(snackBar);
+          }
         } catch (e) {
-          snackBar = SnackBar(
-            content: Text(
-              'An error occured $e ...',
-              style: TextStyle(color: Colors.red),
-            ),
-            duration:
-                const Duration(seconds: 2), // Duration to display the Snackbar
-            action: SnackBarAction(
-              textColor: Colors.red,
-              label: 'Close',
-              onPressed: () {
-                Get.back();
-                // Action to perform when the "Close" button is pressed
-              },
-            ),
+          Get.snackbar(
+            'Error',
+            'Failed to sync data.Try again later',
+            duration: const Duration(seconds: 2),
+            snackPosition: SnackPosition.TOP,
+            // Display at the top of the screen
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            margin: const EdgeInsets.all(16),
+            borderRadius: 8,
           );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       },
       'children': []
@@ -300,7 +295,8 @@ const String cpimsApiUrl = "https://dev.cpims.net/api/";
 
 const Map<String, String> headers = {"Content-Type": "application/json"};
 
-void errorSnackBar(BuildContext context, String message, {Duration duration = const Duration(seconds: 8)}) {
+void errorSnackBar(BuildContext context, String message,
+    {Duration duration = const Duration(seconds: 8)}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     backgroundColor: Colors.red,
     content: Text(message),

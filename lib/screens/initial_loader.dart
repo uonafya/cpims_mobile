@@ -23,7 +23,6 @@ import '../services/caseload_service.dart';
 class InitialLoadingScreen extends StatefulWidget {
   const InitialLoadingScreen(
       {super.key, this.isFromAuth = false, this.hasBioAuth = false});
-
   final bool? isFromAuth;
   final bool? hasBioAuth;
 
@@ -34,17 +33,12 @@ class InitialLoadingScreen extends StatefulWidget {
 class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
   List<BiometricType> availableBiometric = [];
 
-  bool isMounted = false;
-
   @override
   void initState() {
     super.initState();
-
-    isMounted = true;
-
     Future.delayed(
       const Duration(seconds: 0),
-      () async {
+          () async {
         /// Here we check if the user has internet connection
         /// If they do, we fetch the dashboard data from the server
         /// If they don't, we fetch the dashboard data from the local database
@@ -55,74 +49,69 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
         /// If the user is coming from the login screen, we don't check for biometrics because they might have used biometric login
         /// If the user is coming from the splash screen, we check for biometrics(Subsequent logins)
 
-        try {
-          // Your asynchronous operations here...
+        final hasConnection =
+        await Provider.of<ConnectivityProvider>(context, listen: false)
+            .checkInternetConnection();
+        final prefs = await SharedPreferences.getInstance();
 
-          final hasConnection =
-              await Provider.of<ConnectivityProvider>(context, listen: false)
-                  .checkInternetConnection();
-          final prefs = await SharedPreferences.getInstance();
+        final hasUserSetup = prefs.getBool("hasUserSetup");
 
-          final hasUserSetup = prefs.getBool("hasUserSetup");
-
-          if (hasConnection == false) {
-            if (hasUserSetup == null) {
-              Get.off(() =>
-                  const ConnectivityScreen(redirectScreen: LoginScreen()));
+        if (hasConnection == false) {
+          if (hasUserSetup == null) {
+            Get.off(
+                    () => const ConnectivityScreen(redirectScreen: LoginScreen()));
+            return;
+          }
+          if (widget.isFromAuth == false && widget.hasBioAuth == false) {
+            await _checkBiometric();
+            await _getAvailableBiometric();
+            final isAuth = await _authenticate();
+            if (!isAuth) {
+              Get.off(() => const BiometricInformation(
+                redirectScreen: LoginScreen(),
+              ));
               return;
             }
-            if (widget.isFromAuth == false && widget.hasBioAuth == false) {
-              await _checkBiometric();
-              await _getAvailableBiometric();
-              final isAuth = await _authenticate();
-              if (!isAuth) {
-                Get.off(() =>
-                    const BiometricInformation(redirectScreen: LoginScreen()));
-                return;
-              }
-            }
-
-            final localDashData = await DashBoardService().fetchDashboardData();
-            if (isMounted) {
-              Provider.of<UIProvider>(context, listen: false)
-                  .setDashData(localDashData);
-              await Provider.of<UIProvider>(context, listen: false)
-                  .setCaseLoadData();
-            }
-          } else {
-            final prefs = await SharedPreferences.getInstance();
-            final accessToken = prefs.getString('access');
-            final dashRep = await DashBoardService().dashBoard(accessToken);
-
-            if (isMounted) {
-              Provider.of<UIProvider>(context, listen: false)
-                  .setDashData(dashRep);
-              final deviceID = await getDeviceID();
-              if (isMounted) {
-                await CaseLoadService().fetchCaseLoadData(
-                  context: context,
-                  isForceSync: false,
-                  deviceID: deviceID,
-                );
-              }
-
-              await Provider.of<UIProvider>(context, listen: false)
-                  .setCaseLoadData();
-              try {
-                await MetadataService.fetchMetadata();
-              } catch (e) {
-                if (kDebugMode) {
-                  print("Error fetching metadata in init load: $e");
-                }
-              }
-            }
           }
-          Get.off(() => const Homepage());
-        } catch (e) {
-          if (kDebugMode) {
-            print("Error in init load: $e");
+
+          final localDashData = await DashBoardService().fetchDashboardData();
+          if (context.mounted) {
+            Provider.of<UIProvider>(context, listen: false)
+                .setDashData(localDashData);
+            await Provider.of<UIProvider>(context, listen: false)
+                .setCaseLoadData();
+          }
+        } else {
+          final prefs = await SharedPreferences.getInstance();
+          final accessToken = prefs.getString('access');
+          final dashRep = await DashBoardService().dashBoard(accessToken);
+
+          if (context.mounted) {
+            Provider.of<UIProvider>(context, listen: false)
+                .setDashData(dashRep);
+            // retrieve deviceID
+            final deviceID = await getDeviceID();
+            if (mounted) {
+              await CaseLoadService().fetchCaseLoadData(
+                context: context,
+                isForceSync: false,
+                deviceID: deviceID,
+              );
+            }
+
+            await Provider.of<UIProvider>(context, listen: false)
+                .setCaseLoadData();
+            try {
+              await MetadataService.fetchMetadata();
+            } catch (e) {
+              if (kDebugMode) {
+                print("Error fetching metadata in init load: $e");
+              }
+            }
           }
         }
+
+        Get.off(() => const Homepage());
       },
     );
   }
@@ -134,7 +123,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
     String? deviceID = '';
     if (Theme.of(context).platform == TargetPlatform.android) {
       final AndroidDeviceInfo androidDeviceInfo =
-          await deviceInfoPlugin.androidInfo;
+      await deviceInfoPlugin.androidInfo;
       deviceID = androidDeviceInfo.id;
       if (kDebugMode) {
         print('Device ID $deviceID');
@@ -205,15 +194,9 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
 
     setState(() {
       authorized =
-          authenticated ? "Authorized success" : "Failed to authenticate";
+      authenticated ? "Authorized success" : "Failed to authenticate";
     });
     return authenticated;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    isMounted = false; // Set isMounted to false when the widget is disposed
   }
 
   @override

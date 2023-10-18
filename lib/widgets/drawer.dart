@@ -49,9 +49,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   .logOut(context);
             }
             else if(option.title == syncName ){
-
-            
-
               print("Clicked sync");
 
             }
