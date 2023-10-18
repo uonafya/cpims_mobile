@@ -50,14 +50,6 @@ class CparaProvider extends ChangeNotifier {
     List<String> secondListOfQuestions = [];
     List<String> thirdListOfQuestions = [];
 
-    // List<HealthChild> childrens = [];
-    // childrens = healthModel?.childrenQuestions ?? childrens;
-    //
-    // for(HealthChild child in childrens){
-    //   firstListOfQuestions.add(child.question1);
-    //   secondListOfQuestions.add(child.question2);
-    //   thirdListOfQuestions.add(child.question3);
-    // }
 
     // enos implementation to avoid early initialization
     for(HealthChild child in healthModel?.childrenQuestions ?? []){
@@ -69,12 +61,8 @@ class CparaProvider extends ChangeNotifier {
 
 
 // Health BenchMark 1 result
-    if (healthModel?.question1 == "Yes" && (healthModel?.question2 == "Yes" ||
-        healthModel?.question2 == "N/A") && (healthModel?.question3 == "Yes" ||
-        healthModel?.question3 == "N/A") &&
-            healthModel?.question4 == "Yes" &&
-        (healthModel?.question5 == "Yes" ||
-        healthModel?.question5 == "N/A")
+    if (healthModel?.question1 == "Yes" && (healthModel?.question2 == "Yes" || healthModel?.question2 == "N/A") && (healthModel?.question3 == "Yes" || healthModel?.question3 == "N/A") &&
+            healthModel?.question4 == "Yes" && (healthModel?.question5 == "Yes" || healthModel?.question5 == "N/A")
             ) {
       benchmark1 = 1;
     } else {
@@ -82,16 +70,11 @@ class CparaProvider extends ChangeNotifier {
     }
 
 // Health BenchMark 2 result
-    if (healthModel?.question6 == "Yes" && (healthModel?.question7 == "Yes" ||
-        healthModel?.question7 == "N/A") &&
-            healthModel?.question8 == "Yes" &&
-            healthModel?.question9 == "N/A" &&
-        (healthModel?.question10 == "Yes" ||
-        healthModel?.question10 == "N/A") &&
-            healthModel?.question11 == "Yes" &&
-            healthModel?.question12 == "Yes" &&
-        (healthModel?.question13 == "Yes" ||
-        healthModel?.question13 == "N/A") && healthModel?.question14 == "Yes") {
+    if (healthModel?.question6 == "Yes" && (healthModel?.question7 == "Yes" || healthModel?.question7 == "N/A") &&
+            healthModel?.question8 == "Yes" && healthModel?.question9 == "N/A" &&
+        (healthModel?.question10 == "Yes" || healthModel?.question10 == "N/A") &&
+            healthModel?.question11 == "Yes" && healthModel?.question12 == "Yes" &&
+        (healthModel?.question13 == "Yes" || healthModel?.question13 == "N/A") && healthModel?.question14 == "Yes") {
       benchmark2 = 1;
     } else {
       benchmark2 = 0;
@@ -107,10 +90,7 @@ class CparaProvider extends ChangeNotifier {
     }
 
     // Health BenchMark 1 result
-    if (healthModel?.question15 == "Yes" &&
-            healthModel?.question16 == "Yes" &&
-        (healthModel?.question17 == "N/A" ||
-        healthModel?.question17 == "Yes") &&
+    if (healthModel?.question15 == "Yes" && healthModel?.question16 == "Yes" && (healthModel?.question17 == "N/A" || healthModel?.question17 == "Yes") &&
             healthModel?.question18 == "Yes") {
       benchmark4 = 1;
     } else {
@@ -202,7 +182,7 @@ class CparaProvider extends ChangeNotifier {
 // Calculate final benchmark
   int finalScore() {
     int finalBenchmarkScore = schooledBenchmark() + healthyBenchmark() + stableBenchMark() + safeBenchMark();
-
+    print("The healthy benchmark is ${healthyBenchmark()}");
     return finalBenchmarkScore;
   }
 
