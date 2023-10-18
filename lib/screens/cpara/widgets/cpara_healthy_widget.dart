@@ -846,60 +846,6 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
         HealthyGoalBlock(
           doesSectionDependOnInitialAnswer: true,
           initalQuestionValue: goal3InitialAnswer,
-          // updateInitialQuestion: (RadioButtonOptions? val) {
-          //   updateQuestion("initial_3", val);
-          //   // if val is yes set everything to null
-          //   if (val == RadioButtonOptions.yes) {
-          //     List<HealthChild> newChildren = List.from(children);
-          //     for (var i in newChildren) {
-          //       i.question1 = convertingRadioButtonOptionsToString(null);
-          //       i.question2 = convertingRadioButtonOptionsToString(null);
-          //       i.question3 = convertingRadioButtonOptionsToString(null);
-          //     }
-          //
-          //     HealthModel healthmodel =
-          //         Provider.of<CparaProvider>(context, listen: false)
-          //             .healthModel ??
-          //             HealthModel();
-          //     Provider.of<CparaProvider>(context, listen: false)
-          //         .updateHealthModel(
-          //         healthmodel.copyWith(childrenQuestions: newChildren));
-          //
-          //     setState(() {
-          //       children = newChildren;
-          //       set3_1final = null;
-          //       set3_2final = null;
-          //       set3_3final = null;
-          //     });
-          //   }
-          //   // if val is no set all children to yes
-          //   if (val == RadioButtonOptions.no) {
-          //     List<HealthChild> newChildren = List.from(children);
-          //     for (var i in newChildren) {
-          //       i.question1 = convertingRadioButtonOptionsToString(
-          //           RadioButtonOptions.yes);
-          //       i.question2 = convertingRadioButtonOptionsToString(
-          //           RadioButtonOptions.yes);
-          //       i.question3 = convertingRadioButtonOptionsToString(
-          //           RadioButtonOptions.yes);
-          //     }
-          //
-          //     HealthModel healthmodel =
-          //         Provider.of<CparaProvider>(context, listen: false)
-          //             .healthModel ??
-          //             HealthModel();
-          //     Provider.of<CparaProvider>(context, listen: false)
-          //         .updateHealthModel(
-          //         healthmodel.copyWith(childrenQuestions: newChildren));
-          //
-          //     setState(() {
-          //       children = newChildren;
-          //       set3_1final = RadioButtonOptions.na;
-          //       set3_2final = RadioButtonOptions.na;
-          //       set3_3final = RadioButtonOptions.na;
-          //     });
-          //   }
-          // },
           updateInitialQuestion: (RadioButtonOptions? val) {
             updateQuestion("initial_3", val);
             // if val is yes set everything to null
@@ -979,6 +925,105 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           descriptionSubText:
               "Note: For HHs with no adolescent girls and boys, skip questions below and select “N/A” for “Achievement of this benchmark.”",
           table: HealthTable(
+            healthCards: [
+              for (var i = 0; i < children.length; i++)
+                HealthCard(
+                  childName: children[i].name,
+                  questions: [
+                    QuestionBlock(
+                      groupValue: convertingStringToRadioButtonOptions(
+                          children[i].question1),
+                      isTopDividerThere: false,
+                      isOptional: true,
+                      tempFix: true,
+                      question:
+                      "3.1 Can you tell me two behaviors that increase risk of HIV infection?",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? val) {
+                        List<HealthChild> newChildren = List.from(children);
+
+                        newChildren[i].question1 =
+                            convertingRadioButtonOptionsToString(val);
+
+                        HealthModel healthmodel =
+                            Provider.of<CparaProvider>(context, listen: false)
+                                .healthModel ??
+                                HealthModel();
+                        Provider.of<CparaProvider>(context, listen: false)
+                            .updateHealthModel(healthmodel.copyWith(
+                            childrenQuestions: newChildren));
+
+                        setState(() {
+                          children = newChildren;
+                          set3_1final = RadioButtonOptions
+                              .na; // changing incase previously set to null
+                        });
+                      },
+                    ),
+                    QuestionBlock(
+                      groupValue: convertingStringToRadioButtonOptions(
+                          children[i].question2),
+                      isTopDividerThere: false,
+                      isOptional: true,
+                      tempFix: true,
+                      question:
+                      "3.2 Can you tell me two ways you can protect yourself/ others against HIV?",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? val) {
+                        List<HealthChild> newChildren = List.from(children);
+
+                        newChildren[i].question2 =
+                            convertingRadioButtonOptionsToString(val);
+
+                        HealthModel healthmodel =
+                            Provider.of<CparaProvider>(context, listen: false)
+                                .healthModel ??
+                                HealthModel();
+                        Provider.of<CparaProvider>(context, listen: false)
+                            .updateHealthModel(healthmodel.copyWith(
+                            childrenQuestions: newChildren));
+
+                        setState(() {
+                          children = newChildren;
+                          set3_2final = RadioButtonOptions
+                              .na; // changing incase previously set to null
+                        });
+                      },
+                    ),
+                    QuestionBlock(
+                      groupValue: convertingStringToRadioButtonOptions(
+                          children[i].question3),
+                      isTopDividerThere: false,
+                      isOptional: true,
+                      tempFix: true,
+                      question:
+                      "3.3 Can you name two places in the community where you can access HIV prevention services?",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? val) {
+                        List<HealthChild> newChildren = List.from(children);
+
+                        newChildren[i].question3 =
+                            convertingRadioButtonOptionsToString(val);
+
+                        HealthModel healthmodel =
+                            Provider.of<CparaProvider>(context, listen: false)
+                                .healthModel ??
+                                HealthModel();
+                        Provider.of<CparaProvider>(context, listen: false)
+                            .updateHealthModel(healthmodel.copyWith(
+                            childrenQuestions: newChildren));
+
+                        setState(() {
+                          children = newChildren;
+                          set3_3final = RadioButtonOptions
+                              .na; // changing incase previously set to null
+                        });
+                      },
+                    ),
+                  ],
+                  isTopDividerThere: false,
+                ),
+            ],
             finalTableRow: FinalTableRow(
               isTopDividerThere: false,
               question: "Tick Yes if YES for all children",
@@ -1038,105 +1083,6 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                 ),
               ],
             ),
-            healthCards: [
-              for (var i = 0; i < children.length; i++)
-                HealthCard(
-                  childName: children[i].name,
-                  questions: [
-                    QuestionBlock(
-                      groupValue: convertingStringToRadioButtonOptions(
-                          children[i].question1),
-                      isTopDividerThere: false,
-                      isOptional: true,
-                      tempFix: true,
-                      question:
-                          "3.1 Can you tell me two behaviors that increase risk of HIV infection?",
-                      isNAAvailable: false,
-                      updateRadioButton: (RadioButtonOptions? val) {
-                        List<HealthChild> newChildren = List.from(children);
-
-                        newChildren[i].question1 =
-                            convertingRadioButtonOptionsToString(val);
-
-                        HealthModel healthmodel =
-                            Provider.of<CparaProvider>(context, listen: false)
-                                    .healthModel ??
-                                HealthModel();
-                        Provider.of<CparaProvider>(context, listen: false)
-                            .updateHealthModel(healthmodel.copyWith(
-                                childrenQuestions: newChildren));
-
-                        setState(() {
-                          children = newChildren;
-                          set3_1final = RadioButtonOptions
-                              .na; // changing incase previously set to null
-                        });
-                      },
-                    ),
-                    QuestionBlock(
-                      groupValue: convertingStringToRadioButtonOptions(
-                          children[i].question2),
-                      isTopDividerThere: false,
-                      isOptional: true,
-                      tempFix: true,
-                      question:
-                          "3.2 Can you tell me two ways you can protect yourself/ others against HIV?",
-                      isNAAvailable: false,
-                      updateRadioButton: (RadioButtonOptions? val) {
-                        List<HealthChild> newChildren = List.from(children);
-
-                        newChildren[i].question2 =
-                            convertingRadioButtonOptionsToString(val);
-
-                        HealthModel healthmodel =
-                            Provider.of<CparaProvider>(context, listen: false)
-                                    .healthModel ??
-                                HealthModel();
-                        Provider.of<CparaProvider>(context, listen: false)
-                            .updateHealthModel(healthmodel.copyWith(
-                                childrenQuestions: newChildren));
-
-                        setState(() {
-                          children = newChildren;
-                          set3_2final = RadioButtonOptions
-                              .na; // changing incase previously set to null
-                        });
-                      },
-                    ),
-                    QuestionBlock(
-                      groupValue: convertingStringToRadioButtonOptions(
-                          children[i].question3),
-                      isTopDividerThere: false,
-                      isOptional: true,
-                      tempFix: true,
-                      question:
-                          "3.3 Can you name two places in the community where you can access HIV prevention services?",
-                      isNAAvailable: false,
-                      updateRadioButton: (RadioButtonOptions? val) {
-                        List<HealthChild> newChildren = List.from(children);
-
-                        newChildren[i].question3 =
-                            convertingRadioButtonOptionsToString(val);
-
-                        HealthModel healthmodel =
-                            Provider.of<CparaProvider>(context, listen: false)
-                                    .healthModel ??
-                                HealthModel();
-                        Provider.of<CparaProvider>(context, listen: false)
-                            .updateHealthModel(healthmodel.copyWith(
-                                childrenQuestions: newChildren));
-
-                        setState(() {
-                          children = newChildren;
-                          set3_2final = RadioButtonOptions
-                              .na; // changing incase previously set to null
-                        });
-                      },
-                    ),
-                  ],
-                  isTopDividerThere: false,
-                ),
-            ],
           ),
         ),
 
@@ -1341,7 +1287,7 @@ class HealthTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         child: Column(
-      children: [finalTableRow, for (var i in healthCards) i],
+      children: [for (var i in healthCards) i,finalTableRow],
     ));
   }
 }
