@@ -1128,7 +1128,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
                         setState(() {
                           children = newChildren;
-                          set3_2final = RadioButtonOptions
+                          set3_3final = RadioButtonOptions
                               .na; // changing incase previously set to null
                         });
                       },
