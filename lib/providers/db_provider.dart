@@ -150,10 +150,24 @@ class LocalDb {
   }
 
   Future<void> insertCaseLoad(CaseLoadModel caseLoadModel) async {
-    final db = await instance.database;
+    try{
+      final db = await instance.database;
 
-    await db.insert(caseloadTable, caseLoadModel.toJson(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+      await db.insert(caseloadTable, caseLoadModel.toJson(),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    }catch(e){
+      debugPrint("Error inserting caseload data: $e");
+    }
+  }
+
+  //delete all caseload data
+  Future<void> deleteAllCaseLoad() async {
+    try{
+      final db = await instance.database;
+      await db.delete(caseloadTable);
+    }catch(e){
+      debugPrint("Error deleting caseload data: $e");
+    }
   }
 
   Future<void> insertStatistics(SummaryDataModel summaryModel) async {

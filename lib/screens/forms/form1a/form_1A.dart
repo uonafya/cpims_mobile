@@ -122,9 +122,7 @@ class _Form1AScreenState extends State<Form1AScreen> {
                             ),
                             Expanded(
                               child: CustomButton(
-                                text: selectedStep == steps.length - 1
-                                    ? 'Submit Form1A'
-                                    : 'Next',
+                                text: selectedStep == steps.length - 1 ? 'Submit Form1A' : 'Next',
                                 onTap: () {
                                   setState(() {
                                     if (selectedStep < steps.length - 1) {

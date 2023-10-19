@@ -36,6 +36,7 @@ class CaseLoadService {
       );
 
       if (response.statusCode == 200) {
+        // LocalDb.instance.deleteAllCaseLoad(); TODO: Handle this when updating caseload
         for (int i = 0; i < jsonDecode(response.body).length; i++) {
           CaseLoadModel caseLoadModel = CaseLoadModel.fromJson(
             jsonDecode(response.body)[i],

@@ -12,10 +12,12 @@ import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/form1b_provider.dart';
 import '../../../widgets/custom_toast.dart';
+import '../form1a/form1A_history.dart';
 
 class Form1BScreen extends StatefulWidget {
   const Form1BScreen({super.key, required this.caseLoad});
@@ -119,12 +121,13 @@ class _Form1BScreen extends State<Form1BScreen> {
                                 onTap: () {
                                   if (selectedStep == 0) {
                                     Navigator.pop(context);
+                                  } else {
+                                    setState(() {
+                                      if (selectedStep > 0) {
+                                        selectedStep--;
+                                      }
+                                    });
                                   }
-                                  setState(() {
-                                    if (selectedStep > 0) {
-                                      selectedStep--;
-                                    }
-                                  });
                                 },
                                 color: kTextGrey,
                               ),
@@ -133,64 +136,94 @@ class _Form1BScreen extends State<Form1BScreen> {
                               width: 50,
                             ),
                             Expanded(
-                              child: Visibility(
-                                visible: selectedStep < steps.length - 1,
-                                // Hide the button when selectedStep is equal to steps.length - 1
-                                child: CustomButton(
-                                  text: 'Next',
-                                  onTap: () {
+                              child: CustomButton(
+                                text: selectedStep == steps.length - 1
+                                    ? 'Submit Form1B'
+                                    : 'Next',
+                                onTap: () async {
+                                  if (selectedStep == steps.length - 1) {
+                                    bool isFormSaved =
+                                        await form1bProvider.saveForm1bData(
+                                      form1bProvider.formData,
+                                    );
+                                    setState(() {
+                                      if (isFormSaved == true) {
+                                        CustomToastWidget.showToast(
+                                            "Form saved successfully");
+                                        Navigator.pop(context);
+                                        selectedStep = 0;
+                                      }
+                                    });
+                                  } else {
                                     setState(() {
                                       if (selectedStep < steps.length - 1) {
                                         selectedStep++;
                                       }
                                     });
-                                  },
-                                ),
+                                  }
+                                },
                               ),
-                            )
+                            ),
                           ],
                         ),
                         const SizedBox(
                           height: 30,
                         ),
-                        Row(children: [
-                          Expanded(
-                            child: CustomButton(
-                              text: "Submit",
-                              onTap: () async {
-                                // form1bProvider.setSelectedServices(['Service 1', 'Service 2']);
-                                // form1bProvider.setSelectedDate(DateTime.now());
-                                bool isFormSaved = await form1bProvider
-                                    .saveForm1bData(form1bProvider.formData);
-                                if (isFormSaved == true) {
-                                  CustomToastWidget.showToast(
-                                      "Form saved successfully");
-                                  setState(() {
-                                    selectedStep = 0;
-                                  });
-                                }
-                              },
-                            ),
-                          )
-                        ]),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Row(children: [
-                          Expanded(
-                            child: CustomButton(
-                                text: 'Cancel',
-                                color: kTextGrey,
-                                onTap: () {
-                                  // Navigator.of(context).pop();
-                                  form1bProvider.fetchSavedDataFromDb();
-                                }),
-                          )
-                        ]),
+                        // Row(children: [
+                        //   Expanded(
+                        //     child: CustomButton(
+                        //       text: "Submit",
+                        //       onTap: () async {
+                        //         bool isFormSaved = await form1bProvider
+                        //             .saveForm1bData(form1bProvider.formData);
+                        //         if (isFormSaved == true) {
+                        //           CustomToastWidget.showToast(
+                        //               "Form saved successfully");
+                        //           setState(() {
+                        //             selectedStep = 0;
+                        //           });
+                        //         }
+                        //       },
+                        //     ),
+                        //   )
+                        // ]),
+                        // const SizedBox(
+                        //   height: 15,
+                        // ),
+                        // Row(children: [
+                        //   Expanded(
+                        //     child: CustomButton(
+                        //         text: 'Cancel',
+                        //         color: kTextGrey,
+                        //         onTap: () {
+                        //           // Navigator.of(context).pop();
+                        //           form1bProvider.fetchSavedDataFromDb();
+                        //         }),
+                        //   )
+                        // ]),
                         const SizedBox(height: 20),
-                        const SizedBox(
-                            width: 300, // Adjust the width value as needed
-                            child: HistoryAssessmentListWidget()),
+                        GestureDetector(
+                          onTap: () {
+                            // TODO Handle past assessments
+                            // Get.to(() => HistoryForm1A(
+                            //     caseLoadModel: widget.caseLoadModel));
+                          },
+                          child: const Row(
+                            children: [
+                              Text(
+                                'Past Assessments',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                size: 15,
+                              )
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
