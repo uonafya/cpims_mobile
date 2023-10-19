@@ -35,13 +35,6 @@ class _ServicesDetailsState extends State<ServicesDetails> {
   List<ValueItem> selectedDomain = [];
   List<ValueItem> selectedDomainOptions = [];
 
-  // Subdomain
-  // List<ValueItem> listOfSubDomains = optionSubDomains.map((subdomain) {
-  //   return ValueItem(
-  //       label: "${subdomain['service_description']}",
-  //       value: "${subdomain['service_id']}");
-  // }).toList();
-
   List<ValueItem> listOfSubDomains = optionSubDomains.map((subdomain) {
     return ValueItem(
         label: "${subdomain['item_description']}",

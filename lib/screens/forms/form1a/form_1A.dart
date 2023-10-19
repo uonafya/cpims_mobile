@@ -76,7 +76,7 @@ class _Form1AScreenState extends State<Form1AScreen> {
                     width: double.infinity,
                     color: Colors.black,
                     child: Text(
-                      ' FORM 1A DETAILS \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n CPIMIS ID: ${widget.caseLoadModel.cpimsId}',
+                      ' FORM 1A DETAILS \n CPIMIS NAMES: ${widget.caseLoadModel.ovcSurname}  ${widget.caseLoadModel.ovcFirstName} \n CPIMIS ID: ${widget.caseLoadModel.cpimsId} \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n ',
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),
@@ -139,7 +139,8 @@ class _Form1AScreenState extends State<Form1AScreen> {
                                         'Success',
                                         'Form1A data saved successfully.',
                                         duration: const Duration(seconds: 2),
-                                        snackPosition: SnackPosition.TOP, // Display at the top of the screen
+                                        snackPosition: SnackPosition.TOP,
+                                        // Display at the top of the screen
                                         backgroundColor: Colors.green,
                                         colorText: Colors.white,
                                         margin: const EdgeInsets.all(16),
@@ -158,7 +159,8 @@ class _Form1AScreenState extends State<Form1AScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Get.to(() => HistoryForm1A(caseLoadModel: widget.caseLoadModel));
+                            Get.to(() => HistoryForm1A(
+                                caseLoadModel: widget.caseLoadModel));
                           },
                           child: const Row(
                             children: [
