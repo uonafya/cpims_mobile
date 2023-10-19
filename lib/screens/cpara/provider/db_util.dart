@@ -27,6 +27,23 @@ Future<List<CPARADatabase>> getUnsynchedForms(Database db) async {
   }
 }
 
+Future<int> getUnsyncedFormsCount(Database db) async {
+  try {
+    List<Map<String, dynamic>> countResult = await db.rawQuery(
+        "SELECT COUNT(id) AS count FROM Form WHERE id IN (SELECT formID FROM HouseholdAnswer)");
+
+    if (countResult.isNotEmpty) {
+      int count = countResult[0]['count'];
+      return count;
+    } else {
+      return 0; // Return 0 if there are no unsynced forms
+    }
+  } catch (err) {
+    throw ("Could Not Get Unsynced Forms Count: ${err.toString()}");
+  }
+}
+
+
 Future<CPARADatabase> getFormFromDB(int formID, Database? db) async {
   try {
     CPARADatabase form = CPARADatabase();

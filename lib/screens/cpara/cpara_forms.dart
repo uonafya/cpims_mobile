@@ -156,7 +156,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                     : 'Next',
                                 onTap: () async {
                                   if (selectedStep == steps.length - 1) {
-                                    handleSubmitCparaToUpstream();
                                     // display collected data
                                     DetailModel detailModel = context
                                             .read<CparaProvider>()
@@ -306,19 +305,16 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                 ],
               )),
           const SizedBox(height: 20),
-          const PastCPARAWidget(),
-          ElevatedButton(
-              onPressed: () async {
-                await submitCparaToUpstream();
-              },
-              child: const Text("Sync")),
+          // const PastCPARAWidget(),
+          // ElevatedButton(
+          //     onPressed: () async {
+          //       await submitCparaToUpstream();
+          //     },
+          //     child: const Text("Sync")),
           const Footer(),
         ],
       ),
     );
   }
 
-  void handleSubmitCparaToUpstream() {
-    print("I was called");
-  }
 }

@@ -49,6 +49,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   RadioButtonOptions? set3_1final;
   RadioButtonOptions? set3_2final;
   RadioButtonOptions? set3_3final;
+
   // List of children
   late List<HealthChild> children;
 
@@ -56,16 +57,20 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   @override
   void initState() {
     super.initState();
-    List<CaseLoadModel> models =
-        context.read<CparaProvider>().children ?? [];
+    List<CaseLoadModel> models = context.read<CparaProvider>().children ?? [];
     // Get instance of model from provider
     HealthModel healthModel =
         context.read<CparaProvider>().healthModel ?? HealthModel();
 
     // Initialize children
     children = [];
-    for (CaseLoadModel model in models){
-      children.add(HealthChild(id: "${model.cpimsId}", question1: "", question2: "", question3: "", name: "${model.ovcFirstName} ${model.ovcSurname}"));
+    for (CaseLoadModel model in models) {
+      children.add(HealthChild(
+          id: "${model.cpimsId}",
+          question1: "",
+          question2: "",
+          question3: "",
+          name: "${model.ovcFirstName} ${model.ovcSurname}"));
     }
     // Initialize Details
     q1_1ChildrenHivTested = healthModel.question1 == null
@@ -563,7 +568,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
             q1_3InfantExposedHIV,
             q1_4HivCaregiverUnknown,
             q1_5CaregiverSceened
-          ], "Goal 1"), // final result is yes if the values of question 1 to 4 is yes
+          ], "Goal 1"),
+          // final result is yes if the values of question 1 to 4 is yes
           descriptionHeading:
               "Healthy: Goal 1: Increase diagnosis of HIV infection",
           descriptionText:
@@ -674,7 +680,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
             q2_7HIVCaregiverSuppress,
             q2_8NoDocumentCaregiverAppointment,
             q2_9CaregiverRegularlyMedicate
-          ], "Goal 2"), // The final value is yes if all the answers are yes for questions 2.1 to 2.9
+          ], "Goal 2"),
+          // The final value is yes if all the answers are yes for questions 2.1 to 2.9
           updateFinalFormRadio: noChangeToRadio,
           descriptionHeading:
               "Healthy: Goal 2: Increase HIV treatment adherence, continuity of treatment and viral suppression",
@@ -686,9 +693,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
             // Section 2.1 - 2.3
             QuestionsSection(
               skipSection: goal2InitialAnswer == RadioButtonOptions.no ||
-                  suppresedPast12Initial ==
-                      RadioButtonOptions
-                          .no, // skip questions when the answer to is anyone HIV postivie no
+                  suppresedPast12Initial == RadioButtonOptions.no,
+              // skip questions when the answer to is anyone HIV postivie no
               doesSectionDependOnInitialAnswer: true,
               initalQuestion:
                   "Is there a child 0 - 12 years who is HIV positive ?",
@@ -738,9 +744,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
             // Section 2.4 - 2.6
             QuestionsSection(
               skipSection: goal2InitialAnswer == RadioButtonOptions.no ||
-                  documentedChildrenSuppressedInitial ==
-                      RadioButtonOptions
-                          .no, // skip questions when the answer to is anyone HIV postivie no
+                  documentedChildrenSuppressedInitial == RadioButtonOptions.no,
+              // skip questions when the answer to is anyone HIV postivie no
               doesSectionDependOnInitialAnswer: true,
               updateInitialQuestion: (RadioButtonOptions? value) =>
                   updateQuestion("initial2_4", value),
@@ -791,8 +796,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
             QuestionsSection(
               skipSection: goal2InitialAnswer == RadioButtonOptions.no ||
                   noDocumentCaregiverAppointmentInitial ==
-                      RadioButtonOptions
-                          .no, // skip questions when the answer to is anyone HIV postivie no
+                      RadioButtonOptions.no,
+              // skip questions when the answer to is anyone HIV postivie no
               doesSectionDependOnInitialAnswer: true,
               initalQuestion: "Is the caregiver HIV positive ? ",
               initalQuestionValue: noDocumentCaregiverAppointmentInitial,
@@ -969,7 +974,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                               RadioButtonOptions.yes
                       ? RadioButtonOptions.yes
                       : RadioButtonOptions.no)
-                  .toList(), // for every child hivRisk, prevent and protect should be yes
+                  .toList(),
+              // for every child hivRisk, prevent and protect should be yes
               "Children Table"),
           updateFinalFormRadio: noChangeToRadio,
           sections: const [],
@@ -991,7 +997,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                               .map((e) => convertingStringToRadioButtonOptions(
                                   e.question1))
                               .toList(),
-                          "Tick yes if all q1"), // All hivRiskGroupValues should be yes
+                          "Tick yes if all q1"),
+                  // All hivRiskGroupValues should be yes
                   isTopDividerThere: false,
                   isOptional: false,
                   question:
@@ -1156,16 +1163,16 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
             q4_2Below5BipedalEdema,
             q4_3MalnourishedTreated,
             q4_4Under2Immunized
-          ], "Group 4"), // final answer should be yes if all questions from 4.1 to 4.4 are yes
+          ], "Group 4"),
+          // final answer should be yes if all questions from 4.1 to 4.4 are yes
           updateFinalFormRadio: noChangeToRadio,
           sections: [
             // Question 4.1 to 4.3
             QuestionsSection(
               doesSectionDependOnInitialAnswer: false,
               isTopDividerThere: false,
-              skipSection: goal4Initial ==
-                  RadioButtonOptions
-                      .no, // skip the section when there are no children < 5 years
+              skipSection: goal4Initial == RadioButtonOptions.no,
+              // skip the section when there are no children < 5 years
               title: "",
               questions: [
                 QuestionBlock(
@@ -1341,7 +1348,7 @@ class HealthTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         child: Column(
-      children: [finalTableRow, for (var i in healthCards) i],
+      children: [for (var i in healthCards) i,finalTableRow],
     ));
   }
 }

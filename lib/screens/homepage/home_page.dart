@@ -19,6 +19,7 @@ import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../cpara/provider/db_util.dart';
 import '../unsynched_workflows/unsynched_workeflows_screen.dart';
 
 class Homepage extends StatefulWidget {
@@ -45,8 +46,11 @@ class _HomepageState extends State<Homepage> {
   bool noFormsToSync = true;
 
   Future<void> syncWorkflows() async {
-    final isConnected = await Provider.of<ConnectivityProvider>(context, listen: false).checkInternetConnection();
+    final isConnected =
+        await Provider.of<ConnectivityProvider>(context, listen: false)
+            .checkInternetConnection();
     if (isConnected) {
+      submitCparaToUpstream();
       var prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getString('access');
       setState(() {
@@ -121,7 +125,8 @@ class _HomepageState extends State<Homepage> {
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).removeCurrentSnackBar(); // Remove the indefinite snackbar
+        ScaffoldMessenger.of(context)
+            .removeCurrentSnackBar(); // Remove the indefinite snackbar
       }
     }
   }
