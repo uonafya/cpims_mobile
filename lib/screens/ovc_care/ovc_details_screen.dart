@@ -85,7 +85,11 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
           Wrap(
             children: [
               CustomCard(
+<<<<<<< HEAD
                   title: " OVC DETAILS \n CPIMIS ID: ${widget.caseLoadModel.cpimsId} \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n CAREGIVER ID: ${widget.caseLoadModel.caregiverCpimsId}",
+=======
+                  title: " OVC DETAILS \n OVC CPIMS ID ${widget.caseLoadModel.cpimsId} \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n CARE GIVER CPIMIS ID: ${widget.caseLoadModel.caregiverCpimsId}",
+>>>>>>> cpims/merge-fixes
                   children: [
                     CustomGridView(
                       crossAxisCount: 2,

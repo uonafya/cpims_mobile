@@ -251,7 +251,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           ovcId: ovcpmisid,
                                           careProviderId: ovcpmisid);
 
-                                      debugPrint("Here is the cpara data being saved $cparaModelDB");
                                       if (context.mounted) {
                                         context
                                             .read<CparaProvider>()

@@ -159,7 +159,7 @@ class _OVCCardItemState extends State<OVCCardItem> {
       children: [
         GestureDetector(
           onTap: () {
-            Get.to(() => OVCDetailsScreen(caseLoadModel: widget.caseLoadModel));
+            // Get.to(() => OVCDetailsScreen(caseLoadModel: widget.caseLoadModel));
           },
           child: Card(
             child: Padding(
