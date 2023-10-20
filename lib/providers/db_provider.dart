@@ -4,6 +4,7 @@ import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -147,25 +148,27 @@ class LocalDb {
 
     await creatingCparaTables(db, version);
     await createOvcSubPopulation(db, version);
+    // await createCparaHouseholdAnswers(db, version);
+    // await createCparaChildAnswers(db, version);
   }
 
   Future<void> insertCaseLoad(CaseLoadModel caseLoadModel) async {
-    try{
+    try {
       final db = await instance.database;
 
       await db.insert(caseloadTable, caseLoadModel.toJson(),
           conflictAlgorithm: ConflictAlgorithm.replace);
-    }catch(e){
+    } catch (e) {
       debugPrint("Error inserting caseload data: $e");
     }
   }
 
   //delete all caseload data
   Future<void> deleteAllCaseLoad() async {
-    try{
+    try {
       final db = await instance.database;
       await db.delete(caseloadTable);
-    }catch(e){
+    } catch (e) {
       debugPrint("Error deleting caseload data: $e");
     }
   }
@@ -189,20 +192,9 @@ class LocalDb {
   }
 
   Future<void> creatingCparaTables(Database db, int version) async {
+    await createCparaForms(db, version);
     try {
       debugPrint("Creating Cpara tables");
-      await db.execute(
-          "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT);");
-
-      // await db.execute(
-      //     "CREATE TABLE IF NOT EXISTS Child(childOVCCPMISID TEXT PRIMARY KEY, childName TEXT, childAge TEXT, childGender TEXT, childSchool TEXT, childOVCRegistered TEXT);");
-
-      // await db.execute(
-      //     "CREATE TABLE IF NOT EXISTS Household(householdID TEXT PRIMARY KEY);");
-
-      // await db.execute(
-      //     "CREATE TABLE IF NOT EXISTS HouseholdChild(childID TEXT, householdID TEXT, FOREIGN KEY (householdID) REFERENCES Household(householdID), PRIMARY KEY(childID, householdID));");
-
       await db.execute(
           "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER, id INTEGER PRIMARY KEY, houseHoldID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (formID) REFERENCES Form(id));");
 
@@ -212,6 +204,22 @@ class LocalDb {
       debugPrint("Error creating Cpara tables: $err");
     }
   }
+
+  // Future<void> creatingCparaTables(Database db, int version) async {
+  //   try {
+  //     debugPrint("Creating Cpara tables");
+  //     await db.execute(
+  //         "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT,date_synced TEXT DEFAULT NULL);");
+  //
+  //     await db.execute(
+  //         "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER,id INTEGER PRIMARY KEY,houseHoldID TEXT,questionID TEXT,answer TEXT,FOREIGN KEY (formID) REFERENCES Form(id),date_synced TEXT DEFAULT NULL);");
+  //
+  //     await db.execute(
+  //         "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (formID) REFERENCES Form(id),date_synced TEXT DEFAULT NULL);");
+  //   } catch (err) {
+  //     debugPrint("Error creating Cpara tables: $err");
+  //   }
+  // }
 
   Future<void> insertCparaData(
       {required CparaModel cparaModelDB,
@@ -248,6 +256,55 @@ class LocalDb {
       debugPrint(err.toString());
     }
   }
+
+  Future<void> createCparaForms(Database db, int version) async {
+    try {
+      await db.execute('''
+      CREATE TABLE $cparaForms (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        form_id INTEGER,
+        date TEXT,
+        form_date_synced TEXT NULL
+      )
+    ''');
+    } catch (err) {
+      debugPrint(err.toString());
+    }
+  }
+
+  // Future<void> createCparaHouseholdAnswers(Database db, int version) async {
+  //   try {
+  //     await db.execute('''
+  //     CREATE TABLE $cparaHouseholdAnswers (
+  //       id INTEGER PRIMARY KEY AUTOINCREMENT,
+  //       formID INTEGER,
+  //       houseHoldID TEXT,
+  //       questionID TEXT,
+  //       answer TEXT,
+  //       FOREIGN KEY (formID) REFERENCES $cparaForms(id)
+  //     )
+  //   ''');
+  //   } catch (err) {
+  //     debugPrint(err.toString());
+  //   }
+  // }
+  //
+  // Future<void> createCparaChildAnswers(Database db, int version) async {
+  //   try {
+  //     await db.execute('''
+  //     CREATE TABLE $cparaChildAnswers (
+  //       id INTEGER PRIMARY KEY AUTOINCREMENT,
+  //       formID INTEGER,
+  //       childID TEXT,
+  //       questionid TEXT,
+  //       answer TEXT,
+  //       FOREIGN KEY (formID) REFERENCES $cparaForms(id),
+  //     )
+  //   ''');
+  //   } catch (err) {
+  //     debugPrint(err.toString());
+  //   }
+  // }
 
   Future<void> insertOvcSubpopulationData(String uuid, String cpimsId,
       String date_of_assessment, List<CheckboxQuestion> questions) async {
@@ -384,7 +441,8 @@ class LocalDb {
     try {
       final db = await instance.database;
       const sql = 'SELECT * FROM $form1Table WHERE form_type = ?';
-      final List<Map<String, dynamic>> form1Rows = await db.rawQuery(sql, [formType]);
+      final List<Map<String, dynamic>> form1Rows =
+          await db.rawQuery(sql, [formType]);
 
       List<Map<String, dynamic>> updatedForm1Rows = [];
 
@@ -424,6 +482,24 @@ class LocalDb {
       return [];
     }
   }
+
+  Future<int?> queryForm1RowCount(String formType) async {
+    try {
+      final db = await instance.database;
+      const sql = 'SELECT COUNT(*) FROM $form1Table WHERE form_type = ?';
+      final List<Map<String, dynamic>> result = await db.rawQuery(sql, [formType]);
+
+      if (result.isNotEmpty) {
+        return Sqflite.firstIntValue(result);
+      } else {
+        return 0; // Return 0 if no count is found.
+      }
+    } catch (e) {
+      print("Error querying form1 count: $e");
+      return 0; // Return 0 if there is an error.
+    }
+  }
+
   // get a single row(form 1a or 1b)
   Future<bool> deleteForm1Data(String formType, int id) async {
     try {
@@ -610,6 +686,9 @@ const form1Table = 'form1';
 const form1ServicesTable = 'form1_services';
 const form1CriticalEventsTable = 'form1_critical_events';
 const ovcsubpopulation = 'ovcsubpopulation';
+const cparaForms = 'Form';
+const cparaHouseholdAnswers = 'cpara_household_answers';
+const cparaChildAnswers = 'cpara_child_answers';
 
 class OvcFields {
   static final List<String> values = [

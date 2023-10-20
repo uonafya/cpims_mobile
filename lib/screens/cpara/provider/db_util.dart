@@ -27,7 +27,7 @@ Future<List<CPARADatabase>> getUnsynchedForms(Database db) async {
   }
 }
 
-Future<int> getUnsyncedFormsCount(Database db) async {
+Future<int> getUnsyncedCparaFormsCount(Database db) async {
   try {
     List<Map<String, dynamic>> countResult = await db.rawQuery(
         "SELECT COUNT(id) AS count FROM Form WHERE id IN (SELECT formID FROM HouseholdAnswer)");
@@ -103,6 +103,45 @@ Future<void> purgeForm(int formID, Database db) async {
   } catch (err) {}
 }
 
+//update form date time for sync
+Future<void> updateFormDateSynced(int formID, Database db) async {
+  try {
+    // Get the current date and time
+    DateTime now = DateTime.now();
+
+    // Update "date_synced" for the "Form" table
+    await db.rawUpdate(
+        "UPDATE Form SET form_date_synced = ? WHERE id = ?",
+        [now.toUtc().toIso8601String(), formID]);
+
+    // // Update "date_synced" for the "HouseholdAnswer" table
+    // await db.rawUpdate(
+    //     "UPDATE HouseholdAnswer SET form_date_synced = ? WHERE formID = ?",
+    //     [now.toUtc().toIso8601String(), formID]);
+    //
+    // // Update "date_synced" for the "ChildAnswer" table
+    // await db.rawUpdate(
+    //     "UPDATE ChildAnswer SET form_date_synced = ? WHERE formID = ?",
+    //     [now.toUtc().toIso8601String(), formID]);
+
+  } catch (err) {
+    // Handle any errors that may occur during the updates
+    print("Error updating date_synced: $err");
+  }
+}
+
+Future<int> getUnsyncedFormCount(Database db) async {
+  try {
+    const query = "SELECT COUNT(*) FROM Form WHERE date_synced IS NULL";
+    final result = await db.rawQuery(query);
+    return result.first[0] as int;
+  } catch (err) {
+    debugPrint("Error getting unsynced form count: $err");
+    return 0;
+  }
+}
+
+
 // Returns the number of CPARA forms
 Future<int> getCountOfForms(Database? db) async {
   try {
@@ -142,7 +181,11 @@ Future<void> submitCparaToUpstream() async{
       // submission
       await singleCparaFormSubmission(cparaForm: cparaForm, authorization: bearerAuth);
       // remove from local db
-      purgeForm(cparaForm.cpara_form_id, database);
+      // purgeForm(cparaForm.cpara_form_id, database);
+      updateFormDateSynced(cparaForm.cpara_form_id, database);
+      print("Unscynced forms are ${await getUnsyncedCparaFormsCount(database)}");
+
+      
     }
     catch(e){
       debugPrint("Cpara form with ovs cpims id : ${cparaForm.ovc_cpims_id} failed submission to upstream");
