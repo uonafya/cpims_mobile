@@ -151,20 +151,20 @@ class Form1bProvider extends ChangeNotifier {
         criticalEvents: criticalEventsList);
     String data = jsonEncode(toDbData);
     print("The json data for form 1 b is $data");
-    // print("ourData${toDbData}");
-    // print("criticalEventsDataForm1b${getFinalCriticalEventsFormData()}");
-
     print("form1b payload:==========>$criticalEventsList");
-
-    handleSubmitToServer(data, toDbData);
 
     bool isFormSaved = await Form1Service.saveFormLocal("form1b", toDbData);
     if (isFormSaved == true) {
-      CustomToastWidget.showToast("Saving...");
+      Get.snackbar(
+        'Success',
+        'Saved data locally.Ensure to sync on internet connection',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.yellow,
+        colorText: Colors.white,
+      );
       resetFormData();
       notifyListeners();
     }
-
     return isFormSaved;
   }
 

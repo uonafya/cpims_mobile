@@ -4,6 +4,7 @@ import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -39,6 +40,7 @@ class LocalDb {
   Future<void> _createTables(Database db, int version) async {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
+    const textTypeNull = 'TEXT NULL';
     const intType = 'INTEGER';
 
     await db.execute('''
@@ -121,7 +123,8 @@ class LocalDb {
           ${Form1.id} $idType,
           ${Form1.ovcCpimsId} $textType,
           ${Form1.dateOfEvent} $textType,
-          ${Form1.formType} $textType
+          ${Form1.formType} $textType,
+          ${Form1.formDateSynced} $textTypeNull
         )
         ''');
 
@@ -150,22 +153,22 @@ class LocalDb {
   }
 
   Future<void> insertCaseLoad(CaseLoadModel caseLoadModel) async {
-    try{
+    try {
       final db = await instance.database;
 
       await db.insert(caseloadTable, caseLoadModel.toJson(),
           conflictAlgorithm: ConflictAlgorithm.replace);
-    }catch(e){
+    } catch (e) {
       debugPrint("Error inserting caseload data: $e");
     }
   }
 
   //delete all caseload data
   Future<void> deleteAllCaseLoad() async {
-    try{
+    try {
       final db = await instance.database;
       await db.delete(caseloadTable);
-    }catch(e){
+    } catch (e) {
       debugPrint("Error deleting caseload data: $e");
     }
   }
@@ -189,20 +192,9 @@ class LocalDb {
   }
 
   Future<void> creatingCparaTables(Database db, int version) async {
+    await createCparaForms(db, version);
     try {
       debugPrint("Creating Cpara tables");
-      await db.execute(
-          "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT);");
-
-      // await db.execute(
-      //     "CREATE TABLE IF NOT EXISTS Child(childOVCCPMISID TEXT PRIMARY KEY, childName TEXT, childAge TEXT, childGender TEXT, childSchool TEXT, childOVCRegistered TEXT);");
-
-      // await db.execute(
-      //     "CREATE TABLE IF NOT EXISTS Household(householdID TEXT PRIMARY KEY);");
-
-      // await db.execute(
-      //     "CREATE TABLE IF NOT EXISTS HouseholdChild(childID TEXT, householdID TEXT, FOREIGN KEY (householdID) REFERENCES Household(householdID), PRIMARY KEY(childID, householdID));");
-
       await db.execute(
           "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER, id INTEGER PRIMARY KEY, houseHoldID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (formID) REFERENCES Form(id));");
 
@@ -213,10 +205,26 @@ class LocalDb {
     }
   }
 
+  // Future<void> creatingCparaTables(Database db, int version) async {
+  //   try {
+  //     debugPrint("Creating Cpara tables");
+  //     await db.execute(
+  //         "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT,date_synced TEXT DEFAULT NULL);");
+  //
+  //     await db.execute(
+  //         "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER,id INTEGER PRIMARY KEY,houseHoldID TEXT,questionID TEXT,answer TEXT,FOREIGN KEY (formID) REFERENCES Form(id),date_synced TEXT DEFAULT NULL);");
+  //
+  //     await db.execute(
+  //         "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (formID) REFERENCES Form(id),date_synced TEXT DEFAULT NULL);");
+  //   } catch (err) {
+  //     debugPrint("Error creating Cpara tables: $err");
+  //   }
+  // }
+
   Future<void> insertCparaData(
       {required CparaModel cparaModelDB,
-      required String ovcId,
-      required String careProviderId}) async {
+        required String ovcId,
+        required String careProviderId}) async {
     final db = await instance.database;
 
     // Create form
@@ -242,6 +250,21 @@ class LocalDb {
         criteria TEXT,
         date_of_event TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    ''');
+    } catch (err) {
+      debugPrint(err.toString());
+    }
+  }
+
+  Future<void> createCparaForms(Database db, int version) async {
+    try {
+      await db.execute('''
+      CREATE TABLE $cparaForms (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        form_id INTEGER,
+        date TEXT,
+        form_date_synced TEXT NULL
       )
     ''');
     } catch (err) {
@@ -292,7 +315,7 @@ class LocalDb {
     final db = await instance.database;
     const sql = 'SELECT * FROM $tableFormMetadata WHERE field_name = ?';
     final List<Map<String, dynamic>> results =
-        await db.rawQuery(sql, [fieldName]);
+    await db.rawQuery(sql, [fieldName]);
     return results;
   }
 
@@ -306,6 +329,7 @@ class LocalDb {
           'ovc_cpims_id': formData.ovcCpimsId,
           'date_of_event': formData.date_of_event,
           'form_type': formType,
+          'form_date_synced': null,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -333,58 +357,16 @@ class LocalDb {
         );
       }
     } catch (e) {
-      print(">>>>>>>>>>>>>$e");
+      print('Error inserting form1 data: $e');
     }
   }
 
-  // Future<List<Map<String, dynamic>>> queryAllForm1Rows(String formType) async {
-  //   try {
-  //     final db = await instance.database;
-  //     const sql = 'SELECT * FROM $form1Table WHERE form_type = ?';
-  //     final List<Map<String, dynamic>> form1Rows =
-  //         await db.rawQuery(sql, [formType]);
-  //
-  //     List<Map<String, dynamic>> updatedForm1Rows = [];
-  //
-  //     for (var form1row in form1Rows) {
-  //       int formId = form1row['_id'];
-  //
-  //       // Fetch associated services
-  //       final List<Map<String, dynamic>> services = await db.query(
-  //         form1ServicesTable,
-  //         where: '${Form1Services.formId} = ?',
-  //         whereArgs: [formId],
-  //       );
-  //
-  //       // Fetch associated critical events
-  //       final List<Map<String, dynamic>> criticalEvents = await db.query(
-  //         form1CriticalEventsTable,
-  //         where: '${Form1CriticalEvents.formId} = ?',
-  //         whereArgs: [formId],
-  //       );
-  //
-  //       // Create a new map that includes existing form1row data, services, and critical_events
-  //       Map<String, dynamic> updatedForm1Row = {
-  //         ...form1row,
-  //         'services': services,
-  //         'critical_events': criticalEvents,
-  //       };
-  //
-  //       // Add the updated map to the list
-  //       updatedForm1Rows.add(updatedForm1Row);
-  //     }
-  //
-  //     return updatedForm1Rows;
-  //   } catch (e) {
-  //     print("Error querying form1 data: $e");
-  //     return [];
-  //   }
-  // }
   Future<List<Map<String, dynamic>>> queryAllForm1Rows(String formType) async {
     try {
       final db = await instance.database;
-      const sql = 'SELECT * FROM $form1Table WHERE form_type = ?';
-      final List<Map<String, dynamic>> form1Rows = await db.rawQuery(sql, [formType]);
+      const sql = 'SELECT * FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
+      final List<Map<String, dynamic>> form1Rows =
+      await db.rawQuery(sql, [formType]);
 
       List<Map<String, dynamic>> updatedForm1Rows = [];
 
@@ -424,6 +406,25 @@ class LocalDb {
       return [];
     }
   }
+
+
+  Future<int?> queryForm1UnsyncedForms(String formType) async {
+    try {
+      final db = await instance.database;
+      const sql = 'SELECT COUNT(*) FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
+      final List<Map<String, dynamic>> result = await db.rawQuery(sql, [formType]);
+
+      if (result.isNotEmpty) {
+        return Sqflite.firstIntValue(result);
+      } else {
+        return 0; // Return 0 if no count is found.
+      }
+    } catch (e) {
+      print("Error querying form1 count: $e");
+      return 0; // Return 0 if there is an error.
+    }
+  }
+
   // get a single row(form 1a or 1b)
   Future<bool> deleteForm1Data(String formType, int id) async {
     try {
@@ -460,6 +461,32 @@ class LocalDb {
     return false;
   }
 
+  //update form1 date_synced column
+  Future<void> updateForm1DataDateSync(String formType, int id) async {
+    try {
+      final db = await instance.database;
+      final queryResults = await db.query(
+        form1Table,
+        where: '${Form1.id} = ?',
+        whereArgs: [id],
+      );
+
+      if (queryResults.isNotEmpty) {
+        final form1Id = queryResults.first[Form1.id] as int;
+        await db.update(
+          form1Table,
+          {
+            'form_date_synced': DateTime.now().toString(),
+          },
+          where: '${Form1.id} = ?',
+          whereArgs: [form1Id],
+        );
+      }
+    } catch (e) {
+      debugPrint("Error updating form1 data: $e");
+    }
+  }
+
 // inserting case plan
   Future<bool> insertCasePlan(CasePlanModel casePlan) async {
     try {
@@ -477,7 +504,7 @@ class LocalDb {
       // Insert the associated services
       for (var service in casePlan.services) {
         final serviceIdList =
-            service.serviceIds.join(','); // Join service IDs with commas
+        service.serviceIds.join(','); // Join service IDs with commas
         final responsibleIdList = service.responsibleIds
             .join(','); // Join responsible IDs with commas
 
@@ -536,12 +563,12 @@ class LocalDb {
             gapId: serviceRow[CasePlanServices.gapId] as String,
             priorityId: serviceRow[CasePlanServices.priorityId] as String,
             responsibleIds:
-                (serviceRow['responsible_ids'] as String).split(','),
+            (serviceRow['responsible_ids'] as String).split(','),
             // Parse comma-separated responsible IDs
             resultsId: serviceRow[CasePlanServices.resultsId] as String,
             reasonId: serviceRow[CasePlanServices.reasonId] as String,
             completionDate:
-                serviceRow[CasePlanServices.completionDate] as String,
+            serviceRow[CasePlanServices.completionDate] as String,
           ));
         }
 
@@ -610,6 +637,9 @@ const form1Table = 'form1';
 const form1ServicesTable = 'form1_services';
 const form1CriticalEventsTable = 'form1_critical_events';
 const ovcsubpopulation = 'ovcsubpopulation';
+const cparaForms = 'Form';
+const cparaHouseholdAnswers = 'cpara_household_answers';
+const cparaChildAnswers = 'cpara_child_answers';
 
 class OvcFields {
   static final List<String> values = [
@@ -744,6 +774,7 @@ class Form1 {
   static const String formType = "form_type";
   static const String ovcCpimsId = "ovc_cpims_id";
   static const String dateOfEvent = 'date_of_event';
+  static const String formDateSynced = 'form_date_synced';
 }
 
 class Form1Services {

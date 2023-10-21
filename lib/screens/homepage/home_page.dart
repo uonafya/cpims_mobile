@@ -18,7 +18,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 
+import '../../providers/db_provider.dart';
 import '../cpara/provider/db_util.dart';
 import '../unsynched_workflows/unsynched_workeflows_screen.dart';
 
@@ -38,8 +40,8 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
+    countFormOneUnsynched();
     syncWorkflows();
-
   }
 
   bool isSyncing = false;
@@ -86,9 +88,11 @@ class _HomepageState extends State<Homepage> {
           );
           // handle the response here
           if (response.statusCode == 200) {
-            // delete the form from local storage
-            debugPrint("The form data here is $formData");
-            await Form1Service.deleteFormLocal(
+            // await Form1Service.deleteFormLocal(
+            //   formType['formType']!,
+            //   formData.id,
+            // );
+            await Form1Service.updateFormLocalDateSync(
               formType['formType']!,
               formData.id,
             );
@@ -130,6 +134,23 @@ class _HomepageState extends State<Homepage> {
             .removeCurrentSnackBar(); // Remove the indefinite snackbar
       }
     }
+  }
+
+  countFormOneUnsynched(){
+    Form1Service.getCountAllFormOneA();
+    Form1Service.getCountAllFormOneB();
+  }
+
+  countUnsycedCpara()  async {
+    int count = 0;
+    Database database = await LocalDb.instance.database;
+    count = await getUnsyncedCparaFormsCount(database);
+    if (count > 0) {
+      print("The count is $count");
+      return count;
+    }
+    print("The count is $count");
+    return count;
   }
 
   void _showSyncSnackbar() {
@@ -180,19 +201,19 @@ class _HomepageState extends State<Homepage> {
                   'Application data and usage summary',
                   style: TextStyle(color: kTextGrey),
                 ),
-                // StatisticsItem(
-                //   title: 'UNSYNCED RECORDS',
-                //   icon: FontAwesomeIcons.arrowsRotate,
-                //   color: const Color(0xffa10036),
-                //   secondaryColor: const Color(0xff630122),
-                //   form1ACount: 4,
-                //   form1BCount: 3,
-                //   cpaCount: 2,
-                //   cparaCount: 1,
-                //   onClick: () {
-                //     Get.to(() => const UnsyncedWorkflowsPage());
-                //   },
-                // ),
+                StatisticsItem(
+                  title: 'UNSYNCED RECORDS',
+                  icon: FontAwesomeIcons.arrowsRotate,
+                  color: const Color(0xffa10036),
+                  secondaryColor: const Color(0xff630122),
+                  form1ACount: 4,
+                  form1BCount: 3,
+                  cpaCount: 2,
+                  cparaCount: 8,
+                  onClick: () {
+                    Get.to(() => const UnsyncedWorkflowsPage());
+                  },
+                ),
                 // StatisticsItem(
                 //   title: 'UNAPPROVED RECORDS',
                 //   icon: FontAwesomeIcons.fileCircleXmark,

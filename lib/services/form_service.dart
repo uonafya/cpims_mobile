@@ -37,6 +37,15 @@ class Form1Service {
     return false;
   }
 
+  static Future<void> updateFormOneLocalDateSync(String formType, int id) async {
+    final db = LocalDb.instance;
+    try {
+      db.updateForm1DataDateSync(formType, id);
+    } catch (e) {
+      debugPrint("An error on updateFormLocalDateSync ${e.toString()}");
+    }
+  }
+
 // get all forms from local storage
   static _getAllValues(String formType) async {
     final db = LocalDb.instance;
@@ -53,6 +62,23 @@ class Form1Service {
     }
     return [];
   }
+
+  static Future<int?> getFormCount(String formType) async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.queryForm1UnsyncedForms(formType);
+      debugPrint("Form count: $count");
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      print("An error on getFormCount: ${e.toString()}");
+    }
+    return 0; // Return 0 if there is an error.
+  }
+
 
   static Future<Response> _postForm(
       formData, String formEndpoint, String authToken) async {
@@ -91,8 +117,27 @@ class Form1Service {
     return _deleteValue(formType, id);
   }
 
+  static Future<void> updateFormLocalDateSync(String formType, int id) async {
+    final db = LocalDb.instance;
+    try {
+      db.updateForm1DataDateSync(formType, id);
+    } catch (e) {
+      debugPrint("An error on updateFormLocalDateSync ${e.toString()}");
+    }
+  }
+
   static getAllForms(String formType) {
     return _getAllValues(formType);
+  }
+
+  static Future<int?> getCountAllFormOneA() async {
+    print("getCountAllFormOneA count is ${await getFormCount("form1a")}");
+    return await getFormCount("form1a");
+  }
+
+  static Future<int?> getCountAllFormOneB() async {
+    print("getCountAllFormOneB count is ${await getFormCount("form1b")}");
+    return await getFormCount("form1b");
   }
 
   // send form to server

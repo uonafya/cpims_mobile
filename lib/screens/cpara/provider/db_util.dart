@@ -47,10 +47,6 @@ Future<int> getUnsyncedCparaFormsCount(Database db) async {
 Future<CPARADatabase> getFormFromDB(int formID, Database? db) async {
   try {
     CPARADatabase form = CPARADatabase();
-    // Get ovpmsid, dateofevent and questions
-    // List<Map<String, dynamic>> fetchResult1 = await db!.rawQuery(
-    //     "SELECT householdid, date, questionid, answer FROM HouseholdAnswer INNER JOIN Form ON Form.id = HouseholdAnswer.formID");
-
     List<Map<String, dynamic>> fetchResult1 = await db!.rawQuery(
         "SELECT formID, householdid, date, questionid, answer "
             "FROM HouseholdAnswer "
