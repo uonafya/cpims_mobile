@@ -39,6 +39,7 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     super.initState();
     syncWorkflows();
+
   }
 
   bool isSyncing = false;

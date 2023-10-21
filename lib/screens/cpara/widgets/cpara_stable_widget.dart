@@ -426,7 +426,7 @@ class _PastCPARAListWidgetState extends State<PastCPARAListWidget> {
             color: Colors.grey.shade200
         ),
         child: FutureBuilder<List<CPARADatabase>>(
-          future: database != null ? getUnsynchedForms(database!) : Future.value([]),
+          future: database != null ? getUnsyncedForms(database!) : Future.value([]),
           builder: (context, snapshot) {
 
             if (snapshot.connectionState == ConnectionState.waiting) {
