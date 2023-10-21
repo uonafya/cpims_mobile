@@ -37,6 +37,10 @@ class _HomepageState extends State<Homepage> {
     {'formType': 'form1b', 'endpoint': 'F1B/'},
   ];
 
+  late int formOneACount = 0;
+  late int formOneBCount = 0;
+  late int cparaCount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -136,12 +140,12 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
-  countFormOneUnsynched(){
-    Form1Service.getCountAllFormOneA();
-    Form1Service.getCountAllFormOneB();
+  countFormOneUnsynched() async {
+    formOneACount = (await Form1Service.getCountAllFormOneA())!;
+    formOneBCount = (await Form1Service.getCountAllFormOneB())!;
   }
 
-  countUnsycedCpara()  async {
+  countUnsycedCpara() async {
     int count = 0;
     Database database = await LocalDb.instance.database;
     count = await getUnsyncedCparaFormsCount(database);
@@ -206,13 +210,11 @@ class _HomepageState extends State<Homepage> {
                   icon: FontAwesomeIcons.arrowsRotate,
                   color: const Color(0xffa10036),
                   secondaryColor: const Color(0xff630122),
-                  form1ACount: 4,
-                  form1BCount: 3,
-                  cpaCount: 2,
-                  cparaCount: 8,
-                  onClick: () {
-                    Get.to(() => const UnsyncedWorkflowsPage());
-                  },
+                  form1ACount: formOneACount,
+                  form1BCount: formOneBCount,
+                  cpaCount: 0,
+                  cparaCount: 0,
+                  onClick: () {},
                 ),
                 // StatisticsItem(
                 //   title: 'UNAPPROVED RECORDS',
