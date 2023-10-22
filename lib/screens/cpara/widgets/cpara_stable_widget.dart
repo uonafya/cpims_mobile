@@ -711,8 +711,9 @@ RadioButtonOptions convertingStringToRadioButtonOptions(String savedRadioButtonO
     case "n/a":
       return RadioButtonOptions.na;
     case "no":
-    default:
       return RadioButtonOptions.no;
+    default:
+      return RadioButtonOptions.na;
   }
 }
 
