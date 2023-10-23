@@ -115,30 +115,30 @@ class StatisticsItem extends StatelessWidget {
               ]),
             ),
             const Spacer(),
-            // Container(
-            //   height: 35,
-            //   width: double.infinity,
-            //   color: secondaryColor,
-            //   // child: const Row(
-            //   //     mainAxisAlignment: MainAxisAlignment.end,
-            //   //     children: [
-            //   //       Text(
-            //   //         'View Details',
-            //   //         style: TextStyle(color: Colors.white, fontSize: 12),
-            //   //       ),
-            //   //       SizedBox(
-            //   //         width: 5,
-            //   //       ),
-            //   //       Icon(
-            //   //         Icons.arrow_circle_right_outlined,
-            //   //         color: Colors.white,
-            //   //         size: 14,
-            //   //       ),
-            //   //       SizedBox(
-            //   //         width: 10,
-            //   //       ),
-            //   //     ]),
-            // )
+            Container(
+              height: 35,
+              width: double.infinity,
+              color: secondaryColor,
+              child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      'View Details',
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Icon(
+                      Icons.arrow_circle_right_outlined,
+                      color: Colors.white,
+                      size: 14,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                  ]),
+            )
           ],
         ),
       ),

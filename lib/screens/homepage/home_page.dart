@@ -55,10 +55,93 @@ class _HomepageState extends State<Homepage> {
 
   bool noFormsToSync = true;
 
+  // Future<void> syncWorkflows() async {
+  //   final isConnected =
+  //       await Provider.of<ConnectivityProvider>(context, listen: false)
+  //           .checkInternetConnection();
+  //   if (isConnected) {
+  //     submitCparaToUpstream();
+  //     var prefs = await SharedPreferences.getInstance();
+  //     var accessToken = prefs.getString('access');
+  //     setState(() {
+  //       isSyncing = true;
+  //     });
+  //     if (mounted) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(
+  //           content: Text('Syncing forms...'),
+  //           duration: Duration(seconds: 3), // Show indefinitely
+  //         ),
+  //       );
+  //     }
+  //     // Reset the noFormsToSync flag before checking each form type
+  //     noFormsToSync = false;
+  //     for (var formType in formsList) {
+  //       List<dynamic> forms = await Form1Service.getAllForms(
+  //         formType['formType']!,
+  //       );
+  //       debugPrint("The forms are $forms");
+  //
+  //       if (forms.isEmpty) {
+  //         noFormsToSync = true;
+  //         debugPrint("No forms to sync");
+  //       }
+  //
+  //       for (var formData in forms) {
+  //         var response = await Form1Service.postFormRemote(
+  //           formData,
+  //           formType['endpoint']!,
+  //           accessToken!,
+  //         );
+  //         // handle the response here
+  //         if (response.statusCode == 200) {
+  //           await Form1Service.updateFormLocalDateSync(
+  //             formType['formType']!,
+  //             formData.id,
+  //           );
+  //           Get.snackbar(
+  //             'Success',
+  //             'Successfully synced forms',
+  //             backgroundColor: Colors.green,
+  //             colorText: Colors.white,
+  //           );
+  //         } else {
+  //           debugPrint(
+  //               "Failed to sync ${formType['formType']} and error is ${response.data}");
+  //           Get.snackbar(
+  //             'Error',
+  //             'Failed to sync ${formType['formType']} and code is ${response.statusCode}',
+  //             backgroundColor: Colors.red,
+  //             colorText: Colors.white,
+  //           );
+  //         }
+  //       }
+  //     }
+  //
+  //     setState(() {
+  //       isSyncing = false;
+  //     });
+  //
+  //     if (noFormsToSync) {
+  //       // Show the "No forms to sync" snack bar only once
+  //       Get.snackbar(
+  //         'Info',
+  //         'No forms to sync',
+  //         backgroundColor: Colors.orange,
+  //         colorText: Colors.black,
+  //       );
+  //     }
+  //
+  //     if (mounted) {
+  //       ScaffoldMessenger.of(context)
+  //           .removeCurrentSnackBar(); // Remove the indefinite snackbar
+  //     }
+  //   }
+  // }
   Future<void> syncWorkflows() async {
     final isConnected =
-        await Provider.of<ConnectivityProvider>(context, listen: false)
-            .checkInternetConnection();
+    await Provider.of<ConnectivityProvider>(context, listen: false)
+        .checkInternetConnection();
     if (isConnected) {
       submitCparaToUpstream();
       var prefs = await SharedPreferences.getInstance();
@@ -76,11 +159,16 @@ class _HomepageState extends State<Homepage> {
       }
       // Reset the noFormsToSync flag before checking each form type
       noFormsToSync = false;
+
+      int totalFormsToSync = 0;
+      int formsSynced = 0;
+
       for (var formType in formsList) {
         List<dynamic> forms = await Form1Service.getAllForms(
           formType['formType']!,
         );
         debugPrint("The forms are $forms");
+        totalFormsToSync += forms.length;
 
         if (forms.isEmpty) {
           noFormsToSync = true;
@@ -95,20 +183,20 @@ class _HomepageState extends State<Homepage> {
           );
           // handle the response here
           if (response.statusCode == 200) {
-            // await Form1Service.deleteFormLocal(
-            //   formType['formType']!,
-            //   formData.id,
-            // );
             await Form1Service.updateFormLocalDateSync(
               formType['formType']!,
               formData.id,
             );
-            Get.snackbar(
-              'Success',
-              'Successfully synced forms',
-              backgroundColor: Colors.green,
-              colorText: Colors.white,
-            );
+            formsSynced++;
+
+            if (formsSynced == totalFormsToSync) {
+              Get.snackbar(
+                'Success',
+                'Successfully synced forms',
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+              );
+            }
           } else {
             debugPrint(
                 "Failed to sync ${formType['formType']} and error is ${response.data}");
