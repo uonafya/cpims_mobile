@@ -64,15 +64,68 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
 
     // Initialize children
     children = [];
-    for (CaseLoadModel model in models) {
-      children.add(HealthChild(
-          id: "${model.cpimsId}",
-          question1: "",
-          question2: "",
-          question3: "",
-          name: "${model.ovcFirstName} ${model.ovcSurname}"));
+
+    if(healthModel.childrenQuestions != null) {
+      set3_1final = RadioButtonOptions.na;
+      set3_2final = RadioButtonOptions.na;
+      set3_3final = RadioButtonOptions.na;
+      for (HealthChild child in healthModel.childrenQuestions!) {
+        children.add(child);
+      }
     }
+    else {
+      for (CaseLoadModel model in models) {
+        children.add(HealthChild(
+            id: "${model.cpimsId}",
+            question1: "",
+            question2: "",
+            question3: "",
+            name: "${model.ovcFirstName} ${model.ovcSurname}"));
+      }
+    }
+
+    // for(int i = 0; i < children.length; i++){
+    //   HealthChild child = children[i];
+    //   children[i].question1 = child.question1;
+    //   children[i].question2 = child.question2;
+    //   children[i].question3 = child.question3;
+    // }
+
+
     // Initialize Details
+    // Overall questions
+
+    goal2InitialAnswer = healthModel.overallQuestion1 == null
+        ? goal2InitialAnswer
+        : convertingStringToRadioButtonOptions(
+            healthModel.overallQuestion1!);
+    suppresedPast12Initial = healthModel.overallQuestion2 == null
+        ? suppresedPast12Initial
+        : convertingStringToRadioButtonOptions(
+            healthModel.overallQuestion2!);
+    documentedChildrenSuppressedInitial =
+        healthModel.overallQuestion3 == null
+            ? documentedChildrenSuppressedInitial
+            : convertingStringToRadioButtonOptions(
+                healthModel.overallQuestion3!);
+    noDocumentCaregiverAppointmentInitial =
+        healthModel.overallQuestion4 == null
+            ? noDocumentCaregiverAppointmentInitial
+            : convertingStringToRadioButtonOptions(
+                healthModel.overallQuestion4!);
+    goal3InitialAnswer = healthModel.overallQuestion5 == null
+        ? goal3InitialAnswer
+        : convertingStringToRadioButtonOptions(
+            healthModel.overallQuestion5!);
+    goal4Initial = healthModel.overallQuestion6 == null
+        ? goal4Initial
+        : convertingStringToRadioButtonOptions(
+            healthModel.overallQuestion6!);
+    childLessThan2Initial = healthModel.overallQuestion7 == null
+        ? childLessThan2Initial
+        : convertingStringToRadioButtonOptions(
+            healthModel.overallQuestion7!);
+    //specific questions
     q1_1ChildrenHivTested = healthModel.question1 == null
         ? q1_1ChildrenHivTested
         : convertingStringToRadioButtonOptions(healthModel.question1!);
@@ -334,6 +387,12 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
         setState(() {
           goal3InitialAnswer = value;
         });
+        HealthModel healthmodel =
+            Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                HealthModel();
+        String overallQuestion5 = convertingRadioButtonOptionsToString(value);
+        Provider.of<CparaProvider>(context, listen: false)
+            .updateHealthModel(healthmodel.copyWith(overallQuestion5: overallQuestion5));
         break;
       case "initial_4":
         setState(() {
@@ -358,6 +417,14 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
             childLessThan2Initial = null;
           });
         }
+
+        HealthModel healthmodel =
+            Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                HealthModel();
+        String overallQuestion6 = convertingRadioButtonOptionsToString(value);
+        Provider.of<CparaProvider>(context, listen: false)
+            .updateHealthModel(healthmodel.copyWith(overallQuestion6: overallQuestion6));
+
         break;
       case "initial_2":
         setState(() {
@@ -396,6 +463,12 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
             noDocumentCaregiverAppointmentInitial = RadioButtonOptions.yes;
           });
         }
+        HealthModel healthmodel =
+            Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                HealthModel();
+        String overallQuestion1 = convertingRadioButtonOptionsToString(value);
+        Provider.of<CparaProvider>(context, listen: false)
+            .updateHealthModel(healthmodel.copyWith(overallQuestion1: overallQuestion1));
         break;
       case "initial2_1":
         setState(() {
@@ -412,6 +485,12 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           updateQuestion("q2_2", RadioButtonOptions.yes);
           updateQuestion("q2_3", RadioButtonOptions.yes);
         }
+        HealthModel healthmodel =
+            Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                HealthModel();
+        String overallQuestion2 = convertingRadioButtonOptionsToString(value);
+        Provider.of<CparaProvider>(context, listen: false)
+            .updateHealthModel(healthmodel.copyWith(overallQuestion2: overallQuestion2));
         break;
       case "initial2_4":
         setState(() {
@@ -428,6 +507,13 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           updateQuestion("q2_5", RadioButtonOptions.yes);
           updateQuestion("q2_6", RadioButtonOptions.yes);
         }
+
+        HealthModel healthmodel =
+            Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                HealthModel();
+        String overallQuestion3 = convertingRadioButtonOptionsToString(value);
+        Provider.of<CparaProvider>(context, listen: false)
+            .updateHealthModel(healthmodel.copyWith(overallQuestion3: overallQuestion3));
         break;
       case "initial2_7":
         setState(() {
@@ -444,6 +530,14 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           updateQuestion("q2_8", RadioButtonOptions.yes);
           updateQuestion("q2_9", RadioButtonOptions.yes);
         }
+
+        HealthModel healthmodel =
+            Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                HealthModel();
+        String overallQuestion4 = convertingRadioButtonOptionsToString(value);
+        Provider.of<CparaProvider>(context, listen: false)
+            .updateHealthModel(healthmodel.copyWith(overallQuestion4: overallQuestion4));
+
         break;
       case "initial4_4":
         setState(() {
@@ -456,6 +550,12 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
         if (value == RadioButtonOptions.yes) {
           updateQuestion("q4_4", null);
         }
+        HealthModel healthmodel =
+            Provider.of<CparaProvider>(context, listen: false).healthModel ??
+                HealthModel();
+        String overallQuestion7 = convertingRadioButtonOptionsToString(value);
+        Provider.of<CparaProvider>(context, listen: false)
+            .updateHealthModel(healthmodel.copyWith(overallQuestion7: overallQuestion7));
         break;
       // case "set3_1final":
       //   List<Children> newChildren = List.from(children);
@@ -520,7 +620,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
     debugPrint(members.toString() + message);
     // If all the values are yes return RadioButtonOptions.yes, if not return RadioButtonOptions.no
     if (members.isEmpty) {
-      return RadioButtonOptions.no;
+      return RadioButtonOptions.na;
     } else if (members.any(
         (element) => element == RadioButtonOptions.no || element == null)) {
       return RadioButtonOptions.no;
@@ -851,60 +951,6 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
         HealthyGoalBlock(
           doesSectionDependOnInitialAnswer: true,
           initalQuestionValue: goal3InitialAnswer,
-          // updateInitialQuestion: (RadioButtonOptions? val) {
-          //   updateQuestion("initial_3", val);
-          //   // if val is yes set everything to null
-          //   if (val == RadioButtonOptions.yes) {
-          //     List<HealthChild> newChildren = List.from(children);
-          //     for (var i in newChildren) {
-          //       i.question1 = convertingRadioButtonOptionsToString(null);
-          //       i.question2 = convertingRadioButtonOptionsToString(null);
-          //       i.question3 = convertingRadioButtonOptionsToString(null);
-          //     }
-          //
-          //     HealthModel healthmodel =
-          //         Provider.of<CparaProvider>(context, listen: false)
-          //             .healthModel ??
-          //             HealthModel();
-          //     Provider.of<CparaProvider>(context, listen: false)
-          //         .updateHealthModel(
-          //         healthmodel.copyWith(childrenQuestions: newChildren));
-          //
-          //     setState(() {
-          //       children = newChildren;
-          //       set3_1final = null;
-          //       set3_2final = null;
-          //       set3_3final = null;
-          //     });
-          //   }
-          //   // if val is no set all children to yes
-          //   if (val == RadioButtonOptions.no) {
-          //     List<HealthChild> newChildren = List.from(children);
-          //     for (var i in newChildren) {
-          //       i.question1 = convertingRadioButtonOptionsToString(
-          //           RadioButtonOptions.yes);
-          //       i.question2 = convertingRadioButtonOptionsToString(
-          //           RadioButtonOptions.yes);
-          //       i.question3 = convertingRadioButtonOptionsToString(
-          //           RadioButtonOptions.yes);
-          //     }
-          //
-          //     HealthModel healthmodel =
-          //         Provider.of<CparaProvider>(context, listen: false)
-          //             .healthModel ??
-          //             HealthModel();
-          //     Provider.of<CparaProvider>(context, listen: false)
-          //         .updateHealthModel(
-          //         healthmodel.copyWith(childrenQuestions: newChildren));
-          //
-          //     setState(() {
-          //       children = newChildren;
-          //       set3_1final = RadioButtonOptions.na;
-          //       set3_2final = RadioButtonOptions.na;
-          //       set3_3final = RadioButtonOptions.na;
-          //     });
-          //   }
-          // },
           updateInitialQuestion: (RadioButtonOptions? val) {
             updateQuestion("initial_3", val);
             // if val is yes set everything to null

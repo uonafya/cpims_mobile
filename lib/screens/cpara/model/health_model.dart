@@ -1,6 +1,13 @@
 import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
 
 class HealthModel {
+  final String? overallQuestion1;
+  final String? overallQuestion2;
+  final String? overallQuestion3;
+  final String? overallQuestion4;
+  final String? overallQuestion5;
+  final String? overallQuestion6;
+  final String? overallQuestion7;
   final String? question1;
   final String? question2;
   final String? question3;
@@ -22,6 +29,13 @@ class HealthModel {
   final List<HealthChild>? childrenQuestions;
 
   HealthModel({
+    this.overallQuestion1,
+    this.overallQuestion2,
+    this.overallQuestion3,
+    this.overallQuestion4,
+    this.overallQuestion5,
+    this.overallQuestion6,
+    this.overallQuestion7,
     this.question1,
     this.question2,
     this.question3,
@@ -44,6 +58,13 @@ class HealthModel {
   });
 
   HealthModel copyWith({
+    String? overallQuestion1,
+    String? overallQuestion2,
+    String? overallQuestion3,
+    String? overallQuestion4,
+    String? overallQuestion5,
+    String? overallQuestion6,
+    String? overallQuestion7,
     String? question1,
     String? question2,
     String? question3,
@@ -65,6 +86,13 @@ class HealthModel {
     List<HealthChild>? childrenQuestions,
   }) {
     return HealthModel(
+        overallQuestion1: overallQuestion1 ?? this.overallQuestion1,
+        overallQuestion2: overallQuestion2 ?? this.overallQuestion2,
+        overallQuestion3: overallQuestion3 ?? this.overallQuestion3,
+        overallQuestion4: overallQuestion4 ?? this.overallQuestion4,
+        overallQuestion5: overallQuestion5 ?? this.overallQuestion5,
+        overallQuestion6: overallQuestion6 ?? this.overallQuestion6,
+        overallQuestion7: overallQuestion7 ?? this.overallQuestion7,
         question1: question1 ?? this.question1,
         question2: question2 ?? this.question2,
         question3: question3 ?? this.question3,
@@ -88,6 +116,13 @@ class HealthModel {
 
   factory HealthModel.fromJson(Map<String, dynamic> json) {
     return HealthModel(
+      overallQuestion1: json['overallQuestion1'],
+      overallQuestion2: json['overallQuestion2'],
+      overallQuestion3: json['overallQuestion3'],
+      overallQuestion4: json['overallQuestion4'],
+      overallQuestion5: json['overallQuestion5'],
+      overallQuestion6: json['overallQuestion6'],
+      overallQuestion7: json['overallQuestion7'],
       question1: json['question1'],
       question2: json['question2'],
       question3: json['question3'],
@@ -188,10 +223,12 @@ class HealthChild {
   }
 
   Map<String, dynamic> toJSON() {
-    return {"id": id,
+    return {
+      "id": id,
       CparaQuestionIds.healthGoal3ChildQuestion1: question1,
       CparaQuestionIds.healthGoal3ChildQuestion2: question2,
-      CparaQuestionIds.healthGoal3ChildQuestion3: question3};
+      CparaQuestionIds.healthGoal3ChildQuestion3: question3
+    };
   }
 
   @override
