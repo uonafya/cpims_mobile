@@ -58,7 +58,7 @@ class _CheckboxFormState extends State<CheckboxForm> {
     CheckboxQuestion(id: 6, question: 'CLHIV', questionID: "CLHIV"),
     CheckboxQuestion(id: 7, question: 'SVAC', questionID: "SVAC"),
     CheckboxQuestion(
-        id: 8, question: 'Household Affected by HIV', questionID: "HHIV"),
+        id: 8, question: 'Household Affected by HIV', questionID: "AHIV"),
   ];
 
   @override
