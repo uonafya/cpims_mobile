@@ -212,10 +212,10 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                const Text(
-                  'Application data and usage summary',
-                  style: TextStyle(color: kTextGrey),
-                ),
+                 const Text(
+                   'Application data and usage summary',
+                   style: TextStyle(color: kTextGrey),
+                 ),
                 StatisticsItem(
                   title: 'UNSYNCED RECORDS',
                   icon: FontAwesomeIcons.arrowsRotate,
@@ -290,7 +290,7 @@ class _HomepageState extends State<Homepage> {
                     // ),
                     StatisticsGridItem(
                       title: 'OVC-ACTIVE/EVER REGISTERED',
-                      value: dashData.caregivers.toString(),
+                      value: "${dashData.children.toString()} / ${dashData.childrenAll.toString()}",
                       icon: FontAwesomeIcons.person,
                       color: kPrimaryColor,
                       secondaryColor: const Color(0xff0E6668),

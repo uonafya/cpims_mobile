@@ -1,5 +1,5 @@
 class SummaryDataModel {
-  final int children;
+  final int children; //active
   final int caregivers;
   final int government;
   final int ngo;
@@ -8,7 +8,7 @@ class SummaryDataModel {
   final int orgUnits;
   final int workforceMembers;
   final int household;
-  final int childrenAll;
+  final int childrenAll; //ever register
   final OvcSummary ovcSummary;
   final List<dynamic> ovcRegs;
   final List<dynamic> caseRegs;

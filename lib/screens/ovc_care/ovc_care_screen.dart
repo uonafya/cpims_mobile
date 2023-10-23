@@ -139,6 +139,7 @@ class _OVCCareScreenState extends State<OVCCareScreen> {
 class OVCCardItem extends StatefulWidget {
   const OVCCardItem(
       {super.key, required this.caseLoadModel, required this.allCaseLoadData});
+
   final CaseLoadModel caseLoadModel;
   final List<CaseLoadModel> allCaseLoadData;
 
@@ -158,9 +159,7 @@ class _OVCCardItemState extends State<OVCCardItem> {
     return Column(
       children: [
         GestureDetector(
-          onTap: () {
-            Get.to(() => OVCDetailsScreen(caseLoadModel: widget.caseLoadModel));
-          },
+          onTap: () {},
           child: Card(
             child: Padding(
               padding: const EdgeInsets.all(10.0),

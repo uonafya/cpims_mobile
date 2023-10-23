@@ -177,7 +177,8 @@ class CasePlanProvider extends ChangeNotifier {
     print("Caseplan data is ${jsonEncode(CasePlanModel.fromJson(payload))}");
 
     if (isFormSaved == true) {
-      handleSubmitToServer();
+
+
       resetFormData();
       CustomToastWidget.showToast("Saving...");
 
