@@ -290,7 +290,7 @@ class _HomepageState extends State<Homepage> {
                     // ),
                     StatisticsGridItem(
                       title: 'OVC-ACTIVE/EVER REGISTERED',
-                      value: "${dashData.children.toString()} / ${dashData.childrenAll.toString()}",
+                      value: '${dashData.children}/${dashData.childrenAll.toString()}',
                       icon: FontAwesomeIcons.person,
                       color: kPrimaryColor,
                       secondaryColor: const Color(0xff0E6668),

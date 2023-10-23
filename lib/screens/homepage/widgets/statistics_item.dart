@@ -67,7 +67,7 @@ class StatisticsItem extends StatelessWidget {
                       ),
                       Row(children: [
                         Text(
-                          "Form 1a ($form1ACount)",
+                          "Form 1A ($form1ACount)",
                           style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,
@@ -88,7 +88,7 @@ class StatisticsItem extends StatelessWidget {
                       ),
                       Row(children: [
                         Text(
-                          "Form 1b ($form1BCount)",
+                          "Form 1B ($form1BCount)",
                           style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,
@@ -115,30 +115,30 @@ class StatisticsItem extends StatelessWidget {
               ]),
             ),
             const Spacer(),
-            Container(
-              height: 35,
-              width: double.infinity,
-              color: secondaryColor,
-              child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      'View Details',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Icon(
-                      Icons.arrow_circle_right_outlined,
-                      color: Colors.white,
-                      size: 14,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                  ]),
-            )
+            // Container(
+            //   height: 35,
+            //   width: double.infinity,
+            //   color: secondaryColor,
+            //   // child: const Row(
+            //   //     mainAxisAlignment: MainAxisAlignment.end,
+            //   //     children: [
+            //   //       Text(
+            //   //         'View Details',
+            //   //         style: TextStyle(color: Colors.white, fontSize: 12),
+            //   //       ),
+            //   //       SizedBox(
+            //   //         width: 5,
+            //   //       ),
+            //   //       Icon(
+            //   //         Icons.arrow_circle_right_outlined,
+            //   //         color: Colors.white,
+            //   //         size: 14,
+            //   //       ),
+            //   //       SizedBox(
+            //   //         width: 10,
+            //   //       ),
+            //   //     ]),
+            // )
           ],
         ),
       ),

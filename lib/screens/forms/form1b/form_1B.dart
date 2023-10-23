@@ -89,7 +89,7 @@ class _Form1BScreen extends State<Form1BScreen> {
                     width: double.infinity,
                     color: Colors.black,
                     child: Text(
-                      ' FORM 1B DETAILS \n CARE GIVER: ${widget.caseLoad.caregiverNames} \n CPIMIS ID: ${widget.caseLoad.cpimsId}',
+                      ' FORM 1B DETAILS \n CARE GIVER: ${widget.caseLoad.caregiverNames} \n CPIMS ID: ${widget.caseLoad.cpimsId}',
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),

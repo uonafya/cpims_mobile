@@ -60,7 +60,7 @@ class _Form1AScreenState extends State<Form1AScreen> {
             'Service and Monitoring(Form 1A)',
             style: TextStyle(color: kTextGrey),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 10),
           Container(
               decoration: BoxDecoration(color: Colors.white, boxShadow: [
                 BoxShadow(
@@ -76,7 +76,7 @@ class _Form1AScreenState extends State<Form1AScreen> {
                     width: double.infinity,
                     color: Colors.black,
                     child: Text(
-                      ' FORM 1A DETAILS \n CPIMIS NAMES: ${widget.caseLoadModel.ovcSurname}  ${widget.caseLoadModel.ovcFirstName} \n CPIMIS ID: ${widget.caseLoadModel.cpimsId} \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n ',
+                      'OVC DETAILS \n CPIMS NAMES: ${widget.caseLoadModel.ovcSurname}  ${widget.caseLoadModel.ovcFirstName} \n CPIMS ID: ${widget.caseLoadModel.cpimsId} \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n ',
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),

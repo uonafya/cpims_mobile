@@ -54,7 +54,7 @@ class _HistoryForm1AState extends State<HistoryForm1A> {
               height: 10,
             ),
             CustomCard(
-                title: "CPIMIS ID: ${widget.caseLoadModel.cpimsId}",
+                title: "CPIMS ID: ${widget.caseLoadModel.cpimsId}",
                 children: [
                   CustomGridView(
                     crossAxisCount: 2,

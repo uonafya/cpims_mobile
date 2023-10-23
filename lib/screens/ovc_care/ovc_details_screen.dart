@@ -82,48 +82,42 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             const SizedBox(
               height: 10,
             ),
-          Wrap(
-            children: [
-              CustomCard(
-                  title: " OVC DETAILS \n CPIMIS ID: ${widget.caseLoadModel.cpimsId} \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n CAREGIVER ID: ${widget.caseLoadModel.caregiverCpimsId}",
-                  children: [
-                    CustomGridView(
-                      crossAxisCount: 2,
-                      childrenHeight: 65,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: [
-                        CustomCardGridItem(
-                          header: "Surname",
-                          details: "${widget.caseLoadModel.ovcSurname}",
-                        ),
-                        CustomCardGridItem(
-                          header: "Firstname",
-                          details: "${widget.caseLoadModel.ovcFirstName}",
-                        ),
-                        CustomCardGridItem(
-                          header: "Sex",
-                          details: "${widget.caseLoadModel.sex}",
-                        ),
-                        CustomCardGridItem(
-                          header: "Age",
-                          details: calculateAge(
-                              widget.caseLoadModel.dateOfBirth ?? '10/10/2008'),
-                        ),
-                        CustomCardGridItem(
-                          header: "Caregiver",
-                          details: "${widget.caseLoadModel.caregiverNames}",
-                        ),
-                        const SizedBox(
-                          height:20,
-                        )
-                      ],
-                    )
-                  ])
-            ],
-          ),
+            Wrap(
+              children: [
+                CustomCard(
+                    title:
+                        "CPIMS ID: ${widget.caseLoadModel.cpimsId} \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n CAREGIVER ID: ${widget.caseLoadModel.caregiverCpimsId}",
+                    children: [
+                      CustomGridView(
+                        crossAxisCount: 2,
+                        childrenHeight: 65,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        children: [
+                          CustomCardGridItem(
+                            header: "Surname",
+                            details: "${widget.caseLoadModel.ovcSurname}",
+                          ),
+                          CustomCardGridItem(
+                            header: "Firstname",
+                            details: "${widget.caseLoadModel.ovcFirstName}",
+                          ),
+                          CustomCardGridItem(
+                            header: "Sex",
+                            details: "${widget.caseLoadModel.sex}",
+                          ),
+                          CustomCardGridItem(
+                            header: "Age",
+                            details: calculateAge(
+                                widget.caseLoadModel.dateOfBirth ?? ''),
+                          ),
+                        ],
+                      )
+                    ])
+              ],
+            ),
             const SizedBox(
-              height: 30,
+              height: 10,
             ),
             const Text(
               "Available Forms",
@@ -170,7 +164,8 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             ChildDetailsWorkflowButton(
               workflowName: "Case Plan Template",
               onClick: () {
-                Get.to(() => const CasePlanTemplateScreen());
+                Get.to(() => CasePlanTemplateScreen(
+                    caseLoadModel: widget.caseLoadModel));
               },
             ),
             const SizedBox(
