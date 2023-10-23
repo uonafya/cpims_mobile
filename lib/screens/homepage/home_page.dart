@@ -40,14 +40,16 @@ class _HomepageState extends State<Homepage> {
   late int formOneACount = 0;
   late int formOneBCount = 0;
   late int cparaCount = 0;
+  late int ovcSubpopulatoiCount = 0;
   int updatedCountA = 0;
   int updatedCountB = 0;
   int updatedCountCpara = 0;
+  int updatedCountOvcSubpopulation = 0;
 
   @override
   void initState() {
     super.initState();
-    countFormOneUnsynched();
+    countFormsnsynced();
     syncWorkflows();
   }
 
@@ -235,17 +237,19 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
-  Future<void> countFormOneUnsynched() async {
+  Future<void> countFormsnsynced() async {
     updatedCountA = (await Form1Service.getCountAllFormOneA())!;
     updatedCountB = (await Form1Service.getCountAllFormOneB())!;
     updatedCountCpara = (await Form1Service.getCountAllFormCpara())!;
+    updatedCountOvcSubpopulation = await Form1Service.ovcSubCount();
     setState(() {
       formOneACount = updatedCountA;
       formOneBCount = updatedCountB;
       cparaCount = updatedCountCpara;
+      ovcSubpopulatoiCount = updatedCountOvcSubpopulation;
     });
     print(
-        "Count is $formOneACount and count b is $formOneBCount  and count cpara is $cparaCount");
+        "Count is $formOneACount and count b is $formOneBCount  and count cpara is $cparaCount and count ovc subpopulation is $ovcSubpopulatoiCount");
   }
 
   countUnsycedCpara() async {
@@ -305,9 +309,27 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                const Text(
-                  'Application data and usage summary',
-                  style: TextStyle(color: kTextGrey),
+                Row(
+                  children: <Widget>[
+                    const Text(
+                      'Application data and usage summary',
+                      style: TextStyle(color: kTextGrey),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.refresh_outlined,
+                        color: kTextGrey,
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        countFormsnsynced();
+                      },
+                    ),
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 ),
                 StatisticsItem(
                   title: 'UNSYNCED RECORDS',
@@ -317,7 +339,7 @@ class _HomepageState extends State<Homepage> {
                   form1ACount: formOneACount,
                   form1BCount: formOneBCount,
                   cpaCount: cparaCount,
-                  cparaCount: 0,
+                  cparaCount: ovcSubpopulatoiCount + cparaCount,
                   onClick: () {},
                 ),
                 // StatisticsItem(

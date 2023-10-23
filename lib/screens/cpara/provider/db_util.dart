@@ -14,15 +14,15 @@ import '../widgets/cpara_stable_widget.dart';
 Future<List<CPARADatabase>> getUnsyncedForms(Database db) async {
   try {
     List<CPARADatabase> forms = [];
-    List<Map<String, dynamic>> formsFetchResult =
-    await db.rawQuery("SELECT id FROM Form WHERE id IN (SELECT formID FROM HouseholdAnswer) AND form_date_synced IS NULL");
+    List<Map<String, dynamic>> formsFetchResult = await db.rawQuery(
+        "SELECT id FROM Form WHERE id IN (SELECT formID FROM HouseholdAnswer) AND form_date_synced IS NULL");
     for (var i in formsFetchResult) {
       var form = await getFormFromDB(i['id'], db);
       forms.add(form);
     }
     return forms;
   } catch (err) {
-   throw ("Could Not Get Unsynced Forms ${err.toString()}");
+    throw ("Could Not Get Unsynced Forms ${err.toString()}");
     print(err.toString());
   }
 }
@@ -43,17 +43,16 @@ Future<int> getUnsyncedCparaFormsCount(Database db) async {
   }
 }
 
-
 Future<CPARADatabase> getFormFromDB(int formID, Database? db) async {
   try {
     CPARADatabase form = CPARADatabase();
-    List<Map<String, dynamic>> fetchResult1 = await db!.rawQuery(
-        "SELECT formID, householdid, date, questionid, answer "
+    List<Map<String, dynamic>> fetchResult1 = await db!
+        .rawQuery("SELECT formID, householdid, date, questionid, answer "
             "FROM HouseholdAnswer "
             "INNER JOIN Form ON Form.id = HouseholdAnswer.formID "
             "WHERE formID =  $formID");
 
-form.cpara_form_id = formID;
+    form.cpara_form_id = formID;
     var ovcpmisID = fetchResult1[0]['houseHoldID'];
     form.ovc_cpims_id = ovcpmisID;
     print("OVCPMIS ID from many: $ovcpmisID");
@@ -76,7 +75,6 @@ form.cpara_form_id = formID;
     for (var i in fetchResult2) {
       childQuestions.add(CPARAChildQuestions.fromJSON(i));
     }
-
 
     form.childQuestions = childQuestions;
     return form;
@@ -106,8 +104,7 @@ Future<void> updateFormDateSynced(int formID, Database db) async {
     DateTime now = DateTime.now();
 
     // Update "date_synced" for the "Form" table
-    await db.rawUpdate(
-        "UPDATE Form SET form_date_synced = ? WHERE id = ?",
+    await db.rawUpdate("UPDATE Form SET form_date_synced = ? WHERE id = ?",
         [now.toUtc().toIso8601String(), formID]);
 
     // Update "date_synced" for the "HouseholdAnswer" table
@@ -119,22 +116,18 @@ Future<void> updateFormDateSynced(int formID, Database db) async {
     await db.rawUpdate(
         "UPDATE ChildAnswer SET form_date_synced = ? WHERE formID = ?",
         [now.toUtc().toIso8601String(), formID]);
-
   } catch (err) {
     // Handle any errors that may occur during the updates
     print("Error updating date_synced: $err");
   }
 }
 
-
-
-
 // Returns the number of CPARA forms
 Future<int> getCountOfForms(Database? db) async {
   try {
     // Run query to get count of unique forms
     List<Map<String, dynamic>> fetchResults =
-    await db!.rawQuery("SELECT COUNT(*) total FROM Form");
+        await db!.rawQuery("SELECT COUNT(*) total FROM Form");
     // Return value
     int total = fetchResults[0]['total'];
     return total;
@@ -145,7 +138,7 @@ Future<int> getCountOfForms(Database? db) async {
 }
 
 // submit to upstream
-Future<void> submitCparaToUpstream() async{
+Future<void> submitCparaToUpstream() async {
   var prefs = await SharedPreferences.getInstance();
   var accessToken = prefs.getString('access');
   var savedUsername = prefs.getString('username');
@@ -154,52 +147,57 @@ Future<void> submitCparaToUpstream() async{
   // Encode your username and password as Basic Auth credentials
   String username = savedUsername ?? "";
   String password = savedPassword ?? "";
-  String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+  String basicAuth =
+      'Basic ${base64Encode(utf8.encode('$username:$password'))}';
   String bearerAuth = "Bearer $accessToken";
-
 
   // local db initialization
   Database database = await LocalDb.instance.database;
   // cpara data from local db
   List<CPARADatabase> cparaFormsInDb = await getUnsyncedForms(database);
 
-  for(CPARADatabase cparaForm in cparaFormsInDb){
-    try{
+  for (CPARADatabase cparaForm in cparaFormsInDb) {
+    try {
       // submission
-      await singleCparaFormSubmission(cparaForm: cparaForm, authorization: bearerAuth);
+      await singleCparaFormSubmission(
+          cparaForm: cparaForm, authorization: bearerAuth);
       // remove from local db
       // purgeForm(cparaForm.cpara_form_id, database);
       updateFormDateSynced(cparaForm.cpara_form_id, database);
-      print("Unscynced forms are ${await getUnsyncedCparaFormsCount(database)}");
-
-
-    }
-    catch(e){
-      debugPrint("Cpara form with ovs cpims id : ${cparaForm.ovc_cpims_id} failed submission to upstream");
+      print(
+          "Unscynced forms are ${await getUnsyncedCparaFormsCount(database)}");
+    } catch (e) {
+      debugPrint(
+          "Cpara form with ovs cpims id : ${cparaForm.ovc_cpims_id} failed submission to upstream");
       continue;
     }
   }
 }
 
-Future<void> singleCparaFormSubmission({required CPARADatabase cparaForm, required String authorization}) async {
-
+Future<void> singleCparaFormSubmission(
+    {required CPARADatabase cparaForm, required String authorization}) async {
 // household questions
   final houseHoldQuestions = [];
-  for(int i = 0; i < cparaForm.questions.length; i++){
+  for (int i = 0; i < cparaForm.questions.length; i++) {
     houseHoldQuestions.add({
-      "question_code": convertQuestionIdsStandardFormat(text: cparaForm.questions[i].question_code),
-      "answer_id": convertOptionStandardFormat(text: cparaForm.questions[i].answer_id),
+      "question_code": convertQuestionIdsStandardFormat(
+          text: cparaForm.questions[i].question_code),
+      "answer_id":
+          convertOptionStandardFormat(text: cparaForm.questions[i].answer_id),
     });
-    debugPrint("Household ${cparaForm.questions[i].question_code} - ${cparaForm.questions[i].answer_id}");
+    debugPrint(
+        "Household ${cparaForm.questions[i].question_code} - ${cparaForm.questions[i].answer_id}");
   }
 
   // child questions
   final individualQuestions = [];
-  for(int i = 0; i < cparaForm.childQuestions.length; i++){
+  for (int i = 0; i < cparaForm.childQuestions.length; i++) {
     individualQuestions.add({
       "ovc_cpims_id": cparaForm.childQuestions[i].ovc_cpims_id,
-      "question_code": convertQuestionIdsStandardFormat(text: cparaForm.childQuestions[i].question_code),
-      "answer_id": convertOptionStandardFormat(text: cparaForm.childQuestions[i].answer_id),
+      "question_code": convertQuestionIdsStandardFormat(
+          text: cparaForm.childQuestions[i].question_code),
+      "answer_id": convertOptionStandardFormat(
+          text: cparaForm.childQuestions[i].answer_id),
     });
     debugPrint("Child ${cparaForm.childQuestions[i].ovc_cpims_id}: "
         "${cparaForm.childQuestions[i].question_code} - ${cparaForm.childQuestions[i].answer_id}");
@@ -213,12 +211,12 @@ Future<void> singleCparaFormSubmission({required CPARADatabase cparaForm, requir
   String b5 = benchMarkFiveScoreFromDb(cparaDatabase: cparaForm);
   String b6 = benchMarkSixScoreFromDb(cparaDatabase: cparaForm);
   String b7 = benchMarkSevenScoreFromDb(cparaDatabase: cparaForm);
-  String b8 =  benchMarkEightScoreFromDb(cparaDatabase: cparaForm);
+  String b8 = benchMarkEightScoreFromDb(cparaDatabase: cparaForm);
   String b9 = benchMarkNineScoreFromDb(cparaDatabase: cparaForm);
   List<String> scores = [b1, b2, b3, b4, b5, b6, b7, b8, b9];
 
   final scoreList = [];
-  for(int i = 0; i < scores.length; i++){
+  for (int i = 0; i < scores.length; i++) {
     scoreList.add({
       "b${i + 1}": "${scoreConversion(text: scores[i])}",
     });
@@ -232,7 +230,7 @@ Future<void> singleCparaFormSubmission({required CPARADatabase cparaForm, requir
     "scores": scoreList,
   };
   debugPrint(json.encode(cparaMapData));
-  String cparaJsonData= json.encode(cparaMapData);
+  String cparaJsonData = json.encode(cparaMapData);
   print("Cpara data is $cparaJsonData");
 
   dio.interceptors.add(LogInterceptor());
@@ -242,7 +240,7 @@ Future<void> singleCparaFormSubmission({required CPARADatabase cparaForm, requir
           contentType: 'application/json',
           headers: {"Authorization": authorization}));
 
-  if(response.statusCode != 200){
+  if (response.statusCode != 200) {
     throw ("Submission to upstream failed");
   }
   debugPrint("${response.statusCode}");
@@ -253,62 +251,81 @@ void fetchAndPostToServerOvcSubpopulationData() async {
   var prefs = await SharedPreferences.getInstance();
   var accessToken = prefs.getString('access');
   String bearerAuth = "Bearer $accessToken";
-  // Call the fetchOvcSubPopulationData function to get the result
+  Database database = await LocalDb.instance.database;
   List<Map<String, dynamic>> result = await fetchOvcSubPopulationData();
   print("The result is $result");
 
-  List<Map<String, dynamic>> ovcSubPopulationList = [];
   for (var row in result) {
-    ovcSubPopulationList.add({
-      // Map the row data to your desired structure
-      'id': row['id'],
-      'uuid': row['uuid'],
-      'cpims_id': row['cpims_id'],
-      'criteria': row['criteria'],
-      'date_of_event': row['date_of_event'],
-      'created_at': row['created_at'],
-    });
+    try {
+      Map<String, dynamic> ovcSubPopulation = {
+        'id': row['id'],
+        'uuid': row['uuid'],
+        'cpims_id': row['cpims_id'],
+        'criteria': row['criteria'],
+        'date_of_event': row['date_of_event'],
+        'created_at': row['created_at'],
+      };
+
+      var ovcPostToServer = {
+        "ovc_subpopulation": [ovcSubPopulation],
+      };
+
+      print("Sending to server: $ovcPostToServer");
+
+      final response = await postOvcToServer(ovcPostToServer, bearerAuth);
+
+      if (response.statusCode == 200) {
+        // Update the database row with the date and time it was sent to the server
+        await updateOvcSubpopulationDateSynced(row['id'],database);
+        print('Data posted to server successfully');
+      } else {
+        print('Failed to post data to server. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error posting data to server: $e');
+    }
   }
-  var ovcPostToServer = {
-    "ovc_subpopulation": ovcSubPopulationList,
-  };
-  print("The ovc posted to server is $ovcPostToServer");
-  await postOvcToServer(ovcPostToServer);
 }
 
 Future<List<Map<String, dynamic>>> fetchOvcSubPopulationData() async {
   final db = await LocalDb.instance.database;
-  final result = await db.query(ovcsubpopulation);
+  const sql = "SELECT * FROM ovcsubpopulation WHERE form_date_synced IS NULL";
+  List<Map<String, dynamic>> result = await db.rawQuery(sql);
   return result;
 }
 
-Future<void> postOvcToServer(Map<String, dynamic> data) async {
-  var prefs = await SharedPreferences.getInstance();
-  var accessToken = prefs.getString('access');
-  String bearerAuth = "Bearer $accessToken";
+Future<void> updateOvcSubpopulationDateSynced(int id, Database db) async {
+  try {
+    // Get the current date and time
+    DateTime now = DateTime.now();
+    await db.rawUpdate(
+        "UPDATE ovcsubpopulation SET form_date_synced = ? WHERE id = ?",
+        [now.toUtc().toIso8601String(), id]);
+  } catch (err) {
+    print("Error updating date_synced: $err");
+  }
+}
 
+Future<Response> postOvcToServer(
+    Map<String, dynamic> data, String bearerAuth) async {
   try {
     final response = await dio.post(
       'https://dev.cpims.net/api/form/CPR/',
-      data: data, // Pass the data directly as the request body
+      data: data,
       options: Options(
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': bearerAuth, // Add Basic Auth header
+          'Authorization': bearerAuth,
         },
       ),
     );
-    if (response.statusCode == 200) {
-      print("Data sent to server is $data");
-      print('Data posted to server successfully');
-    } else {
-      print(
-          'Failed to post data to server. Status code: ${response.statusCode}');
-    }
+    return response;
   } catch (e) {
-    print('Error posting data to server: $e');
+    throw e;
   }
 }
+
+
 //
 // Future<void> submitOvcSubPopultaionForm async(){
 //

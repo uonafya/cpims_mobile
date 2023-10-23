@@ -83,6 +83,22 @@ class Form1Service {
     return 0; // Return 0 if there is an error.
   }
 
+  static ovcSubCount() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.countOvcSubpopulationDataWithNullDateSynced();
+      debugPrint("Form count ovc_sub_populatuion: $count");
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      print("An error on getFormCount for ovc sub population: ${e.toString()}");
+    }
+    return 0; // Return 0 if there is an error.
+  }
+
   static Future<int?> getFormCount(String formType) async {
     final db = LocalDb.instance;
     try {

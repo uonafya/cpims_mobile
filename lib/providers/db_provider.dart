@@ -208,21 +208,6 @@ class LocalDb {
     }
   }
 
-  // Future<void> creatingCparaTables(Database db, int version) async {
-  //   try {
-  //     debugPrint("Creating Cpara tables");
-  //     await db.execute(
-  //         "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT,date_synced TEXT DEFAULT NULL);");
-  //
-  //     await db.execute(
-  //         "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER,id INTEGER PRIMARY KEY,houseHoldID TEXT,questionID TEXT,answer TEXT,FOREIGN KEY (formID) REFERENCES Form(id),date_synced TEXT DEFAULT NULL);");
-  //
-  //     await db.execute(
-  //         "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (formID) REFERENCES Form(id),date_synced TEXT DEFAULT NULL);");
-  //   } catch (err) {
-  //     debugPrint("Error creating Cpara tables: $err");
-  //   }
-  // }
 
   Future<void> insertCparaData(
       {required CparaModel cparaModelDB,
@@ -252,7 +237,8 @@ class LocalDb {
         cpims_id TEXT,
         criteria TEXT,
         date_of_event TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        form_date_synced TEXT NULL
       )
     ''');
     } catch (err) {
@@ -287,6 +273,7 @@ class LocalDb {
             'cpims_id': cpimsId,
             'criteria': question.questionID,
             'date_of_event': date_of_assessment,
+            'form_date_synced':null
           },
           conflictAlgorithm: ConflictAlgorithm.replace);
     }
@@ -672,6 +659,17 @@ class LocalDb {
       }
     } catch (err) {
       throw ("Could Not Get Unsynced Forms Count: ${err.toString()}");
+    }
+  }
+
+  Future<int> countOvcSubpopulationDataWithNullDateSynced() async {
+    final db = await LocalDb.instance.database;
+    const sql = "SELECT COUNT(*) as count FROM ovcsubpopulation WHERE form_date_synced IS NULL";
+    List<Map<String, dynamic>> result = await db.rawQuery(sql);
+    if (result.isNotEmpty) {
+      return result[0]['count'];
+    } else {
+      return 0;
     }
   }
 }
