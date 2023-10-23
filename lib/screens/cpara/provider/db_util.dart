@@ -260,7 +260,7 @@ void fetchAndPostToServerOvcSubpopulationData() async {
       Map<String, dynamic> ovcSubPopulation = {
         'id': row['id'],
         'uuid': row['uuid'],
-        'cpims_id': row['cpims_id'],
+        'ovc_cpims_id': row['cpims_id'],
         'criteria': row['criteria'],
         'date_of_event': row['date_of_event'],
         'created_at': row['created_at'],
