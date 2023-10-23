@@ -47,7 +47,7 @@ class StatisticsGridItem extends StatelessWidget {
                       Text(
                         title,
                         style: const TextStyle(
-                            fontSize: 10,
+                            fontSize: 11,
                             color: Colors.white,
                             fontWeight: FontWeight.w600),
                       ),
@@ -57,7 +57,7 @@ class StatisticsGridItem extends StatelessWidget {
                       Text(
                         value,
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 18,
                           color: Colors.white,
                         ),
                       ),
