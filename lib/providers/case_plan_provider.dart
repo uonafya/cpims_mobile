@@ -122,7 +122,6 @@ class CasePlanProvider extends ChangeNotifier {
 
     for (int i = 0; i < cpFormData.selectedServices.length; i++) {
       final service = cpFormData.selectedServices[i].value;
-
       servicesList.add(service!);
     }
     return servicesList;
@@ -146,6 +145,7 @@ class CasePlanProvider extends ChangeNotifier {
     String goalId = "";
     String gapId = "";
     String resultsId = "";
+    String reason_is = "";
     String completionDate = "";
     completionDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     if (_casePlanModelData.selectedPriorityAction.isNotEmpty) {
@@ -162,6 +162,9 @@ class CasePlanProvider extends ChangeNotifier {
     }
     if (_casePlanModelData.selectedResult.isNotEmpty) {
       resultsId = _casePlanModelData.selectedResult[0].value!;
+    }
+    if(_casePlanModelData.selectedReason.isNotEmpty){
+      reason_is = _casePlanModelData.selectedReason;
     }
 
     // print("goal --->${cpFormData.selectedGoal[0].value}");
@@ -184,7 +187,7 @@ class CasePlanProvider extends ChangeNotifier {
           'priority_id': priorityId,
           'responsible_id': responsibleId,
           'results_id': resultsId,
-          'reason_id': '', // You can set this as needed
+          'reason_id': reason_is,
           'completion_date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
         }
       ]

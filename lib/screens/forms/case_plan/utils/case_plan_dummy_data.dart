@@ -40,8 +40,8 @@ List<Map<String, dynamic>> casePlanPersonsResponsibleList = [
 ];
 
 List<Map<String, dynamic>> casePlanResultsOptions = [
-  {'id': '1',  'name': 'Achieved'},
-  {'id': '2', 'name': 'Not Achieved'},
+  {'id': 'AC',  'name': 'Achieved'},
+  {'id': 'NA', 'name': 'Not Achieved'},
 
   // Add more services here
 ];

@@ -31,6 +31,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
   @override
   Widget build(BuildContext context) {
     CasePlanProvider casePlanProvider = Provider.of<CasePlanProvider>(context);
+    TextEditingController _textEditingController = TextEditingController();
 
     List<ValueItem> casePlanProviderDomainList =
         casePlanProvider.csAllDomains.map((domain) {
@@ -38,6 +39,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
+    //health
     List<ValueItem> casePlanGoalHealthList =
         casePlanProvider.cpGoalsHealth.map((domain) {
       return ValueItem(
@@ -62,35 +64,86 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    //
-    // List<ValueItem> casePlanProviderPriorityActionList =
-    //     casePlanProvider.csPriorityActionList.map((priorityAction) {
-    //   return ValueItem(
-    //       label: "- ${priorityAction['actionName']}",
-    //       value: priorityAction['actionId']);
-    // }).toList();
-    //
-    // List<ValueItem> casePlanProviderGoalList =
-    //     casePlanProvider.csNeedsList.map((need) {
-    //   return ValueItem(label: "- ${need['needName']}", value: need['needId']);
-    // }).toList();
-    //
-    // List<ValueItem> casePlanProviderNeedsList =
-    //     casePlanProvider.csGoalList.map((goal) {
-    //   return ValueItem(label: "- ${goal['goalName']}", value: goal['goalId']);
-    // }).toList();
-    //
-    // List<ValueItem> casePlanProviderServicesList =
-    //     casePlanProvider.csServicesList.map((service) {
-    //   return ValueItem(
-    //       label: "- ${service['serviceName']}", value: service['serviceId']);
-    // }).toList();
+    //safe
+    List<ValueItem> casePlanGoalSafeList =
+        casePlanProvider.cpGoalsSafe.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanGapsSafeList =
+        casePlanProvider.cpGapssSafe.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanPrioritiesSafeList =
+        casePlanProvider.cpPrioritiesSafe.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanServicesSafeList =
+        casePlanProvider.cpServicesSafe.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    //stable
+    List<ValueItem> casePlanGoalStableList =
+        casePlanProvider.cpGoalsStable.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanGapsStableList =
+        casePlanProvider.cpGapsStable.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanPrioritiesStableList =
+        casePlanProvider.cpPrioritiesStable.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanServicesStableList =
+        casePlanProvider.cpServicesStable.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    //schooled
+    List<ValueItem> casePlanGoalSchooledList =
+        casePlanProvider.cpGoalsSchool.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanGapsSchooledList =
+        casePlanProvider.cpGapssSchool.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanPrioritiesSchooledList =
+        casePlanProvider.cpPrioritiesSchool.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanServicesSchooledList =
+        casePlanProvider.cpServicesSchool.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
 
     List<ValueItem> casePlanProviderPersonsResponsibleList =
         casePlanProvider.csPersonsResponsibleList.map((personResponsible) {
       return ValueItem(
-          label: "- ${personResponsible['name']}",
-          value: personResponsible['id']);
+          label: "- ${personResponsible['item_description']}",
+          value: personResponsible['item_id']);
     }).toList();
 
     List<ValueItem> casePlanProviderResultList =
@@ -187,8 +240,11 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                             onOptionSelected: (selectedEvents) {
                               casePlanProvider
                                   .setSelectedDomain(selectedEvents);
-                              print(
-                                  "selected Domain: ${casePlanProvider.cpFormData.selectedDomain[0].value}");
+                              // Print the selected domain value
+                              if (selectedEvents.isNotEmpty) {
+                                print(
+                                    "selected Domain: ${selectedEvents[0].value}");
+                              }
                             },
                             selectedOptions: selectedDomain,
                             options: casePlanProviderDomainList,
@@ -225,7 +281,20 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                             },
                             selectedOptions:
                                 casePlanProvider.cpFormData.selectedGoal,
-                            options:  (selectedDomain.isNotEmpty && selectedDomain[0].value == 'DEDU') ? casePlanGoalHealthList : List.empty(),
+                            options: (selectedDomain.isNotEmpty &&
+                                    selectedDomain[0].value == 'DHNU')
+                                ? casePlanGoalHealthList
+                                : (selectedDomain.isNotEmpty &&
+                                        selectedDomain[0].value == 'DPRO')
+                                    ? casePlanGoalSafeList
+                                    : (selectedDomain.isNotEmpty &&
+                                            selectedDomain[0].value == 'DHES')
+                                        ? casePlanGoalStableList
+                                        : (selectedDomain.isNotEmpty &&
+                                                selectedDomain[0].value ==
+                                                    'DEDU')
+                                            ? casePlanGoalSchooledList
+                                            : List.empty(),
                             maxItems: 35,
                             disabledOptions: const [
                               ValueItem(label: 'Option 1', value: '1')
@@ -257,7 +326,20 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                             onOptionSelected: (selectedEvents) {
                               casePlanProvider.setSelectedNeed(selectedEvents);
                             },
-                            options:  (selectedDomain.isNotEmpty && selectedDomain[0].value == 'DEDU') ? casePlanGoalHealthList : List.empty(),
+                            options: (selectedDomain.isNotEmpty &&
+                                    selectedDomain[0].value == 'DHNU')
+                                ? casePlanGapsHealthList
+                                : (selectedDomain.isNotEmpty &&
+                                        selectedDomain[0].value == 'DPRO')
+                                    ? casePlanGapsSafeList
+                                    : (selectedDomain.isNotEmpty &&
+                                            selectedDomain[0].value == 'DHES')
+                                        ? casePlanGapsStableList
+                                        : (selectedDomain.isNotEmpty &&
+                                                selectedDomain[0].value ==
+                                                    'DEDU')
+                                            ? casePlanGapsSchooledList
+                                            : List.empty(),
                             selectedOptions:
                                 casePlanProvider.cpFormData.selectedNeed,
                             maxItems: 35,
@@ -293,7 +375,20 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                                   .setSelectedPriorityAction(selectedEvents);
                               // CustomToastWidget.showToast("selected PA: ${casePlanProvider.cpFormData.selectedPriorityAction[0].value}");
                             },
-                            options:  (selectedDomain.isNotEmpty && selectedDomain[0].value == 'DHNU') ? casePlanGoalHealthList : List.empty(),
+                            options: (selectedDomain.isNotEmpty &&
+                                    selectedDomain[0].value == 'DHNU')
+                                ? casePlanPrioritiesHealthList
+                                : (selectedDomain.isNotEmpty &&
+                                        selectedDomain[0].value == 'DPRO')
+                                    ? casePlanPrioritiesSafeList
+                                    : (selectedDomain.isNotEmpty &&
+                                            selectedDomain[0].value == 'DHES')
+                                        ? casePlanPrioritiesStableList
+                                        : (selectedDomain.isNotEmpty &&
+                                                selectedDomain[0].value ==
+                                                    'DEDU')
+                                            ? casePlanPrioritiesSchooledList
+                                            : List.empty(),
                             selectedOptions: casePlanProvider
                                 .cpFormData.selectedPriorityAction,
                             maxItems: 35,
@@ -327,10 +422,25 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                             onOptionSelected: (selectedEvents) {
                               casePlanProvider
                                   .setSelectedServicesList(selectedEvents);
+                              print(
+                                  "selected Services: ${selectedEvents[0].value}");
                             },
                             selectedOptions:
                                 casePlanProvider.cpFormData.selectedServices,
-                            options:  (selectedDomain.isNotEmpty && selectedDomain[0].value == 'DHNU') ? casePlanGoalHealthList : List.empty(),
+                            options: (selectedDomain.isNotEmpty &&
+                                    selectedDomain[0].value == 'DHNU')
+                                ? casePlanServicesHealthList
+                                : (selectedDomain.isNotEmpty &&
+                                        selectedDomain[0].value == 'DPRO')
+                                    ? casePlanServicesSafeList
+                                    : (selectedDomain.isNotEmpty &&
+                                            selectedDomain[0].value == 'DHES')
+                                        ? casePlanServicesStableList
+                                        : (selectedDomain.isNotEmpty &&
+                                                selectedDomain[0].value ==
+                                                    'DEDU')
+                                            ? casePlanServicesSchooledList
+                                            : List.empty(),
                             maxItems: 13,
                             disabledOptions: const [
                               ValueItem(label: 'Option 1', value: '1')
@@ -394,7 +504,9 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           MultiSelectDropDown(
                             showClearIcon: true,
                             hint: 'Please select the Result(s)',
-                            onOptionSelected: (selectedEvents) {},
+                            onOptionSelected: (selectedEvents) {
+                              casePlanProvider.setSelectedResults(selectedEvents);
+                            },
                             options: casePlanProviderResultList,
                             maxItems: 13,
                             disabledOptions: const [
@@ -435,8 +547,9 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                             ],
                           ),
                           const SizedBox(height: 10),
-                          const CustomTextField(
+                          CustomTextField(
                             hintText: 'Please Write the Reasons',
+                            controller: _textEditingController,
                           ),
                         ],
                       ),
@@ -447,6 +560,10 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                         child: CustomButton(
                           text: "Submit",
                           onTap: () async {
+                            String textFieldValue = _textEditingController.text;
+                            casePlanProvider
+                                .setSelectedReason(textFieldValue);
+
                             bool isFormSaved = await casePlanProvider
                                 .saveCasaPlanDataLocally();
                             // CustomToastWidget.showToast("Form saved successfully :  ${casePlanProvider.cpFormData.selectedPriorityAction.isEmpty}");
