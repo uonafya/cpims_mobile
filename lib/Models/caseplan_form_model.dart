@@ -32,6 +32,17 @@ class CasePlanModel {
       'services': services.map((service) => service.toJson()).toList(),
     };
   }
+
+  @override
+  String toString() {
+    return 'CasePlanModel {'
+        'ovcCpimsId: $ovcCpimsId, '
+        'dateOfEvent: $dateOfEvent, '
+        'services: $services'
+        '}';
+  }
+
+
 }
 
 class CasePlanServiceModel {
@@ -83,5 +94,20 @@ class CasePlanServiceModel {
       'reason_id': reasonId,
       'completion_date': completionDate,
     };
+  }
+
+  @override
+  String toString() {
+    return 'CasePlanServiceModel {'
+        'domainId: $domainId, '
+        'serviceIds: $serviceIds, '
+        'goalId: $goalId, '
+        'gapId: $gapId, '
+        'priorityId: $priorityId, '
+        'responsibleIds: $responsibleIds, '
+        'resultsId: $resultsId, '
+        'reasonId: $reasonId, '
+        'completionDate: $completionDate'
+        '}';
   }
 }

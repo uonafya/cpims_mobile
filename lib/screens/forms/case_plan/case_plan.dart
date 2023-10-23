@@ -429,9 +429,9 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           ]
                         ),
                         const SizedBox(height: 20),
-                        const SizedBox(
-                            width: 300, // Adjust the width value as needed
-                            child: HistoryAssessmentListWidget()),
+                        // const SizedBox(
+                        //     width: 300, // Adjust the width value as needed
+                        //     child: HistoryAssessmentListWidget()),
                       ],
                     ));
                 }),
