@@ -147,11 +147,6 @@ class _CheckboxFormState extends State<CheckboxForm> {
           : null;
       await localDb.insertOvcSubpopulationData(uuid,
           widget.caseLoadModel.cpimsId!, dateOfAssessment!, selectedQuestions);
-      if (hasConnection) {
-        fetchAndPostToServerOvcSubpopulationData();
-      } else {
-        print("No Internet Connection here");
-      }
       if (currentContext.mounted) {
         showDialog(
           context: currentContext, // Use the local context

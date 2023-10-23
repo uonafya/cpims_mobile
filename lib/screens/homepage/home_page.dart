@@ -144,6 +144,7 @@ class _HomepageState extends State<Homepage> {
             .checkInternetConnection();
     if (isConnected) {
       submitCparaToUpstream();
+      fetchAndPostToServerOvcSubpopulationData();
       var prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getString('access');
       setState(() {

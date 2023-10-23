@@ -250,6 +250,9 @@ Future<void> singleCparaFormSubmission({required CPARADatabase cparaForm, requir
 }
 
 void fetchAndPostToServerOvcSubpopulationData() async {
+  var prefs = await SharedPreferences.getInstance();
+  var accessToken = prefs.getString('access');
+  String bearerAuth = "Bearer $accessToken";
   // Call the fetchOvcSubPopulationData function to get the result
   List<Map<String, dynamic>> result = await fetchOvcSubPopulationData();
   print("The result is $result");
@@ -281,10 +284,8 @@ Future<List<Map<String, dynamic>>> fetchOvcSubPopulationData() async {
 
 Future<void> postOvcToServer(Map<String, dynamic> data) async {
   var prefs = await SharedPreferences.getInstance();
-  String? username = prefs.getString('username');
-  String? password = prefs.getString('password');
-  String basicAuth =
-      'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+  var accessToken = prefs.getString('access');
+  String bearerAuth = "Bearer $accessToken";
 
   try {
     final response = await dio.post(
@@ -293,11 +294,12 @@ Future<void> postOvcToServer(Map<String, dynamic> data) async {
       options: Options(
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': basicAuth, // Add Basic Auth header
+          'Authorization': bearerAuth, // Add Basic Auth header
         },
       ),
     );
     if (response.statusCode == 200) {
+      print("Data sent to server is $data");
       print('Data posted to server successfully');
     } else {
       print(
