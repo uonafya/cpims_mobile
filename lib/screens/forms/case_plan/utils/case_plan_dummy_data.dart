@@ -46,6 +46,34 @@ List<Map<String, dynamic>> casePlanResultsOptions = [
   // Add more services here
 ];
 
+
+List<Map<String,dynamic>> allDomains=[
+  {
+    "item_id": "DEDU",
+    "item_description": "Schooled",
+    "item_sub_category": "",
+    "the_order": 1
+  },
+  {
+    "item_id": "DHNU",
+    "item_description": "Healthy",
+    "item_sub_category": "",
+    "the_order": 2
+  },
+  {
+    "item_id": "DHES",
+    "item_description": "Stable",
+    "item_sub_category": "",
+    "the_order": 3
+  },
+  {
+    "item_id": "DPRO",
+    "item_description": "Safe",
+    "item_sub_category": "",
+    "the_order": 4
+  }
+];
+
 List<Map<String, dynamic>> cp_goals_health =[
   {
     "item_id": "GH1HE",
@@ -561,6 +589,7 @@ List<Map<String, dynamic>> cp_priorities_safe = [
     "the_order": 5
   }
 ];
+
 
 List<Map<String, dynamic>> cp_services_health = [
   {

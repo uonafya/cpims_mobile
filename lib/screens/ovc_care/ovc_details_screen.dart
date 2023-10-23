@@ -161,13 +161,13 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                 Get.to(() => CheckboxForm(caseLoadModel: widget.caseLoadModel));
               },
             ),
-            ChildDetailsWorkflowButton(
-              workflowName: "Case Plan Template",
-              onClick: () {
-                Get.to(() => CasePlanTemplateScreen(
-                    caseLoadModel: widget.caseLoadModel));
-              },
-            ),
+            // ChildDetailsWorkflowButton(
+            //   workflowName: "Case Plan Template",
+            //   onClick: () {
+            //     Get.to(() => CasePlanTemplateScreen(
+            //         caseLoadModel: widget.caseLoadModel));
+            //   },
+            // ),
             const SizedBox(
               height: 10,
             ),

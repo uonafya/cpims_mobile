@@ -21,7 +21,7 @@ class _CriticalEventForm1bState extends State<CriticalEventForm1b> {
 
   List<Map> careGiverServices = careGiverCriticalEvents;
   List<ValueItem> careGiverCriticalItems = careGiverCriticalEvents.map((service) {
-    return ValueItem(label: "- ${service['subtitle']}", value: service['title']);
+    return ValueItem(label: "- ${service['item_description']}", value: service['item_id']);
   }).toList();
 
   List<ValueItem> selectedCriticalEvents = [];

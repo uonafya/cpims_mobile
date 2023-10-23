@@ -413,16 +413,22 @@ List<Map<String, dynamic>> careGiverEconomicServices = [
 ];
 
 List<Map<String, dynamic>> careGiverCriticalEvents = [
-    {
-      'title': 'CCE1',
-      'subtitle': 'Caregiver experienced abuse',
-    },
-    {
-      'title': 'CCE2',
-      'subtitle': 'Caregiver died',
-    },
-    {
-      'title': 'CCE3',
-      'subtitle': 'HH Relocation',
-    },
+  {
+    "item_id": "CECCE1",
+    "item_description": "CCE1 - Caregiver experienced abuse",
+    "item_sub_category": "",
+    "the_order": 1
+  },
+  {
+    "item_id": "CECCE2",
+    "item_description": "CCE2 - Caregiver died",
+    "item_sub_category": "",
+    "the_order": 2
+  },
+  {
+    "item_id": "CECCE3",
+    "item_description": "CCE3 - HH Relocation",
+    "item_sub_category": "",
+    "the_order": 3
+  }
 ];

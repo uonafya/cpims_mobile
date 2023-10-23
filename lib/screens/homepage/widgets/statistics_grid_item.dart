@@ -30,7 +30,7 @@ class StatisticsGridItem extends StatelessWidget {
                 ),
               ),
       child: Container(
-        height: 120,
+        height: 140,
         width: double.infinity,
         color: color,
         margin: const EdgeInsets.symmetric(vertical: 7.5),
