@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cpims_mobile/Models/caseplan_form_model.dart';
@@ -12,6 +13,9 @@ import 'package:http_interceptor/models/interceptor_contract.dart';
 import '../constants.dart';
 
 class Form1Service {
+  final StreamController<int> _formCountController = StreamController<int>.broadcast();
+  Stream<int> get formCountStream => _formCountController.stream;
+
   // save form to local storage
   static _saveValues(String formType, formData) async {
 //save the form data that is in the form of a map to  a local database
@@ -63,6 +67,22 @@ class Form1Service {
     return [];
   }
 
+  static countCparaUnsyncedForms() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.getUnsyncedCparaFormCount();
+      debugPrint("Form count: $count");
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      print("An error on getFormCount: ${e.toString()}");
+    }
+    return 0; // Return 0 if there is an error.
+  }
+
   static Future<int?> getFormCount(String formType) async {
     final db = LocalDb.instance;
     try {
@@ -79,6 +99,21 @@ class Form1Service {
     return 0; // Return 0 if there is an error.
   }
 
+  Future<void> updateFormCount(String formType) async {
+    try {
+      final db = LocalDb.instance;
+      Stream<int> unsyncedFormsStream = await db.queryForm1UnsyncedFormsStream(formType);
+
+      unsyncedFormsStream.listen((count) {
+        _formCountController.add(count);
+      }, onError: (error) {
+        _formCountController.addError(error);
+      });
+    } catch (e) {
+      print("An error on updateFormCount: ${e.toString()}");
+      _formCountController.addError(e);
+    }
+  }
 
   static Future<Response> _postForm(
       formData, String formEndpoint, String authToken) async {
@@ -130,15 +165,22 @@ class Form1Service {
     return _getAllValues(formType);
   }
 
-  static Future<int?> getCountAllFormOneA() async {
-    print("getCountAllFormOneA count is ${await getFormCount("form1a")}");
-    return await getFormCount("form1a");
+  static Future<int?> getCountAllFormOneA()  {
+    print("getCountAllFormOneA count is ${ getFormCount("form1a")}");
+    return  getFormCount("form1a");
   }
 
   static Future<int?> getCountAllFormOneB() async {
     print("getCountAllFormOneB count is ${await getFormCount("form1b")}");
     return await getFormCount("form1b");
   }
+
+  //count cpara forms
+  static Future<int?> getCountAllFormCpara() async {
+    print("getCountAllFormCpara count is ${await countCparaUnsyncedForms()}");
+    return await countCparaUnsyncedForms();
+  }
+
 
   // send form to server
   static Future<Response> postFormRemote(

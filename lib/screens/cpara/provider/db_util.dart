@@ -126,16 +126,7 @@ Future<void> updateFormDateSynced(int formID, Database db) async {
   }
 }
 
-Future<int> getUnsyncedFormCount(Database db) async {
-  try {
-    const query = "SELECT COUNT(*) FROM Form WHERE date_synced IS NULL";
-    final result = await db.rawQuery(query);
-    return result.first[0] as int;
-  } catch (err) {
-    debugPrint("Error getting unsynced form count: $err");
-    return 0;
-  }
-}
+
 
 
 // Returns the number of CPARA forms

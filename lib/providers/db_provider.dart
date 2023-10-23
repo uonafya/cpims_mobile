@@ -1,4 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
+import 'dart:async';
+
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
@@ -6,6 +8,7 @@ import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -223,8 +226,8 @@ class LocalDb {
 
   Future<void> insertCparaData(
       {required CparaModel cparaModelDB,
-        required String ovcId,
-        required String careProviderId}) async {
+      required String ovcId,
+      required String careProviderId}) async {
     final db = await instance.database;
 
     // Create form
@@ -315,7 +318,7 @@ class LocalDb {
     final db = await instance.database;
     const sql = 'SELECT * FROM $tableFormMetadata WHERE field_name = ?';
     final List<Map<String, dynamic>> results =
-    await db.rawQuery(sql, [fieldName]);
+        await db.rawQuery(sql, [fieldName]);
     return results;
   }
 
@@ -364,9 +367,10 @@ class LocalDb {
   Future<List<Map<String, dynamic>>> queryAllForm1Rows(String formType) async {
     try {
       final db = await instance.database;
-      const sql = 'SELECT * FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
+      const sql =
+          'SELECT * FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
       final List<Map<String, dynamic>> form1Rows =
-      await db.rawQuery(sql, [formType]);
+          await db.rawQuery(sql, [formType]);
 
       List<Map<String, dynamic>> updatedForm1Rows = [];
 
@@ -407,12 +411,13 @@ class LocalDb {
     }
   }
 
-
   Future<int?> queryForm1UnsyncedForms(String formType) async {
     try {
       final db = await instance.database;
-      const sql = 'SELECT COUNT(*) FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
-      final List<Map<String, dynamic>> result = await db.rawQuery(sql, [formType]);
+      const sql =
+          'SELECT COUNT(*) FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
+      final List<Map<String, dynamic>> result =
+          await db.rawQuery(sql, [formType]);
 
       if (result.isNotEmpty) {
         return Sqflite.firstIntValue(result);
@@ -423,6 +428,32 @@ class LocalDb {
       print("Error querying form1 count: $e");
       return 0; // Return 0 if there is an error.
     }
+  }
+
+  Future<Stream<int>> queryForm1UnsyncedFormsStream(String formType) async {
+    final controller = StreamController<int>();
+
+    try {
+      final db = await instance.database;
+      const sql =
+          'SELECT COUNT(*) FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
+      final List<Map<String, dynamic>> result =
+          await db.rawQuery(sql, [formType]);
+
+      if (result.isNotEmpty) {
+        controller.add(Sqflite.firstIntValue(result)!);
+      } else {
+        controller.add(0); // Return 0 if no count is found.
+      }
+
+      controller.close(); // Close the stream when the operation is complete.
+    } catch (e) {
+      print("Error querying form1 count: $e");
+      controller.addError(e);
+      controller.close();
+    }
+
+    return controller.stream;
   }
 
   // get a single row(form 1a or 1b)
@@ -504,7 +535,7 @@ class LocalDb {
       // Insert the associated services
       for (var service in casePlan.services) {
         final serviceIdList =
-        service.serviceIds.join(','); // Join service IDs with commas
+            service.serviceIds.join(','); // Join service IDs with commas
         final responsibleIdList = service.responsibleIds
             .join(','); // Join responsible IDs with commas
 
@@ -563,12 +594,12 @@ class LocalDb {
             gapId: serviceRow[CasePlanServices.gapId] as String,
             priorityId: serviceRow[CasePlanServices.priorityId] as String,
             responsibleIds:
-            (serviceRow['responsible_ids'] as String).split(','),
+                (serviceRow['responsible_ids'] as String).split(','),
             // Parse comma-separated responsible IDs
             resultsId: serviceRow[CasePlanServices.resultsId] as String,
             reasonId: serviceRow[CasePlanServices.reasonId] as String,
             completionDate:
-            serviceRow[CasePlanServices.completionDate] as String,
+                serviceRow[CasePlanServices.completionDate] as String,
           ));
         }
 
@@ -623,6 +654,24 @@ class LocalDb {
     } catch (e) {
       print('Error deleting case plan: $e');
       return false;
+    }
+  }
+
+  Future<int> getUnsyncedCparaFormCount() async {
+    final db= await instance.database;
+    try {
+      List<Map<String, dynamic>> countResult = await db.rawQuery(
+          "SELECT COUNT(id) AS count FROM Form WHERE form_date_synced IS NULL");
+
+      if (countResult.isNotEmpty) {
+        int count = countResult[0]['count'];
+        print("Unsynced CPARA forms count: $count");
+        return count;
+      } else {
+        return 0; // Return 0 if there are no unsynced forms
+      }
+    } catch (err) {
+      throw ("Could Not Get Unsynced Forms Count: ${err.toString()}");
     }
   }
 }

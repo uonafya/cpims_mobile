@@ -40,6 +40,9 @@ class _HomepageState extends State<Homepage> {
   late int formOneACount = 0;
   late int formOneBCount = 0;
   late int cparaCount = 0;
+  int updatedCountA = 0;
+  int updatedCountB = 0;
+  int updatedCountCpara = 0;
 
   @override
   void initState() {
@@ -140,9 +143,16 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
-  countFormOneUnsynched() async {
-    formOneACount = (await Form1Service.getCountAllFormOneA())!;
-    formOneBCount = (await Form1Service.getCountAllFormOneB())!;
+  Future<void> countFormOneUnsynched() async {
+    updatedCountA = (await Form1Service.getCountAllFormOneA())!;
+    updatedCountB = (await Form1Service.getCountAllFormOneB())!;
+    updatedCountCpara = (await Form1Service.getCountAllFormCpara())!;
+    setState(() {
+      formOneACount = updatedCountA;
+      formOneBCount = updatedCountB;
+      cparaCount = updatedCountCpara;
+    });
+    print("Count is $formOneACount and count b is $formOneBCount  and count cpara is $cparaCount");
   }
 
   countUnsycedCpara() async {
@@ -212,7 +222,7 @@ class _HomepageState extends State<Homepage> {
                   secondaryColor: const Color(0xff630122),
                   form1ACount: formOneACount,
                   form1BCount: formOneBCount,
-                  cpaCount: 0,
+                  cpaCount: cparaCount,
                   cparaCount: 0,
                   onClick: () {},
                 ),
