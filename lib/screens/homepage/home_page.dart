@@ -140,8 +140,8 @@ class _HomepageState extends State<Homepage> {
   // }
   Future<void> syncWorkflows() async {
     final isConnected =
-    await Provider.of<ConnectivityProvider>(context, listen: false)
-        .checkInternetConnection();
+        await Provider.of<ConnectivityProvider>(context, listen: false)
+            .checkInternetConnection();
     if (isConnected) {
       submitCparaToUpstream();
       var prefs = await SharedPreferences.getInstance();
@@ -192,11 +192,14 @@ class _HomepageState extends State<Homepage> {
             if (formsSynced == totalFormsToSync) {
               Get.snackbar(
                 'Success',
-                'Successfully synced forms',
+                'Successfully synced all forms',
                 backgroundColor: Colors.green,
                 colorText: Colors.white,
               );
             }
+
+            // Update the progress counter in the UI
+            updateProgress(formsSynced, totalFormsToSync);
           } else {
             debugPrint(
                 "Failed to sync ${formType['formType']} and error is ${response.data}");
@@ -240,7 +243,8 @@ class _HomepageState extends State<Homepage> {
       formOneBCount = updatedCountB;
       cparaCount = updatedCountCpara;
     });
-    print("Count is $formOneACount and count b is $formOneBCount  and count cpara is $cparaCount");
+    print(
+        "Count is $formOneACount and count b is $formOneBCount  and count cpara is $cparaCount");
   }
 
   countUnsycedCpara() async {
@@ -300,10 +304,10 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                 const Text(
-                   'Application data and usage summary',
-                   style: TextStyle(color: kTextGrey),
-                 ),
+                const Text(
+                  'Application data and usage summary',
+                  style: TextStyle(color: kTextGrey),
+                ),
                 StatisticsItem(
                   title: 'UNSYNCED RECORDS',
                   icon: FontAwesomeIcons.arrowsRotate,
@@ -378,7 +382,8 @@ class _HomepageState extends State<Homepage> {
                     // ),
                     StatisticsGridItem(
                       title: 'OVC-ACTIVE/EVER REGISTERED',
-                      value: '${dashData.children}/${dashData.childrenAll.toString()}',
+                      value:
+                          '${dashData.children}/${dashData.childrenAll.toString()}',
                       icon: FontAwesomeIcons.person,
                       color: kPrimaryColor,
                       secondaryColor: const Color(0xff0E6668),
@@ -457,5 +462,13 @@ class _HomepageState extends State<Homepage> {
         ],
       ),
     );
+  }
+
+  void updateProgress(int formsSynced, int totalFormsToSync) {
+    double progress = (formsSynced / totalFormsToSync) * 100;
+    print("Progress is $progress");
+    // Update the progress in the UI, for example, set a text widget with the progress.
+    // You can use a Text widget or any other widget to display the progress.
+    // progressTextWidget.text = 'Syncing Progress: ${progress.toStringAsFixed(2)}%';
   }
 }

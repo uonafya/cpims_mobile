@@ -106,10 +106,9 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
             'Case Plan Template',
             style: TextStyle(color: kTextGrey),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 10),
           Consumer<CasePlanProvider>(
               builder: (context, casePlanProvider, child) {
-            // print(">>>>>>>>>>>>>>>>>Container rebuilt]]]]]]]]]]]]");
             return Container(
                 decoration: BoxDecoration(color: Colors.white, boxShadow: [
                   BoxShadow(
@@ -125,7 +124,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                       width: double.infinity,
                       color: Colors.black,
                       child: Text(
-                        ' CASE PLAN TEMPLATE \n CPIMS NAMES: ${widget.caseLoadModel.ovcSurname}  ${widget.caseLoadModel.ovcFirstName} \n CPIMS ID: ${widget.caseLoadModel.cpimsId} \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n ',
+                        ' CASE PLAN TEMPLATE \n CPIMS NAMES: ${widget.caseLoadModel.ovcSurname}  ${widget.caseLoadModel.ovcFirstName} \n CPIMS ID: ${widget.caseLoadModel.cpimsId} \n CARE GIVER: ${widget.caseLoadModel.caregiverNames}',
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
@@ -163,7 +162,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                             onOptionSelected: (selectedEvents) {
                               casePlanProvider
                                   .setSelectedDomain(selectedEvents);
-                              // CustomToastWidget.showToast("selected Domain: ${casePlanProvider.cpFormData.selectedDomain[0].value}");
+                              print("selected Domain: ${casePlanProvider.cpFormData.selectedDomain[0].value}");
                             },
                             selectedOptions: selectedDomain,
                             options: casePlanProviderDomainList,
