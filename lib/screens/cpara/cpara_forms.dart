@@ -11,6 +11,7 @@ import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/provider/db_util.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_healthy_widget.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/cpara_healthy_widget_update.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_safe_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_schooled_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';

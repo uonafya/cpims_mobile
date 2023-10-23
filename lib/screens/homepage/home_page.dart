@@ -191,6 +191,7 @@ class _HomepageState extends State<Homepage> {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: customAppBar(),
       drawer: const Drawer(
         child: CustomDrawer(),
