@@ -49,7 +49,7 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
-    countFormsnsynced();
+    showCountUnsyncedForms();
     syncWorkflows();
   }
 
@@ -237,7 +237,7 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
-  Future<void> countFormsnsynced() async {
+  Future<void> showCountUnsyncedForms() async {
     updatedCountA = (await Form1Service.getCountAllFormOneA())!;
     updatedCountB = (await Form1Service.getCountAllFormOneB())!;
     updatedCountCpara = (await Form1Service.getCountAllFormCpara())!;
@@ -310,6 +310,7 @@ class _HomepageState extends State<Homepage> {
                 ),
                 const SizedBox(height: 5),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     const Text(
                       'Application data and usage summary',
@@ -325,11 +326,10 @@ class _HomepageState extends State<Homepage> {
                         size: 20,
                       ),
                       onPressed: () {
-                        countFormsnsynced();
+                        showCountUnsyncedForms();
                       },
                     ),
                   ],
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 ),
                 StatisticsItem(
                   title: 'UNSYNCED RECORDS',
