@@ -89,7 +89,8 @@ class LocalDb {
       CREATE TABLE $casePlanTable (
         ${CasePlan.id} $idType,
         ${CasePlan.ovcCpimsId} $textType,
-        ${CasePlan.dateOfEvent} $textType
+        ${CasePlan.dateOfEvent} $textType,
+        ${CasePlan.formDateSynced} $textTypeNull
       )
       ''');
 
@@ -515,6 +516,7 @@ class LocalDb {
         {
           'ovc_cpims_id': casePlan.ovcCpimsId,
           'date_of_event': casePlan.dateOfEvent,
+          'form_date_synced': null,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -551,7 +553,54 @@ class LocalDb {
     }
   }
 
-  Future<CasePlanModel?> getCasePlan(String ovcCpimsId) async {
+  //new insert case plan
+  Future<bool> insertCasePlanNew(CasePlanModel casePlan) async {
+    try {
+      final db = await instance.database;
+      final transaction = await db.transaction((txn) async {
+        final casePlanId = await txn.insert(
+          casePlanTable,
+          {
+            'ovc_cpims_id': casePlan.ovcCpimsId,
+            'date_of_event': casePlan.dateOfEvent,
+            'form_date_synced': null,
+          },
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+
+        for (var service in casePlan.services) {
+          final serviceIdList = service.serviceIds.join(',');
+          final responsibleIdList = service.responsibleIds.join(',');
+
+          await txn.insert(
+            casePlanServicesTable,
+            {
+              'form_id': casePlanId,
+              'domain_id': service.domainId,
+              'goal_id': service.goalId,
+              'gap_id': service.gapId,
+              'priority_id': service.priorityId,
+              'results_id': service.resultsId,
+              'reason_id': service.reasonId,
+              'completion_date': service.completionDate,
+              'service_ids': serviceIdList,
+              'responsible_ids': responsibleIdList,
+            },
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+        }
+      });
+
+      return true;
+    } catch (e) {
+      print('Error inserting case plan: $e');
+      return false;
+    }
+  }
+
+  //fetch new caseplan
+
+  Future<CasePlanModel?> getCasePlanById(String ovcCpimsId) async {
     try {
       // Retrieve the main case plan information
       final db = await instance.database;
@@ -602,6 +651,54 @@ class LocalDb {
     } catch (e) {
       print('Error retrieving case plan: $e');
       return null;
+    }
+  }
+
+  Future<List<CasePlanModel>> getAllCasePlans() async {
+    try {
+      final db = await instance.database;
+
+      // Use a raw SQL query to select all rows from the table
+      final queryResult = await db.rawQuery('SELECT * FROM $casePlanTable');
+
+      List<CasePlanModel> casePlans = [];
+
+      for (var row in queryResult) {
+        final casePlanId = row[CasePlan.id] as int;
+
+        // Retrieve the associated services
+        final serviceQueryResult = await db.query(
+          casePlanServicesTable,
+          where: 'form_id = ?',
+          whereArgs: [casePlanId],
+        );
+
+        List<CasePlanServiceModel> services = [];
+        for (var serviceRow in serviceQueryResult) {
+          services.add(CasePlanServiceModel(
+            domainId: serviceRow['domain_id'] as String,
+            serviceIds: (serviceRow['service_ids'] as String).split(','),
+            goalId: serviceRow[CasePlanServices.goalId] as String,
+            gapId: serviceRow[CasePlanServices.gapId] as String,
+            priorityId: serviceRow[CasePlanServices.priorityId] as String,
+            responsibleIds: (serviceRow['responsible_ids'] as String).split(','),
+            resultsId: serviceRow[CasePlanServices.resultsId] as String,
+            reasonId: serviceRow[CasePlanServices.reasonId] as String,
+            completionDate: serviceRow[CasePlanServices.completionDate] as String,
+          ));
+        }
+
+        casePlans.add(CasePlanModel(
+          ovcCpimsId: row[CasePlan.ovcCpimsId] as String,
+          dateOfEvent: row[CasePlan.dateOfEvent] as String,
+          services: services,
+        ));
+      }
+
+      return casePlans;
+    } catch (e) {
+      print('Error retrieving case plans: $e');
+      return [];
     }
   }
 
@@ -775,11 +872,12 @@ class FormMetadata {
 }
 
 class CasePlan {
-  static final List<String> values = [id, ovcCpimsId, dateOfEvent];
+  static final List<String> values = [id, ovcCpimsId, dateOfEvent,formDateSynced];
 
   static const String id = '_id';
   static const String ovcCpimsId = 'ovc_cpims_id';
   static const String dateOfEvent = 'date_of_event';
+  static const String formDateSynced = 'form_date_synced';
 }
 
 class CasePlanServices {

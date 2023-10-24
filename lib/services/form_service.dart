@@ -212,7 +212,7 @@ class CasePlanService {
 //save the form data that is in the form of a map to  a local database
     final db = LocalDb.instance;
     try {
-      await db.insertCasePlan(formData);
+      await db.insertCasePlanNew(formData);
       return true;
     } catch (e) {
       print(e);
@@ -236,7 +236,7 @@ class CasePlanService {
   static getCasePlanRecordLocal(ovcCpimsId) async {
     final db = LocalDb.instance;
     try {
-      CasePlanModel? casePlanRecord = await db.getCasePlan(ovcCpimsId);
+      CasePlanModel? casePlanRecord = await db.getCasePlanById(ovcCpimsId);
       Map<String, dynamic>? casePlanMap = casePlanRecord?.toJson();
       List<Map<String, dynamic>?> casePlanList = [];
       casePlanList.add(casePlanMap);
@@ -246,6 +246,21 @@ class CasePlanService {
       print(">>>>>>>>>>>>>>>>>>>>>>>>>$e");
     }
     return [];
+  }
+
+
+  static getAllCasePlans() async {
+    final db = LocalDb.instance;
+    try {
+      List<CasePlanModel> casePlans =  await db.getAllCasePlans();
+      List<Map<String, dynamic>> casePlanList = [];
+      for (var casePlan in casePlans) {
+        casePlanList.add(casePlan.toJson());
+      }
+      return casePlanList;
+    } catch (e) {
+      print("Error fetching caseplan fom db $e");
+    }
   }
 
   static postCasePlanRemote(

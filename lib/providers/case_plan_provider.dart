@@ -137,7 +137,7 @@ class CasePlanProvider extends ChangeNotifier {
     return personsList;
   }
 
-  Map<String, dynamic> generatePayload() {
+  Map<String, dynamic> generatePayload(String ovcCpimsId) {
     List<String> services = generateServicesList();
     List<String> responsibleId = generateResponsiblePersonList();
     String priorityId = "";
@@ -170,17 +170,22 @@ class CasePlanProvider extends ChangeNotifier {
     // print("goal --->${cpFormData.selectedGoal[0].value}");
     print("priority ---> ${_casePlanModelData.selectedPriorityAction}");
     print("goal ---> ${_casePlanModelData.selectedGoal}");
+    print("need ---> ${_casePlanModelData.selectedNeed}");
+    print("services ---> $services");
     print("domain ---> $domainId");
     print("gap ---> $gapId");
+    print("responsible ---> $responsibleId");
     print("results   ----> $resultsId");
+    print("reason   ----> $reason_is");
+    print("completion date   ----> $completionDate");
+    print("ovc cpims id   ----> $ovcCpimsId");
 
     Map<String, dynamic> payload = {
-      // 'ovc_cpims_id': cpFormData.ovc_cpims_id,
-      'ovc_cpims_id': "1234",
+      'ovc_cpims_id': ovcCpimsId,
       'date_of_event': DateFormat('yyyy-MM-dd').format(DateTime.now()),
       'services': [
         {
-          'domain_id': domainId ?? String,
+          'domain_id': domainId,
           'service_id': services,
           'goal_id': goalId,
           'gap_id': gapId,
@@ -197,12 +202,14 @@ class CasePlanProvider extends ChangeNotifier {
     return payload;
   }
 
-  Future<bool> saveCasaPlanDataLocally() async {
-    Map<String, dynamic> payload = generatePayload();
+  Future<bool> saveCasePlanDataLocally(String ovcCpimsId) async {
+    Map<String, dynamic> payload = generatePayload(ovcCpimsId);
 
     print("case-plan payload:==========>$payload");
     bool isFormSaved = await CasePlanService.saveCasePlanLocal(
         CasePlanModel.fromJson(payload));
+    // handleSubmitToServer(ovcCpimsId);
+    print("Caseplan fom db is ${await CasePlanService.getAllCasePlans()}");
     print("Caseplan data is ${jsonEncode(CasePlanModel.fromJson(payload))}");
 
     if (isFormSaved == true) {
@@ -214,6 +221,8 @@ class CasePlanProvider extends ChangeNotifier {
 
     return isFormSaved;
   }
+
+
 
   void resetFormData() {
     _casePlanModelData.selectedDomain.clear();
@@ -229,27 +238,34 @@ class CasePlanProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> handleSubmitToServer() async {
-    var prefs = await SharedPreferences.getInstance();
-    var accessToken = prefs.getString('access');
-    String bearerAuth = "Bearer $accessToken";
-    Dio dio = Dio();
-    dio.interceptors.add(LogInterceptor());
-
-    Map<String, dynamic> payload = generatePayload();
-
-    try {
-      var response = await dio.post("https://dev.cpims.net/api/form/CPT/",
-          data: payload,
-          options: Options(headers: {"Authorization": bearerAuth}));
-
-      if (response.statusCode == 200) {
-        debugPrint("Data sent to server was $payload");
-        CustomToastWidget.showToast("Case Plan Saved Successfully");
-      }
-      print("Caseplan data is ${jsonEncode(CasePlanModel.fromJson(payload))}");
-    } catch (e) {
-      print("Error posting caseplan form $e");
-    }
-  }
+  // Future<void> handleSubmitToServer(String ovcCpimsId) async {
+  //   var prefs = await SharedPreferences.getInstance();
+  //   var accessToken = prefs.getString('access');
+  //   String bearerAuth = "Bearer $accessToken";
+  //   Dio dio = Dio();
+  //   dio.interceptors.add(LogInterceptor());
+  //
+  //   //caseplan from db
+  //   List<Map<String, dynamic>> maps = await CasePlanService.getCasePlanRecordLocal(ovcCpimsId);
+  //   List<CasePlanModel> casePlanList = [];
+  //   for (var map in maps) {
+  //     casePlanList.add(CasePlanModel.fromJson(map));
+  //   }
+  //   var payload = casePlanList[0].toJson();
+  //   print("caseplan payload is $payload");
+  //
+  //   try {
+  //     var response = await dio.post("https://dev.cpims.net/api/form/CPT/",
+  //         data: payload,
+  //         options: Options(headers: {"Authorization": bearerAuth}));
+  //
+  //     if (response.statusCode == 200) {
+  //       debugPrint("Data sent to server was $payload");
+  //       CustomToastWidget.showToast("Case Plan Saved Successfully");
+  //     }
+  //     print("Caseplan data is ${jsonEncode(CasePlanModel.fromJson(payload))}");
+  //   } catch (e) {
+  //     print("Error posting caseplan form $e");
+  //   }
+  // }
 }

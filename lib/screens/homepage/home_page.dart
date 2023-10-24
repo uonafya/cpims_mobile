@@ -146,6 +146,7 @@ class _HomepageState extends State<Homepage> {
             .checkInternetConnection();
     if (isConnected) {
       submitCparaToUpstream();
+      print("caseplan From db is ${await CasePlanService.getAllCasePlans()}");
       fetchAndPostToServerOvcSubpopulationData();
       var prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getString('access');
