@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:android_id/android_id.dart';
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
@@ -27,9 +28,12 @@ class CaseLoadService {
       print("CaseLoadService sync");
 
     try {
+      const _androidIdPlugin = AndroidId();
+      final String? androidId = await _androidIdPlugin.getId();
+
       final accessToken = preferences.getString('access');
       http.Response response = await http.get(
-        Uri.parse('${cpimsApiUrl}caseload?deviceID=$deviceID'),
+        Uri.parse('${cpimsApiUrl}caseload?deviceID=$androidId'),
         headers: {
           'Authorization': 'Bearer $accessToken',
         },

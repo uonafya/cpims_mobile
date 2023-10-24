@@ -4,6 +4,7 @@ import 'package:cpims_mobile/providers/case_plan_provider.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_date_picker.dart';
+import 'package:cpims_mobile/widgets/custom_forms_date_picker.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
@@ -28,6 +29,7 @@ class CasePlanTemplateScreen extends StatefulWidget {
 class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
   List<ValueItem> selectedServicesList = [];
   List<ValueItem> selectedPersonsResponsible = [];
+  DateTime currentDateOfCasePlan = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -253,8 +255,14 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                             ],
                           ),
                           const SizedBox(height: 10),
-                          const CustomDatePicker(
+                           CustomFormsDatePicker(
                             hintText: 'Please select the Date',
+                            selectedDateTime: currentDateOfCasePlan,
+                            onDateSelected: (selectedDate) {
+                              currentDateOfCasePlan = selectedDate;
+                              casePlanProvider
+                                  .setSelectedDOE(currentDateOfCasePlan);
+                            },
                           ),
                           const SizedBox(height: 10),
                           const Row(
@@ -567,8 +575,14 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                             ],
                           ),
                           const SizedBox(height: 10),
-                          const CustomDatePicker(
+                           CustomFormsDatePicker(
                             hintText: 'Select the date',
+                            selectedDateTime: completionDate,
+                            onDateSelected: (selectedDate) {
+                              completionDate = selectedDate;
+                              casePlanProvider
+                                  .setSelectedDateToBeCompleted(completionDate);
+                            },
                           ),
                           const SizedBox(height: 10),
                           const Row(

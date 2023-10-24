@@ -147,7 +147,8 @@ class CasePlanProvider extends ChangeNotifier {
     String resultsId = "";
     String reason_is = "";
     String completionDate = "";
-    completionDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    String dateOfCasePlan = "";
+    completionDate = "";
     if (_casePlanModelData.selectedPriorityAction.isNotEmpty) {
       priorityId = _casePlanModelData.selectedPriorityAction[0].value!;
     }
@@ -166,6 +167,12 @@ class CasePlanProvider extends ChangeNotifier {
     if (_casePlanModelData.selectedReason.isNotEmpty) {
       reason_is = _casePlanModelData.selectedReason;
     }
+    if(_casePlanModelData.selectedDate != null){
+      dateOfCasePlan = _casePlanModelData.selectedDate.toString();
+    }
+    if(_casePlanModelData.selectedDateToBeCompleted != null){
+      completionDate = _casePlanModelData.selectedDateToBeCompleted.toString();
+    }
 
     // print("goal --->${cpFormData.selectedGoal[0].value}");
     print("priority ---> ${_casePlanModelData.selectedPriorityAction}");
@@ -182,7 +189,7 @@ class CasePlanProvider extends ChangeNotifier {
 
     Map<String, dynamic> payload = {
       'ovc_cpims_id': ovcCpimsId,
-      'date_of_event': DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      'date_of_event': dateOfCasePlan,
       'services': [
         {
           'domain_id': domainId,
@@ -193,7 +200,7 @@ class CasePlanProvider extends ChangeNotifier {
           'responsible_id': responsibleId,
           'results_id': resultsId,
           'reason_id': reason_is,
-          'completion_date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
+          'completion_date': completionDate
         }
       ]
     };
