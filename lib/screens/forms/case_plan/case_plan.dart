@@ -11,13 +11,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
-import 'package:intl/intl.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Models/case_load_model.dart';
-import '../../../widgets/custom_toast.dart';
-import 'models/case_plan_main_model.dart';
 
 class CasePlanTemplateScreen extends StatefulWidget {
   final CaseLoadModel caseLoadModel;
@@ -167,10 +164,39 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
     List<ValueItem> selectedResult = casePlanProvider.cpFormData.selectedResult;
     // String selectedReason=casePlanProvider.cpFormData.selectedReason;
 
-    List<CasePlanModel> caseplanModelFoThisOvC=[];
+    List<CasePlanModel> caseplanModelFoThisOvC = [];
 
     DateTime currentlySelectedDate = DateTime.now();
     DateTime completionDate = DateTime.now();
+
+    void resetDomain() {
+      selectedDomain = [];
+    }
+
+    void resetResults() {
+      casePlanProvider.setSelectedResults([]);
+    }
+
+    void resetGoal() {
+      casePlanProvider.setSelectedGoal([]); // For multi-select dropdown
+    }
+
+    void resetNeed() {
+      casePlanProvider.setSelectedNeed([]); // For multi-select dropdown
+    }
+
+    void resetPriorityAction() {
+      casePlanProvider
+          .setSelectedPriorityAction([]); // For multi-select dropdown
+    }
+
+    void resetServices() {
+      casePlanProvider.setSelectedServicesList([]); // For multi-select dropdown
+    }
+
+    void resetPersonsResponsible() {
+      casePlanProvider.setSelectedPersonsList([]); // For multi-select dropdown
+    }
 
     return Scaffold(
       appBar: customAppBar(),
@@ -568,30 +594,29 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                         child: CustomButton(
                           text: "Submit",
                           onTap: () async {
-
                             String ovcCpimsId = widget.caseLoadModel.cpimsId!;
-                           // String dateOfCaseplan=currentlySelectedDate.toString();
-                           //  String dateToBeCompleted=completionDate.toString();
-                           //  List<CasePlanServiceModel> servicesList = selectedServicesList.map((e) => CasePlanServiceModel(
-                           //    domainId: e.value!,
-                           //    serviceIds: selectedServicesList.map((e) => e.value).where((value) => value != null).toList(), // Filter out null values
-                           //    goalId: selectedGoals[0].value!,
-                           //    gapId: selectedNeed[0].value!,
-                           //    priorityId: selectedPriorityAction[0].value!,
-                           //    responsibleIds: selectedPersonsResponsible.map((e) => e.value).where((value) => value != null).toList(), // Filter out null values
-                           //    resultsId: selectedResult[0].value!,
-                           //    reasonId: _textEditingController.text,
-                           //    completionDate: dateToBeCompleted,
-                           //  )).toList();
-                           //
-                           //  //caseplan model
-                           //  CasePlanModel casePlanModel = CasePlanModel(
-                           //    ovcCpimsId: ovcCpimsId,
-                           //    dateOfEvent: dateOfCaseplan,
-                           //    services: servicesList,
-                           //  );
-                           //
-                           //  print("caseplan model selected: $casePlanModel");
+                            // String dateOfCaseplan=currentlySelectedDate.toString();
+                            //  String dateToBeCompleted=completionDate.toString();
+                            //  List<CasePlanServiceModel> servicesList = selectedServicesList.map((e) => CasePlanServiceModel(
+                            //    domainId: e.value!,
+                            //    serviceIds: selectedServicesList.map((e) => e.value).where((value) => value != null).toList(), // Filter out null values
+                            //    goalId: selectedGoals[0].value!,
+                            //    gapId: selectedNeed[0].value!,
+                            //    priorityId: selectedPriorityAction[0].value!,
+                            //    responsibleIds: selectedPersonsResponsible.map((e) => e.value).where((value) => value != null).toList(), // Filter out null values
+                            //    resultsId: selectedResult[0].value!,
+                            //    reasonId: _textEditingController.text,
+                            //    completionDate: dateToBeCompleted,
+                            //  )).toList();
+                            //
+                            //  //caseplan model
+                            //  CasePlanModel casePlanModel = CasePlanModel(
+                            //    ovcCpimsId: ovcCpimsId,
+                            //    dateOfEvent: dateOfCaseplan,
+                            //    services: servicesList,
+                            //  );
+                            //
+                            //  print("caseplan model selected: $casePlanModel");
 
                             bool isFormSaved = await casePlanProvider
                                 .saveCasePlanLocally(ovcCpimsId);
@@ -603,8 +628,15 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                                 backgroundColor: Colors.green,
                                 colorText: Colors.white,
                               );
-                             //exit this page
-                              Navigator.of(context).pop();
+                              resetDomain();
+                              resetGoal();
+                              resetNeed();
+                              resetPriorityAction();
+                              resetServices();
+                              resetPersonsResponsible();
+                              resetResults();
+                              //exit this page
+                              //  Navigator.of(context).pop();
                             }
                           },
                         ),
@@ -625,9 +657,10 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                       )
                     ]),
                     const SizedBox(height: 20),
-                     SizedBox(
+                    SizedBox(
                         width: 300, // Adjust the width value as needed
-                        child: HistoryAssessmentListWidget(casePlanModelFromDb:caseplanModelFoThisOvC)),
+                        child: HistoryAssessmentListWidget(
+                            casePlanModelFromDb: caseplanModelFoThisOvC)),
                   ],
                 ));
           }),
@@ -640,7 +673,8 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
 
 class HistoryAssessmentListWidget extends StatelessWidget {
   List<CasePlanModel> casePlanModelFromDb;
-   HistoryAssessmentListWidget({Key? key, required this.casePlanModelFromDb})
+
+  HistoryAssessmentListWidget({Key? key, required this.casePlanModelFromDb})
       : super(key: key);
 
   @override
@@ -695,7 +729,6 @@ class HistoryAssessmentListWidget extends StatelessWidget {
             cells: <DataCell>[
               for (var service in casePlanModel.services)
                 DataCell(Text(service.domainId)),
-
             ],
           );
         }).toList(),

@@ -1,3 +1,4 @@
+import 'package:android_id/android_id.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/screens/caseload/caseload.dart';
 import 'package:cpims_mobile/screens/forms/case_record_sheet.dart';
@@ -12,6 +13,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 import 'package:provider/provider.dart';
 
 const kPrimaryColor = Color(0xff00acac);
@@ -138,15 +140,11 @@ List drawerOptions(BuildContext context) {
       'icon': FontAwesomeIcons.rotate,
       'onTap': () async {
         Get.back();
-        String deviceId = '';
-        final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-
         try {
-          final AndroidDeviceInfo androidDeviceInfo =
-              await deviceInfoPlugin.androidInfo;
-          deviceId = androidDeviceInfo.id;
+          const _androidIdPlugin = AndroidId();
+          final String? androidId = await _androidIdPlugin.getId();
           CaseLoadService().fetchCaseLoadData(
-              context: context, isForceSync: true, deviceID: deviceId);
+              context: context, isForceSync: true, deviceID: androidId!);
           snackBar = SnackBar(
             content: const Text(
               'Syncing in progress ...',

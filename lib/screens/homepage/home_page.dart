@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cpims_mobile/Models/form_1_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
@@ -9,7 +8,6 @@ import 'package:cpims_mobile/screens/caregiver/caregiver.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
-import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
@@ -27,7 +25,6 @@ import '../../Models/caseplan_form_model.dart';
 import '../../providers/db_provider.dart';
 import '../../widgets/custom_toast.dart';
 import '../cpara/provider/db_util.dart';
-import '../unsynched_workflows/unsynched_workeflows_screen.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -46,6 +43,7 @@ class _HomepageState extends State<Homepage> {
   late int formOneBCount = 0;
   late int cparaCount = 0;
   late int ovcSubpopulatoiCount = 0;
+  // late int
   int updatedCountA = 0;
   int updatedCountB = 0;
   int updatedCountCpara = 0;
@@ -376,9 +374,9 @@ class _HomepageState extends State<Homepage> {
                     //   secondaryColor: Colors.black87,
                     // ),
                     StatisticsGridItem(
-                      title: 'OVC-ACTIVE/EVER REGISTERED',
+                      title: 'ACTIVE OVC',
                       value:
-                          '${dashData.children}/${dashData.childrenAll.toString()}',
+                          '${dashData.children}',
                       icon: FontAwesomeIcons.person,
                       color: kPrimaryColor,
                       secondaryColor: const Color(0xff0E6668),

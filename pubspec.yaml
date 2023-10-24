@@ -57,6 +57,8 @@ dependencies:
   uuid: ^3.0.7
   http_interceptor:
   dotted_border: ^2.0.0
+  platform_device_id: ^1.0.1
+  android_id: ^0.3.6
 
 
 dev_dependencies:
