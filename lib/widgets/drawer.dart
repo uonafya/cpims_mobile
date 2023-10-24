@@ -47,13 +47,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
             if (option.title.toLowerCase() == 'log out') {
               await Provider.of<AuthProvider>(context, listen: false)
                   .logOut(context);
-            }
-            else if(option.title == syncName ){
-
-            
-
+            } else if (option.title == syncName) {
               print("Clicked sync");
-
             }
             drawerProvider.changeDrawerOption(index);
           },
@@ -71,6 +66,34 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 ),
         );
       }),
+      const SizedBox(
+        height: 6,
+      ),
+      const Divider(
+        height: 1,
+      ),
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: const Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            SizedBox(
+              height: 6,
+            ),
+            Text(
+              'App Version',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+            SizedBox(
+              height: 6,
+            ),
+            Text(
+              '1.0.0',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+      ),
     ]);
   }
 
@@ -170,4 +193,14 @@ class DrawerOption {
           : [],
     );
   }
+}
+
+class AppVersionDrawerOption {
+  final String title;
+  final String version;
+
+  AppVersionDrawerOption({
+    required this.title,
+    required this.version,
+  });
 }
