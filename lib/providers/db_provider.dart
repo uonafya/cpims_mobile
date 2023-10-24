@@ -209,7 +209,6 @@ class LocalDb {
     }
   }
 
-
   Future<void> insertCparaData(
       {required CparaModel cparaModelDB,
       required String ovcId,
@@ -274,7 +273,7 @@ class LocalDb {
             'cpims_id': cpimsId,
             'criteria': question.questionID,
             'date_of_event': date_of_assessment,
-            'form_date_synced':null
+            'form_date_synced': null
           },
           conflictAlgorithm: ConflictAlgorithm.replace);
     }
@@ -506,53 +505,6 @@ class LocalDb {
     }
   }
 
-// inserting case plan
-  Future<bool> insertCasePlan(CasePlanModel casePlan) async {
-    try {
-      // Insert the main case plan information
-      final db = await instance.database;
-      final casePlanId = await db.insert(
-        casePlanTable,
-        {
-          'ovc_cpims_id': casePlan.ovcCpimsId,
-          'date_of_event': casePlan.dateOfEvent,
-          'form_date_synced': null,
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-
-      // Insert the associated services
-      for (var service in casePlan.services) {
-        final serviceIdList =
-            service.serviceIds.join(','); // Join service IDs with commas
-        final responsibleIdList = service.responsibleIds
-            .join(','); // Join responsible IDs with commas
-
-        await db.insert(
-          casePlanServicesTable,
-          {
-            'form_id': casePlanId,
-            'domain_id': service.domainId,
-            'goal_id': service.goalId,
-            'gap_id': service.gapId,
-            'priority_id': service.priorityId,
-            'results_id': service.resultsId,
-            'reason_id': service.reasonId,
-            'completion_date': service.completionDate,
-            'service_ids': serviceIdList,
-            'responsible_ids': responsibleIdList,
-          },
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-      }
-
-      return true;
-    } catch (e) {
-      print('Error inserting case plan: $e');
-      return false;
-    }
-  }
-
   //new insert case plan
   Future<bool> insertCasePlanNew(CasePlanModel casePlan) async {
     try {
@@ -599,6 +551,17 @@ class LocalDb {
   }
 
   //fetch new caseplan
+  Future<void> updateCasePlanTemplateDateSynced(int id, Database db) async {
+    try {
+      // Get the current date and time
+      DateTime now = DateTime.now();
+      await db.rawUpdate(
+          "UPDATE $casePlanTable SET form_date_synced = ? WHERE id = ?",
+          [now.toUtc().toIso8601String(), id]);
+    } catch (err) {
+      print("Error updating date_synced: $err");
+    }
+  }
 
   Future<CasePlanModel?> getCasePlanById(String ovcCpimsId) async {
     try {
@@ -654,12 +617,13 @@ class LocalDb {
     }
   }
 
-  Future<List<CasePlanModel>> getAllCasePlans() async {
+  Future<List<CasePlanModel>> getAllUnsyncedCasePlans() async {
     try {
       final db = await instance.database;
 
       // Use a raw SQL query to select all rows from the table
-      final queryResult = await db.rawQuery('SELECT * FROM $casePlanTable');
+      final queryResult = await db.rawQuery(
+          'SELECT * FROM $casePlanTable WHERE form_date_synced IS NULL');
 
       List<CasePlanModel> casePlans = [];
 
@@ -681,10 +645,12 @@ class LocalDb {
             goalId: serviceRow[CasePlanServices.goalId] as String,
             gapId: serviceRow[CasePlanServices.gapId] as String,
             priorityId: serviceRow[CasePlanServices.priorityId] as String,
-            responsibleIds: (serviceRow['responsible_ids'] as String).split(','),
+            responsibleIds:
+                (serviceRow['responsible_ids'] as String).split(','),
             resultsId: serviceRow[CasePlanServices.resultsId] as String,
             reasonId: serviceRow[CasePlanServices.reasonId] as String,
-            completionDate: serviceRow[CasePlanServices.completionDate] as String,
+            completionDate:
+                serviceRow[CasePlanServices.completionDate] as String,
           ));
         }
 
@@ -699,6 +665,27 @@ class LocalDb {
     } catch (e) {
       print('Error retrieving case plans: $e');
       return [];
+    }
+  }
+
+  Future<int> getUnsyncedCasePlanCount() async {
+    try {
+      final db = await instance.database;
+      // Use a raw SQL query to count rows from the table that are unsynced
+      final queryResult = await db.rawQuery(
+          'SELECT COUNT(*) FROM $casePlanTable WHERE form_date_synced IS NULL');
+
+      if (queryResult.isEmpty) {
+        return 0; // No unsynced case plans found
+      }
+
+      // Extract the count from the first row
+      final count = queryResult.first.values.first as int;
+
+      return count;
+    } catch (e) {
+      print('Error retrieving unsynced case plan count: $e');
+      return 0; // Handle the error and return 0
     }
   }
 
@@ -742,7 +729,7 @@ class LocalDb {
   }
 
   Future<int> getUnsyncedCparaFormCount() async {
-    final db= await instance.database;
+    final db = await instance.database;
     try {
       List<Map<String, dynamic>> countResult = await db.rawQuery(
           "SELECT COUNT(id) AS count FROM Form WHERE form_date_synced IS NULL");
@@ -761,7 +748,8 @@ class LocalDb {
 
   Future<int> countOvcSubpopulationDataWithNullDateSynced() async {
     final db = await LocalDb.instance.database;
-    const sql = "SELECT COUNT(*) as count FROM ovcsubpopulation WHERE form_date_synced IS NULL";
+    const sql =
+        "SELECT COUNT(*) as count FROM ovcsubpopulation WHERE form_date_synced IS NULL";
     List<Map<String, dynamic>> result = await db.rawQuery(sql);
     if (result.isNotEmpty) {
       return result[0]['count'];
@@ -872,7 +860,12 @@ class FormMetadata {
 }
 
 class CasePlan {
-  static final List<String> values = [id, ovcCpimsId, dateOfEvent,formDateSynced];
+  static final List<String> values = [
+    id,
+    ovcCpimsId,
+    dateOfEvent,
+    formDateSynced
+  ];
 
   static const String id = '_id';
   static const String ovcCpimsId = 'ovc_cpims_id';

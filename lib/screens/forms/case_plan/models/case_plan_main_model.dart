@@ -5,12 +5,17 @@ class CasePlanModelData {
   late List<ValueItem> selectedPersonsResponsible;
   late DateTime selectedDate;
   late DateTime selectedDateToBeCompleted;
-  late List<ValueItem> selectedDomain ;
-  late List<ValueItem> selectedGoal ;
-  late List<ValueItem> selectedNeed ;
-  late List<ValueItem> selectedPriorityAction ;
-  late List<ValueItem> selectedResult ;
-  late String selectedReason ;
+  late List<ValueItem> selectedDomain;
+
+  late List<ValueItem> selectedGoal;
+
+  late List<ValueItem> selectedNeed;
+
+  late List<ValueItem> selectedPriorityAction;
+
+  late List<ValueItem> selectedResult;
+
+  String selectedReason = "";
   late String ovc_cpims_id;
 
   CasePlanModelData({
@@ -23,6 +28,5 @@ class CasePlanModelData {
     required this.selectedResult,
     required this.ovc_cpims_id,
     required this.selectedDate,
-
   });
 }

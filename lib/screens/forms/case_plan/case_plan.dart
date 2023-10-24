@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/Models/caseplan_form_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/case_plan_provider.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
@@ -9,11 +10,14 @@ import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/route_manager.dart';
+import 'package:intl/intl.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Models/case_load_model.dart';
 import '../../../widgets/custom_toast.dart';
+import 'models/case_plan_main_model.dart';
 
 class CasePlanTemplateScreen extends StatefulWidget {
   final CaseLoadModel caseLoadModel;
@@ -161,6 +165,9 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
     List<ValueItem> selectedPriorityAction =
         casePlanProvider.cpFormData.selectedPriorityAction;
     List<ValueItem> selectedResult = casePlanProvider.cpFormData.selectedResult;
+    // String selectedReason=casePlanProvider.cpFormData.selectedReason;
+
+    List<CasePlanModel> caseplanModelFoThisOvC=[];
 
     DateTime currentlySelectedDate = DateTime.now();
     DateTime completionDate = DateTime.now();
@@ -505,7 +512,8 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                             showClearIcon: true,
                             hint: 'Please select the Result(s)',
                             onOptionSelected: (selectedEvents) {
-                              casePlanProvider.setSelectedResults(selectedEvents);
+                              casePlanProvider
+                                  .setSelectedResults(selectedEvents);
                             },
                             options: casePlanProviderResultList,
                             maxItems: 13,
@@ -560,19 +568,44 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                         child: CustomButton(
                           text: "Submit",
                           onTap: () async {
-                            String textFieldValue = _textEditingController.text;
-                            casePlanProvider
-                                .setSelectedReason(textFieldValue);
+
                             String ovcCpimsId = widget.caseLoadModel.cpimsId!;
+                           // String dateOfCaseplan=currentlySelectedDate.toString();
+                           //  String dateToBeCompleted=completionDate.toString();
+                           //  List<CasePlanServiceModel> servicesList = selectedServicesList.map((e) => CasePlanServiceModel(
+                           //    domainId: e.value!,
+                           //    serviceIds: selectedServicesList.map((e) => e.value).where((value) => value != null).toList(), // Filter out null values
+                           //    goalId: selectedGoals[0].value!,
+                           //    gapId: selectedNeed[0].value!,
+                           //    priorityId: selectedPriorityAction[0].value!,
+                           //    responsibleIds: selectedPersonsResponsible.map((e) => e.value).where((value) => value != null).toList(), // Filter out null values
+                           //    resultsId: selectedResult[0].value!,
+                           //    reasonId: _textEditingController.text,
+                           //    completionDate: dateToBeCompleted,
+                           //  )).toList();
+                           //
+                           //  //caseplan model
+                           //  CasePlanModel casePlanModel = CasePlanModel(
+                           //    ovcCpimsId: ovcCpimsId,
+                           //    dateOfEvent: dateOfCaseplan,
+                           //    services: servicesList,
+                           //  );
+                           //
+                           //  print("caseplan model selected: $casePlanModel");
 
                             bool isFormSaved = await casePlanProvider
-                                .saveCasePlanDataLocally(ovcCpimsId);
-                            // CustomToastWidget.showToast("Form saved successfully :  ${casePlanProvider.cpFormData.selectedPriorityAction.isEmpty}");
+                                .saveCasePlanLocally(ovcCpimsId);
                             if (isFormSaved == true) {
-                              CustomToastWidget.showToast(
-                                  "Form saved successfully!!");
-                              await Future.delayed(const Duration(seconds: 2));
-                              Navigator.of(context).pop();
+                              Get.snackbar(
+                                'Success',
+                                'Form saved successfully',
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: Colors.green,
+                                colorText: Colors.white,
+                              );
+                              Future.delayed(const Duration(seconds: 1), () {
+                                Get.back();
+                              });
                             }
                           },
                         ),
@@ -593,9 +626,9 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                       )
                     ]),
                     const SizedBox(height: 20),
-                    // const SizedBox(
-                    //     width: 300, // Adjust the width value as needed
-                    //     child: HistoryAssessmentListWidget()),
+                     SizedBox(
+                        width: 300, // Adjust the width value as needed
+                        child: HistoryAssessmentListWidget(casePlanModelFromDb:caseplanModelFoThisOvC)),
                   ],
                 ));
           }),
@@ -607,48 +640,67 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
 }
 
 class HistoryAssessmentListWidget extends StatelessWidget {
-  const HistoryAssessmentListWidget({super.key});
+  List<CasePlanModel> casePlanModelFromDb;
+   HistoryAssessmentListWidget({Key? key, required this.casePlanModelFromDb})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: 4,
-        itemBuilder: (context, index) {
-          return const AssessmentItemWidget();
-        });
-  }
-}
-
-class AssessmentItemWidget extends StatelessWidget {
-  const AssessmentItemWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Row(
-      children: [
-        Expanded(
-          child: Text(
-            'Child not Adhering to ARVs',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: DataTable(
+        columnSpacing: 10,
+        columns: const <DataColumn>[
+          DataColumn(
+            label: Text('Domain',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           ),
-        ),
-        SizedBox(
-          height: 50,
-        ),
-        Expanded(
-          child: Text(
-            '28-Aug-2023',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          DataColumn(
+            label: Text('Needs/Gaps',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           ),
-        ),
-        SizedBox(width: 10),
-        Icon(
-          CupertinoIcons.delete,
-          color: Colors.red,
-        )
-      ],
+          DataColumn(
+            label: Text('Priority Actions',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          ),
+          DataColumn(
+            label: Text('Services',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          ),
+          DataColumn(
+            label: Text('Responsible',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          ),
+          DataColumn(
+            label: Text('Completed',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          ),
+          DataColumn(
+            label: Text('Results',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          ),
+          DataColumn(
+            label: Text('Reasons',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          ),
+          DataColumn(
+            label: Text('Action',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          ),
+          DataColumn(
+              label: Text('Delete',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
+        ],
+        rows: casePlanModelFromDb.map((casePlanModel) {
+          return DataRow(
+            cells: <DataCell>[
+              for (var service in casePlanModel.services)
+                DataCell(Text(service.domainId)),
+
+            ],
+          );
+        }).toList(),
+      ),
     );
   }
 }

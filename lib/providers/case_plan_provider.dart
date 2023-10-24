@@ -163,7 +163,7 @@ class CasePlanProvider extends ChangeNotifier {
     if (_casePlanModelData.selectedResult.isNotEmpty) {
       resultsId = _casePlanModelData.selectedResult[0].value!;
     }
-    if(_casePlanModelData.selectedReason.isNotEmpty){
+    if (_casePlanModelData.selectedReason.isNotEmpty) {
       reason_is = _casePlanModelData.selectedReason;
     }
 
@@ -202,25 +202,74 @@ class CasePlanProvider extends ChangeNotifier {
     return payload;
   }
 
-  Future<bool> saveCasePlanDataLocally(String ovcCpimsId) async {
+  Future<bool> saveCasePlanLocally(String ovcCpimsId) async {
     Map<String, dynamic> payload = generatePayload(ovcCpimsId);
 
-    print("case-plan payload:==========>$payload");
     bool isFormSaved = await CasePlanService.saveCasePlanLocal(
         CasePlanModel.fromJson(payload));
-    // handleSubmitToServer(ovcCpimsId);
-    print("Caseplan fom db is ${await CasePlanService.getAllCasePlans()}");
-    print("Caseplan data is ${jsonEncode(CasePlanModel.fromJson(payload))}");
 
     if (isFormSaved == true) {
       resetFormData();
       CustomToastWidget.showToast("Saving...");
-
       notifyListeners();
     }
 
     return isFormSaved;
   }
+
+  // Future<bool> saveCasePlanDataLocally(String ovcCpimsId) async {
+  //   Map<String, dynamic> payload = generatePayload(ovcCpimsId);
+  //
+  //   print("case-plan payload:==========>$payload");
+  //   bool isFormSaved = await CasePlanService.saveCasePlanLocal(CasePlanModel.fromJson(payload));
+  //   // handleSubmitToServer(ovcCpimsId);
+  //   List<Map<String, dynamic>> caseplanFromDbData = await CasePlanService.getAllCasePlans();
+  //
+  //   List<CasePlanModel> caseplanFromDb = caseplanFromDbData
+  //       .map((map) => CasePlanModel.fromJson(map))
+  //       .toList();
+  //
+  //   //loop through the caseplan from db and send to server
+  //   var prefs = await SharedPreferences.getInstance();
+  //   var accessToken = prefs.getString('access');
+  //   String bearerAuth = "Bearer $accessToken";
+  //   Dio dio = Dio();
+  //   dio.interceptors.add(LogInterceptor());
+  //
+  //   for (var caseplan in caseplanFromDb) {
+  //     var payload = caseplan.toJson();
+  //     print("caseplan payload is $payload");
+  //     try {
+  //       var response = await dio.post("https://dev.cpims.net/api/form/CPT/",
+  //           data: payload,
+  //           options: Options(headers: {"Authorization": bearerAuth}));
+  //
+  //       if (response.statusCode == 200) {
+  //         debugPrint("Data sent to server was $payload");
+  //         CustomToastWidget.showToast("Case Plan Saved Successfully");
+  //       }
+  //       print("Caseplan data is ${jsonEncode(CasePlanModel.fromJson(payload))}");
+  //     } catch (e) {
+  //       print("Error posting caseplan form $e");
+  //     }
+  //   }
+  //
+  //
+  //
+  //
+  //   print("Caseplan fom db is ${await CasePlanService.getAllCasePlans()}");
+  //   //result from all caseplan is
+  //   print("Caseplan data is ${jsonEncode(CasePlanModel.fromJson(payload))}");
+  //
+  //   if (isFormSaved == true) {
+  //     resetFormData();
+  //     CustomToastWidget.showToast("Saving...");
+  //
+  //     notifyListeners();
+  //   }
+  //
+  //   return isFormSaved;
+  // }
 
 
 
@@ -238,34 +287,34 @@ class CasePlanProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<void> handleSubmitToServer(String ovcCpimsId) async {
-  //   var prefs = await SharedPreferences.getInstance();
-  //   var accessToken = prefs.getString('access');
-  //   String bearerAuth = "Bearer $accessToken";
-  //   Dio dio = Dio();
-  //   dio.interceptors.add(LogInterceptor());
-  //
-  //   //caseplan from db
-  //   List<Map<String, dynamic>> maps = await CasePlanService.getCasePlanRecordLocal(ovcCpimsId);
-  //   List<CasePlanModel> casePlanList = [];
-  //   for (var map in maps) {
-  //     casePlanList.add(CasePlanModel.fromJson(map));
-  //   }
-  //   var payload = casePlanList[0].toJson();
-  //   print("caseplan payload is $payload");
-  //
-  //   try {
-  //     var response = await dio.post("https://dev.cpims.net/api/form/CPT/",
-  //         data: payload,
-  //         options: Options(headers: {"Authorization": bearerAuth}));
-  //
-  //     if (response.statusCode == 200) {
-  //       debugPrint("Data sent to server was $payload");
-  //       CustomToastWidget.showToast("Case Plan Saved Successfully");
-  //     }
-  //     print("Caseplan data is ${jsonEncode(CasePlanModel.fromJson(payload))}");
-  //   } catch (e) {
-  //     print("Error posting caseplan form $e");
-  //   }
-  // }
+// Future<void> handleSubmitToServer(String ovcCpimsId) async {
+//   var prefs = await SharedPreferences.getInstance();
+//   var accessToken = prefs.getString('access');
+//   String bearerAuth = "Bearer $accessToken";
+//   Dio dio = Dio();
+//   dio.interceptors.add(LogInterceptor());
+//
+//   //caseplan from db
+//   List<Map<String, dynamic>> maps = await CasePlanService.getCasePlanRecordLocal(ovcCpimsId);
+//   List<CasePlanModel> casePlanList = [];
+//   for (var map in maps) {
+//     casePlanList.add(CasePlanModel.fromJson(map));
+//   }
+//   var payload = casePlanList[0].toJson();
+//   print("caseplan payload is $payload");
+//
+//   try {
+//     var response = await dio.post("https://dev.cpims.net/api/form/CPT/",
+//         data: payload,
+//         options: Options(headers: {"Authorization": bearerAuth}));
+//
+//     if (response.statusCode == 200) {
+//       debugPrint("Data sent to server was $payload");
+//       CustomToastWidget.showToast("Case Plan Saved Successfully");
+//     }
+//     print("Caseplan data is ${jsonEncode(CasePlanModel.fromJson(payload))}");
+//   } catch (e) {
+//     print("Error posting caseplan form $e");
+//   }
+// }
 }

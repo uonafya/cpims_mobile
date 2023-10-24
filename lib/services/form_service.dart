@@ -252,7 +252,7 @@ class CasePlanService {
   static getAllCasePlans() async {
     final db = LocalDb.instance;
     try {
-      List<CasePlanModel> casePlans =  await db.getAllCasePlans();
+      List<CasePlanModel> casePlans =  await db.getAllUnsyncedCasePlans();
       List<Map<String, dynamic>> casePlanList = [];
       for (var casePlan in casePlans) {
         casePlanList.add(casePlan.toJson());

@@ -1,4 +1,5 @@
 class CasePlanModel {
+  int id = 0;
   late final String ovcCpimsId;
   late final String dateOfEvent;
   late final List<CasePlanServiceModel> services;
@@ -51,7 +52,7 @@ class CasePlanServiceModel {
   late final String goalId;
   late final String gapId;
   late final String priorityId;
-  late final List<String> responsibleIds;
+  late final List<String?> responsibleIds;
   late final String resultsId;
   late final String reasonId;
   late final String completionDate;

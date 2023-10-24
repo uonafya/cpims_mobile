@@ -141,14 +141,6 @@ Future<int> getCountOfForms(Database? db) async {
 Future<void> submitCparaToUpstream() async {
   var prefs = await SharedPreferences.getInstance();
   var accessToken = prefs.getString('access');
-  var savedUsername = prefs.getString('username');
-  var savedPassword = prefs.getString('password');
-
-  // Encode your username and password as Basic Auth credentials
-  String username = savedUsername ?? "";
-  String password = savedPassword ?? "";
-  String basicAuth =
-      'Basic ${base64Encode(utf8.encode('$username:$password'))}';
   String bearerAuth = "Bearer $accessToken";
 
   // local db initialization

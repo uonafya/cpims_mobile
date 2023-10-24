@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cpims_mobile/Models/form_1_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/constants.dart';
@@ -13,6 +15,7 @@ import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_grid_view.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
@@ -20,7 +23,9 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../Models/caseplan_form_model.dart';
 import '../../providers/db_provider.dart';
+import '../../widgets/custom_toast.dart';
 import '../cpara/provider/db_util.dart';
 import '../unsynched_workflows/unsynched_workeflows_screen.dart';
 
@@ -57,97 +62,63 @@ class _HomepageState extends State<Homepage> {
 
   bool noFormsToSync = true;
 
-  // Future<void> syncWorkflows() async {
-  //   final isConnected =
-  //       await Provider.of<ConnectivityProvider>(context, listen: false)
-  //           .checkInternetConnection();
-  //   if (isConnected) {
-  //     submitCparaToUpstream();
-  //     var prefs = await SharedPreferences.getInstance();
-  //     var accessToken = prefs.getString('access');
-  //     setState(() {
-  //       isSyncing = true;
-  //     });
-  //     if (mounted) {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(
-  //           content: Text('Syncing forms...'),
-  //           duration: Duration(seconds: 3), // Show indefinitely
-  //         ),
-  //       );
-  //     }
-  //     // Reset the noFormsToSync flag before checking each form type
-  //     noFormsToSync = false;
-  //     for (var formType in formsList) {
-  //       List<dynamic> forms = await Form1Service.getAllForms(
-  //         formType['formType']!,
-  //       );
-  //       debugPrint("The forms are $forms");
-  //
-  //       if (forms.isEmpty) {
-  //         noFormsToSync = true;
-  //         debugPrint("No forms to sync");
-  //       }
-  //
-  //       for (var formData in forms) {
-  //         var response = await Form1Service.postFormRemote(
-  //           formData,
-  //           formType['endpoint']!,
-  //           accessToken!,
-  //         );
-  //         // handle the response here
-  //         if (response.statusCode == 200) {
-  //           await Form1Service.updateFormLocalDateSync(
-  //             formType['formType']!,
-  //             formData.id,
-  //           );
-  //           Get.snackbar(
-  //             'Success',
-  //             'Successfully synced forms',
-  //             backgroundColor: Colors.green,
-  //             colorText: Colors.white,
-  //           );
-  //         } else {
-  //           debugPrint(
-  //               "Failed to sync ${formType['formType']} and error is ${response.data}");
-  //           Get.snackbar(
-  //             'Error',
-  //             'Failed to sync ${formType['formType']} and code is ${response.statusCode}',
-  //             backgroundColor: Colors.red,
-  //             colorText: Colors.white,
-  //           );
-  //         }
-  //       }
-  //     }
-  //
-  //     setState(() {
-  //       isSyncing = false;
-  //     });
-  //
-  //     if (noFormsToSync) {
-  //       // Show the "No forms to sync" snack bar only once
-  //       Get.snackbar(
-  //         'Info',
-  //         'No forms to sync',
-  //         backgroundColor: Colors.orange,
-  //         colorText: Colors.black,
-  //       );
-  //     }
-  //
-  //     if (mounted) {
-  //       ScaffoldMessenger.of(context)
-  //           .removeCurrentSnackBar(); // Remove the indefinite snackbar
-  //     }
-  //   }
-  // }
+
+  Future<void> postCasePlansToServer() async {
+    List<Map<String, dynamic>> caseplanFromDbData =
+        await CasePlanService.getAllCasePlans();
+    List<CasePlanModel> caseplanFromDb =
+        caseplanFromDbData.map((map) => CasePlanModel.fromJson(map)).toList();
+
+    var prefs = await SharedPreferences.getInstance();
+    var accessToken = prefs.getString('access');
+    String bearerAuth = "Bearer $accessToken";
+    Dio dio = Dio();
+    dio.interceptors.add(LogInterceptor());
+    Database db= await LocalDb.instance.database;
+
+    for (var caseplan in caseplanFromDb) {
+      var payload = caseplan.toJson();
+      try {
+        var response = await dio.post("https://dev.cpims.net/api/form/CPT/",
+            data: payload,
+            options: Options(headers: {"Authorization": bearerAuth}));
+
+        if (response.statusCode == 200) {
+          debugPrint("Data sent to server was $payload");
+          updateCasePlanTemplateDateSynced(caseplan.id, db);
+          CustomToastWidget.showToast("Case Plan Saved Successfully");
+        }
+        print(
+            "Caseplan data is ${jsonEncode(CasePlanModel.fromJson(payload))}");
+      } catch (e) {
+        print("Error posting caseplan form $e");
+      }
+    }
+  }
+
+  Future<void> updateCasePlanTemplateDateSynced(int id, Database db) async {
+    try {
+      // Get the current date and time
+      DateTime now = DateTime.now();
+      await db.rawUpdate(
+          "UPDATE $casePlanTable SET form_date_synced = ? WHERE id = ?",
+          [now.toUtc().toIso8601String(), id]);
+    } catch (err) {
+      print("Error updating date_synced: $err");
+    }
+  }
+
+
   Future<void> syncWorkflows() async {
     final isConnected =
         await Provider.of<ConnectivityProvider>(context, listen: false)
             .checkInternetConnection();
     if (isConnected) {
       submitCparaToUpstream();
-      print("caseplan From db is ${await CasePlanService.getAllCasePlans()}");
+      postCasePlansToServer();
       fetchAndPostToServerOvcSubpopulationData();
+      print("caseplan From db is ${await CasePlanService.getAllCasePlans()}");
+
       var prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getString('access');
       setState(() {
