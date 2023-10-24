@@ -603,9 +603,8 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                                 backgroundColor: Colors.green,
                                 colorText: Colors.white,
                               );
-                              Future.delayed(const Duration(seconds: 1), () {
-                                Get.back();
-                              });
+                             //exit this page
+                              Navigator.of(context).pop();
                             }
                           },
                         ),
