@@ -42,8 +42,6 @@ class CasePlanModel {
         'services: $services'
         '}';
   }
-
-
 }
 
 class CasePlanServiceModel {
