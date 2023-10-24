@@ -30,6 +30,8 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
   List<ValueItem> selectedServicesList = [];
   List<ValueItem> selectedPersonsResponsible = [];
   DateTime currentDateOfCasePlan = DateTime.now();
+  DateTime completionDate = DateTime.now();
+  String reasonForNotAchievingCasePlan= "";
 
   @override
   Widget build(BuildContext context) {
@@ -168,8 +170,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
 
     List<CasePlanModel> caseplanModelFoThisOvC = [];
 
-    DateTime currentlySelectedDate = DateTime.now();
-    DateTime completionDate = DateTime.now();
+
 
     void resetDomain() {
       selectedDomain = [];
@@ -597,7 +598,9 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           const SizedBox(height: 10),
                           CustomTextField(
                             hintText: 'Please Write the Reasons',
-                            controller: _textEditingController,
+                            controller: _textEditingController
+                            ,
+
                           ),
                         ],
                       ),
@@ -609,6 +612,8 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           text: "Submit",
                           onTap: () async {
                             String ovcCpimsId = widget.caseLoadModel.cpimsId!;
+                            reasonForNotAchievingCasePlan = _textEditingController.text;
+                            casePlanProvider.setSelectedReason(reasonForNotAchievingCasePlan);
                             // String dateOfCaseplan=currentlySelectedDate.toString();
                             //  String dateToBeCompleted=completionDate.toString();
                             //  List<CasePlanServiceModel> servicesList = selectedServicesList.map((e) => CasePlanServiceModel(

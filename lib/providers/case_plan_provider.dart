@@ -22,6 +22,7 @@ class CasePlanProvider extends ChangeNotifier {
     selectedResult: [],
     ovc_cpims_id: "",
     selectedDate: DateTime.now(),
+    selectedDateToBeCompleted: DateTime.now(),
   );
 
   List csAllDomains = allDomains;
@@ -148,7 +149,6 @@ class CasePlanProvider extends ChangeNotifier {
     String reason_is = "";
     String completionDate = "";
     String dateOfCasePlan = "";
-    completionDate = "";
     if (_casePlanModelData.selectedPriorityAction.isNotEmpty) {
       priorityId = _casePlanModelData.selectedPriorityAction[0].value!;
     }
@@ -204,7 +204,6 @@ class CasePlanProvider extends ChangeNotifier {
         }
       ]
     };
-
     print("casePlan Payload------>$payload");
     return payload;
   }
@@ -223,61 +222,6 @@ class CasePlanProvider extends ChangeNotifier {
 
     return isFormSaved;
   }
-
-  // Future<bool> saveCasePlanDataLocally(String ovcCpimsId) async {
-  //   Map<String, dynamic> payload = generatePayload(ovcCpimsId);
-  //
-  //   print("case-plan payload:==========>$payload");
-  //   bool isFormSaved = await CasePlanService.saveCasePlanLocal(CasePlanModel.fromJson(payload));
-  //   // handleSubmitToServer(ovcCpimsId);
-  //   List<Map<String, dynamic>> caseplanFromDbData = await CasePlanService.getAllCasePlans();
-  //
-  //   List<CasePlanModel> caseplanFromDb = caseplanFromDbData
-  //       .map((map) => CasePlanModel.fromJson(map))
-  //       .toList();
-  //
-  //   //loop through the caseplan from db and send to server
-  //   var prefs = await SharedPreferences.getInstance();
-  //   var accessToken = prefs.getString('access');
-  //   String bearerAuth = "Bearer $accessToken";
-  //   Dio dio = Dio();
-  //   dio.interceptors.add(LogInterceptor());
-  //
-  //   for (var caseplan in caseplanFromDb) {
-  //     var payload = caseplan.toJson();
-  //     print("caseplan payload is $payload");
-  //     try {
-  //       var response = await dio.post("https://dev.cpims.net/api/form/CPT/",
-  //           data: payload,
-  //           options: Options(headers: {"Authorization": bearerAuth}));
-  //
-  //       if (response.statusCode == 200) {
-  //         debugPrint("Data sent to server was $payload");
-  //         CustomToastWidget.showToast("Case Plan Saved Successfully");
-  //       }
-  //       print("Caseplan data is ${jsonEncode(CasePlanModel.fromJson(payload))}");
-  //     } catch (e) {
-  //       print("Error posting caseplan form $e");
-  //     }
-  //   }
-  //
-  //
-  //
-  //
-  //   print("Caseplan fom db is ${await CasePlanService.getAllCasePlans()}");
-  //   //result from all caseplan is
-  //   print("Caseplan data is ${jsonEncode(CasePlanModel.fromJson(payload))}");
-  //
-  //   if (isFormSaved == true) {
-  //     resetFormData();
-  //     CustomToastWidget.showToast("Saving...");
-  //
-  //     notifyListeners();
-  //   }
-  //
-  //   return isFormSaved;
-  // }
-
 
 
   void resetFormData() {
