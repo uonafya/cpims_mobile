@@ -143,6 +143,7 @@ class _HomepageState extends State<Homepage> {
       postCasePlansToServer();
       fetchAndPostToServerOvcSubpopulationData();
       postFormOneToServer();
+      showCountUnsyncedForms();
     }
   }
 
@@ -207,16 +208,17 @@ class _HomepageState extends State<Homepage> {
                     const SizedBox(
                       width: 10,
                     ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.refresh_outlined,
-                        color: kTextGrey,
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        showCountUnsyncedForms();
-                      },
-                    ),
+                    GestureDetector(
+                        child: const Text(
+                          'Click here to Sync',
+                          style: TextStyle(
+                            color: kPrimaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+                          syncWorkflows();
+                        })
                   ],
                 ),
                 StatisticsItem(
