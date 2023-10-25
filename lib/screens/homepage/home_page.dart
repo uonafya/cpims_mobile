@@ -35,19 +35,22 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   List<Map<String, String>> formsList = [
-    {'formType': 'form1a', 'endpoint': 'F1A/'},
-    {'formType': 'form1b', 'endpoint': 'F1B/'},
+    {'formType': 'form1a', 'endpoint': 'F1A'},
+    {'formType': 'form1b', 'endpoint': 'F1B'},
   ];
 
   late int formOneACount = 0;
   late int formOneBCount = 0;
   late int cparaCount = 0;
   late int ovcSubpopulatoiCount = 0;
+  late int cptCount = 0;
+
   // late int
   int updatedCountA = 0;
   int updatedCountB = 0;
   int updatedCountCpara = 0;
   int updatedCountOvcSubpopulation = 0;
+  int updatedCptCount = 0;
 
   @override
   void initState() {
@@ -60,7 +63,6 @@ class _HomepageState extends State<Homepage> {
 
   bool noFormsToSync = true;
 
-
   Future<void> postCasePlansToServer() async {
     List<Map<String, dynamic>> caseplanFromDbData =
         await CasePlanService.getAllCasePlans();
@@ -72,40 +74,65 @@ class _HomepageState extends State<Homepage> {
     String bearerAuth = "Bearer $accessToken";
     Dio dio = Dio();
     dio.interceptors.add(LogInterceptor());
-    Database db= await LocalDb.instance.database;
+    Database db = await LocalDb.instance.database;
+
+    int successfulFormCount = 0;
 
     for (var caseplan in caseplanFromDb) {
       var payload = caseplan.toJson();
       try {
+        const cptEndpoint = "cpt/";
         var response = await dio.post("https://dev.cpims.net/api/form/CPT/",
             data: payload,
             options: Options(headers: {"Authorization": bearerAuth}));
 
-        if (response.statusCode == 200) {
-          debugPrint("Data sent to server was $payload");
-          updateCasePlanTemplateDateSynced(caseplan.id, db);
-          CustomToastWidget.showToast("Case Plan Saved Successfully");
+        if (response.statusCode == 201) {
+          updateFormCasePlanDateSync(caseplan.id!, db);
+          successfulFormCount++;
+          if (successfulFormCount == caseplanFromDb.length) {
+            Get.snackbar(
+              'Success',
+              'Successfully synced all CasePlan forms',
+              backgroundColor: Colors.green,
+              colorText: Colors.white,
+            );
+          }
         }
-        print(
-            "Caseplan data is ${jsonEncode(CasePlanModel.fromJson(payload))}");
       } catch (e) {
-        print("Error posting caseplan form $e");
+        Get.snackbar(
+          'Error',
+          'Failed to sync CasePlan forms',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
       }
     }
   }
 
-  Future<void> updateCasePlanTemplateDateSynced(int id, Database db) async {
+  Future<void> updateFormCasePlanDateSync(int formId, Database db) async {
+    db = await LocalDb.instance.database;
     try {
-      // Get the current date and time
-      DateTime now = DateTime.now();
-      await db.rawUpdate(
-          "UPDATE $casePlanTable SET form_date_synced = ? WHERE id = ?",
-          [now.toUtc().toIso8601String(), id]);
-    } catch (err) {
-      print("Error updating date_synced: $err");
+      final queryResults = await db.query(
+        casePlanTable,
+        where: '${CasePlan.id} = ?',
+        whereArgs: [formId],
+      );
+
+      if (queryResults.isNotEmpty) {
+        final caseplanData = queryResults.first[CasePlan.id] as int;
+        await db.update(
+          casePlanTable,
+          {
+            'form_date_synced': DateTime.now().toString(),
+          },
+          where: '${CasePlan.id} = ?',
+          whereArgs: [caseplanData],
+        );
+      }
+    } catch (e) {
+      debugPrint("Error updating caseplan data: $e");
     }
   }
-
 
   Future<void> syncWorkflows() async {
     final isConnected =
@@ -115,95 +142,7 @@ class _HomepageState extends State<Homepage> {
       submitCparaToUpstream();
       postCasePlansToServer();
       fetchAndPostToServerOvcSubpopulationData();
-      print("caseplan From db is ${await CasePlanService.getAllCasePlans()}");
-
-      var prefs = await SharedPreferences.getInstance();
-      var accessToken = prefs.getString('access');
-      setState(() {
-        isSyncing = true;
-      });
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Syncing forms...'),
-            duration: Duration(seconds: 3), // Show indefinitely
-          ),
-        );
-      }
-      // Reset the noFormsToSync flag before checking each form type
-      noFormsToSync = false;
-
-      int totalFormsToSync = 0;
-      int formsSynced = 0;
-
-      for (var formType in formsList) {
-        List<dynamic> forms = await Form1Service.getAllForms(
-          formType['formType']!,
-        );
-        debugPrint("The forms are $forms");
-        totalFormsToSync += forms.length;
-
-        if (forms.isEmpty) {
-          noFormsToSync = true;
-          debugPrint("No forms to sync");
-        }
-
-        for (var formData in forms) {
-          var response = await Form1Service.postFormRemote(
-            formData,
-            formType['endpoint']!,
-            accessToken!,
-          );
-          // handle the response here
-          if (response.statusCode == 200) {
-            await Form1Service.updateFormLocalDateSync(
-              formType['formType']!,
-              formData.id,
-            );
-            formsSynced++;
-
-            if (formsSynced == totalFormsToSync) {
-              Get.snackbar(
-                'Success',
-                'Successfully synced all forms',
-                backgroundColor: Colors.green,
-                colorText: Colors.white,
-              );
-            }
-
-            // Update the progress counter in the UI
-            updateProgress(formsSynced, totalFormsToSync);
-          } else {
-            debugPrint(
-                "Failed to sync ${formType['formType']} and error is ${response.data}");
-            Get.snackbar(
-              'Error',
-              'Failed to sync ${formType['formType']} and code is ${response.statusCode}',
-              backgroundColor: Colors.red,
-              colorText: Colors.white,
-            );
-          }
-        }
-      }
-
-      setState(() {
-        isSyncing = false;
-      });
-
-      if (noFormsToSync) {
-        // Show the "No forms to sync" snack bar only once
-        Get.snackbar(
-          'Info',
-          'No forms to sync',
-          backgroundColor: Colors.orange,
-          colorText: Colors.black,
-        );
-      }
-
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-            .removeCurrentSnackBar(); // Remove the indefinite snackbar
-      }
+      postFormOneToServer();
     }
   }
 
@@ -212,35 +151,14 @@ class _HomepageState extends State<Homepage> {
     updatedCountB = (await Form1Service.getCountAllFormOneB())!;
     updatedCountCpara = (await Form1Service.getCountAllFormCpara())!;
     updatedCountOvcSubpopulation = await Form1Service.ovcSubCount();
+    updatedCptCount = await CasePlanService.getCaseplanUnsyncedCount();
     setState(() {
       formOneACount = updatedCountA;
       formOneBCount = updatedCountB;
       cparaCount = updatedCountCpara;
       ovcSubpopulatoiCount = updatedCountOvcSubpopulation;
+      cptCount = updatedCptCount;
     });
-    print(
-        "Count is $formOneACount and count b is $formOneBCount  and count cpara is $cparaCount and count ovc subpopulation is $ovcSubpopulatoiCount");
-  }
-
-  countUnsycedCpara() async {
-    int count = 0;
-    Database database = await LocalDb.instance.database;
-    count = await getUnsyncedCparaFormsCount(database);
-    if (count > 0) {
-      print("The count is $count");
-      return count;
-    }
-    print("The count is $count");
-    return count;
-  }
-
-  void _showSyncSnackbar() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Forms synchronized successfully.'),
-        duration: Duration(seconds: 3),
-      ),
-    );
   }
 
   @override
@@ -308,7 +226,7 @@ class _HomepageState extends State<Homepage> {
                   secondaryColor: const Color(0xff630122),
                   form1ACount: formOneACount,
                   form1BCount: formOneBCount,
-                  cpaCount: cparaCount,
+                  cpaCount: cptCount,
                   cparaCount: ovcSubpopulatoiCount + cparaCount,
                   onClick: () {},
                 ),
@@ -331,52 +249,51 @@ class _HomepageState extends State<Homepage> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
-                    // const StatisticsGridItem(
-                    //   title: 'FORM 1A',
-                    //   value: "10/20",
-                    //   icon: FontAwesomeIcons.fileLines,
-                    //   color: kPrimaryColor,
-                    //   secondaryColor: Color(0xff0E6668),
-                    // ),
-                    // const StatisticsGridItem(
-                    //   title: 'FORM 1B',
-                    //   value: "10/20",
-                    //   icon: FontAwesomeIcons.fileLines,
-                    //   color: Color(0xff348FE2),
-                    //   secondaryColor: Color(0xff1F5788),
-                    // ),
-                    // const StatisticsGridItem(
-                    //   title: 'CPARA',
-                    //   value: "10/20",
-                    //   icon: FontAwesomeIcons.fileLines,
-                    //   color: Color(0xff727DB6),
-                    //   secondaryColor: Color(0xff454A6D),
-                    // ),
-                    // const StatisticsGridItem(
-                    //   title: 'CPT',
-                    //   value: "10/20",
-                    //   icon: FontAwesomeIcons.fileLines,
-                    //   color: Color(0xff49B6D5),
-                    //   secondaryColor: Color(0xff2C6E80),
-                    // ),
-                    // const StatisticsGridItem(
-                    //   title: 'CLHIV',
-                    //   value: "10/20",
-                    //   icon: FontAwesomeIcons.heart,
-                    //   color: Color(0xff49B6D5),
-                    //   secondaryColor: Color(0xff2C6E80),
-                    // ),
-                    // StatisticsGridItem(
-                    //   title: 'Org Unit Id',
-                    //   value: dashData.orgUnitId.toString(),
-                    //   icon: FontAwesomeIcons.orcid,
-                    //   color: Colors.black54,
-                    //   secondaryColor: Colors.black87,
-                    // ),
+                    const StatisticsGridItem(
+                      title: 'FORM 1A',
+                      value: "10/20",
+                      icon: FontAwesomeIcons.fileLines,
+                      color: kPrimaryColor,
+                      secondaryColor: Color(0xff0E6668),
+                    ),
+                    const StatisticsGridItem(
+                      title: 'FORM 1B',
+                      value: "10/20",
+                      icon: FontAwesomeIcons.fileLines,
+                      color: Color(0xff348FE2),
+                      secondaryColor: Color(0xff1F5788),
+                    ),
+                    const StatisticsGridItem(
+                      title: 'CPARA',
+                      value: "10/20",
+                      icon: FontAwesomeIcons.fileLines,
+                      color: Color(0xff727DB6),
+                      secondaryColor: Color(0xff454A6D),
+                    ),
+                    const StatisticsGridItem(
+                      title: 'CPT',
+                      value: "10/20",
+                      icon: FontAwesomeIcons.fileLines,
+                      color: Color(0xff49B6D5),
+                      secondaryColor: Color(0xff2C6E80),
+                    ),
+                    const StatisticsGridItem(
+                      title: 'CLHIV',
+                      value: "10/20",
+                      icon: FontAwesomeIcons.heart,
+                      color: Color(0xff49B6D5),
+                      secondaryColor: Color(0xff2C6E80),
+                    ),
+                    StatisticsGridItem(
+                      title: 'Org Unit Id',
+                      value: dashData.orgUnitId.toString(),
+                      icon: FontAwesomeIcons.orcid,
+                      color: Colors.black54,
+                      secondaryColor: Colors.black87,
+                    ),
                     StatisticsGridItem(
                       title: 'ACTIVE OVC',
-                      value:
-                          '${dashData.children}',
+                      value: '${dashData.children}',
                       icon: FontAwesomeIcons.person,
                       color: kPrimaryColor,
                       secondaryColor: const Color(0xff0E6668),
@@ -459,9 +376,92 @@ class _HomepageState extends State<Homepage> {
 
   void updateProgress(int formsSynced, int totalFormsToSync) {
     double progress = (formsSynced / totalFormsToSync) * 100;
-    print("Progress is $progress");
+    debugPrint("Progress is $progress");
     // Update the progress in the UI, for example, set a text widget with the progress.
     // You can use a Text widget or any other widget to display the progress.
     // progressTextWidget.text = 'Syncing Progress: ${progress.toStringAsFixed(2)}%';
+  }
+
+  void postFormOneToServer() async {
+    var prefs = await SharedPreferences.getInstance();
+    var accessToken = prefs.getString('access');
+    setState(() {
+      isSyncing = true;
+    });
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Syncing forms...'),
+          duration: Duration(seconds: 3), // Show indefinitely
+        ),
+      );
+    }
+    noFormsToSync = false;
+
+    int totalFormsToSync = 0;
+    int formsSynced = 0;
+
+    for (var formType in formsList) {
+      List<dynamic> forms = await Form1Service.getAllForms(
+        formType['formType']!,
+      );
+      totalFormsToSync += forms.length;
+
+      if (forms.isEmpty) {
+        noFormsToSync = true;
+      }
+      for (var formData in forms) {
+        var response = await Form1Service.postFormRemote(
+          formData,
+          formType['endpoint']!,
+          accessToken!,
+        );
+
+        if (response.statusCode == 201) {
+          await Form1Service.updateFormLocalDateSync(
+            formType['formType']!,
+            formData.id,
+          );
+          formsSynced++;
+
+          if (formsSynced == totalFormsToSync) {
+            Get.snackbar(
+              'Success',
+              'Successfully synced all ${formType['formType']} forms',
+              backgroundColor: Colors.green,
+              colorText: Colors.white,
+            );
+          }
+
+          updateProgress(formsSynced, totalFormsToSync);
+        } else {
+          debugPrint(
+              "Failed to sync ${formType['formType']} and error is ${response.data}");
+          Get.snackbar(
+            'Error',
+            'Failed to sync ${formType['formType']} and code is ${response.statusCode}',
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
+      }
+    }
+
+    setState(() {
+      isSyncing = false;
+    });
+
+    if (noFormsToSync) {
+      Get.snackbar(
+        'Info',
+        'No Form1A and Form1B forms to sync',
+        backgroundColor: Colors.orange,
+        colorText: Colors.black,
+      );
+    }
+    if (mounted) {
+      ScaffoldMessenger.of(context)
+          .removeCurrentSnackBar(); // Remove the indefinite snackbar
+    }
   }
 }

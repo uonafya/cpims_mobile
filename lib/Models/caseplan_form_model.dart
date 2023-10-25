@@ -1,5 +1,5 @@
 class CasePlanModel {
-  int id = 0;
+  final int? id;
   late final String ovcCpimsId;
   late final String dateOfEvent;
   late final List<CasePlanServiceModel> services;
@@ -8,6 +8,7 @@ class CasePlanModel {
     required this.ovcCpimsId,
     required this.dateOfEvent,
     required this.services,
+    this.id
   });
 
   factory CasePlanModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +21,7 @@ class CasePlanModel {
     }
 
     return CasePlanModel(
+      id: json['id'],
       ovcCpimsId: json['ovc_cpims_id'] as String,
       dateOfEvent: json['date_of_event'] as String,
       services: services,
@@ -28,6 +30,7 @@ class CasePlanModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'ovc_cpims_id': ovcCpimsId,
       'date_of_event': dateOfEvent,
       'services': services.map((service) => service.toJson()).toList(),

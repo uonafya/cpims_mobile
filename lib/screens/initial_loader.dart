@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:android_id/android_id.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
@@ -97,12 +98,14 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
             if (isMounted) {
               Provider.of<UIProvider>(context, listen: false)
                   .setDashData(dashRep);
-              final deviceID = await getDeviceID();
+              // final deviceID = await getDeviceID();
+              const _androidIdPlugin = AndroidId();
+              final String? androidId = await _androidIdPlugin.getId();
               if (isMounted) {
                 await CaseLoadService().fetchCaseLoadData(
                   context: context,
                   isForceSync: false,
-                  deviceID: deviceID,
+                  deviceID: androidId!,
                 );
               }
 

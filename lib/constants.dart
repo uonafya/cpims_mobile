@@ -295,6 +295,7 @@ List<Map<String, dynamic>> personRegistryStepper = [
 ];
 
 const String cpimsApiUrl = "https://dev.cpims.net/api/";
+const String mobileEndpoint = "https://dev.cpims.net/mobile/";
 
 const Map<String, String> headers = {"Content-Type": "application/json"};
 
@@ -304,6 +305,29 @@ void errorSnackBar(BuildContext context, String message, {Duration duration = co
     content: Text(message),
     duration: duration,
   ));
+}
+
+class AppVersionUtil {
+  static String appVersion = '1.0.0';
+  static String buildNumber = '1';
+  static String appName = 'CPIMS Mobile';
+  static String packageName = 'com.healthitkenya.cpims';
+
+  static String getAppVersion() {
+    return appVersion;
+  }
+
+  static String getBuildNumber() {
+    return buildNumber;
+  }
+
+  static String getAppName() {
+    return appName;
+  }
+
+  static String getPackageName() {
+    return packageName;
+  }
 }
 
 successSnackBar(BuildContext context, message) {

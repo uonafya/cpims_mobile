@@ -516,6 +516,7 @@ class LocalDb {
             'ovc_cpims_id': casePlan.ovcCpimsId,
             'date_of_event': casePlan.dateOfEvent,
             'form_date_synced': null,
+
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
@@ -550,18 +551,6 @@ class LocalDb {
     }
   }
 
-  //fetch new caseplan
-  Future<void> updateCasePlanTemplateDateSynced(int id, Database db) async {
-    try {
-      // Get the current date and time
-      DateTime now = DateTime.now();
-      await db.rawUpdate(
-          "UPDATE $casePlanTable SET form_date_synced = ? WHERE id = ?",
-          [now.toUtc().toIso8601String(), id]);
-    } catch (err) {
-      print("Error updating date_synced: $err");
-    }
-  }
 
   Future<CasePlanModel?> getCasePlanById(String ovcCpimsId) async {
     try {
@@ -655,6 +644,7 @@ class LocalDb {
         }
 
         casePlans.add(CasePlanModel(
+          id: row[CasePlan.id] as int,
           ovcCpimsId: row[CasePlan.ovcCpimsId] as String,
           dateOfEvent: row[CasePlan.dateOfEvent] as String,
           services: services,
@@ -671,7 +661,6 @@ class LocalDb {
   Future<int> getUnsyncedCasePlanCount() async {
     try {
       final db = await instance.database;
-      // Use a raw SQL query to count rows from the table that are unsynced
       final queryResult = await db.rawQuery(
           'SELECT COUNT(*) FROM $casePlanTable WHERE form_date_synced IS NULL');
 
@@ -684,7 +673,7 @@ class LocalDb {
 
       return count;
     } catch (e) {
-      print('Error retrieving unsynced case plan count: $e');
+      debugPrint('Error retrieving unsynced case plan count: $e');
       return 0; // Handle the error and return 0
     }
   }
@@ -736,10 +725,9 @@ class LocalDb {
 
       if (countResult.isNotEmpty) {
         int count = countResult[0]['count'];
-        print("Unsynced CPARA forms count: $count");
         return count;
       } else {
-        return 0; // Return 0 if there are no unsynced forms
+        return 0;
       }
     } catch (err) {
       throw ("Could Not Get Unsynced Forms Count: ${err.toString()}");
@@ -867,7 +855,7 @@ class CasePlan {
     formDateSynced
   ];
 
-  static const String id = '_id';
+  static const String id = 'id';
   static const String ovcCpimsId = 'ovc_cpims_id';
   static const String dateOfEvent = 'date_of_event';
   static const String formDateSynced = 'form_date_synced';

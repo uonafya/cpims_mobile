@@ -144,7 +144,7 @@ class Form1Service {
 
     try {
       final response = await dio.post(formEndpoint, data: data);
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         debugPrint("Data posted  successfully to server is $data");
         return response;
       } else {
@@ -182,27 +182,26 @@ class Form1Service {
   }
 
   static Future<int?> getCountAllFormOneA()  {
-    print("getCountAllFormOneA count is ${ getFormCount("form1a")}");
     return  getFormCount("form1a");
   }
 
   static Future<int?> getCountAllFormOneB() async {
-    print("getCountAllFormOneB count is ${await getFormCount("form1b")}");
     return await getFormCount("form1b");
   }
 
   //count cpara forms
   static Future<int?> getCountAllFormCpara() async {
-    print("getCountAllFormCpara count is ${await countCparaUnsyncedForms()}");
     return await countCparaUnsyncedForms();
   }
 
 
   // send form to server
   static Future<Response> postFormRemote(
+  // https://dev.cpims.net/mobile/form/F1A/
       formData, String formType, String authToken) async {
     String formOneEndpoint = "${cpimsApiUrl}form/${formType}";
-    return _postForm(formData, formOneEndpoint, authToken);
+    String formEndpointModile = "${mobileEndpoint}form/${formType}/";
+    return _postForm(formData, formEndpointModile, authToken);
   }
 }
 
@@ -275,5 +274,20 @@ class CasePlanService {
       print(e);
     }
     return http.Response("error", 500);
+  }
+
+  static getCaseplanUnsyncedCount() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.getUnsyncedCasePlanCount();
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      print("An error on getCaseplanUnsyncedCount: ${e.toString()}");
+    }
+    return 0; // Return 0 if there is an error.
   }
 }

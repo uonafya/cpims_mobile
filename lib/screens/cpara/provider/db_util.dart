@@ -4,6 +4,8 @@ import 'package:cpims_mobile/screens/cpara/cpara_util.dart';
 import 'package:cpims_mobile/screens/cpara/model/db_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -100,25 +102,11 @@ Future<void> purgeForm(int formID, Database db) async {
 //update form date time for sync
 Future<void> updateFormDateSynced(int formID, Database db) async {
   try {
-    // Get the current date and time
     DateTime now = DateTime.now();
-
-    // Update "date_synced" for the "Form" table
     await db.rawUpdate("UPDATE Form SET form_date_synced = ? WHERE id = ?",
         [now.toUtc().toIso8601String(), formID]);
-
-    // Update "date_synced" for the "HouseholdAnswer" table
-    await db.rawUpdate(
-        "UPDATE HouseholdAnswer SET form_date_synced = ? WHERE formID = ?",
-        [now.toUtc().toIso8601String(), formID]);
-
-    // Update "date_synced" for the "ChildAnswer" table
-    await db.rawUpdate(
-        "UPDATE ChildAnswer SET form_date_synced = ? WHERE formID = ?",
-        [now.toUtc().toIso8601String(), formID]);
   } catch (err) {
-    // Handle any errors that may occur during the updates
-    print("Error updating date_synced: $err");
+    debugPrint("Error updating date_synced: $err");
   }
 }
 
@@ -132,7 +120,7 @@ Future<int> getCountOfForms(Database? db) async {
     int total = fetchResults[0]['total'];
     return total;
   } catch (err) {
-    print(err.toString());
+    debugPrint(err.toString());
     throw ("Could Not Get Count ${err.toString()}");
   }
 }
@@ -143,21 +131,30 @@ Future<void> submitCparaToUpstream() async {
   var accessToken = prefs.getString('access');
   String bearerAuth = "Bearer $accessToken";
 
-  // local db initialization
   Database database = await LocalDb.instance.database;
-  // cpara data from local db
   List<CPARADatabase> cparaFormsInDb = await getUnsyncedForms(database);
+
+  int totalForms = cparaFormsInDb.length;
+  int successfullySubmittedForms = 0;
 
   for (CPARADatabase cparaForm in cparaFormsInDb) {
     try {
-      // submission
       await singleCparaFormSubmission(
           cparaForm: cparaForm, authorization: bearerAuth);
-      // remove from local db
-      // purgeForm(cparaForm.cpara_form_id, database);
       updateFormDateSynced(cparaForm.cpara_form_id, database);
-      print(
-          "Unscynced forms are ${await getUnsyncedCparaFormsCount(database)}");
+
+      successfullySubmittedForms++;
+
+      if (successfullySubmittedForms == totalForms) {
+        Get.snackbar(
+          "Success",
+          "CPARA Forms synced successfully",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+      }
     } catch (e) {
       debugPrint(
           "Cpara form with ovs cpims id : ${cparaForm.ovc_cpims_id} failed submission to upstream");
@@ -226,17 +223,18 @@ Future<void> singleCparaFormSubmission(
   print("Cpara data is $cparaJsonData");
 
   dio.interceptors.add(LogInterceptor());
-  var response = await dio.post("https://dev.cpims.net/api/form/CPR/",
+  var response = await dio.post("https://dev.cpims.net/mobile/cpara/",
       data: cparaMapData,
       options: Options(
           contentType: 'application/json',
           headers: {"Authorization": authorization}));
 
-  if (response.statusCode != 200) {
+  if (response.statusCode != 201) {
     throw ("Submission to upstream failed");
   }
   debugPrint("${response.statusCode}");
   debugPrint(response.data.toString());
+  print("Data sent to server was $cparaMapData");
 }
 
 void fetchAndPostToServerOvcSubpopulationData() async {
@@ -245,7 +243,8 @@ void fetchAndPostToServerOvcSubpopulationData() async {
   String bearerAuth = "Bearer $accessToken";
   Database database = await LocalDb.instance.database;
   List<Map<String, dynamic>> result = await fetchOvcSubPopulationData();
-  print("The result is $result");
+  int totalForms = result.length;
+  int successfullySubmittedForms = 0;
 
   for (var row in result) {
     try {
@@ -262,19 +261,28 @@ void fetchAndPostToServerOvcSubpopulationData() async {
         "ovc_subpopulation": [ovcSubPopulation],
       };
 
-      print("Sending to server: $ovcPostToServer");
-
       final response = await postOvcToServer(ovcPostToServer, bearerAuth);
 
       if (response.statusCode == 200) {
-        // Update the database row with the date and time it was sent to the server
-        await updateOvcSubpopulationDateSynced(row['id'],database);
-        print('Data posted to server successfully');
+        await updateOvcSubpopulationDateSynced(row['id'], database);
+        successfullySubmittedForms++; // Increment the counter.
+        //show snackbar
+        if (successfullySubmittedForms == totalForms) {
+          Get.snackbar(
+            "Success",
+            "OVC Subpopulation Forms synced successfully",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            duration: const Duration(seconds: 3),
+          );
+        }
       } else {
-        print('Failed to post data to server. Status code: ${response.statusCode}');
+        debugPrint(
+            'Failed to post data to server. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error posting data to server: $e');
+      debugPrint('Error posting data to server: $e');
     }
   }
 }
@@ -294,7 +302,7 @@ Future<void> updateOvcSubpopulationDateSynced(int id, Database db) async {
         "UPDATE ovcsubpopulation SET form_date_synced = ? WHERE id = ?",
         [now.toUtc().toIso8601String(), id]);
   } catch (err) {
-    print("Error updating date_synced: $err");
+    debugPrint("Error updating date_synced: $err");
   }
 }
 
@@ -316,7 +324,6 @@ Future<Response> postOvcToServer(
     throw e;
   }
 }
-
 
 //
 // Future<void> submitOvcSubPopultaionForm async(){
