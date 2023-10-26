@@ -29,7 +29,8 @@ import 'package:path/path.dart' as p;
 
 import '../../Models/case_load_model.dart';
 
-class CparaFormsScreen extends StatefulWidget {
+class
+CparaFormsScreen extends StatefulWidget {
   final CaseLoadModel caseLoadModel;
 
   const CparaFormsScreen({super.key, required this.caseLoadModel});

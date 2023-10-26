@@ -48,7 +48,6 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
   Widget build(BuildContext context) {
     // Form1bProvider form1bProvider =
     // Provider.of<Form1bProvider>(context, listen: false);
-
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
