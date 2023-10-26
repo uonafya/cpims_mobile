@@ -49,7 +49,7 @@ class CasePlanModel {
 
 class CasePlanServiceModel {
   late final String domainId;
-  late final List<String> serviceIds;
+  late final List<String?> serviceIds;
   late final String goalId;
   late final String gapId;
   late final String priorityId;

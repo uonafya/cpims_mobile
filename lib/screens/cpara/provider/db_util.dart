@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/screens/cpara/cpara_util.dart';
 import 'package:cpims_mobile/screens/cpara/model/db_model.dart';
 import 'package:dio/dio.dart';
@@ -223,7 +224,8 @@ Future<void> singleCparaFormSubmission(
   print("Cpara data is $cparaJsonData");
 
   dio.interceptors.add(LogInterceptor());
-  var response = await dio.post("https://dev.cpims.net/mobile/cpara/",
+  const cparaUrl = "cpara/";
+  var response = await dio.post("$mobileEndpoint$cparaUrl",
       data: cparaMapData,
       options: Options(
           contentType: 'application/json',

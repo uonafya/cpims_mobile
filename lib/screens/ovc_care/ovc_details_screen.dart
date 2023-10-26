@@ -20,6 +20,7 @@ import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 
 import '../cpara/widgets/ovc_sub_population_form.dart';
+import '../forms/case_plan/cpt/new_case_plan_template.dart';
 
 class OVCDetailsScreen extends StatefulWidget {
   const OVCDetailsScreen({super.key, required this.caseLoadModel});
@@ -164,8 +165,8 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             ChildDetailsWorkflowButton(
               workflowName: "Case Plan Template",
               onClick: () {
-                Get.to(() => CasePlanTemplateScreen(
-                    caseLoadModel: widget.caseLoadModel));
+                Get.to(
+                    () => CasePlanTemplateForm(caseLoad: widget.caseLoadModel));
               },
             ),
             const SizedBox(
