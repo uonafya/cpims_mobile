@@ -38,20 +38,19 @@ class CaseLoadService {
           'Authorization': 'Bearer $accessToken',
         },
       );
-      int count = 0;
+
       if (response.statusCode == 200) {
-        // LocalDb.instance.deleteAllCaseLoad(); TODO: Handle this when updating caseload
-        for (int i = 0; i < jsonDecode(response.body).length; i++) {
-          CaseLoadModel caseLoadModel = CaseLoadModel.fromJson(
-            jsonDecode(response.body)[i],
-          );
-          if (kDebugMode) {
-            count++;
-            print("CaseLoadService count: $count");
-            print(caseLoadModel.caregiverNames);
-          }
-          LocalDb.instance.insertCaseLoad(caseLoadModel);
+        final List<CaseLoadModel> caseLoadModelList = (jsonDecode(response.body) as List)
+            .map((json) => CaseLoadModel.fromJson(json))
+            .toList();
+
+        if (kDebugMode) {
+          print("CaseLoadService count: ${caseLoadModelList.length}");
         }
+
+        // Insert the list of CaseLoadModel instances in a single batch
+        await LocalDb.instance.insertMultipleCaseLoad(caseLoadModelList);
+
         final int timestamp = DateTime.now().millisecondsSinceEpoch;
         await preferences.setInt('caseload_last_save', timestamp);
       } else {

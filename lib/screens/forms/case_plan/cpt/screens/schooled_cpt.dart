@@ -5,14 +5,19 @@ import 'package:multi_dropdown/models/value_item.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../Models/case_load_model.dart';
 import '../../../../../Models/caseplan_form_model.dart';
 import '../../../../../providers/case_plan_provider.dart';
+import '../../../../../services/form_service.dart';
 import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
+import '../models/schooled_cpt_model.dart';
+import '../new_cpt_provider.dart';
 
 class SchooledCasePlanTemplate extends StatefulWidget {
-  const SchooledCasePlanTemplate({super.key});
+  final CaseLoadModel? caseLoadModel;
+   SchooledCasePlanTemplate({Key? key, this.caseLoadModel}) : super(key: key);
 
   @override
   State<SchooledCasePlanTemplate> createState() =>
@@ -20,73 +25,67 @@ class SchooledCasePlanTemplate extends StatefulWidget {
 }
 
 class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
-  List<ValueItem> selectedServicesList = [];
-  List<ValueItem> selectedPersonsResponsible = [];
   DateTime currentDateOfCasePlan = DateTime.now();
   DateTime completionDate = DateTime.now();
   String reasonForNotAchievingCasePlan = "";
+  List<ValueItem> selectedGoalOptions = [];
+  List<ValueItem> selectedNeedOptions = [];
+  List<ValueItem> selectedPriorityActionOptions = [];
+  List<ValueItem> selectedServicesOptions = [];
+  List<ValueItem> selectedPersonsResponsibleOptions = [];
+  List<ValueItem> selectedResultsOptions = [];
+  List<String?> selectedServiceIds = [];
+  List<String?> selectedPersonResponsibleIds = [];
 
   @override
   Widget build(BuildContext context) {
-    CasePlanProvider casePlanProvider = Provider.of<CasePlanProvider>(context);
+    CptProvider cptProvider = Provider.of<CptProvider>(context);
     TextEditingController _textEditingController = TextEditingController();
 
     List<ValueItem> casePlanProviderDomainList =
-        casePlanProvider.csAllDomains.map((domain) {
+    cptProvider.csAllDomains.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
     //schooled
     List<ValueItem> casePlanGoalSchooledList =
-        casePlanProvider.cpGoalsSchool.map((domain) {
+    cptProvider.cpGoalsSchool.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
     List<ValueItem> casePlanGapsSchooledList =
-        casePlanProvider.cpGapssSchool.map((domain) {
+    cptProvider.cpGapssSchool.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
     List<ValueItem> casePlanPrioritiesSchooledList =
-        casePlanProvider.cpPrioritiesSchool.map((domain) {
+    cptProvider.cpPrioritiesSchool.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
     List<ValueItem> casePlanServicesSchooledList =
-        casePlanProvider.cpServicesSchool.map((domain) {
+    cptProvider.cpServicesSchool.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
     List<ValueItem> casePlanProviderPersonsResponsibleList =
-        casePlanProvider.csPersonsResponsibleList.map((personResponsible) {
+    cptProvider.csPersonsResponsibleList.map((personResponsible) {
       return ValueItem(
           label: "- ${personResponsible['item_description']}",
           value: personResponsible['item_id']);
     }).toList();
 
     List<ValueItem> casePlanProviderResultList =
-        casePlanProvider.csResultsList.map((resultList) {
+    cptProvider.csResultsList.map((resultList) {
       return ValueItem(
           label: "- ${resultList['name']}", value: resultList['id']);
     }).toList();
-
-    selectedServicesList = casePlanProvider.cpFormData.selectedDomain;
-    List<ValueItem> selectedDomain = casePlanProvider.cpFormData.selectedDomain;
-    selectedPersonsResponsible =
-        casePlanProvider.cpFormData.selectedPersonsResponsible;
-    List<ValueItem> selectedGoals = casePlanProvider.cpFormData.selectedGoal;
-    List<ValueItem> selectedNeed = casePlanProvider.cpFormData.selectedNeed;
-    List<ValueItem> selectedPriorityAction =
-        casePlanProvider.cpFormData.selectedPriorityAction;
-    List<ValueItem> selectedResult = casePlanProvider.cpFormData.selectedResult;
-
-    List<CasePlanModel> caseplanModelFoThisOvC = [];
-
+    
     return StepsWrapper(
       title: 'Schooled',
       children: [
@@ -104,7 +103,12 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
           selectedDateTime: currentDateOfCasePlan,
           onDateSelected: (selectedDate) {
             currentDateOfCasePlan = selectedDate;
-            casePlanProvider.setSelectedDOE(currentDateOfCasePlan);
+            CptschooledFormData cptSchooledFormData =
+                context.read<CptProvider>().cptschooledFormData ??
+                    CptschooledFormData();
+            context.read<CptProvider>().updateCptSchooledFormData(cptSchooledFormData
+                .copyWith(dateOfEvent: currentDateOfCasePlan.toIso8601String()));
+            print("The selected date was $currentDateOfCasePlan");
           },
         ),
         const SizedBox(height: 10),
@@ -117,28 +121,13 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
           ],
         ),
         const SizedBox(height: 10),
-        MultiSelectDropDown(
-          showClearIcon: true,
-          hint: 'Please select the Domains',
-          onOptionSelected: (selectedEvents) {
-            casePlanProvider.setSelectedDomain(selectedEvents);
-            // Print the selected domain value
-            if (selectedEvents.isNotEmpty) {
-              print("selected Domain: ${selectedEvents[0].value}");
-            }
-          },
-          selectedOptions: selectedDomain,
-          options: casePlanProviderDomainList,
-          maxItems: 35,
-          disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
-          selectionType: SelectionType.single,
-          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-          dropdownHeight: 300,
-          optionTextStyle: const TextStyle(fontSize: 16),
-          selectedOptionIcon: const Icon(Icons.check_circle),
-          borderRadius: BorderRadius.circular(5.w)
-              .topLeft
-              .x, // Set the desired border radius value
+        TextFormField(
+          readOnly: true,
+          initialValue: 'Health',
+          decoration: const InputDecoration(
+            labelText: 'Label text',
+            border: OutlineInputBorder(),
+          ),
         ),
         const SizedBox(height: 10),
         const Row(
@@ -154,12 +143,16 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
           showClearIcon: true,
           hint: 'Please select the Goal',
           onOptionSelected: (selectedEvents) {
-            casePlanProvider.setSelectedGoal(selectedEvents);
+            // Ensure that you have a valid CasePlanHealthyModel instance
+            CptschooledFormData cptschooledFormData =
+                context.read<CptProvider>().cptschooledFormData ?? CptschooledFormData();
+            context.read<CptProvider>().updateCptSchooledFormData(
+                cptschooledFormData.copyWith(goalId: selectedEvents[0].value));
+            // Print the updated goalId
+            print("The selected goal was ${selectedEvents[0].value}");
           },
-          selectedOptions: casePlanProvider.cpFormData.selectedGoal,
-          options: (selectedDomain.isNotEmpty)
-              ? casePlanGoalSchooledList
-              : List.empty(),
+          selectedOptions: selectedGoalOptions,
+          options: casePlanGoalSchooledList,
           maxItems: 35,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.single,
@@ -185,12 +178,16 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
           showClearIcon: true,
           hint: 'Please select the Needs/Gaps',
           onOptionSelected: (selectedEvents) {
-            casePlanProvider.setSelectedNeed(selectedEvents);
+            // Ensure that you have a valid CasePlanHealthyModel instance
+            CptschooledFormData cptschooledFormData =
+                context.read<CptProvider>().cptschooledFormData ?? CptschooledFormData();
+            context.read<CptProvider>().updateCptSchooledFormData(
+                cptschooledFormData.copyWith(gapId: selectedEvents[0].value));
+            // Print the updated goalId
+            print("The selected need was ${selectedEvents[0].value}");
           },
-          options: (selectedDomain.isNotEmpty)
-              ? casePlanGapsSchooledList
-              : List.empty(),
-          selectedOptions: casePlanProvider.cpFormData.selectedNeed,
+          options: casePlanGapsSchooledList,
+          selectedOptions: selectedNeedOptions,
           maxItems: 35,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.single,
@@ -216,13 +213,14 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
           showClearIcon: true,
           hint: 'Please select the Priority Actions',
           onOptionSelected: (selectedEvents) {
-            casePlanProvider.setSelectedPriorityAction(selectedEvents);
-            // CustomToastWidget.showToast("selected PA: ${casePlanProvider.cpFormData.selectedPriorityAction[0].value}");
+            CptschooledFormData cptschooledFormData =
+                context.read<CptProvider>().cptschooledFormData ?? CptschooledFormData();
+            context.read<CptProvider>().updateCptSchooledFormData(
+                cptschooledFormData.copyWith(priorityId: selectedEvents[0].value));
+            print("The selected priority was ${selectedEvents[0].value}");
           },
-          options: (selectedDomain.isNotEmpty)
-              ? casePlanPrioritiesSchooledList
-              : List.empty(),
-          selectedOptions: casePlanProvider.cpFormData.selectedPriorityAction,
+          options: casePlanPrioritiesSchooledList,
+          selectedOptions: selectedPriorityActionOptions,
           maxItems: 35,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.single,
@@ -248,13 +246,20 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
           showClearIcon: true,
           hint: 'Please Select the Services',
           onOptionSelected: (selectedEvents) {
-            casePlanProvider.setSelectedServicesList(selectedEvents);
-            print("selected Services: ${selectedEvents[0].value}");
+            // Ensure that you have a valid CasePlanHealthyModel instance
+            CptschooledFormData cptschooledFormData =
+                context.read<CptProvider>().cptschooledFormData ?? CptschooledFormData();
+            context
+                .read<CptProvider>()
+                .updateCptSchooledFormData(cptschooledFormData.copyWith(
+              serviceIds: selectedEvents.map((item) => item.value).toList(),
+            ));
+            selectedServiceIds =
+                selectedEvents.map((item) => item.value).toList();
+            print("The selected service IDs are $selectedServiceIds");
           },
-          selectedOptions: casePlanProvider.cpFormData.selectedServices,
-          options: (selectedDomain.isNotEmpty)
-              ? casePlanServicesSchooledList
-              : List.empty(),
+          selectedOptions: selectedServicesOptions,
+          options: casePlanServicesSchooledList,
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
@@ -280,10 +285,21 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
           showClearIcon: true,
           hint: 'Please select Person(s) Responsible',
           onOptionSelected: (selectedEvents) {
-            casePlanProvider.setSelectedPersonsList(selectedEvents);
+            // Ensure that you have a valid CasePlanHealthyModel instance
+            CptschooledFormData cptschooledFormData =
+                context.read<CptProvider>().cptschooledFormData ?? CptschooledFormData();
+            context
+                .read<CptProvider>()
+                .updateCptSchooledFormData(cptschooledFormData.copyWith(
+              responsibleIds:
+              selectedEvents.map((item) => item.value).toList(),
+            ));
+            selectedPersonResponsibleIds =
+                selectedEvents.map((item) => item.value).toList();
+            print(
+                "The selected responsible IDs are $selectedPersonResponsibleIds");
           },
-          selectedOptions:
-              casePlanProvider.cpFormData.selectedPersonsResponsible,
+          selectedOptions: selectedPersonsResponsibleOptions,
           options: casePlanProviderPersonsResponsibleList,
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
@@ -310,8 +326,14 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
           showClearIcon: true,
           hint: 'Please select the Result(s)',
           onOptionSelected: (selectedEvents) {
-            casePlanProvider.setSelectedResults(selectedEvents);
+            CptschooledFormData cptschooledFormData =
+                context.read<CptProvider>().cptschooledFormData ?? CptschooledFormData();
+            context.read<CptProvider>().updateCptSchooledFormData(
+                cptschooledFormData.copyWith(resultsId: selectedEvents[0].value));
+            // Print the updated goalId
+            print("The selected result was ${selectedEvents[0].value}");
           },
+          selectedOptions: selectedResultsOptions,
           options: casePlanProviderResultList,
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
@@ -339,7 +361,11 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
           selectedDateTime: completionDate,
           onDateSelected: (selectedDate) {
             completionDate = selectedDate;
-            casePlanProvider.setSelectedDateToBeCompleted(completionDate);
+            CptschooledFormData cptschooledFormData =
+                context.read<CptProvider>().cptschooledFormData ?? CptschooledFormData();
+            context.read<CptProvider>().updateCptSchooledFormData(cptschooledFormData
+                .copyWith(completionDate: completionDate.toIso8601String()));
+            print("The selected date was $completionDate");
           },
         ),
         const SizedBox(height: 10),
@@ -355,6 +381,51 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
         CustomTextField(
           hintText: 'Please Write the Reasons',
           controller: _textEditingController,
+        ),
+        const SizedBox(height: 10),
+        //BUTTON TO SAVE
+        ElevatedButton(
+          onPressed: () async {
+            String ovcId = widget.caseLoadModel!.cpimsId ?? "";
+            reasonForNotAchievingCasePlan =
+                _textEditingController.text.toString();
+
+            CptschooledFormData cptschooledFormData =
+                context.read<CptProvider>().cptschooledFormData ?? CptschooledFormData();
+
+            // Update all the fields at once
+            CptschooledFormData updatedSafeFormData = cptschooledFormData.copyWith(
+              reasonId: reasonForNotAchievingCasePlan,
+              ovcCpimsId: ovcId,
+              domainId: casePlanProviderDomainList[0].value,
+            );
+
+            context
+                .read<CptProvider>()
+                .updateCptSchooledFormData(updatedSafeFormData);
+
+            // Retrieve the updated CptSchooledFormData
+            CptschooledFormData? safeCptFormData =
+                context.read<CptProvider>().cptschooledFormData;
+
+            print("The case plan model is $safeCptFormData");
+
+            // Map the updated CptSchooledFormData to CasePlanHealthyModel
+            CasePlanschooledModel caseSafePlanModel =
+            mapCptschooledHealthFormDataToCasePlan(safeCptFormData!);
+
+            //map caseplan healthyModelToCasePlanFormModel
+            CasePlanModel casePlanFormSafeModel =
+            mapCasePlanschooledToCasePlan(caseSafePlanModel);
+
+            bool isFormSaved =
+            await CasePlanService.saveCasePlanLocal(casePlanFormSafeModel);
+            if (isFormSaved) {
+              print("The case plan model is $casePlanFormSafeModel");
+            }
+          },
+          child: const Text('Save'),
+          //navigate to the next step
         ),
       ],
     );

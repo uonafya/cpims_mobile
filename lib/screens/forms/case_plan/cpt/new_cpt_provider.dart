@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../../../../Models/case_load_model.dart';
 import '../utils/case_plan_dummy_data.dart';
+import 'models/schooled_cpt_model.dart';
 
 class CptProvider extends ChangeNotifier {
   List csAllDomains = allDomains;
@@ -48,6 +49,8 @@ class CptProvider extends ChangeNotifier {
   CptSafeFormData? cptSafeFormData;
   CptStableFormData? cptStableFormData;
   CaseLoadModel? caseLoadModel;
+  CasePlanschooledModel? casePlanStableModel;
+  CptschooledFormData? cptschooledFormData;
 
   void updateCptFormData(CptHealthFormData cptHealthFormData) {
     this.cptHealthFormData = cptHealthFormData;
@@ -60,6 +63,11 @@ class CptProvider extends ChangeNotifier {
   }
 
   void updateCptStableFormData(CptStableFormData cptStableFormData) {
+    this.cptStableFormData = cptStableFormData;
+    notifyListeners();
+  }
+
+  void updateCptSchooledFormData(CptschooledFormData cptschooledFormData) {
     this.cptStableFormData = cptStableFormData;
     notifyListeners();
   }

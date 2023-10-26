@@ -81,7 +81,7 @@ class _HomepageState extends State<Homepage> {
       var payload = caseplan.toJson();
       try {
         const cptEndpoint = "cpt/";
-        var response = await dio.post("https://dev.cpims.net/api/form/CPT/",
+        var response = await dio.post("https://dev.cpims.net/mobile/cpt/",
             data: payload,
             options: Options(headers: {"Authorization": bearerAuth}));
 
@@ -98,6 +98,7 @@ class _HomepageState extends State<Homepage> {
           }
         }
       } catch (e) {
+        print("The error is $e");
         Get.snackbar(
           'Error',
           'Failed to sync CasePlan forms',

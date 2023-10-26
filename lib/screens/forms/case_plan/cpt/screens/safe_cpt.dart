@@ -87,7 +87,8 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    return StepsWrapper(title: 'Safe', children: [
+    return StepsWrapper(title: 'Safe',
+        children: [
       const Row(
         children: [
           Text(
@@ -426,6 +427,7 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
         child: const Text('Save'),
         //navigate to the next step
       ),
-    ]);
+    ]
+    );
   }
 }

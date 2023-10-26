@@ -16,6 +16,9 @@ import '../../../../widgets/drawer.dart';
 import '../../../../widgets/footer.dart';
 import '../../form1b/utils/form1bConstants.dart';
 import 'models/healthy_cpt_model.dart';
+import 'models/safe_cpt_model.dart';
+import 'models/schooled_cpt_model.dart';
+import 'models/stable_cpt_model.dart';
 
 class CasePlanTemplateForm extends StatefulWidget {
   final CaseLoadModel caseLoad;
@@ -37,7 +40,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
     steps = [
       HealthyCasePlan(caseLoadModel: widget.caseLoad),
       SafeCasePlan(caseLoadModel: widget.caseLoad),
-      const SchooledCasePlanTemplate(),
+      SchooledCasePlanTemplate(caseLoadModel: widget.caseLoad),
       StableCasePlan(caseLoadModel: widget.caseLoad),
     ];
     // Future.delayed(Duration.zero, () {
@@ -143,6 +146,32 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                     // await form1bProvider.saveForm1bData(
                                     //   form1bProvider.formData,
                                     // );
+                                    CptHealthFormData cptHealthFormData =
+                                        context
+                                                .read<CptProvider>()
+                                                .cptHealthFormData ??
+                                            CptHealthFormData();
+                                    CptSafeFormData cptSafeFormData = context
+                                            .read<CptProvider>()
+                                            .cptSafeFormData ??
+                                        CptSafeFormData();
+                                    CptStableFormData cptStableFormData =
+                                        context
+                                                .read<CptProvider>()
+                                                .cptStableFormData ??
+                                            CptStableFormData();
+                                    CasePlanschooledModel casePlanStableModel =
+                                        context
+                                                .read<CptProvider>()
+                                                .casePlanStableModel ??
+                                            CasePlanschooledModel();
+
+                                    print("Data colleced from each form");
+                                    print("Health $cptHealthFormData");
+                                    print("Safe $cptSafeFormData");
+                                    print("Stable $cptStableFormData");
+                                    print("Schooled $casePlanStableModel");
+
                                     try {
                                       String? ovsId = context
                                           .read<CptProvider>()
