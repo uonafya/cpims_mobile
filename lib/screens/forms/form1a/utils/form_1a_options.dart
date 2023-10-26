@@ -1,31 +1,31 @@
 // <<<<<<<<<<< Critical Events >>>>>>>>>>>>>>>>>>>
 List<Map> optionsEvents = [
   {
-    'event_id': 'OCE1',
+    'event_id': 'CEOCE1',
     'event_description': 'Child Pregnant',
   },
   {
-    'event_id': 'OCE2',
+    'event_id': 'CEOCE2',
     'event_description': 'Child not Adhering to ARVS',
   },
   {
-    'event_id': 'OCE3',
+    'event_id': 'CEOCE3',
     'event_description': 'Child Malnourished',
   },
   {
-    'event_id': 'OCE4',
+    'event_id': 'CEOCE4',
     'event_description': 'Child HIV status Changed',
   },
   {
-    'event_id': 'OCE5',
+    'event_id': 'CEOCE5',
     'event_description': 'Child acquired opportunistic infection',
   },
   {
-    'event_id': 'OCE6',
+    'event_id': 'CEOCE6',
     'event_description': 'Child missed HIV clinic appointment',
   },
   {
-    'event_id': 'OCE7',
+    'event_id': 'CEOCE7',
     'event_description': 'Child headed household',
   },
 ];
