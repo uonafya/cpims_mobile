@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +8,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
+import '../../../../../Models/caseplan_form_model.dart';
+import '../../../../../services/form_service.dart';
 import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
 import '../models/healthy_cpt_model.dart';
 
 class HealthyCasePlan extends StatefulWidget {
-  const HealthyCasePlan({super.key});
+  final CaseLoadModel? caseLoadModel;
+
+  const HealthyCasePlan({super.key, required this.caseLoadModel});
 
   @override
   State<HealthyCasePlan> createState() => _HealthyCasePlanState();
@@ -34,7 +39,6 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
 
   @override
   Widget build(BuildContext context) {
-    // CasePlanProvider casePlanProvider = Provider.of<CasePlanProvider>(context);
     CptProvider cptProvider = Provider.of<CptProvider>(context);
     TextEditingController _textEditingController = TextEditingController();
 
@@ -98,12 +102,12 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           selectedDateTime: currentDateOfCasePlan,
           onDateSelected: (selectedDate) {
             currentDateOfCasePlan = selectedDate;
-            CasePlanHealthyModel casePlanHealthyModel =
-                context.read<CptProvider>().casePlanHealthyModel ??
-                    CasePlanHealthyModel();
-            context.read<CptProvider>().casePlanHealthyModel =
-                casePlanHealthyModel.copyWith(
-                    dateOfEvent: currentDateOfCasePlan.toIso8601String());
+            CptHealthFormData cptHealthFormData =
+                context.read<CptProvider>().cptHealthFormData ??
+                    CptHealthFormData();
+            context.read<CptProvider>().updateCptFormData(
+                cptHealthFormData.copyWith(
+                    dateOfEvent: currentDateOfCasePlan.toIso8601String()));
             print("The selected date was $currentDateOfCasePlan");
           },
         ),
@@ -139,21 +143,13 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           showClearIcon: true,
           hint: 'Please select the Goal',
           onOptionSelected: (selectedEvents) {
-            CasePlanHealthyModel casePlanHealthyModel =
-                context.read<CptProvider>().casePlanHealthyModel ??
-                    CasePlanHealthyModel();
-            CasePlanHealthyModel updatedModel = casePlanHealthyModel.copyWith(
-              services: List.from(
-                  casePlanHealthyModel.services ?? []), // Copy the list
-            );
-            if (updatedModel.services != null &&
-                updatedModel.services!.isNotEmpty) {
-              updatedModel.services![0] = updatedModel.services![0].copyWith(
-                goalId: selectedEvents[0].value,
-              );
-              selectedGoalOptions = selectedEvents;
-            }
-            context.read<CptProvider>().casePlanHealthyModel = updatedModel;
+            // Ensure that you have a valid CasePlanHealthyModel instance
+            CptHealthFormData cptHealtFormData =
+                context.read<CptProvider>().cptHealthFormData ??
+                    CptHealthFormData();
+            context.read<CptProvider>().updateCptFormData(
+                cptHealtFormData.copyWith(goalId: selectedEvents[0].value));
+            // Print the updated goalId
             print("The selected goal was ${selectedEvents[0].value}");
           },
           selectedOptions: selectedGoalOptions,
@@ -183,22 +179,14 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           showClearIcon: true,
           hint: 'Please select the Needs/Gaps',
           onOptionSelected: (selectedEvents) {
-            CasePlanHealthyModel casePlanHealthyModel =
-                context.read<CptProvider>().casePlanHealthyModel ??
-                    CasePlanHealthyModel();
-            CasePlanHealthyModel updatedModel = casePlanHealthyModel.copyWith(
-              services: List.from(
-                  casePlanHealthyModel.services ?? []), // Copy the list
-            );
-            if (updatedModel.services != null &&
-                updatedModel.services!.isNotEmpty) {
-              updatedModel.services![0] = updatedModel.services![0].copyWith(
-                gapId: selectedEvents[0].value,
-              );
-              selectedGoalOptions = selectedEvents;
-            }
-            context.read<CptProvider>().casePlanHealthyModel = updatedModel;
-            print("The selected gap was ${selectedEvents[0].value}");
+            // Ensure that you have a valid CasePlanHealthyModel instance
+            CptHealthFormData cptHealtFormData =
+                context.read<CptProvider>().cptHealthFormData ??
+                    CptHealthFormData();
+            context.read<CptProvider>().updateCptFormData(
+                cptHealtFormData.copyWith(gapId: selectedEvents[0].value));
+            // Print the updated goalId
+            print("The selected need was ${selectedEvents[0].value}");
           },
           options: casePlanGapsHealthList,
           selectedOptions: selectedNeedOptions,
@@ -227,22 +215,14 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           showClearIcon: true,
           hint: 'Please select the Priority Actions',
           onOptionSelected: (selectedEvents) {
-            CasePlanHealthyModel casePlanHealthyModel =
-                context.read<CptProvider>().casePlanHealthyModel ??
-                    CasePlanHealthyModel();
-            CasePlanHealthyModel updatedModel = casePlanHealthyModel.copyWith(
-              services: List.from(
-                  casePlanHealthyModel.services ?? []), // Copy the list
-            );
-            if (updatedModel.services != null &&
-                updatedModel.services!.isNotEmpty) {
-              updatedModel.services![0] = updatedModel.services![0].copyWith(
-                priorityId: selectedEvents[0].value,
-              );
-              selectedGoalOptions = selectedEvents;
-            }
-            context.read<CptProvider>().casePlanHealthyModel = updatedModel;
-            print("The selected priority was ${selectedEvents[0].value}");
+            // Ensure that you have a valid CasePlanHealthyModel instance
+            CptHealthFormData cptHealtFormData =
+                context.read<CptProvider>().cptHealthFormData ??
+                    CptHealthFormData();
+            context.read<CptProvider>().updateCptFormData(
+                cptHealtFormData.copyWith(priorityId: selectedEvents[0].value));
+            // Print the updated goalId
+            print("The selected prioity was ${selectedEvents[0].value}");
           },
           options: casePlanPrioritiesHealthList,
           selectedOptions: selectedPriorityActionOptions,
@@ -271,24 +251,15 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           showClearIcon: true,
           hint: 'Please Select the Services',
           onOptionSelected: (selectedEvents) {
-            CasePlanHealthyModel casePlanHealthyModel =
-                context.read<CptProvider>().casePlanHealthyModel ??
-                    CasePlanHealthyModel();
-            CasePlanHealthyModel updatedModel = casePlanHealthyModel.copyWith(
-              services: List.from(
-                  casePlanHealthyModel.services ?? []), // Copy the list
-            );
-
-            if (updatedModel.services != null &&
-                updatedModel.services!.isNotEmpty) {
-              updatedModel.services![0] = updatedModel.services![0].copyWith(
-                serviceIds: selectedEvents.map((item) => item.value).toList(),
-              );
-            }
-
-            context.read<CptProvider>().casePlanHealthyModel = updatedModel;
-
-            // Extract and store just the service IDs
+            // Ensure that you have a valid CasePlanHealthyModel instance
+            CptHealthFormData cptHealtFormData =
+                context.read<CptProvider>().cptHealthFormData ??
+                    CptHealthFormData();
+            context
+                .read<CptProvider>()
+                .updateCptFormData(cptHealtFormData.copyWith(
+                  serviceIds: selectedEvents.map((item) => item.value).toList(),
+                ));
             selectedServiceIds =
                 selectedEvents.map((item) => item.value).toList();
             print("The selected service IDs are $selectedServiceIds");
@@ -320,29 +291,20 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           showClearIcon: true,
           hint: 'Please select Person(s) Responsible',
           onOptionSelected: (selectedEvents) {
-            CasePlanHealthyModel casePlanHealthyModel =
-                context.read<CptProvider>().casePlanHealthyModel ??
-                    CasePlanHealthyModel();
-            CasePlanHealthyModel updatedModel = casePlanHealthyModel.copyWith(
-              services: List.from(
-                  casePlanHealthyModel.services ?? []), // Copy the list
-            );
-
-            if (updatedModel.services != null &&
-                updatedModel.services!.isNotEmpty) {
-              updatedModel.services![0] = updatedModel.services![0].copyWith(
-                responsibleIds:
-                    selectedEvents.map((item) => item.value).toList(),
-              );
-            }
-
-            context.read<CptProvider>().casePlanHealthyModel = updatedModel;
-
-            // Extract and store just the service IDs
+            // Ensure that you have a valid CasePlanHealthyModel instance
+            CptHealthFormData cptHealtFormData =
+                context.read<CptProvider>().cptHealthFormData ??
+                    CptHealthFormData();
+            context
+                .read<CptProvider>()
+                .updateCptFormData(cptHealtFormData.copyWith(
+                  responsibleIds:
+                      selectedEvents.map((item) => item.value).toList(),
+                ));
             selectedPersonResponsibleIds =
                 selectedEvents.map((item) => item.value).toList();
             print(
-                "The selected person responible is IDs are $selectedPersonResponsibleIds");
+                "The selected responsible IDs are $selectedPersonResponsibleIds");
           },
           selectedOptions: selectedPersonsResponsibleOptions,
           options: casePlanProviderPersonsResponsibleList,
@@ -371,22 +333,13 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           showClearIcon: true,
           hint: 'Please select the Result(s)',
           onOptionSelected: (selectedEvents) {
-            CasePlanHealthyModel casePlanHealthyModel =
-                context.read<CptProvider>().casePlanHealthyModel ??
-                    CasePlanHealthyModel();
-            CasePlanHealthyModel updatedModel = casePlanHealthyModel.copyWith(
-              services: List.from(
-                  casePlanHealthyModel.services ?? []), // Copy the list
-            );
-            if (updatedModel.services != null &&
-                updatedModel.services!.isNotEmpty) {
-              updatedModel.services![0] = updatedModel.services![0].copyWith(
-                resultsId: selectedEvents[0].value,
-              );
-              selectedResultsOptions = selectedEvents;
-            }
-            context.read<CptProvider>().casePlanHealthyModel = updatedModel;
-            print("The selected result  was ${selectedEvents[0].value}");
+            CptHealthFormData cptHealtFormData =
+                context.read<CptProvider>().cptHealthFormData ??
+                    CptHealthFormData();
+            context.read<CptProvider>().updateCptFormData(
+                cptHealtFormData.copyWith(resultsId: selectedEvents[0].value));
+            // Print the updated goalId
+            print("The selected result was ${selectedEvents[0].value}");
           },
           selectedOptions: selectedResultsOptions,
           options: casePlanProviderResultList,
@@ -416,21 +369,11 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           selectedDateTime: completionDate,
           onDateSelected: (selectedDate) {
             completionDate = selectedDate;
-            CasePlanHealthyModel casePlanHealthyModel =
-                context.read<CptProvider>().casePlanHealthyModel ??
-                    CasePlanHealthyModel();
-            CasePlanHealthyModel updatedModel = casePlanHealthyModel.copyWith(
-              services: List.from(
-                  casePlanHealthyModel.services ?? []), // Copy the list
-            );
-            if (updatedModel.services != null &&
-                updatedModel.services!.isNotEmpty) {
-              updatedModel.services![0] = updatedModel.services![0].copyWith(
-                completionDate: completionDate.toIso8601String(),
-              );
-              completionDate = selectedDate;
-            }
-            context.read<CptProvider>().casePlanHealthyModel = updatedModel;
+            CptHealthFormData cptHealthFormData =
+                context.read<CptProvider>().cptHealthFormData ??
+                    CptHealthFormData();
+            context.read<CptProvider>().updateCptFormData(cptHealthFormData
+                .copyWith(completionDate: completionDate.toIso8601String()));
             print("The selected date was $completionDate");
           },
         ),
@@ -447,6 +390,49 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
         CustomTextField(
           hintText: 'Please Write the Reasons',
           controller: _textEditingController,
+        ),
+        const SizedBox(height: 10),
+        //BUTTON TO SAVE
+        ElevatedButton(
+          onPressed: () async {
+            String ovcId = widget.caseLoadModel!.cpimsId ?? "";
+            reasonForNotAchievingCasePlan =
+                _textEditingController.text.toString();
+
+            CptHealthFormData cptHealthFormData =
+                context.read<CptProvider>().cptHealthFormData ??
+                    CptHealthFormData();
+
+            // Update all the fields at once
+            CptHealthFormData updatedFormData = cptHealthFormData.copyWith(
+              reasonId: reasonForNotAchievingCasePlan,
+              ovcCpimsId: ovcId,
+              domainId: casePlanProviderDomainList[0].value,
+            );
+
+            context.read<CptProvider>().updateCptFormData(updatedFormData);
+
+            // Retrieve the updated CptHealthFormData
+            CptHealthFormData? healthCptFormData =
+                context.read<CptProvider>().cptHealthFormData;
+
+            print("The case plan model is $healthCptFormData");
+
+            // Map the updated CptHealthFormData to CasePlanHealthyModel
+            CasePlanHealthyModel casePlanModel =
+                mapCptHealthFormDataToCasePlan(healthCptFormData!);
+
+            //map caseplan healthyModelToCasePlanFormModel
+            CasePlanModel casePlanFormModel =
+            mapCasePlanHealthyToCasePlan(casePlanModel);
+
+            bool isFormSaved = await CasePlanService.saveCasePlanLocal(casePlanFormModel);
+            if (isFormSaved) {
+              print("The case plan model is $casePlanModel");
+            }
+          },
+          child: const Text('Save'),
+          //navigate to the next step
         ),
       ],
     );

@@ -167,6 +167,27 @@ class LocalDb {
     }
   }
 
+  Future<void> insertMultipleCaseLoad(List<CaseLoadModel> caseLoadModelList) async {
+    try {
+      final db = await instance.database;
+
+      // Use a batch to insert all the data at once
+      final batch = db.batch();
+
+      for (final caseLoadModel in caseLoadModelList) {
+        batch.insert(
+          caseloadTable,
+          caseLoadModel.toMap(), // Convert the model to a map
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      // Commit the batch to insert all the data in a single transaction
+      await batch.commit(noResult: true);
+    } catch (e) {
+      debugPrint("Error inserting caseload data: $e");
+    }
+  }
+
   //delete all caseload data
   Future<void> deleteAllCaseLoad() async {
     try {

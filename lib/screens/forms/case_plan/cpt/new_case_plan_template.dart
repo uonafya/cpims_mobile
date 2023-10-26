@@ -1,9 +1,11 @@
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/healthy_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/safe_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/schooled_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/stable_cpt.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../Models/case_load_model.dart';
 import '../../../../constants.dart';
@@ -13,6 +15,7 @@ import '../../../../widgets/custom_stepper.dart';
 import '../../../../widgets/drawer.dart';
 import '../../../../widgets/footer.dart';
 import '../../form1b/utils/form1bConstants.dart';
+import 'models/healthy_cpt_model.dart';
 
 class CasePlanTemplateForm extends StatefulWidget {
   final CaseLoadModel caseLoad;
@@ -25,18 +28,18 @@ class CasePlanTemplateForm extends StatefulWidget {
 
 class _Form1BScreen extends State<CasePlanTemplateForm> {
   int selectedStep = 0;
-
-  List<Widget> steps = [
-    const HealthyCasePlan(),
-    const SafeCasePlan(),
-    const SchooledCasePlanTemplate(),
-    const StableCasePlan(),
-  ];
+  List<Widget> steps = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    steps = [
+      HealthyCasePlan(caseLoadModel: widget.caseLoad),
+      SafeCasePlan(caseLoadModel: widget.caseLoad),
+      const SchooledCasePlanTemplate(),
+      StableCasePlan(caseLoadModel: widget.caseLoad),
+    ];
     // Future.delayed(Duration.zero, () {
     //   Form1bProvider form1bProvider =
     //   Provider.of<Form1bProvider>(context, listen: false);
@@ -140,6 +143,14 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                     // await form1bProvider.saveForm1bData(
                                     //   form1bProvider.formData,
                                     // );
+                                    try {
+                                      String? ovsId = context
+                                          .read<CptProvider>()
+                                          .caseLoadModel
+                                          ?.cpimsId;
+                                    } catch (e) {
+                                      debugPrint(e.toString());
+                                    }
                                     setState(() {
                                       // if (isFormSaved == true) {
                                       //   CustomToastWidget.showToast(

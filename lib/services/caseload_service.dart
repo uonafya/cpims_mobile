@@ -25,7 +25,7 @@ class CaseLoadService {
       print("CaseLoadService not sync");
       return;
     }
-      print("CaseLoadService sync");
+    print("CaseLoadService sync");
 
     try {
       const _androidIdPlugin = AndroidId();
@@ -38,7 +38,7 @@ class CaseLoadService {
           'Authorization': 'Bearer $accessToken',
         },
       );
-
+      int count = 0;
       if (response.statusCode == 200) {
         // LocalDb.instance.deleteAllCaseLoad(); TODO: Handle this when updating caseload
         for (int i = 0; i < jsonDecode(response.body).length; i++) {
@@ -46,8 +46,9 @@ class CaseLoadService {
             jsonDecode(response.body)[i],
           );
           if (kDebugMode) {
+            count++;
+            print("CaseLoadService count: $count");
             print(caseLoadModel.caregiverNames);
-             
           }
           LocalDb.instance.insertCaseLoad(caseLoadModel);
         }

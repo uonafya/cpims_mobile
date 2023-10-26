@@ -95,8 +95,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             print('Date selected: $date');
             DetailModel detailModel =
                 context.read<CparaProvider>().detailModel ?? DetailModel();
-            context.read<CparaProvider>().updateDetailModel(
-                detailModel.copyWith(dateOfAssessment: date.toString()));
+            context.read<CparaProvider>().updateDetailModel(detailModel.copyWith(dateOfAssessment: date.toString()));
           },
         ),
         const Divider(

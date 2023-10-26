@@ -1,24 +1,25 @@
 import '../../../../../Models/caseplan_form_model.dart';
+import 'healthy_cpt_model.dart';
 
-class CasePlanHealthyModel {
+class CasePlanStableModel {
   late final int? id;
   late final String? ovcCpimsId;
   late final String? dateOfEvent;
-  late final List<CasePlanServiceHealthyModel>? services;
+  late final List<CasePlanServiceStableModel>? services;
 
-  CasePlanHealthyModel(
+  CasePlanStableModel(
       {this.ovcCpimsId, this.dateOfEvent, this.services, this.id});
 
-  factory CasePlanHealthyModel.fromJson(Map<String, dynamic> json) {
-    List<CasePlanServiceHealthyModel> services = [];
+  factory CasePlanStableModel.fromJson(Map<String, dynamic> json) {
+    List<CasePlanServiceStableModel> services = [];
     if (json['services'] != null) {
       // Parse the list of services
       for (var serviceJson in json['services']) {
-        services.add(CasePlanServiceHealthyModel.fromJson(serviceJson));
+        services.add(CasePlanServiceStableModel.fromJson(serviceJson));
       }
     }
 
-    return CasePlanHealthyModel(
+    return CasePlanStableModel(
       id: json['id'],
       ovcCpimsId: json['ovc_cpims_id'] as String,
       dateOfEvent: json['date_of_event'] as String,
@@ -44,13 +45,13 @@ class CasePlanHealthyModel {
         '}';
   }
 
-  CasePlanHealthyModel copyWith({
+  CasePlanStableModel copyWith({
     String? ovcCpimsId,
     String? dateOfEvent,
-    List<CasePlanServiceHealthyModel>? services,
+    List<CasePlanServiceStableModel>? services,
     int? id,
   }) {
-    return CasePlanHealthyModel(
+    return CasePlanStableModel(
       ovcCpimsId: ovcCpimsId ?? this.ovcCpimsId,
       dateOfEvent: dateOfEvent ?? this.dateOfEvent,
       services: services ?? this.services,
@@ -59,7 +60,7 @@ class CasePlanHealthyModel {
   }
 }
 
-class CasePlanServiceHealthyModel {
+class CasePlanServiceStableModel {
   late final String domainId;
   late final List<String?> serviceIds;
   late final String goalId;
@@ -70,7 +71,7 @@ class CasePlanServiceHealthyModel {
   late final String reasonId;
   late final String completionDate;
 
-  CasePlanServiceHealthyModel({
+  CasePlanServiceStableModel({
     required this.domainId,
     required this.serviceIds,
     required this.goalId,
@@ -82,8 +83,8 @@ class CasePlanServiceHealthyModel {
     required this.completionDate,
   });
 
-  factory CasePlanServiceHealthyModel.fromJson(Map<String, dynamic> json) {
-    return CasePlanServiceHealthyModel(
+  factory CasePlanServiceStableModel.fromJson(Map<String, dynamic> json) {
+    return CasePlanServiceStableModel(
       domainId: json['domain_id'] as String,
       serviceIds: List<String>.from(json['service_id']),
       goalId: json['goal_id'] as String,
@@ -125,7 +126,7 @@ class CasePlanServiceHealthyModel {
         '}';
   }
 
-  CasePlanServiceHealthyModel copyWith({
+  CasePlanServiceStableModel copyWith({
     String? domainId,
     List<String?>? serviceIds,
     String? goalId,
@@ -136,7 +137,7 @@ class CasePlanServiceHealthyModel {
     String? reasonId,
     String? completionDate,
   }) {
-    return CasePlanServiceHealthyModel(
+    return CasePlanServiceStableModel(
       domainId: domainId ?? this.domainId,
       serviceIds: serviceIds ?? this.serviceIds,
       goalId: goalId ?? this.goalId,
@@ -150,7 +151,7 @@ class CasePlanServiceHealthyModel {
   }
 }
 
-class CptHealthFormData {
+class CptStableFormData {
   final String? ovcCpimsId;
   final String? dateOfEvent;
   final String? domainId;
@@ -163,7 +164,7 @@ class CptHealthFormData {
   final String? reasonId;
   final String? completionDate;
 
-  CptHealthFormData({
+  CptStableFormData({
     this.ovcCpimsId,
     this.dateOfEvent,
     this.domainId,
@@ -177,7 +178,7 @@ class CptHealthFormData {
     this.completionDate,
   });
 
-  CptHealthFormData copyWith({
+  CptStableFormData copyWith({
     String? ovcCpimsId,
     String? dateOfEvent,
     String? domainId,
@@ -190,7 +191,7 @@ class CptHealthFormData {
     String? reasonId,
     String? completionDate,
   }) {
-    return CptHealthFormData(
+    return CptStableFormData(
       ovcCpimsId: ovcCpimsId ?? this.ovcCpimsId,
       dateOfEvent: dateOfEvent ?? this.dateOfEvent,
       domainId: domainId ?? this.domainId,
@@ -237,8 +238,8 @@ class CptHealthFormData {
     };
   }
 
-  factory CptHealthFormData.fromJson(Map<String, dynamic> json) {
-    return CptHealthFormData(
+  factory CptStableFormData.fromJson(Map<String, dynamic> json) {
+    return CptStableFormData(
       ovcCpimsId: json['ovcCpimsId'],
       dateOfEvent: json['dateOfEvent'],
       domainId: json['domainId'],
@@ -254,9 +255,8 @@ class CptHealthFormData {
   }
 }
 
-CasePlanHealthyModel mapCptHealthFormDataToCasePlan(
-    CptHealthFormData formData) {
-  List<CasePlanServiceHealthyModel> services = [];
+CasePlanStableModel mapCptStableFormDataToCasePlan(CptStableFormData formData) {
+  List<CasePlanServiceStableModel> services = [];
   if (formData.serviceIds != null) {
     List<String?> combinedServiceIds = [];
     for (String? serviceId in formData.serviceIds!) {
@@ -266,7 +266,7 @@ CasePlanHealthyModel mapCptHealthFormDataToCasePlan(
     }
 
     if (combinedServiceIds.isNotEmpty) {
-      services.add(CasePlanServiceHealthyModel(
+      services.add(CasePlanServiceStableModel(
         domainId: formData.domainId!,
         serviceIds: combinedServiceIds,
         goalId: formData.goalId!,
@@ -280,39 +280,40 @@ CasePlanHealthyModel mapCptHealthFormDataToCasePlan(
     }
   }
 
-  return CasePlanHealthyModel(
+  return CasePlanStableModel(
     ovcCpimsId: formData.ovcCpimsId,
     dateOfEvent: formData.dateOfEvent,
     services: services,
   );
 }
 
-CasePlanModel mapCasePlanHealthyToCasePlan(CasePlanHealthyModel healthyModel) {
+
+CasePlanModel mapCasePlanStableToCasePlan(CasePlanStableModel StableModel) {
   // Map the services
   List<CasePlanServiceModel> services = [];
-  if (healthyModel.services != null) {
-    for (CasePlanServiceHealthyModel serviceHealthy in healthyModel.services!) {
+  if (StableModel.services != null) {
+    for (CasePlanServiceStableModel serviceStable in StableModel.services!) {
       // Convert serviceHealthy to serviceModel
-      List<String?> serviceIds = serviceHealthy.serviceIds;
+      List<String?> serviceIds = serviceStable.serviceIds;
       CasePlanServiceModel serviceModel = CasePlanServiceModel(
-        domainId: serviceHealthy.domainId,
+        domainId: serviceStable.domainId,
         serviceIds: serviceIds,
-        goalId: serviceHealthy.goalId,
-        gapId: serviceHealthy.gapId,
-        priorityId: serviceHealthy.priorityId,
-        responsibleIds: serviceHealthy.responsibleIds,
-        resultsId: serviceHealthy.resultsId,
-        reasonId: serviceHealthy.reasonId,
-        completionDate: serviceHealthy.completionDate,
+        goalId: serviceStable.goalId,
+        gapId: serviceStable.gapId,
+        priorityId: serviceStable.priorityId,
+        responsibleIds: serviceStable.responsibleIds,
+        resultsId: serviceStable.resultsId,
+        reasonId: serviceStable.reasonId,
+        completionDate: serviceStable.completionDate,
       );
       services.add(serviceModel);
     }
   }
 
   return CasePlanModel(
-    id: healthyModel.id,
-    ovcCpimsId: healthyModel.ovcCpimsId ?? "",
-    dateOfEvent: healthyModel.dateOfEvent ?? "",
+    id: StableModel.id,
+    ovcCpimsId: StableModel.ovcCpimsId ?? "",
+    dateOfEvent: StableModel.dateOfEvent ?? "",
     services: services,
   );
 }

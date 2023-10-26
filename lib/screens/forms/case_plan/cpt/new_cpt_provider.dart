@@ -1,6 +1,9 @@
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/healthy_cpt_model.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/safe_cpt_model.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/stable_cpt_model.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../../../Models/case_load_model.dart';
 import '../utils/case_plan_dummy_data.dart';
 
 class CptProvider extends ChangeNotifier {
@@ -38,15 +41,34 @@ class CptProvider extends ChangeNotifier {
 
   List csPersonsResponsibleList = cp_responsible;
   List csResultsList = casePlanResultsOptions;
-  CasePlanHealthyModel? casePlanHealthyModel;
 
-  void updateDetailModel(CasePlanHealthyModel casePlanHealthyModel) {
-    this.casePlanHealthyModel = casePlanHealthyModel;
+  CasePlanHealthyModel? casePlanHealthyModel;
+  CasePlanSafeModel? casePlanSafeModel;
+  CptHealthFormData? cptHealthFormData;
+  CptSafeFormData? cptSafeFormData;
+  CptStableFormData? cptStableFormData;
+  CaseLoadModel? caseLoadModel;
+
+  void updateCptFormData(CptHealthFormData cptHealthFormData) {
+    this.cptHealthFormData = cptHealthFormData;
+    notifyListeners();
+  }
+
+  void updateCptSafeFormData(CptSafeFormData cptSafeFormData) {
+    this.cptSafeFormData = cptSafeFormData;
+    notifyListeners();
+  }
+
+  void updateCptStableFormData(CptStableFormData cptStableFormData) {
+    this.cptStableFormData = cptStableFormData;
     notifyListeners();
   }
 
   void clearProviderData() {
     casePlanHealthyModel = null;
+    cptHealthFormData = null;
+    casePlanSafeModel = null;
+    cptSafeFormData = null;
     notifyListeners();
   }
 }
