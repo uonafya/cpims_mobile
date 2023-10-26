@@ -143,8 +143,8 @@ List drawerOptions(BuildContext context) {
         try {
           const _androidIdPlugin = AndroidId();
           final String? androidId = await _androidIdPlugin.getId();
-          CaseLoadService().fetchCaseLoadData(
-              context: context, isForceSync: true, deviceID: androidId!);
+          CaseLoadService().updateCaseLoadData(
+              context: context, deviceID: androidId!);
           // syncWorkflows();
           snackBar = SnackBar(
             content: const Text(

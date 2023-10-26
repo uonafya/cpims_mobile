@@ -188,6 +188,29 @@ class LocalDb {
     }
   }
 
+  Future<void> updateMultipleCaseLoad(List<CaseLoadModel> caseLoadModelList) async {
+    try {
+      final db = await instance.database;
+
+      // Use a batch to update all the data at once
+      final batch = db.batch();
+
+      for (final caseLoadModel in caseLoadModelList) {
+        batch.update(
+          caseloadTable,
+          caseLoadModel.toMap(),
+          where: 'ovc_cpims_id = ?', // Provide a condition to specify which records to update
+          whereArgs: [caseLoadModel.cpimsId], // Provide the ID of the record to update
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      // Commit the batch to update all the data in a single transaction
+      await batch.commit(noResult: true);
+    } catch (e) {
+      debugPrint("Error updating caseload data: $e");
+    }
+  }
+
   //delete all caseload data
   Future<void> deleteAllCaseLoad() async {
     try {
