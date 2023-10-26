@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../../providers/case_plan_provider.dart';
 import '../../../../../widgets/custom_forms_date_picker.dart';
+import '../../../../../widgets/custom_text_field.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
 
 class HealthyCasePlan extends StatefulWidget {
@@ -14,7 +15,6 @@ class HealthyCasePlan extends StatefulWidget {
 
   @override
   State<HealthyCasePlan> createState() => _HealthyCasePlanState();
-
 }
 
 class _HealthyCasePlanState extends State<HealthyCasePlan> {
@@ -22,9 +22,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
   List<ValueItem> selectedPersonsResponsible = [];
   DateTime currentDateOfCasePlan = DateTime.now();
   DateTime completionDate = DateTime.now();
-  String reasonForNotAchievingCasePlan= "";
-
-
+  String reasonForNotAchievingCasePlan = "";
 
   @override
   Widget build(BuildContext context) {
@@ -32,49 +30,47 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
     TextEditingController _textEditingController = TextEditingController();
 
     List<ValueItem> casePlanProviderDomainList =
-    casePlanProvider.csAllDomains.map((domain) {
+        casePlanProvider.csAllDomains.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-
     List<ValueItem> casePlanGoalHealthList =
-    casePlanProvider.cpGoalsHealth.map((domain) {
+        casePlanProvider.cpGoalsHealth.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
     List<ValueItem> casePlanGapsHealthList =
-    casePlanProvider.cpGapsHealth.map((domain) {
+        casePlanProvider.cpGapsHealth.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
     List<ValueItem> casePlanPrioritiesHealthList =
-    casePlanProvider.cpPrioritiesHealth.map((domain) {
+        casePlanProvider.cpPrioritiesHealth.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
     List<ValueItem> casePlanServicesHealthList =
-    casePlanProvider.cpServicesHealth.map((domain) {
+        casePlanProvider.cpServicesHealth.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
     List<ValueItem> casePlanProviderPersonsResponsibleList =
-    casePlanProvider.csPersonsResponsibleList.map((personResponsible) {
+        casePlanProvider.csPersonsResponsibleList.map((personResponsible) {
       return ValueItem(
           label: "- ${personResponsible['item_description']}",
           value: personResponsible['item_id']);
     }).toList();
 
     List<ValueItem> casePlanProviderResultList =
-    casePlanProvider.csResultsList.map((resultList) {
+        casePlanProvider.csResultsList.map((resultList) {
       return ValueItem(
           label: "- ${resultList['name']}", value: resultList['id']);
     }).toList();
-
 
     selectedServicesList = casePlanProvider.cpFormData.selectedDomain;
     List<ValueItem> selectedDomain = casePlanProvider.cpFormData.selectedDomain;
@@ -93,8 +89,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           children: [
             Text(
               'Date of Case Plan*',
-              style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -104,8 +99,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           selectedDateTime: currentDateOfCasePlan,
           onDateSelected: (selectedDate) {
             currentDateOfCasePlan = selectedDate;
-            casePlanProvider
-                .setSelectedDOE(currentDateOfCasePlan);
+            casePlanProvider.setSelectedDOE(currentDateOfCasePlan);
           },
         ),
         const SizedBox(height: 10),
@@ -113,47 +107,25 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           children: [
             Text(
               'Domain*',
-              style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
           ],
         ),
         const SizedBox(height: 10),
-        MultiSelectDropDown(
-          showClearIcon: true,
-          hint: 'Please select the Domains',
-          onOptionSelected: (selectedEvents) {
-            casePlanProvider
-                .setSelectedDomain(selectedEvents);
-            // Print the selected domain value
-            if (selectedEvents.isNotEmpty) {
-              print(
-                  "selected Domain: ${selectedEvents[0].value}");
-            }
-          },
-          selectedOptions: selectedDomain,
-          options: casePlanProviderDomainList,
-          maxItems: 35,
-          disabledOptions: const [
-            ValueItem(label: 'Option 1', value: '1')
-          ],
-          selectionType: SelectionType.single,
-          chipConfig:
-          const ChipConfig(wrapType: WrapType.wrap),
-          dropdownHeight: 300,
-          optionTextStyle: const TextStyle(fontSize: 16),
-          selectedOptionIcon: const Icon(Icons.check_circle),
-          borderRadius: BorderRadius.circular(5.w)
-              .topLeft
-              .x, // Set the desired border radius value
+        TextFormField(
+          readOnly: true,
+          initialValue: 'Health',
+          decoration: const InputDecoration(
+            labelText: 'Label text',
+            border: OutlineInputBorder(),
+          ),
         ),
         const SizedBox(height: 10),
         const Row(
           children: [
             Text(
               'Goal*',
-              style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -164,16 +136,12 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           onOptionSelected: (selectedEvents) {
             casePlanProvider.setSelectedGoal(selectedEvents);
           },
-          selectedOptions:
-          casePlanProvider.cpFormData.selectedGoal,
-          options: (selectedDomain.isNotEmpty) ? casePlanGoalHealthList : List.empty(),
+          selectedOptions: casePlanProvider.cpFormData.selectedGoal,
+          options:  casePlanGoalHealthList,
           maxItems: 35,
-          disabledOptions: const [
-            ValueItem(label: 'Option 1', value: '1')
-          ],
+          disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.single,
-          chipConfig:
-          const ChipConfig(wrapType: WrapType.wrap),
+          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
           dropdownHeight: 300,
           optionTextStyle: const TextStyle(fontSize: 16),
           selectedOptionIcon: const Icon(Icons.check_circle),
@@ -186,8 +154,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           children: [
             Text(
               'Needs/Gaps*',
-              style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -198,16 +165,12 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           onOptionSelected: (selectedEvents) {
             casePlanProvider.setSelectedNeed(selectedEvents);
           },
-          options: (selectedDomain.isNotEmpty) ? casePlanGapsHealthList : List.empty(),
-          selectedOptions:
-          casePlanProvider.cpFormData.selectedNeed,
+          options: casePlanGapsHealthList,
+          selectedOptions: casePlanProvider.cpFormData.selectedNeed,
           maxItems: 35,
-          disabledOptions: const [
-            ValueItem(label: 'Option 1', value: '1')
-          ],
+          disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.single,
-          chipConfig:
-          const ChipConfig(wrapType: WrapType.wrap),
+          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
           dropdownHeight: 300,
           optionTextStyle: const TextStyle(fontSize: 16),
           selectedOptionIcon: const Icon(Icons.check_circle),
@@ -220,8 +183,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           children: [
             Text(
               'Priority Actions*',
-              style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -230,21 +192,15 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           showClearIcon: true,
           hint: 'Please select the Priority Actions',
           onOptionSelected: (selectedEvents) {
-            casePlanProvider
-                .setSelectedPriorityAction(selectedEvents);
+            casePlanProvider.setSelectedPriorityAction(selectedEvents);
             // CustomToastWidget.showToast("selected PA: ${casePlanProvider.cpFormData.selectedPriorityAction[0].value}");
           },
-          options: (selectedDomain.isNotEmpty)
-              ? casePlanPrioritiesHealthList : List.empty(),
-          selectedOptions: casePlanProvider
-              .cpFormData.selectedPriorityAction,
+          options: casePlanPrioritiesHealthList,
+          selectedOptions: casePlanProvider.cpFormData.selectedPriorityAction,
           maxItems: 35,
-          disabledOptions: const [
-            ValueItem(label: 'Option 1', value: '1')
-          ],
+          disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.single,
-          chipConfig:
-          const ChipConfig(wrapType: WrapType.wrap),
+          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
           dropdownHeight: 300,
           optionTextStyle: const TextStyle(fontSize: 16),
           selectedOptionIcon: const Icon(Icons.check_circle),
@@ -257,8 +213,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           children: [
             Text(
               'Services*',
-              style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -267,34 +222,15 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           showClearIcon: true,
           hint: 'Please Select the Services',
           onOptionSelected: (selectedEvents) {
-            casePlanProvider
-                .setSelectedServicesList(selectedEvents);
-            print(
-                "selected Services: ${selectedEvents[0].value}");
+            casePlanProvider.setSelectedServicesList(selectedEvents);
+            print("selected Services: ${selectedEvents[0].value}");
           },
-          selectedOptions:
-          casePlanProvider.cpFormData.selectedServices,
-          options: (selectedDomain.isNotEmpty &&
-              selectedDomain[0].value == 'DHNU')
-              ? casePlanServicesHealthList
-              : (selectedDomain.isNotEmpty &&
-              selectedDomain[0].value == 'DPRO')
-              ? casePlanServicesSafeList
-              : (selectedDomain.isNotEmpty &&
-              selectedDomain[0].value == 'DHES')
-              ? casePlanServicesStableList
-              : (selectedDomain.isNotEmpty &&
-              selectedDomain[0].value ==
-                  'DEDU')
-              ? casePlanServicesSchooledList
-              : List.empty(),
+          selectedOptions: casePlanProvider.cpFormData.selectedServices,
+          options: casePlanServicesHealthList,
           maxItems: 13,
-          disabledOptions: const [
-            ValueItem(label: 'Option 1', value: '1')
-          ],
+          disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
-          chipConfig:
-          const ChipConfig(wrapType: WrapType.wrap),
+          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
           dropdownHeight: 300,
           optionTextStyle: const TextStyle(fontSize: 16),
           selectedOptionIcon: const Icon(Icons.check_circle),
@@ -307,8 +243,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           children: [
             Text(
               'Person Responsible*',
-              style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -317,19 +252,15 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           showClearIcon: true,
           hint: 'Please select Person(s) Responsible',
           onOptionSelected: (selectedEvents) {
-            casePlanProvider
-                .setSelectedPersonsList(selectedEvents);
+            casePlanProvider.setSelectedPersonsList(selectedEvents);
           },
-          selectedOptions: casePlanProvider
-              .cpFormData.selectedPersonsResponsible,
+          selectedOptions:
+              casePlanProvider.cpFormData.selectedPersonsResponsible,
           options: casePlanProviderPersonsResponsibleList,
           maxItems: 13,
-          disabledOptions: const [
-            ValueItem(label: 'Option 1', value: '1')
-          ],
+          disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
-          chipConfig:
-          const ChipConfig(wrapType: WrapType.wrap),
+          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
           dropdownHeight: 300,
           optionTextStyle: const TextStyle(fontSize: 16),
           selectedOptionIcon: const Icon(Icons.check_circle),
@@ -342,8 +273,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           children: [
             Text(
               'Results*',
-              style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -352,17 +282,13 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           showClearIcon: true,
           hint: 'Please select the Result(s)',
           onOptionSelected: (selectedEvents) {
-            casePlanProvider
-                .setSelectedResults(selectedEvents);
+            casePlanProvider.setSelectedResults(selectedEvents);
           },
           options: casePlanProviderResultList,
           maxItems: 13,
-          disabledOptions: const [
-            ValueItem(label: 'Option 1', value: '1')
-          ],
+          disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.single,
-          chipConfig:
-          const ChipConfig(wrapType: WrapType.wrap),
+          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
           dropdownHeight: 300,
           optionTextStyle: const TextStyle(fontSize: 16),
           selectedOptionIcon: const Icon(Icons.check_circle),
@@ -375,8 +301,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           children: [
             Text(
               'Date to be Completed*',
-              style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -386,8 +311,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           selectedDateTime: completionDate,
           onDateSelected: (selectedDate) {
             completionDate = selectedDate;
-            casePlanProvider
-                .setSelectedDateToBeCompleted(completionDate);
+            casePlanProvider.setSelectedDateToBeCompleted(completionDate);
           },
         ),
         const SizedBox(height: 10),
@@ -395,17 +319,14 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           children: [
             Text(
               'Reason(s)',
-              style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
           ],
         ),
         const SizedBox(height: 10),
         CustomTextField(
           hintText: 'Please Write the Reasons',
-          controller: _textEditingController
-          ,
-
+          controller: _textEditingController,
         ),
       ],
     );
