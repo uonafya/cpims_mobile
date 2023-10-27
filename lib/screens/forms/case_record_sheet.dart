@@ -46,7 +46,6 @@ class _CaseRecordSheetState extends State<CaseRecordSheet> {
                   items: const [
                     'Select Criteria',
                     'Names',
-                    'Org Unit',
                     'Residence',
                     'CPIMS ID',
                   ],

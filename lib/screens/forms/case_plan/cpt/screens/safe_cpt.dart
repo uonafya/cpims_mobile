@@ -2,6 +2,7 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/safe_cpt_model.d
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/route_manager.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +11,7 @@ import '../../../../../Models/case_load_model.dart';
 import '../../../../../Models/caseplan_form_model.dart';
 import '../../../../../providers/case_plan_provider.dart';
 import '../../../../../services/form_service.dart';
+import '../../../../../widgets/custom_button.dart';
 import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
@@ -87,8 +89,7 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    return StepsWrapper(title: 'Safe',
-        children: [
+    return StepsWrapper(title: 'Safe', children: [
       const Row(
         children: [
           Text(
@@ -103,12 +104,10 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
         selectedDateTime: currentDateOfCasePlan,
         onDateSelected: (selectedDate) {
           currentDateOfCasePlan = selectedDate;
-          CptHealthFormData cptHealthFormData =
-              context.read<CptProvider>().cptHealthFormData ??
-                  CptHealthFormData();
-          context.read<CptProvider>().updateCptFormData(cptHealthFormData
+          CptSafeFormData cptSafeFormData =
+              context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
+          context.read<CptProvider>().updateCptSafeFormData(cptSafeFormData
               .copyWith(dateOfEvent: currentDateOfCasePlan.toIso8601String()));
-          print("The selected date was $currentDateOfCasePlan");
         },
       ),
       const SizedBox(height: 10),
@@ -123,9 +122,9 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
       const SizedBox(height: 10),
       TextFormField(
         readOnly: true,
-        initialValue: 'Health',
+        initialValue: 'Safe',
         decoration: const InputDecoration(
-          labelText: 'Label text',
+          labelText: 'Safe',
           border: OutlineInputBorder(),
         ),
       ),
@@ -143,7 +142,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
         showClearIcon: true,
         hint: 'Please select the Goal',
         onOptionSelected: (selectedEvents) {
-          // Ensure that you have a valid CasePlanHealthyModel instance
           CptSafeFormData cptSafeFormData =
               context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
           context.read<CptProvider>().updateCptSafeFormData(
@@ -178,7 +176,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
         showClearIcon: true,
         hint: 'Please select the Needs/Gaps',
         onOptionSelected: (selectedEvents) {
-          // Ensure that you have a valid CasePlanHealthyModel instance
           CptSafeFormData cptSafeFormData =
               context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
           context.read<CptProvider>().updateCptSafeFormData(
@@ -246,7 +243,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
         showClearIcon: true,
         hint: 'Please Select the Services',
         onOptionSelected: (selectedEvents) {
-          // Ensure that you have a valid CasePlanHealthyModel instance
           CptSafeFormData cptSafeFormData =
               context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
           context
@@ -285,7 +281,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
         showClearIcon: true,
         hint: 'Please select Person(s) Responsible',
         onOptionSelected: (selectedEvents) {
-          // Ensure that you have a valid CasePlanHealthyModel instance
           CptSafeFormData cptSafeFormData =
               context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
           context
@@ -383,51 +378,56 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
         controller: _textEditingController,
       ),
       const SizedBox(height: 10),
+      Row(
+        children: [
+          Expanded(
+            child: CustomButton(
+              text: 'Save',
+              onTap: () async {
+                String ovcId = widget.caseLoadModel!.cpimsId ?? "";
+                reasonForNotAchievingCasePlan =
+                    _textEditingController.text.toString();
+
+                CptSafeFormData cptSafeFormData =
+                    context.read<CptProvider>().cptSafeFormData ??
+                        CptSafeFormData();
+
+                // Update all the fields at once
+                CptSafeFormData updatedSafeFormData = cptSafeFormData.copyWith(
+                  reasonId: reasonForNotAchievingCasePlan,
+                  ovcCpimsId: ovcId,
+                  domainId: casePlanProviderDomainList[3].value,
+                );
+                context
+                    .read<CptProvider>()
+                    .updateCptSafeFormData(updatedSafeFormData);
+                CptSafeFormData? safeCptFormData =
+                    context.read<CptProvider>().cptSafeFormData;
+                print("The case plan model is $safeCptFormData");
+
+                CasePlanSafeModel caseSafePlanModel =
+                    mapCptSafeFormDataToCasePlan(safeCptFormData!);
+                CasePlanModel casePlanFormSafeModel =
+                    mapCasePlanSafeToCasePlan(caseSafePlanModel);
+                bool isFormSaved = await CasePlanService.saveCasePlanLocal(
+                    casePlanFormSafeModel);
+                if (isFormSaved) {
+                  Get.snackbar(
+                    'Success',
+                    'Safe Case Plan Saved Successfully',
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: Colors.green,
+                    colorText: Colors.white,
+                    duration: const Duration(seconds: 2),
+                  );
+                }
+              },
+              //navigate to the next step
+            ),
+          )
+        ],
+      )
       //BUTTON TO SAVE
-      ElevatedButton(
-        onPressed: () async {
-          String ovcId = widget.caseLoadModel!.cpimsId ?? "";
-          reasonForNotAchievingCasePlan =
-              _textEditingController.text.toString();
-
-          CptSafeFormData cptSafeFormData =
-              context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
-
-          // Update all the fields at once
-          CptSafeFormData updatedSafeFormData = cptSafeFormData.copyWith(
-            reasonId: reasonForNotAchievingCasePlan,
-            ovcCpimsId: ovcId,
-            domainId: casePlanProviderDomainList[3].value,
-          );
-
-          context
-              .read<CptProvider>()
-              .updateCptSafeFormData(updatedSafeFormData);
-
-          // Retrieve the updated CptHealthFormData
-          CptSafeFormData? safeCptFormData =
-              context.read<CptProvider>().cptSafeFormData;
-
-          print("The case plan model is $safeCptFormData");
-
-          // Map the updated CptHealthFormData to CasePlanHealthyModel
-          CasePlanSafeModel caseSafePlanModel =
-              mapCptSafeHealthFormDataToCasePlan(safeCptFormData!);
-
-          //map caseplan healthyModelToCasePlanFormModel
-          CasePlanModel casePlanFormSafeModel =
-              mapCasePlanSafeToCasePlan(caseSafePlanModel);
-
-          bool isFormSaved =
-              await CasePlanService.saveCasePlanLocal(casePlanFormSafeModel);
-          if (isFormSaved) {
-            print("The case plan model is $casePlanFormSafeModel");
-          }
-        },
-        child: const Text('Save'),
-        //navigate to the next step
-      ),
-    ]
-    );
+    ]);
   }
 }

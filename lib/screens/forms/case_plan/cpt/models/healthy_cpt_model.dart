@@ -155,7 +155,7 @@ class CptHealthFormData {
   final String? dateOfEvent;
   final String? domainId;
   final List<String?>? serviceIds;
-  final String? goalId;
+  late final String? goalId;
   final String? gapId;
   final String? priorityId;
   final List<String?>? responsibleIds;

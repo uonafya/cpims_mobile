@@ -103,7 +103,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                               selectedStep = index;
                             });
                           },
-                          data: form1bsStepper,
+                          data: caseplanStepperTitles,
                           selectedIndex: selectedStep,
                         ),
                         const SizedBox(

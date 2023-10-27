@@ -2,9 +2,13 @@ import 'dart:core';
 
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
+import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
@@ -41,6 +45,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
   Widget build(BuildContext context) {
     CptProvider cptProvider = Provider.of<CptProvider>(context);
     TextEditingController _textEditingController = TextEditingController();
+    // selectedGoalOptions =cptProvider.cptHealth.goalId != null ? [ValueItem(label: cptProvider.cptHealth.goalId!, value: cptProvider.cptHealth.goalId!)] : [];
 
     List<ValueItem> casePlanProviderDomainList =
         cptProvider.csAllDomains.map((domain) {
@@ -393,46 +398,56 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
         ),
         const SizedBox(height: 10),
         //BUTTON TO SAVE
-        ElevatedButton(
-          onPressed: () async {
-            String ovcId = widget.caseLoadModel!.cpimsId ?? "";
-            reasonForNotAchievingCasePlan =
-                _textEditingController.text.toString();
+        Row(
+          children: [
+            Expanded(
+                child: CustomButton(
+              onTap: () async {
+                String ovcId = widget.caseLoadModel!.cpimsId ?? "";
+                reasonForNotAchievingCasePlan =
+                    _textEditingController.text.toString();
 
-            CptHealthFormData cptHealthFormData =
-                context.read<CptProvider>().cptHealthFormData ??
-                    CptHealthFormData();
+                CptHealthFormData cptHealthFormData =
+                    context.read<CptProvider>().cptHealthFormData ??
+                        CptHealthFormData();
 
-            // Update all the fields at once
-            CptHealthFormData updatedFormData = cptHealthFormData.copyWith(
-              reasonId: reasonForNotAchievingCasePlan,
-              ovcCpimsId: ovcId,
-              domainId: casePlanProviderDomainList[0].value,
-            );
+                // Update all the fields at once
+                CptHealthFormData updatedFormData = cptHealthFormData.copyWith(
+                  reasonId: reasonForNotAchievingCasePlan,
+                  ovcCpimsId: ovcId,
+                  domainId: casePlanProviderDomainList[0].value,
+                );
 
-            context.read<CptProvider>().updateCptFormData(updatedFormData);
+                context.read<CptProvider>().updateCptFormData(updatedFormData);
 
-            // Retrieve the updated CptHealthFormData
-            CptHealthFormData? healthCptFormData =
-                context.read<CptProvider>().cptHealthFormData;
+                // Retrieve the updated CptHealthFormData
+                CptHealthFormData? healthCptFormData =
+                    context.read<CptProvider>().cptHealthFormData;
 
-            print("The case plan model is $healthCptFormData");
+                // Map the updated CptHealthFormData to CasePlanHealthyModel
+                CasePlanHealthyModel casePlanModel =
+                    mapCptHealthFormDataToCasePlan(healthCptFormData!);
 
-            // Map the updated CptHealthFormData to CasePlanHealthyModel
-            CasePlanHealthyModel casePlanModel =
-                mapCptHealthFormDataToCasePlan(healthCptFormData!);
+                //map caseplan healthyModelToCasePlanFormModel
+                CasePlanModel casePlanFormModel =
+                    mapCasePlanHealthyToCasePlan(casePlanModel);
 
-            //map caseplan healthyModelToCasePlanFormModel
-            CasePlanModel casePlanFormModel =
-            mapCasePlanHealthyToCasePlan(casePlanModel);
-
-            bool isFormSaved = await CasePlanService.saveCasePlanLocal(casePlanFormModel);
-            if (isFormSaved) {
-              print("The case plan model is $casePlanModel");
-            }
-          },
-          child: const Text('Save'),
-          //navigate to the next step
+                bool isFormSaved =
+                    await CasePlanService.saveCasePlanLocal(casePlanFormModel);
+                if (isFormSaved) {
+                  Get.snackbar(
+                    'Success',
+                    'Health Case Plan Saved Successfully',
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: Colors.green,
+                    colorText: Colors.white,
+                    duration: const Duration(seconds: 2),
+                  );
+                }
+              },
+              text: 'Save',
+            )),
+          ],
         ),
       ],
     );

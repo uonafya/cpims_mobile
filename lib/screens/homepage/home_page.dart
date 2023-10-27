@@ -210,7 +210,7 @@ class _HomepageState extends State<Homepage> {
                     ),
                     GestureDetector(
                         child: const Text(
-                          'Click to Sync',
+                          'Sync',
                           style: TextStyle(
                             color: kPrimaryColor,
                             fontWeight: FontWeight.bold,

@@ -5,6 +5,9 @@ import 'package:cpims_mobile/screens/forms/case_plan/utils/case_plan_dummy_data.
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
@@ -147,9 +150,9 @@ class _StableCasePlanState extends State<StableCasePlan> {
         const SizedBox(height: 10),
         TextFormField(
           readOnly: true,
-          initialValue: 'Health',
+          initialValue: 'Stable',
           decoration: const InputDecoration(
-            labelText: 'Label text',
+            labelText: 'Stable',
             border: OutlineInputBorder(),
           ),
         ),
@@ -167,7 +170,6 @@ class _StableCasePlanState extends State<StableCasePlan> {
           showClearIcon: true,
           hint: 'Please select the Goal',
           onOptionSelected: (selectedEvents) {
-            // Ensure that you have a valid CasePlanHealthyModel instance
             CptStableFormData cptStableFormData =
                 context.read<CptProvider>().cptStableFormData ??
                     CptStableFormData();
@@ -203,7 +205,6 @@ class _StableCasePlanState extends State<StableCasePlan> {
           showClearIcon: true,
           hint: 'Please select the Needs/Gaps',
           onOptionSelected: (selectedEvents) {
-            // Ensure that you have a valid CasePlanHealthyModel instance
             CptStableFormData cptStableFormData =
                 context.read<CptProvider>().cptStableFormData ??
                     CptStableFormData();
@@ -239,7 +240,6 @@ class _StableCasePlanState extends State<StableCasePlan> {
           showClearIcon: true,
           hint: 'Please select the Priority Actions',
           onOptionSelected: (selectedEvents) {
-            // Ensure that you have a valid CasePlanHealthyModel instance
             CptStableFormData cptStableFormData =
                 context.read<CptProvider>().cptStableFormData ??
                     CptStableFormData();
@@ -276,7 +276,6 @@ class _StableCasePlanState extends State<StableCasePlan> {
           showClearIcon: true,
           hint: 'Please Select the Services',
           onOptionSelected: (selectedEvents) {
-            // Ensure that you have a valid CasePlanHealthyModel instance
             CptStableFormData cptStableFormData =
                 context.read<CptProvider>().cptStableFormData ??
                     CptStableFormData();
@@ -316,7 +315,6 @@ class _StableCasePlanState extends State<StableCasePlan> {
           showClearIcon: true,
           hint: 'Please select Person(s) Responsible',
           onOptionSelected: (selectedEvents) {
-            // Ensure that you have a valid CasePlanHealthyModel instance
             CptStableFormData cptStableFormData =
                 context.read<CptProvider>().cptStableFormData ??
                     CptStableFormData();
@@ -445,18 +443,21 @@ class _StableCasePlanState extends State<StableCasePlan> {
                 context.read<CptProvider>().cptStableFormData;
 
             print("The case plan model is $stableCptFormData");
-
-            // Map the updated CptStableFormData to CasePlanHealthyModel
             CasePlanStableModel casePlanModel =
                 mapCptStableFormDataToCasePlan(stableCptFormData!);
-
-            //map caseplan healthyModelToCasePlanFormModel
             CasePlanModel casePlanFormModel =
                 mapCasePlanStableToCasePlan(casePlanModel);
             bool isFormSaved =
                 await CasePlanService.saveCasePlanLocal(casePlanFormModel);
             if (isFormSaved) {
-              print("The case plan model is $casePlanModel");
+              Get.snackbar(
+                'Success',
+                'Stable Case Plan Saved Successfully',
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 2),
+              );
             }
           },
           child: const Text('Save'),

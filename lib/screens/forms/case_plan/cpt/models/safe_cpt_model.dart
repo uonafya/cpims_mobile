@@ -255,7 +255,7 @@ class CptSafeFormData {
   }
 }
 
-CasePlanSafeModel mapCptSafeHealthFormDataToCasePlan(CptSafeFormData formData) {
+CasePlanSafeModel mapCptSafeFormDataToCasePlan(CptSafeFormData formData) {
   List<CasePlanServiceSafeModel> services = [];
   if (formData.serviceIds != null) {
     List<String?> combinedServiceIds = [];
