@@ -142,6 +142,7 @@ class Form1AProvider extends ChangeNotifier {
       services: servicesList,
       criticalEvents: eventsList,
     );
+
     Form1Service.saveFormLocal("form1a", toDbData);
 
     _criticalFormData.selectedEvents.clear();

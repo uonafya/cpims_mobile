@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/screens/cpara/cpara_util.dart';
 import 'package:cpims_mobile/screens/cpara/model/db_model.dart';
 import 'package:dio/dio.dart';
@@ -223,7 +224,8 @@ Future<void> singleCparaFormSubmission(
   print("Cpara data is $cparaJsonData");
 
   dio.interceptors.add(LogInterceptor());
-  var response = await dio.post("https://dev.cpims.net/mobile/cpara/",
+  const cparaUrl = "cpara/";
+  var response = await dio.post("$mobileEndpoint$cparaUrl",
       data: cparaMapData,
       options: Options(
           contentType: 'application/json',
@@ -261,12 +263,12 @@ void fetchAndPostToServerOvcSubpopulationData() async {
         "ovc_subpopulation": [ovcSubPopulation],
       };
 
-      final response = await postOvcToServer(ovcPostToServer, bearerAuth);
+      final response =
+          await ovcSubPopulationPostOvcToServer(ovcPostToServer, bearerAuth);
 
       if (response.statusCode == 200) {
         await updateOvcSubpopulationDateSynced(row['id'], database);
         successfullySubmittedForms++; // Increment the counter.
-        //show snackbar
         if (successfullySubmittedForms == totalForms) {
           Get.snackbar(
             "Success",
@@ -306,7 +308,7 @@ Future<void> updateOvcSubpopulationDateSynced(int id, Database db) async {
   }
 }
 
-Future<Response> postOvcToServer(
+Future<Response> ovcSubPopulationPostOvcToServer(
     Map<String, dynamic> data, String bearerAuth) async {
   try {
     final response = await dio.post(
@@ -321,113 +323,6 @@ Future<Response> postOvcToServer(
     );
     return response;
   } catch (e) {
-    throw e;
+    throw ("Failed to post data to server: ${e.toString()}");
   }
 }
-
-//
-// Future<void> submitOvcSubPopultaionForm async(){
-//
-//
-//
-// }
-
-// Future<void> singleCparaFormSubmission({required CPARADatabase cparaForm, required String authorization}) async {
-//   Map<String, List<CPARAChildQuestions>> separatedChildren = {};
-//
-//   for (var child in cparaForm.childQuestions) {
-//     if (!separatedChildren.containsKey(child.ovc_cpims_id)) {
-//       separatedChildren[child.ovc_cpims_id] = [];
-//     }
-//     separatedChildren[child.ovc_cpims_id]!.add(child);
-//   }
-//
-//   // Printing the separated children
-//   separatedChildren.forEach((id, childrenList) {
-//     debugPrint("Children with ID $id:");
-//     for (var child in childrenList) {
-//       debugPrint("  ${child.question_code} - ${child.answer_id}");
-//     }
-//   });
-//
-// // household questions
-//   for(int i = 0; i < cparaForm.questions.length; i++){
-//     debugPrint("Question ${cparaForm.questions[i].question_code} - ${cparaForm.questions[i].answer_id}");
-//   }
-//
-//   // child questions
-//   for(int i = 0; i < cparaForm.childQuestions.length; i++){
-//     debugPrint("Child ID raw ${cparaForm.childQuestions[i].ovc_cpims_id}: "
-//         "${cparaForm.childQuestions[i].question_code} - ${cparaForm.childQuestions[i].answer_id}");
-//   }
-//
-//   // Child questions v2
-//   for(int i = 0; i < separatedChildren.length; i++){
-//     String childId = separatedChildren.keys.elementAt(i);
-//     List<CPARAChildQuestions> data = separatedChildren[childId]!;
-//     for(int i = 0; i < data.length; i++) {
-//       debugPrint("Child ID v2 $childId: ${data[i].question_code} - ${data[i].answer_id}");
-//     }
-//   }
-//
-//   // scores value
-//   String b1 = benchMarkOneScoreFromDb(cparaDatabase: cparaForm);
-//   String b2 = benchMarkTwoScoreFromDb(cparaDatabase: cparaForm);
-//   String b3 = benchMarkThreeScoreFromDb(cparaDatabase: cparaForm);
-//   String b4 = benchMarkFourScoreFromDb(cparaDatabase: cparaForm);
-//   String b5 = benchMarkFiveScoreFromDb(cparaDatabase: cparaForm);
-//   String b6 = benchMarkSixScoreFromDb(cparaDatabase: cparaForm);
-//   String b7 = benchMarkSevenScoreFromDb(cparaDatabase: cparaForm);
-//   String b8 =  benchMarkEightScoreFromDb(cparaDatabase: cparaForm);
-//   String b9 = benchMarkNineScoreFromDb(cparaDatabase: cparaForm);
-//   List<String> scores = [b1, b2, b3, b4, b5, b6, b7, b8, b9];
-//
-//   final houseHoldQuestions = [];
-//   for(int i = 0; i < scores.length; i++){
-//     houseHoldQuestions.add({
-//       "question_code": convertQuestionIdsStandardFormat(text: scores[i]),
-//       "answer_id": convertOptionStandardFormat(text: scores[i]),
-//     });
-//   }
-//
-//   final individualQuestions = [];
-//   for(int i = 0; i < scores.length; i++){
-//     individualQuestions.add({
-//       "ovc_cpims_id": separatedChildren.keys.elementAt(i),
-//       "question_code": convertQuestionIdsStandardFormat(text: scores[i]),
-//       "answer_id": convertOptionStandardFormat(text: scores[i]),
-//     });
-//   }
-//
-//   final scoreList = [];
-//   for(int i = 0; i < scores.length; i++){
-//     scoreList.add({
-//       "b${i + 1}": "${scoreConversion(text: scores[i])}",
-//     });
-//   }
-//
-//   var cparaMapData = {
-//     "ovc_cpims_id": cparaForm.ovc_cpims_id,
-//     "date_of_event": cparaForm.date_of_event,
-//     "questions": houseHoldQuestions,
-//     "individual_questions": individualQuestions,
-//     "scores": scoreList,
-//   };
-//   // var response = await dio.request("https://dev.cpims.net/api/form/CPR/",
-//   //     data: cparaMapData,
-//   //     options: Options(
-//   //         method: 'POST',
-//   //         contentType: 'application/json',
-//   //         headers: {"Authorization": "Bearer $accessToken"}));
-//   var response = await dio.post("https://dev.cpims.net/api/form/CPR/",
-//       data: cparaMapData,
-//       options: Options(
-//           contentType: 'application/json',
-//           headers: {"Authorization": authorization}));
-//
-//   if(response.statusCode != 200){
-//     throw ("Submission to upstream failed");
-//   }
-//   debugPrint("${response.statusCode}");
-//   debugPrint(response.data.toString());
-// }

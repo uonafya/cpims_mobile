@@ -23,7 +23,6 @@ import 'package:sqflite/sqflite.dart';
 
 import '../../Models/caseplan_form_model.dart';
 import '../../providers/db_provider.dart';
-import '../../widgets/custom_toast.dart';
 import '../cpara/provider/db_util.dart';
 
 class Homepage extends StatefulWidget {
@@ -82,7 +81,7 @@ class _HomepageState extends State<Homepage> {
       var payload = caseplan.toJson();
       try {
         const cptEndpoint = "cpt/";
-        var response = await dio.post("https://dev.cpims.net/api/form/CPT/",
+        var response = await dio.post("https://dev.cpims.net/mobile/cpt/",
             data: payload,
             options: Options(headers: {"Authorization": bearerAuth}));
 
@@ -99,6 +98,7 @@ class _HomepageState extends State<Homepage> {
           }
         }
       } catch (e) {
+        print("The error is $e");
         Get.snackbar(
           'Error',
           'Failed to sync CasePlan forms',
@@ -143,6 +143,7 @@ class _HomepageState extends State<Homepage> {
       postCasePlansToServer();
       fetchAndPostToServerOvcSubpopulationData();
       postFormOneToServer();
+      showCountUnsyncedForms();
     }
   }
 
@@ -207,16 +208,17 @@ class _HomepageState extends State<Homepage> {
                     const SizedBox(
                       width: 10,
                     ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.refresh_outlined,
-                        color: kTextGrey,
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        showCountUnsyncedForms();
-                      },
-                    ),
+                    GestureDetector(
+                        child: const Text(
+                          'Click to Sync',
+                          style: TextStyle(
+                            color: kPrimaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+                          syncWorkflows();
+                        })
                   ],
                 ),
                 StatisticsItem(

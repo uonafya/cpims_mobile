@@ -97,7 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
         errorSnackBar(context, 'Unable to get available biometrics');
       }
     }
-
     setState(() {});
   }
 

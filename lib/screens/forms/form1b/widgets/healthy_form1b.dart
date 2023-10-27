@@ -35,7 +35,6 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
     currentlySelectedDate = form1bProvider.formData.selectedDate;
     String healthDomainId = domainsList[1]['item_id'];
 
-
     return StepsWrapper(
       title: 'Caregiver health and nutrition status',
       children: [

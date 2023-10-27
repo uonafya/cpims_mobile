@@ -8,31 +8,33 @@ class StepsWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(15),
-      width: double.infinity,
-      decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey, width: 1),
-          borderRadius: BorderRadius.circular(5)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-          ),
-          const Divider(
-            color: Colors.grey,
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          Column(
+    return SingleChildScrollView(
+       child: Container(
+          padding: const EdgeInsets.all(15),
+          width: double.infinity,
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 1),
+              borderRadius: BorderRadius.circular(5)),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: children,
-          )
-        ],
-      ),
+            children: [
+              Text(
+                title,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              const Divider(
+                color: Colors.grey,
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: children,
+              )
+            ],
+          ),
+        ),
     );
   }
 }

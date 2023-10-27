@@ -3,7 +3,6 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/case_plan_provider.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
-import 'package:cpims_mobile/widgets/custom_date_picker.dart';
 import 'package:cpims_mobile/widgets/custom_forms_date_picker.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
@@ -166,7 +165,6 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
     List<ValueItem> selectedPriorityAction =
         casePlanProvider.cpFormData.selectedPriorityAction;
     List<ValueItem> selectedResult = casePlanProvider.cpFormData.selectedResult;
-    // String selectedReason=casePlanProvider.cpFormData.selectedReason;
 
     List<CasePlanModel> caseplanModelFoThisOvC = [];
 
@@ -609,54 +607,40 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                     Row(children: [
                       Expanded(
                         child: CustomButton(
-                          text: "Submit",
+                          text: "Add",
                           onTap: () async {
                             String ovcCpimsId = widget.caseLoadModel.cpimsId!;
                             reasonForNotAchievingCasePlan = _textEditingController.text;
                             casePlanProvider.setSelectedReason(reasonForNotAchievingCasePlan);
-                            // String dateOfCaseplan=currentlySelectedDate.toString();
-                            //  String dateToBeCompleted=completionDate.toString();
-                            //  List<CasePlanServiceModel> servicesList = selectedServicesList.map((e) => CasePlanServiceModel(
-                            //    domainId: e.value!,
-                            //    serviceIds: selectedServicesList.map((e) => e.value).where((value) => value != null).toList(), // Filter out null values
-                            //    goalId: selectedGoals[0].value!,
-                            //    gapId: selectedNeed[0].value!,
-                            //    priorityId: selectedPriorityAction[0].value!,
-                            //    responsibleIds: selectedPersonsResponsible.map((e) => e.value).where((value) => value != null).toList(), // Filter out null values
-                            //    resultsId: selectedResult[0].value!,
-                            //    reasonId: _textEditingController.text,
-                            //    completionDate: dateToBeCompleted,
-                            //  )).toList();
+                            String dateOfCaseplan=currentDateOfCasePlan.toString();
+                             String dateToBeCompleted=completionDate.toString();
+                             List<CasePlanServiceModel> servicesList = selectedServicesList.map((e) => CasePlanServiceModel(
+                               domainId: e.value!,
+                               serviceIds: selectedServicesList.map((e) => e.value).where((value) => value != null).toList(), // Filter out null values
+                               goalId: selectedGoals[0].value!,
+                               gapId: selectedNeed[0].value!,
+                               priorityId: selectedPriorityAction[0].value!,
+                               responsibleIds: selectedPersonsResponsible.map((e) => e.value).where((value) => value != null).toList(), // Filter out null values
+                               resultsId: selectedResult[0].value!,
+                               reasonId: _textEditingController.text,
+                               completionDate: dateToBeCompleted,
+                             )).toList();
                             //
                             //  //caseplan model
-                            //  CasePlanModel casePlanModel = CasePlanModel(
-                            //    ovcCpimsId: ovcCpimsId,
-                            //    dateOfEvent: dateOfCaseplan,
-                            //    services: servicesList,
-                            //  );
-                            //
-                            //  print("caseplan model selected: $casePlanModel");
+                             CasePlanModel casePlanModel = CasePlanModel(
+                               ovcCpimsId: ovcCpimsId,
+                               dateOfEvent: dateOfCaseplan,
+                               services: servicesList,
+                             );
 
-                            bool isFormSaved = await casePlanProvider
-                                .saveCasePlanLocally(ovcCpimsId);
-                            if (isFormSaved == true) {
-                              Get.snackbar(
-                                'Success',
-                                'Form saved successfully',
-                                snackPosition: SnackPosition.BOTTOM,
-                                backgroundColor: Colors.green,
-                                colorText: Colors.white,
-                              );
-                              resetDomain();
-                              resetGoal();
-                              resetNeed();
-                              resetPriorityAction();
-                              resetServices();
-                              resetPersonsResponsible();
-                              resetResults();
-                              //exit this page
-                              //  Navigator.of(context).pop();
-                            }
+                             print("JSON caseplan is ${casePlanModel.toJson()}");
+                              caseplanModelFoThisOvC.add(casePlanModel);
+                              print("caseplan model: $casePlanModel");
+                            //
+                             debugPrint("caseplan model selected: $caseplanModelFoThisOvC");
+
+
+
                           },
                         ),
                       ),

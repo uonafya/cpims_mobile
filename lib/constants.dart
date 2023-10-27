@@ -1,19 +1,12 @@
 import 'package:android_id/android_id.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
-import 'package:cpims_mobile/screens/caseload/caseload.dart';
-import 'package:cpims_mobile/screens/forms/case_record_sheet.dart';
-import 'package:cpims_mobile/screens/forms/follow_ups.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
-import 'package:cpims_mobile/screens/registry/organisation_units/organisation_units.dart';
-import 'package:cpims_mobile/screens/registry/persons_registry/persons_registry.dart';
 import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
 import 'package:cpims_mobile/services/caseload_service.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
-import 'package:platform_device_id/platform_device_id.dart';
 import 'package:provider/provider.dart';
 
 const kPrimaryColor = Color(0xff00acac);
@@ -78,63 +71,70 @@ List drawerOptions(BuildContext context) {
     {
       'title': 'Caseload',
       'icon': FontAwesomeIcons.briefcase,
-      'children': [
-        {
-          'title': 'Caseload',
-          'onTap': () => {
-                Get.off(() => const CaseLoad(),
-                    transition: Transition.fadeIn,
-                    duration: const Duration(milliseconds: 1000))
-              },
-        },
-        {
-          'title': 'Organisational Units',
-          'onTap': () => {
-                Get.off(() => const OrganisationUnitsRegistry(),
-                    transition: Transition.fadeIn,
-                    duration: const Duration(milliseconds: 1000))
-              },
-        },
-        {
-          'title': 'Persons Registry',
-          'onTap': () => {
-                Get.off(() => const PersonsRegistry(),
-                    transition: Transition.fadeIn,
-                    duration: const Duration(milliseconds: 1000))
-              },
-        }
-      ]
+      'children':[],
+      'onTap': () => {
+        Get.off(() => const OVCCareScreen(),
+            transition: Transition.fadeIn,
+            duration: const Duration(milliseconds: 1000))
+      },
+
+      // 'children': [
+      //   {
+      //     'title': 'Caseload',
+      //     'onTap': () => {
+      //           Get.off(() => const CaseLoad(),
+      //               transition: Transition.fadeIn,
+      //               duration: const Duration(milliseconds: 1000))
+      //         },
+      //   },
+      //   {
+      //     'title': 'Organisational Units',
+      //     'onTap': () => {
+      //           Get.off(() => const OrganisationUnitsRegistry(),
+      //               transition: Transition.fadeIn,
+      //               duration: const Duration(milliseconds: 1000))
+      //         },
+      //   },
+      //   {
+      //     'title': 'Persons Registry',
+      //     'onTap': () => {
+      //           Get.off(() => const PersonsRegistry(),
+      //               transition: Transition.fadeIn,
+      //               duration: const Duration(milliseconds: 1000))
+      //         },
+      //   }
+      // ]
     },
-    {
-      'title': 'Forms',
-      'icon': FontAwesomeIcons.fileLines,
-      'children': [
-        {
-          'title': 'Case Record Sheet',
-          'onTap': () => {
-                Get.off(() => const CaseRecordSheet(),
-                    transition: Transition.cupertino,
-                    duration: const Duration(milliseconds: 1000))
-              },
-        },
-        {
-          'title': 'Follow-ups',
-          'onTap': () => {
-                Get.off(() => const FollowUps(),
-                    transition: Transition.cupertino,
-                    duration: const Duration(milliseconds: 1000))
-              },
-        },
-        {
-          'title': 'OVC Care(Comp)',
-          'onTap': () => {
-                Get.off(() => const OVCCareScreen(),
-                    transition: Transition.cupertino,
-                    duration: const Duration(milliseconds: 1000))
-              },
-        },
-      ]
-    },
+    // {
+    //   'title': 'Forms',
+    //   'icon': FontAwesomeIcons.fileLines,
+    //   'children': [
+    //     {
+    //       'title': 'Case Record Sheet',
+    //       'onTap': () => {
+    //             Get.off(() => const CaseRecordSheet(),
+    //                 transition: Transition.cupertino,
+    //                 duration: const Duration(milliseconds: 1000))
+    //           },
+    //     },
+    //     {
+    //       'title': 'Follow-ups',
+    //       'onTap': () => {
+    //             Get.off(() => const FollowUps(),
+    //                 transition: Transition.cupertino,
+    //                 duration: const Duration(milliseconds: 1000))
+    //           },
+    //     },
+    //     {
+    //       'title': 'OVC Care(Comp)',
+    //       'onTap': () => {
+    //             Get.off(() => const OVCCareScreen(),
+    //                 transition: Transition.cupertino,
+    //                 duration: const Duration(milliseconds: 1000))
+    //           },
+    //     },
+    //   ]
+    // },
     {
       'title': syncName,
       'icon': FontAwesomeIcons.rotate,
@@ -143,8 +143,9 @@ List drawerOptions(BuildContext context) {
         try {
           const _androidIdPlugin = AndroidId();
           final String? androidId = await _androidIdPlugin.getId();
-          CaseLoadService().fetchCaseLoadData(
-              context: context, isForceSync: true, deviceID: androidId!);
+          CaseLoadService().updateCaseLoadData(
+              context: context, deviceID: androidId!);
+          // syncWorkflows();
           snackBar = SnackBar(
             content: const Text(
               'Syncing in progress ...',
