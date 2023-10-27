@@ -208,7 +208,7 @@ class CptschooledFormData {
 
   @override
   String toString() {
-    return 'CptHealthFormData('
+    return 'CptschooledFormData('
         'ovcCpimsId: $ovcCpimsId, '
         'dateOfEvent: $dateOfEvent, '
         'domainId: $domainId, '
@@ -255,8 +255,7 @@ class CptschooledFormData {
   }
 }
 
-CasePlanschooledModel mapCptschooledHealthFormDataToCasePlan(
-    CptschooledFormData formData) {
+CasePlanschooledModel mapCptschooledFormDataToCasePlan(CptschooledFormData formData) {
   List<CasePlanServiceschooledModel> services = [];
   if (formData.serviceIds != null) {
     List<String?> combinedServiceIds = [];
@@ -288,13 +287,12 @@ CasePlanschooledModel mapCptschooledHealthFormDataToCasePlan(
   );
 }
 
-CasePlanModel mapCasePlanschooledToCasePlan(
-    CasePlanschooledModel schooledModel) {
+
+CasePlanModel mapCasePlanschooledToCasePlan(CasePlanschooledModel schooledModel) {
   // Map the services
   List<CasePlanServiceModel> services = [];
   if (schooledModel.services != null) {
-    for (CasePlanServiceschooledModel serviceschooled
-        in schooledModel.services!) {
+    for (CasePlanServiceschooledModel serviceschooled in schooledModel.services!) {
       // Convert serviceHealthy to serviceModel
       List<String?> serviceIds = serviceschooled.serviceIds;
       CasePlanServiceModel serviceModel = CasePlanServiceModel(
@@ -319,3 +317,5 @@ CasePlanModel mapCasePlanschooledToCasePlan(
     services: services,
   );
 }
+
+

@@ -174,8 +174,8 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    final SummaryDataModel dashData =
-        context.select((UIProvider provider) => provider.getDashData);
+    final SummaryDataModel? dashData = context.select((UIProvider provider) => provider.getDashData);
+
 
     if (dashData == null) {
       return const Center(

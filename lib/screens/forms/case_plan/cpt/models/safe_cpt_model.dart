@@ -208,7 +208,7 @@ class CptSafeFormData {
 
   @override
   String toString() {
-    return 'CptHealthFormData('
+    return 'CptSafeFormData('
         'ovcCpimsId: $ovcCpimsId, '
         'dateOfEvent: $dateOfEvent, '
         'domainId: $domainId, '

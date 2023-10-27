@@ -41,56 +41,103 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
   List<ValueItem> selectedResultsOptions = [];
   List<String?> selectedServiceIds = [];
   List<String?> selectedPersonResponsibleIds = [];
+  List<ValueItem> casePlanProviderDomainList = [];
+  List<ValueItem> casePlanGoalSchooledList = [];
+  List<ValueItem> casePlanGapsSchooledList = [];
+  List<ValueItem> casePlanPrioritiesSchooledList = [];
+  List<ValueItem> casePlanServicesSchooledList = [];
+  List<ValueItem> casePlanProviderPersonsResponsibleList = [];
+  List<ValueItem> casePlanProviderResultList = [];
+  bool allFieldsFilled = true;
 
   @override
-  Widget build(BuildContext context) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
     CptProvider cptProvider = Provider.of<CptProvider>(context);
-    TextEditingController _textEditingController = TextEditingController();
-
-    List<ValueItem> casePlanProviderDomainList =
-        cptProvider.csAllDomains.map((domain) {
+    casePlanProviderDomainList = cptProvider.csAllDomains.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+    casePlanGoalSchooledList = cptProvider.cpGoalsSchool.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    //schooled
-    List<ValueItem> casePlanGoalSchooledList =
-        cptProvider.cpGoalsSchool.map((domain) {
+    casePlanGapsSchooledList = cptProvider.cpGapssSchool.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    List<ValueItem> casePlanGapsSchooledList =
-        cptProvider.cpGapssSchool.map((domain) {
-      return ValueItem(
-          label: "- ${domain['item_description']}", value: domain['item_id']);
-    }).toList();
-
-    List<ValueItem> casePlanPrioritiesSchooledList =
+    casePlanPrioritiesSchooledList =
         cptProvider.cpPrioritiesSchool.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    List<ValueItem> casePlanServicesSchooledList =
-        cptProvider.cpServicesSchool.map((domain) {
+    casePlanServicesSchooledList = cptProvider.cpServicesSchool.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    List<ValueItem> casePlanProviderPersonsResponsibleList =
+    casePlanProviderPersonsResponsibleList =
         cptProvider.csPersonsResponsibleList.map((personResponsible) {
       return ValueItem(
           label: "- ${personResponsible['item_description']}",
           value: personResponsible['item_id']);
     }).toList();
 
-    List<ValueItem> casePlanProviderResultList =
-        cptProvider.csResultsList.map((resultList) {
+    casePlanProviderResultList = cptProvider.csResultsList.map((resultList) {
       return ValueItem(
           label: "- ${resultList['name']}", value: resultList['id']);
     }).toList();
+  }
 
+  @override
+  void initState() {
+    super.initState();
+    // CptProvider cptProvider = Provider.of<CptProvider>(context);
+    // casePlanProviderDomainList = cptProvider.csAllDomains.map((domain) {
+    //   return ValueItem(
+    //       label: "- ${domain['item_description']}", value: domain['item_id']);
+    // }).toList();
+    // casePlanGoalSchooledList = cptProvider.cpGoalsSchool.map((domain) {
+    //   return ValueItem(
+    //       label: "- ${domain['item_description']}", value: domain['item_id']);
+    // }).toList();
+    //
+    // casePlanGapsSchooledList = cptProvider.cpGapssSchool.map((domain) {
+    //   return ValueItem(
+    //       label: "- ${domain['item_description']}", value: domain['item_id']);
+    // }).toList();
+    //
+    // casePlanPrioritiesSchooledList =
+    //     cptProvider.cpPrioritiesSchool.map((domain) {
+    //   return ValueItem(
+    //       label: "- ${domain['item_description']}", value: domain['item_id']);
+    // }).toList();
+    //
+    // casePlanServicesSchooledList = cptProvider.cpServicesSchool.map((domain) {
+    //   return ValueItem(
+    //       label: "- ${domain['item_description']}", value: domain['item_id']);
+    // }).toList();
+    //
+    // casePlanProviderPersonsResponsibleList =
+    //     cptProvider.csPersonsResponsibleList.map((personResponsible) {
+    //   return ValueItem(
+    //       label: "- ${personResponsible['item_description']}",
+    //       value: personResponsible['item_id']);
+    // }).toList();
+    //
+    // casePlanProviderResultList = cptProvider.csResultsList.map((resultList) {
+    //   return ValueItem(
+    //       label: "- ${resultList['name']}", value: resultList['id']);
+    // }).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    TextEditingController _textEditingController = TextEditingController();
     return StepsWrapper(
       title: 'Schooled',
       children: [
@@ -398,58 +445,87 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
           controller: _textEditingController,
         ),
         const SizedBox(height: 10),
-        //BUTTON TO SAVE
         Row(
           children: [
             Expanded(
                 child: CustomButton(
               text: 'Save',
               onTap: () async {
-                String ovcId = widget.caseLoadModel!.cpimsId ?? "";
-                reasonForNotAchievingCasePlan =
-                    _textEditingController.text.toString();
+                allFieldsFilled =
+                    true; // Reset the variable before checking again.
 
-                CptschooledFormData cptschooledFormData =
-                    context.read<CptProvider>().cptschooledFormData ??
-                        CptschooledFormData();
+                if (currentDateOfCasePlan == null) {
+                  allFieldsFilled = false;
+                }
+                if (selectedGoalOptions.isEmpty) {
+                  allFieldsFilled = false;
+                }
+                if (selectedNeedOptions.isEmpty) {
+                  allFieldsFilled = false;
+                }
+                if (selectedPriorityActionOptions.isEmpty) {
+                  allFieldsFilled = false;
+                }
+                if (selectedServicesOptions.isEmpty) {
+                  allFieldsFilled = false;
+                }
+                if (selectedPersonsResponsibleOptions.isEmpty) {
+                  allFieldsFilled = false;
+                }
+                if (selectedResultsOptions.isEmpty) {
+                  allFieldsFilled = false;
+                }
 
-                // Update all the fields at once
-                CptschooledFormData updatedSafeFormData =
-                    cptschooledFormData.copyWith(
-                  reasonId: reasonForNotAchievingCasePlan,
-                  ovcCpimsId: ovcId,
-                  domainId: casePlanProviderDomainList[0].value,
-                );
-
-                context
-                    .read<CptProvider>()
-                    .updateCptSchooledFormData(updatedSafeFormData);
-
-                // Retrieve the updated CptSchooledFormData
-                CptschooledFormData? safeCptFormData =
-                    context.read<CptProvider>().cptschooledFormData;
-
-                print("The case plan model is $safeCptFormData");
-
-                // Map the updated CptSchooledFormData to CasePlanHealthyModel
-                CasePlanschooledModel caseSafePlanModel =
-                    mapCptschooledHealthFormDataToCasePlan(safeCptFormData!);
-
-                //map caseplan healthyModelToCasePlanFormModel
-                CasePlanModel casePlanFormSafeModel =
-                    mapCasePlanschooledToCasePlan(caseSafePlanModel);
-
-                bool isFormSaved = await CasePlanService.saveCasePlanLocal(
-                    casePlanFormSafeModel);
-                if (isFormSaved) {
+                if (!allFieldsFilled) {
                   Get.snackbar(
-                    'Success',
-                    'Schooled Case Plan Saved Successfully',
+                    'Error',
+                    'Please fill all required fields before saving.',
                     snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: Colors.green,
+                    backgroundColor: Colors.red,
                     colorText: Colors.white,
                     duration: const Duration(seconds: 2),
                   );
+                } else {
+                  String ovcId = widget.caseLoadModel!.cpimsId ?? "";
+                  reasonForNotAchievingCasePlan =
+                      _textEditingController.text.toString();
+                  CptschooledFormData cptschooledFormData =
+                      context.read<CptProvider>().cptschooledFormData ??
+                          CptschooledFormData();
+                  CptschooledFormData updatedSchooledFormData =
+                      cptschooledFormData.copyWith(
+                    reasonId: reasonForNotAchievingCasePlan,
+                    ovcCpimsId: ovcId,
+                    domainId: casePlanProviderDomainList[0].value,
+                  );
+
+                  context
+                      .read<CptProvider>()
+                      .updateCptSchooledFormData(updatedSchooledFormData);
+
+                  CptschooledFormData? schooledCptFormData =
+                      context.read<CptProvider>().cptschooledFormData;
+
+                  print("The case plan model is $schooledCptFormData");
+
+                  CasePlanschooledModel caseSafePlanModel =
+                      mapCptschooledFormDataToCasePlan(schooledCptFormData!);
+
+                  CasePlanModel casePlanFormSafeModel =
+                      mapCasePlanschooledToCasePlan(caseSafePlanModel);
+
+                  bool isFormSaved = await CasePlanService.saveCasePlanLocal(
+                      casePlanFormSafeModel);
+                  if (isFormSaved) {
+                    Get.snackbar(
+                      'Success',
+                      'Schooled Case Plan Saved Successfully',
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.green,
+                      colorText: Colors.white,
+                      duration: const Duration(seconds: 2),
+                    );
+                  }
                 }
               },
               //navigate to the next step

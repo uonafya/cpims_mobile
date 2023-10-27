@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/healthy_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/safe_cpt.dart';
@@ -81,7 +83,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(10),
-                    width: double.infinity,
+                    width: MediaQuery.of(context).size.width,
                     color: Colors.black,
                     child: Text(
                       ' CASE PLAN TEMPLATE \n CARE GIVER: ${widget.caseLoad.caregiverNames} \n CPIMS NAME :${widget.caseLoad.ovcFirstName} ${widget.caseLoad.ovcSurname} \n CPIMS ID: ${widget.caseLoad.cpimsId}',
@@ -137,38 +139,132 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                     : 'Next',
                                 onTap: () async {
                                   if (selectedStep == steps.length - 1) {
-                                    bool allDatesFilled = checkDatesAreFilled();
-                                    CptHealthFormData cptHealthFormData =
-                                        context
-                                                .read<CptProvider>()
-                                                .cptHealthFormData ??
-                                            CptHealthFormData();
-                                    CptSafeFormData cptSafeFormData = context
-                                            .read<CptProvider>()
-                                            .cptSafeFormData ??
-                                        CptSafeFormData();
-                                    CptStableFormData cptStableFormData =
-                                        context
-                                                .read<CptProvider>()
-                                                .cptStableFormData ??
-                                            CptStableFormData();
-                                    CasePlanschooledModel casePlanStableModel =
-                                        context
-                                                .read<CptProvider>()
-                                                .casePlanStableModel ??
-                                            CasePlanschooledModel();
-
-                                    print("Data colleced from each form");
-                                    print("Health $cptHealthFormData");
-                                    print("Safe $cptSafeFormData");
-                                    print("Stable $cptStableFormData");
-                                    print("Schooled $casePlanStableModel");
-
                                     try {
                                       String? ovsId = context
                                           .read<CptProvider>()
                                           .caseLoadModel
                                           ?.cpimsId;
+
+                                      bool allDatesFilled = checkDatesAreFilled();
+                                      CptHealthFormData? cptHealthFormData =
+                                          context
+                                              .read<CptProvider>()
+                                              .cptHealthFormData ??
+                                              CptHealthFormData();
+                                      CptSafeFormData? cptSafeFormData = context
+                                          .read<CptProvider>()
+                                          .cptSafeFormData ??
+                                          CptSafeFormData();
+                                      CptStableFormData? cptStableFormData =
+                                          context
+                                              .read<CptProvider>()
+                                              .cptStableFormData ??
+                                              CptStableFormData();
+                                      CptschooledFormData? cptschooledFormData =
+                                          context
+                                              .read<CptProvider>()
+                                              .cptschooledFormData ??
+                                              CptschooledFormData();
+
+                                      print("Data colleced from each form");
+                                      print("Health $cptHealthFormData");
+                                      print("Safe $cptSafeFormData");
+                                      print("Stable $cptStableFormData");
+                                      print("Schooled $cptschooledFormData");
+
+                                      List<Map<String, dynamic>> servicesList =
+                                      [];
+                                      if (cptHealthFormData != null) {
+                                        Map<String, dynamic> healthService = {
+                                          'domainId': cptHealthFormData.domainId,
+                                          'serviceIds':
+                                          cptHealthFormData.serviceIds,
+                                          'goalId': cptHealthFormData.goalId,
+                                          'gapId': cptHealthFormData.gapId,
+                                          'priorityId':
+                                          cptHealthFormData.priorityId,
+                                          'responsibleIds':
+                                          cptHealthFormData.responsibleIds,
+                                          'resultsId':
+                                          cptHealthFormData.resultsId,
+                                          'reasonId': cptHealthFormData.reasonId,
+                                          'completionDate':
+                                          cptHealthFormData.completionDate,
+                                        };
+                                        servicesList.add(healthService);
+                                      }
+
+                                      if (cptSafeFormData != null) {
+                                        Map<String, dynamic> safeService = {
+                                          'domainId': cptSafeFormData.domainId,
+                                          'serviceIds':
+                                          cptSafeFormData.serviceIds,
+                                          'goalId': cptSafeFormData.goalId,
+                                          'gapId': cptSafeFormData.gapId,
+                                          'priorityId':
+                                          cptSafeFormData.priorityId,
+                                          'responsibleIds':
+                                          cptSafeFormData.responsibleIds,
+                                          'resultsId': cptSafeFormData.resultsId,
+                                          'reasonId': cptSafeFormData.reasonId,
+                                          'completionDate':
+                                          cptSafeFormData.completionDate,
+                                        };
+                                        servicesList.add(safeService);
+                                      }
+
+                                      if (cptStableFormData != null) {
+                                        Map<String, dynamic> stableService = {
+                                          'domainId': cptStableFormData.domainId,
+                                          'serviceIds':
+                                          cptStableFormData.serviceIds,
+                                          'goalId': cptStableFormData.goalId,
+                                          'gapId': cptStableFormData.gapId,
+                                          'priorityId':
+                                          cptStableFormData.priorityId,
+                                          'responsibleIds':
+                                          cptStableFormData.responsibleIds,
+                                          'resultsId':
+                                          cptStableFormData.resultsId,
+                                          'reasonId': cptStableFormData.reasonId,
+                                          'completionDate':
+                                          cptStableFormData.completionDate,
+                                        };
+                                        servicesList.add(stableService);
+                                      }
+
+                                      if (cptschooledFormData != null) {
+                                        Map<String, dynamic> schooledService = {
+                                          'domainId':
+                                          cptschooledFormData.domainId,
+                                          'serviceIds':
+                                          cptschooledFormData.serviceIds,
+                                          'goalId': cptschooledFormData.goalId,
+                                          'gapId': cptschooledFormData.gapId,
+                                          'priorityId':
+                                          cptschooledFormData.priorityId,
+                                          'responsibleIds':
+                                          cptschooledFormData.responsibleIds,
+                                          'resultsId':
+                                          cptschooledFormData.resultsId,
+                                          'reasonId':
+                                          cptschooledFormData.reasonId,
+                                          'completionDate':
+                                          cptschooledFormData.completionDate,
+                                        };
+                                        servicesList.add(schooledService);
+                                      }
+
+                                      Map<String, dynamic> payload = {
+                                        'ovc_cpims_id': ovsId,
+                                        'date_of_event': DateTime.now()
+                                            .toIso8601String()
+                                            .split('T')[0],
+                                        'services': servicesList,
+                                      };
+
+                                      print("Final payload is${jsonEncode(payload)}");
+
                                     } catch (e) {
                                       debugPrint(e.toString());
                                     }
@@ -250,4 +346,56 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
 
     return true; // Return true if all date fields are filled
   }
+}
+
+CheckResult checkFieldsAreFilled(CptHealthFormData data) {
+  List<String> unfilledFields = [];
+
+  if (data.dateOfEvent == null) {
+    unfilledFields.add('Date of Event');
+  }
+  if (data.domainId == null) {
+    unfilledFields.add('Domain');
+  }
+  if (data.serviceIds == null || data.serviceIds!.isEmpty) {
+    unfilledFields.add('Services');
+  }
+  if (data.goalId == null) {
+    unfilledFields.add('Goal');
+  }
+  if (data.gapId == null) {
+    unfilledFields.add('Needs/Gaps');
+  }
+  if (data.priorityId == null) {
+    unfilledFields.add('Priority Actions');
+  }
+  if (data.responsibleIds == null || data.responsibleIds!.isEmpty) {
+    unfilledFields.add('Person(s) Responsible');
+  }
+  if (data.resultsId == null) {
+    unfilledFields.add('Results');
+  }
+  if (data.reasonId == null) {
+    unfilledFields.add('Reason(s)');
+  }
+  if (data.completionDate == null) {
+    unfilledFields.add('Completion Date');
+  }
+
+  if (unfilledFields.isEmpty) {
+    return CheckResult(isAllFieldsFilled: true, unfilledFields: []);
+  } else {
+    return CheckResult(
+        isAllFieldsFilled: false, unfilledFields: unfilledFields);
+  }
+}
+
+class CheckResult {
+  bool isAllFieldsFilled;
+  List<String> unfilledFields;
+
+  CheckResult({
+    required this.isAllFieldsFilled,
+    required this.unfilledFields,
+  });
 }

@@ -45,12 +45,13 @@ class CptProvider extends ChangeNotifier {
 
   CasePlanHealthyModel? casePlanHealthyModel;
   CasePlanSafeModel? casePlanSafeModel;
-  CptHealthFormData? cptHealthFormData;
+  CasePlanschooledModel? casePlanStableModel;
+  CaseLoadModel? caseLoadModel;
+
   CptSafeFormData? cptSafeFormData;
   CptStableFormData? cptStableFormData;
-  CaseLoadModel? caseLoadModel;
-  CasePlanschooledModel? casePlanStableModel;
   CptschooledFormData? cptschooledFormData;
+  CptHealthFormData? cptHealthFormData;
 
   CptHealthFormData get cptHealth => cptHealthFormData!;
 
@@ -64,7 +65,7 @@ class CptProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSelectedGoalOptionsHealt(String selectedGoalHealth){
+  void updateSelectedGoalOptionsHealt(String selectedGoalHealth) {
     this.cptHealthFormData?.goalId = selectedGoalHealth;
     notifyListeners();
   }
@@ -75,7 +76,7 @@ class CptProvider extends ChangeNotifier {
   }
 
   void updateCptSchooledFormData(CptschooledFormData cptschooledFormData) {
-    this.cptStableFormData = cptStableFormData;
+    this.cptschooledFormData = cptschooledFormData;
     notifyListeners();
   }
 

@@ -14,14 +14,11 @@ class MetadataService {
     try {
       final response =
           await ApiService().getSecureData(urlEndpoint, valueToken);
-      print(response.body);
       var responseData = await jsonDecode(response.body);
-      print("$responseData");
       final db = LocalDb.instance;
       for (var data in responseData) {
         Metadata metadata = Metadata.fromJson(data);
         await db.insertMetadata(metadata);
-        print(metadata.toJson());
       }
       return true;
     } catch (e) {
