@@ -43,11 +43,6 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
       SchooledCasePlanTemplate(caseLoadModel: widget.caseLoad),
       StableCasePlan(caseLoadModel: widget.caseLoad),
     ];
-    // Future.delayed(Duration.zero, () {
-    //   Form1bProvider form1bProvider =
-    //   Provider.of<Form1bProvider>(context, listen: false);
-    //   form1bProvider.setFinalFormDataOvcId(widget.caseLoad.cpimsId!);
-    // });
   }
 
   @override
@@ -142,10 +137,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                     : 'Next',
                                 onTap: () async {
                                   if (selectedStep == steps.length - 1) {
-                                    // bool isFormSaved =
-                                    // await form1bProvider.saveForm1bData(
-                                    //   form1bProvider.formData,
-                                    // );
+                                    bool allDatesFilled = checkDatesAreFilled();
                                     CptHealthFormData cptHealthFormData =
                                         context
                                                 .read<CptProvider>()
@@ -235,5 +227,27 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
         ],
       ),
     );
+  }
+
+  bool checkDatesAreFilled() {
+    // Check the date fields in your models
+    CptHealthFormData cptHealthFormData =
+        context.read<CptProvider>().cptHealthFormData ?? CptHealthFormData();
+    CptSafeFormData cptSafeFormData =
+        context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
+    CptStableFormData cptStableFormData =
+        context.read<CptProvider>().cptStableFormData ?? CptStableFormData();
+    CasePlanschooledModel casePlanStableModel =
+        context.read<CptProvider>().casePlanStableModel ??
+            CasePlanschooledModel();
+
+    if (cptHealthFormData.dateOfEvent == null ||
+        cptSafeFormData.dateOfEvent == null ||
+        cptStableFormData.dateOfEvent == null ||
+        casePlanStableModel.dateOfEvent == null) {
+      return false; // Return false if any date field is empty
+    }
+
+    return true; // Return true if all date fields are filled
   }
 }

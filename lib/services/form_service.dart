@@ -220,16 +220,16 @@ class CasePlanService {
   }
 
 // delete a form from local storage
-  static deleteCasePlanLocal(String ovcCpimsId) async {
-    final db = LocalDb.instance;
-    try {
-      await db.deleteCasePlan(ovcCpimsId);
-      return true;
-    } catch (e) {
-      print(e);
-    }
-    return false;
-  }
+//   static deleteCasePlanLocal(String ovcCpimsId) async {
+//     final db = LocalDb.instance;
+//     try {
+//       await db.deleteCasePlan(ovcCpimsId);
+//       return true;
+//     } catch (e) {
+//       print(e);
+//     }
+//     return false;
+//   }
 
 // get all forms from local storage
   static getCasePlanRecordLocal(ovcCpimsId) async {

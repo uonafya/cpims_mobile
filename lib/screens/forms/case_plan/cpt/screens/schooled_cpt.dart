@@ -129,9 +129,9 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
         const SizedBox(height: 10),
         TextFormField(
           readOnly: true,
-          initialValue: 'Health',
+          initialValue: 'Schooled',
           decoration: const InputDecoration(
-            labelText: 'Label text',
+            labelText: 'Schooled',
             border: OutlineInputBorder(),
           ),
         ),
@@ -149,7 +149,6 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
           showClearIcon: true,
           hint: 'Please select the Goal',
           onOptionSelected: (selectedEvents) {
-            // Ensure that you have a valid CasePlanHealthyModel instance
             CptschooledFormData cptschooledFormData =
                 context.read<CptProvider>().cptschooledFormData ??
                     CptschooledFormData();
