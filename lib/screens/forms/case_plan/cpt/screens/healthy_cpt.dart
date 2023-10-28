@@ -33,7 +33,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
   DateTime completionDate = DateTime.now();
   String reasonForNotAchievingCasePlan = "";
   List<ValueItem> selectedGoalOptions = [];
-  List<ValueItem> selectedNeedOptions = [];d
+  List<ValueItem> selectedNeedOptions = [];
   List<ValueItem> selectedPriorityActionOptions = [];
   List<ValueItem> selectedServicesOptions = [];
   List<ValueItem> selectedPersonsResponsibleOptions = [];
@@ -445,60 +445,70 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
         CustomTextField(
           hintText: 'Please Write the Reasons',
           controller: textEditingController,
+          onChanged: (val) {
+            CptHealthFormData cptHealthFormData =
+                context.read<CptProvider>().cptHealthFormData ??
+                    CptHealthFormData();
+
+            CptHealthFormData updatedFormData = cptHealthFormData.copyWith(
+              reasonId: val,
+            );
+            context.read<CptProvider>().updateCptFormData(updatedFormData);
+          },
         ),
         const SizedBox(height: 10),
         //BUTTON TO SAVE
-        Row(
-          children: [
-            Expanded(
-                child: CustomButton(
-              onTap: () async {
-                String ovcId = widget.caseLoadModel!.cpimsId ?? "";
-                reasonForNotAchievingCasePlan =
-                    textEditingController.text.toString();
-
-                CptHealthFormData cptHealthFormData =
-                    context.read<CptProvider>().cptHealthFormData ??
-                        CptHealthFormData();
-
-                // Update all the fields at once
-                CptHealthFormData updatedFormData = cptHealthFormData.copyWith(
-                  reasonId: reasonForNotAchievingCasePlan,
-                  ovcCpimsId: ovcId,
-                  domainId: casePlanProviderDomainList[0].value,
-                );
-
-                context.read<CptProvider>().updateCptFormData(updatedFormData);
-
-                // Retrieve the updated CptHealthFormData
-                CptHealthFormData? healthCptFormData =
-                    context.read<CptProvider>().cptHealthFormData;
-
-                // Map the updated CptHealthFormData to CasePlanHealthyModel
-                CasePlanHealthyModel casePlanModel =
-                    mapCptHealthFormDataToCasePlan(healthCptFormData!);
-
-                //map caseplan healthyModelToCasePlanFormModel
-                CasePlanModel casePlanFormModel =
-                    mapCasePlanHealthyToCasePlan(casePlanModel);
-
-                bool isFormSaved =
-                    await CasePlanService.saveCasePlanLocal(casePlanFormModel);
-                if (isFormSaved) {
-                  Get.snackbar(
-                    'Success',
-                    'Health Case Plan Saved Successfully',
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: Colors.green,
-                    colorText: Colors.white,
-                    duration: const Duration(seconds: 2),
-                  );
-                }
-              },
-              text: 'Save',
-            )),
-          ],
-        ),
+        // Row(
+        //   children: [
+        //     Expanded(
+        //         child: CustomButton(
+        //       onTap: () async {
+        //         String ovcId = widget.caseLoadModel!.cpimsId ?? "";
+        //         reasonForNotAchievingCasePlan =
+        //             textEditingController.text.toString();
+        //
+        //         CptHealthFormData cptHealthFormData =
+        //             context.read<CptProvider>().cptHealthFormData ??
+        //                 CptHealthFormData();
+        //
+        //         // Update all the fields at once
+        //         CptHealthFormData updatedFormData = cptHealthFormData.copyWith(
+        //           reasonId: reasonForNotAchievingCasePlan,
+        //           ovcCpimsId: ovcId,
+        //           domainId: casePlanProviderDomainList[0].value,
+        //         );
+        //
+        //         context.read<CptProvider>().updateCptFormData(updatedFormData);
+        //
+        //         // Retrieve the updated CptHealthFormData
+        //         CptHealthFormData? healthCptFormData =
+        //             context.read<CptProvider>().cptHealthFormData;
+        //
+        //         // Map the updated CptHealthFormData to CasePlanHealthyModel
+        //         CasePlanHealthyModel casePlanModel =
+        //             mapCptHealthFormDataToCasePlan(healthCptFormData!);
+        //
+        //         //map caseplan healthyModelToCasePlanFormModel
+        //         CasePlanModel casePlanFormModel =
+        //             mapCasePlanHealthyToCasePlan(casePlanModel);
+        //
+        //         bool isFormSaved =
+        //             await CasePlanService.saveCasePlanLocal(casePlanFormModel);
+        //         if (isFormSaved) {
+        //           Get.snackbar(
+        //             'Success',
+        //             'Health Case Plan Saved Successfully',
+        //             snackPosition: SnackPosition.BOTTOM,
+        //             backgroundColor: Colors.green,
+        //             colorText: Colors.white,
+        //             duration: const Duration(seconds: 2),
+        //           );
+        //         }
+        //       },
+        //       text: 'Save',
+        //     )),
+        //   ],
+        // ),
       ],
     );
   }
