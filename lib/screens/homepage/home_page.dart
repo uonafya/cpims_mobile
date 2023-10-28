@@ -5,6 +5,7 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/caregiver/caregiver.dart';
+import 'package:cpims_mobile/screens/homepage/provider/stats_provider.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
@@ -55,6 +56,9 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     super.initState();
     showCountUnsyncedForms();
+    context
+        .read<StatsProvider>()
+        .updateFormStats();
     syncWorkflows();
   }
 
@@ -139,11 +143,16 @@ class _HomepageState extends State<Homepage> {
         await Provider.of<ConnectivityProvider>(context, listen: false)
             .checkInternetConnection();
     if (isConnected) {
-      submitCparaToUpstream();
-      postCasePlansToServer();
-      fetchAndPostToServerOvcSubpopulationData();
-      postFormOneToServer();
-      showCountUnsyncedForms();
+      await submitCparaToUpstream();
+      await postCasePlansToServer();
+     fetchAndPostToServerOvcSubpopulationData();
+     postFormOneToServer();
+      await showCountUnsyncedForms();
+      if(mounted) {
+        context
+            .read<StatsProvider>()
+            .updateFormStats();
+      }
     }
   }
 
@@ -166,6 +175,8 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     final SummaryDataModel dashData =
         context.select((UIProvider provider) => provider.getDashData);
+
+    StatsProvider formStats = context.watch<StatsProvider>();
 
     if (dashData == null) {
       return const Center(
@@ -221,6 +232,10 @@ class _HomepageState extends State<Homepage> {
                         })
                   ],
                 ),
+                Text("Form 1A : ${formStats.formOneACount}"),
+                Text("Form 1B : ${formStats.formOneBCount}"),
+                Text("Cpara : ${formStats.cparaCount}"),
+                Text("Cpt : ${formStats.cptCount}"),
                 StatisticsItem(
                   title: 'UNSYNCED RECORDS',
                   icon: FontAwesomeIcons.arrowsRotate,
