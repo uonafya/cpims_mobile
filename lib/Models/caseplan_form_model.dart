@@ -55,7 +55,7 @@ class CasePlanServiceModel {
   late final List<String?> responsibleIds;
   late final String resultsId;
   late final String reasonId;
-  late final String completionDate;
+  late  String? completionDate="";
 
   CasePlanServiceModel({
     required this.domainId,

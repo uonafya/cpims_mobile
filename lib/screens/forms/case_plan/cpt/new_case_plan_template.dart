@@ -9,6 +9,8 @@ import 'package:cpims_mobile/services/form_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -221,7 +223,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                       print("Stable $cptStableFormData");
                                       print("Schooled $cptschooledFormData");
 
-                                      List<Map<String, dynamic>> servicesList = [];
+                                      List<Map<String, dynamic>> servicesList =
+                                          [];
                                       if (cptHealthFormData != null &&
                                           cptHealthFormData.serviceIds !=
                                               null &&
@@ -344,7 +347,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                         };
                                         servicesList.add(schooledService);
                                       }
-                                      debugPrint("HERE AEE THE SERVICES ${servicesList}");
+                                      debugPrint(
+                                          "HERE AEE THE SERVICES ${servicesList}");
 
                                       Map<String, dynamic> payload = {
                                         'ovc_cpims_id': ovsId,
@@ -355,9 +359,28 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                           "Final payload is${jsonEncode(payload)}");
                                       print(
                                           "Final payload is not json $payload");
-                                      CasePlanService.saveCasePlanLocal(jsonEncode(payload));
-                                      CasePlanService.saveCasePlanLocal(CasePlanModel.fromJson(payload));
+                                      bool isFormSaved = await CasePlanService
+                                          .saveCasePlanLocal(
+                                              CasePlanModel.fromJson(payload));
 
+                                      if (isFormSaved) {
+                                        Get.snackbar(
+                                          'Success',
+                                          'Successfully saved CasePlan form',
+                                          backgroundColor: Colors.green,
+                                          colorText: Colors.white,
+                                        );
+                                        //get back to the previous screen
+                                        Navigator.pop(context);
+                                      } else {
+                                        Get.snackbar(
+                                          'Error',
+                                          'Failed to save CasePlan form',
+                                          backgroundColor: Colors.red,
+                                          colorText: Colors.white,
+                                        );
+                                        Navigator.pop(context);
+                                      }
 
                                       //save to server
                                       // Future<void> postCasePlansToServer() async {
@@ -410,20 +433,22 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                       dio.interceptors.add(LogInterceptor());
                                       var prefs =
                                           await SharedPreferences.getInstance();
-                                      var accessToken = prefs.getString('access');
+                                      var accessToken =
+                                          prefs.getString('access');
                                       String bearerAuth = "Bearer $accessToken";
 
-                                      try{
-                                        var response = await dio.post("https://dev.cpims.net/mobile/cpt/",
+                                      try {
+                                        var response = await dio.post(
+                                            "https://dev.cpims.net/mobile/cpt/",
                                             data: payload,
-                                            options: Options(headers: {"Authorization": bearerAuth}));
-                                        print("The response is ${response.data}");
-
-
-                                      }catch(e){
+                                            options: Options(headers: {
+                                              "Authorization": bearerAuth
+                                            }));
+                                        print(
+                                            "The response is ${response.data}");
+                                      } catch (e) {
                                         print("The error is ${e.toString()}");
                                       }
-
 
                                       //save here to local
                                       // saveCasePlanLocal(jsonEncode(payload));
