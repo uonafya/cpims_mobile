@@ -62,15 +62,6 @@ class _CriticalEventForm1bState extends State<CriticalEventForm1b> {
         ),
 
         const SizedBox(height: 15),
-
-        const Text(
-          'Date of Service(s) / Event',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 10),
-        const CustomDatePicker(
-          hintText: 'Select date',
-        )
       ],
     );
   }

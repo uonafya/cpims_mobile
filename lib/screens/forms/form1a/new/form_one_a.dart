@@ -3,8 +3,12 @@ import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_critical
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_safe.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_stable.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/form_one_a_healthy.dart';
+import 'package:cpims_mobile/screens/forms/form1a/new/widgets/form_one_a_schooled.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Models/case_load_model.dart';
@@ -37,6 +41,7 @@ class _FomOneAState extends State<FomOneA> {
     const FormOneAHealthy(),
     const FormOneASafe(),
     const FormOneAStable(),
+    const FormOneASchooled(),
     const FormOneACritical(),
   ];
 
@@ -166,26 +171,42 @@ class _FomOneAState extends State<FomOneA> {
                           ),
                           Expanded(
                             child: CustomButton(
-                              text: isLastStep ? 'Submit Form1B' : 'Next',
+                              text: isLastStep ? 'Submit Form1A' : 'Next',
                               onTap: () async {
                                 if (isLastStep) {
-                                  bool isFormSaved =
-                                      await form1AProvider.saveForm1AData(
-                                    form1AProvider.formData,
-                                  );
-                                  setState(() {
-                                    if (isFormSaved == true) {
-                                      if (context.mounted) {
-                                        context
-                                            .read<StatsProvider>()
-                                            .updateCparaFormStats();
+                                  if (form1AProvider.formData.selectedDate ==
+                                      null) {
+                                    CustomToastWidget.showToast(
+                                        "Please select the date of event");
+                                    return;
+                                  } else {
+                                    bool isFormSaved =
+                                        await form1AProvider.saveForm1AData(
+                                      form1AProvider.formData,
+                                    );
+                                    setState(() {
+                                      if (isFormSaved == true) {
+                                        if (context.mounted) {
+                                          context
+                                              .read<StatsProvider>()
+                                              .updateFormOneAStats();
+                                        }
+                                        Get.snackbar(
+                                          'Success',
+                                          'Form1A data saved successfully.',
+                                          duration: const Duration(seconds: 2),
+                                          snackPosition: SnackPosition.TOP,
+                                          // Display at the top of the screen
+                                          backgroundColor: Colors.green,
+                                          colorText: Colors.white,
+                                          margin: const EdgeInsets.all(16),
+                                          borderRadius: 8,
+                                        );
+                                        Navigator.pop(context);
+                                        selectedStep = 0;
                                       }
-                                      CustomToastWidget.showToast(
-                                          "Form saved successfully");
-                                      Navigator.pop(context);
-                                      selectedStep = 0;
-                                    }
-                                  });
+                                    });
+                                  }
                                 } else {
                                   setState(() {
                                     if (selectedStep < steps.length - 1) {

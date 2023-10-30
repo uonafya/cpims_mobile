@@ -1,5 +1,5 @@
 // <<<<<<<<<<< Critical Events >>>>>>>>>>>>>>>>>>>
-List<Map> optionsEvents = [
+List<Map> formOneACriticalEvents = [
   {
     'event_id': 'CEOCE1',
     'event_description': 'Child Pregnant',
@@ -330,7 +330,7 @@ List<Map> healthServicesOptions = [
   }
 ];
 
-List<Map> stableServices = [
+List<Map> stableServicesOptions = [
   {
     "item_id": "CP53aSTs",
     "item_description":
@@ -534,7 +534,7 @@ List<Map> safeServices = [
   },
 ];
 
-List<Map> schooledServices = [
+List<Map> schooledServicesOptions = [
   {
     "item_id": "CP91SCs",
     "item_description": "CP91SCs-Enrolled in ECD",

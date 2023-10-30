@@ -1,7 +1,3 @@
-
-
-
-
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -30,9 +26,11 @@ class Form1AProviderNew extends ChangeNotifier {
   final HealthFormData _formData = HealthFormData(
       selectedServices: [], selectedDate: DateTime.now(), domainId: "");
   final StableFormData _stableFormData =
-  StableFormData(selectedServices: [], domainId: "");
+      StableFormData(selectedServices: [], domainId: "");
+  final SchooledFormData _schooledFormData =
+      SchooledFormData(selectedServices: [], domainId: "");
   final SafeFormData _safeFormData =
-  SafeFormData(selectedServices: [], domainId: "");
+      SafeFormData(selectedServices: [], domainId: "");
   final FinalServicesFormData _finalServicesFormData = FinalServicesFormData(
     services: [],
     date_of_event: DateFormat('yyyy-MM-dd').format(DateTime.now()),
@@ -40,7 +38,7 @@ class Form1AProviderNew extends ChangeNotifier {
   );
 
   final CriticalEventDataForm1b _criticalEventDataForm1b =
-  CriticalEventDataForm1b(
+      CriticalEventDataForm1b(
     selectedEvents: [],
     selectedDate: DateTime.now(),
   );
@@ -50,6 +48,8 @@ class Form1AProviderNew extends ChangeNotifier {
   StableFormData get stableFormData => _stableFormData;
 
   SafeFormData get safeFormData => _safeFormData;
+
+  SchooledFormData get schooledFormData => _schooledFormData;
 
   CriticalEventDataForm1b get criticalEventDataForm1b =>
       _criticalEventDataForm1b;
@@ -80,8 +80,15 @@ class Form1AProviderNew extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setSelectedSchooledFormDataServices(
+      List<ValueItem> selectedServices, String domainId) {
+    _schooledFormData.selectedServices.clear(); // Clear the current list
+    _schooledFormData.selectedServices.addAll(selectedServices);
+    _schooledFormData.domainId = domainId;
+    notifyListeners();
+  }
+
   void setSelectedDate(DateTime selectedDate) {
-    // CustomToastWidget.showToast(selectedDate);
     _formData.selectedDate = selectedDate;
     notifyListeners();
   }
@@ -102,9 +109,9 @@ class Form1AProviderNew extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setFinalFormDataDOE(DateTime dateOfEvent) {
+  void setFinalFormDataDOE(DateTime? dateOfEvent) {
     _finalServicesFormData.date_of_event =
-        DateFormat('yyyy-MM-dd').format(dateOfEvent);
+        DateFormat('yyyy-MM-dd').format(dateOfEvent!);
     notifyListeners();
   }
 
@@ -116,24 +123,24 @@ class Form1AProviderNew extends ChangeNotifier {
 
   List<Form1CriticalEventsModel> getFinalCriticalEventsFormData() {
     List<Form1CriticalEventsModel> criticalEvents =
-    generateCriticalEventsDS(criticalEventDataForm1b);
+        generateCriticalEventsDS(criticalEventDataForm1b);
     return criticalEvents;
   }
 
   Future<bool> saveForm1AData(HealthFormData healthFormData) async {
     List<MasterServicesFormData> masterServicesList =
-    convertToMasterServicesFormData();
+        convertToMasterServicesFormData();
     //creating our data to be sent for saving
     setFinalFormDataServices(masterServicesList);
     setFinalFormDataOvcId(_finalServicesFormData.ovc_cpims_id);
     setFinalFormDataDOE(formData.selectedDate);
     List<Form1CriticalEventsModel> criticalEventsFormData =
-    getFinalCriticalEventsFormData();
+        getFinalCriticalEventsFormData();
 
     List<Form1ServicesModel> servicesList = [];
 
     for (MasterServicesFormData masterFormData
-    in finalServicesFormData.services ?? []) {
+        in finalServicesFormData.services ?? []) {
       Form1ServicesModel entry = Form1ServicesModel(
           domainId: masterFormData.domainId,
           serviceId: masterFormData.selectedServiceId);
@@ -216,7 +223,7 @@ class Form1AProviderNew extends ChangeNotifier {
     for (int i = 0; i < criticalEventDataForm1b.selectedEvents.length; i++) {
       final eventId = criticalEventDataForm1b.selectedEvents[i].value;
       final eventDate =
-      DateFormat('yyyy-MM-dd').format(criticalEventDataForm1b.selectedDate);
+          DateFormat('yyyy-MM-dd').format(criticalEventDataForm1b.selectedDate);
 
       eventsList.add(
         Form1CriticalEventsModel(event_id: eventId!, event_date: eventDate),
@@ -231,7 +238,7 @@ class Form1AProviderNew extends ChangeNotifier {
   Future<void> fetchSavedDataFromDb() async {
     try {
       List<Map<String, dynamic>> updatedForm1Rows =
-      await Form1Service.getAllForms("form1b");
+          await Form1Service.getAllForms("form1b");
 
       form1bFetchedData = updatedForm1Rows;
 
@@ -285,7 +292,7 @@ class Form1AProviderNew extends ChangeNotifier {
     try {
       if (hasConnection) {
         final formOneApiResponse =
-        await dio.post(apiEndpoint, data: data, options: options);
+            await dio.post(apiEndpoint, data: data, options: options);
         if (formOneApiResponse.statusCode == 200) {
           print("Data posted  successfully to server is $data");
           Get.snackbar(
@@ -305,7 +312,7 @@ class Form1AProviderNew extends ChangeNotifier {
           );
         }
       } else {
-        try{
+        try {
           Form1Service.saveFormLocal("form1a", formOneAData);
           Get.snackbar(
             'Success',
@@ -314,7 +321,7 @@ class Form1AProviderNew extends ChangeNotifier {
             backgroundColor: Colors.yellow,
             colorText: Colors.white,
           );
-        }catch(e){
+        } catch (e) {
           Get.snackbar(
             'Failed',
             'Failed to save locally',

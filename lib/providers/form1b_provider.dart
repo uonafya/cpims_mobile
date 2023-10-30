@@ -76,7 +76,7 @@ class Form1bProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setSelectedDate(DateTime selectedDate) {
+  void setSelectedDate(DateTime? selectedDate) {
     // CustomToastWidget.showToast(selectedDate);
     _formData.selectedDate = selectedDate;
     notifyListeners();
@@ -122,7 +122,7 @@ class Form1bProvider extends ChangeNotifier {
     //creating our data to be sent for saving
     setFinalFormDataServices(masterServicesList);
     setFinalFormDataOvcId(_finalServicesFormData.ovc_cpims_id);
-    setFinalFormDataDOE(formData.selectedDate);
+    setFinalFormDataDOE(formData.selectedDate!);
     List<Form1CriticalEventsModel> criticalEventsFormData =
         getFinalCriticalEventsFormData();
 

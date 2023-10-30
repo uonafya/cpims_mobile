@@ -5,38 +5,36 @@ import 'package:multi_dropdown/models/value_item.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
 import '../../../form1b/utils/form1bConstants.dart';
 import '../../utils/form_1a_options.dart';
 import '../utils/form_one_a_provider.dart';
 
-class FormOneAHealthy extends StatefulWidget {
-  const FormOneAHealthy({Key? key}) : super(key: key);
+class FormOneASchooled extends StatefulWidget {
+  const FormOneASchooled({super.key});
 
   @override
-  State<FormOneAHealthy> createState() => _FormOneAHealthy();
+  State<FormOneASchooled> createState() => _FormOneASchooledState();
 }
 
-class _FormOneAHealthy extends State<FormOneAHealthy> {
-  List<ValueItem> healthServices = healthServicesOptions.map((service) {
-    return ValueItem(
-        label: service['item_description'], value: service['item_id']);
+class _FormOneASchooledState extends State<FormOneASchooled> {
+  List<ValueItem> schooledServices =
+  schooledServicesOptions.map((service) {
+    return ValueItem(label: service['item_description'], value: service['item_id']);
   }).toList();
 
-  List<ValueItem> selectedCareGiverServices = [];
-  List<ValueItem> selectedCareGiverServicesOptions = [];
-  DateTime currentlySelectedDate = DateTime.now();
+  List<ValueItem> selectedSchooledServices = [];
+  List<ValueItem> selectedSchooledServicesOptions = [];
 
   @override
   Widget build(BuildContext context) {
+
     Form1AProviderNew form1aProvider = Provider.of<Form1AProviderNew>(context);
-    selectedCareGiverServicesOptions = form1aProvider.formData.selectedServices;
-    currentlySelectedDate = form1aProvider.formData.selectedDate!;
-    String healthDomainId = domainsList[1]['item_id'];
+    selectedSchooledServices = form1aProvider.stableFormData.selectedServices;
+    String domainId = domainsList[0]['item_id'];
 
     return StepsWrapper(
-      title: 'Healthy',
+      title: '',
       children: [
         const Text(
           'Service(s)',
@@ -47,24 +45,25 @@ class _FormOneAHealthy extends State<FormOneAHealthy> {
           showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
-            selectedCareGiverServices = selectedServices;
-            form1aProvider.setSelectedHealthServices(
-                selectedCareGiverServices, healthDomainId);
+            selectedSchooledServices = selectedServices;
+            form1aProvider.setSelectedSafeFormDataServices(
+                selectedSchooledServices, domainId);
           },
-          options: healthServices,
+          options: schooledServices,
+          selectedOptions:
+          selectedSchooledServicesOptions.cast<ValueItem>(),
           maxItems: 13,
-          selectedOptions: selectedCareGiverServicesOptions.cast<ValueItem>(),
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
           chipConfig: const ChipConfig(wrapType: WrapType.wrap),
           dropdownHeight: 300,
           optionTextStyle: const TextStyle(fontSize: 16),
           selectedOptionIcon: const Icon(Icons.check_circle),
-          borderRadius: BorderRadius.circular(5.w).topLeft.x,
+          borderRadius: BorderRadius.circular(5.w)
+              .topLeft
+              .x, // Set the desired border radius value
         ),
-        const SizedBox(
-          height: 15,
-        ),
+        const SizedBox(height: 15),
       ],
     );
   }

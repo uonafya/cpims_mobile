@@ -38,6 +38,11 @@ List<Map<String, dynamic>> form1asStepper = [
     'onTap': () => {},
   },
   {
+    'title': 'Schooled',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
     'title': 'Critical Event',
     'subtitle': '',
     'onTap': () => {},

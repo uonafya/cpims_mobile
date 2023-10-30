@@ -3,7 +3,7 @@ import 'package:multi_dropdown/models/value_item.dart';
 class HealthFormData {
   late List<ValueItem> selectedServices;
   late List<ValueItem> personsResponsible;
-  late DateTime selectedDate;
+  late DateTime? selectedDate;
   late String domainId;
   late String goalId;
   late String needId;
@@ -28,7 +28,7 @@ class HealthFormData {
           selectedServices.map((item) => item.toJson()).toList(),
       'personsResponsible':
           personsResponsible.map((item) => item.toJson()).toList(),
-      'selectedDate': selectedDate.toIso8601String(),
+      'selectedDate': selectedDate?.toIso8601String(),
       'domainId': domainId,
       'goalId': goalId,
       'needId': needId,

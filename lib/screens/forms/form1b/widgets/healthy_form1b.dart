@@ -18,10 +18,10 @@ class HealthyForm1b extends StatefulWidget {
 }
 
 class _HealthyForm1bState extends State<HealthyForm1b> {
-
   List<ValueItem> caregiverHealthServiceItems =
-  careGiverHealthServices.map((service) {
-    return ValueItem(label: service['item_description'], value: service['item_id']);
+      careGiverHealthServices.map((service) {
+    return ValueItem(
+        label: service['item_description'], value: service['item_id']);
   }).toList();
 
   List<ValueItem> selectedCareGiverServices = [];
@@ -32,7 +32,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
   Widget build(BuildContext context) {
     Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
     selectedCareGiverServicesOptions = form1bProvider.formData.selectedServices;
-    currentlySelectedDate = form1bProvider.formData.selectedDate;
+    currentlySelectedDate = form1bProvider.formData.selectedDate!;
     String healthDomainId = domainsList[1]['item_id'];
 
     return StepsWrapper(
@@ -48,7 +48,8 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             selectedCareGiverServices = selectedServices;
-            form1bProvider.setSelectedHealthServices(selectedCareGiverServices, healthDomainId);
+            form1bProvider.setSelectedHealthServices(
+                selectedCareGiverServices, healthDomainId);
           },
           options: caregiverHealthServiceItems,
           maxItems: 13,
@@ -63,19 +64,6 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
         ),
         const SizedBox(
           height: 15,
-        ),
-        const Text(
-          'Date of Service(s) / Event',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 10),
-        CustomFormsDatePicker(
-          hintText: 'Select the date',
-          selectedDateTime: currentlySelectedDate,
-          onDateSelected: (selectedDate) {
-            currentlySelectedDate = selectedDate;
-            form1bProvider.setSelectedDate(currentlySelectedDate);
-          },
         ),
       ],
     );
