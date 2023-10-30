@@ -154,9 +154,7 @@ class CasePlanServiceSafeModel {
 }
 
 class CptSafeFormData {
-  final String? ovcCpimsId;
-  final String? dateOfEvent;
-  final String? domainId;
+  String? domainId = "DPRO";
   final List<String?>? serviceIds;
   final String? goalId;
   final String? gapId;
@@ -167,8 +165,6 @@ class CptSafeFormData {
   final String? completionDate;
 
   CptSafeFormData({
-    this.ovcCpimsId,
-    this.dateOfEvent,
     this.domainId,
     this.serviceIds,
     this.goalId,
@@ -181,8 +177,6 @@ class CptSafeFormData {
   });
 
   CptSafeFormData copyWith({
-    String? ovcCpimsId,
-    String? dateOfEvent,
     String? domainId,
     List<String?>? serviceIds,
     String? goalId,
@@ -194,8 +188,6 @@ class CptSafeFormData {
     String? completionDate,
   }) {
     return CptSafeFormData(
-      ovcCpimsId: ovcCpimsId ?? this.ovcCpimsId,
-      dateOfEvent: dateOfEvent ?? this.dateOfEvent,
       domainId: domainId ?? this.domainId,
       serviceIds: serviceIds ?? this.serviceIds,
       goalId: goalId ?? this.goalId,
@@ -211,8 +203,6 @@ class CptSafeFormData {
   @override
   String toString() {
     return 'CptSafeFormData('
-        'ovcCpimsId: $ovcCpimsId, '
-        'dateOfEvent: $dateOfEvent, '
         'domainId: $domainId, '
         'serviceIds: $serviceIds, '
         'goalId: $goalId, '
@@ -226,8 +216,6 @@ class CptSafeFormData {
 
   Map<String, dynamic> toJson() {
     return {
-      'ovcCpimsId': ovcCpimsId,
-      'dateOfEvent': dateOfEvent,
       'domainId': domainId,
       'serviceIds': serviceIds,
       'goalId': goalId,
@@ -242,8 +230,6 @@ class CptSafeFormData {
 
   factory CptSafeFormData.fromJson(Map<String, dynamic> json) {
     return CptSafeFormData(
-      ovcCpimsId: json['ovcCpimsId'],
-      dateOfEvent: json['dateOfEvent'],
       domainId: json['domainId'],
       serviceIds: List<String?>.from(json['serviceIds']),
       goalId: json['goalId'],
@@ -283,12 +269,9 @@ CasePlanSafeModel mapCptSafeFormDataToCasePlan(CptSafeFormData formData) {
   }
 
   return CasePlanSafeModel(
-    ovcCpimsId: formData.ovcCpimsId,
-    dateOfEvent: formData.dateOfEvent,
     services: services,
   );
 }
-
 
 CasePlanModel mapCasePlanSafeToCasePlan(CasePlanSafeModel safeModel) {
   // Map the services
@@ -319,5 +302,3 @@ CasePlanModel mapCasePlanSafeToCasePlan(CasePlanSafeModel safeModel) {
     services: services,
   );
 }
-
-

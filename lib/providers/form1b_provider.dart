@@ -101,6 +101,7 @@ class Form1bProvider extends ChangeNotifier {
   void setFinalFormDataDOE(DateTime dateOfEvent) {
     _finalServicesFormData.date_of_event =
         DateFormat('yyyy-MM-dd').format(dateOfEvent);
+    _criticalEventDataForm1b.selectedDate = dateOfEvent;
     notifyListeners();
   }
 
@@ -301,7 +302,7 @@ class Form1bProvider extends ChangeNotifier {
           );
         }
       } else {
-        try{
+        try {
           Form1Service.saveFormLocal("form1a", formOneBdata);
           Get.snackbar(
             'Success',
@@ -310,7 +311,7 @@ class Form1bProvider extends ChangeNotifier {
             backgroundColor: Colors.yellow,
             colorText: Colors.white,
           );
-        }catch(e){
+        } catch (e) {
           Get.snackbar(
             'Failed',
             'Failed to save locally',

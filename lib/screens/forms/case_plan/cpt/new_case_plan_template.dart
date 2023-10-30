@@ -168,13 +168,11 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                 onTap: () async {
                                   if (selectedStep == steps.length - 1) {
                                     try {
-                                      String? ovsId = context
-                                          .read<CptProvider>()
-                                          .caseLoadModel
-                                          ?.cpimsId;
+                                      String? ovsId = widget.caseLoad.cpimsId!;
+                                      String formattedDate =
+                                          currentDateOfCasePlan
+                                              .toIso8601String();
 
-                                      bool allDatesFilled =
-                                          checkDatesAreFilled();
                                       CptHealthFormData? cptHealthFormData =
                                           context
                                                   .read<CptProvider>()
@@ -203,10 +201,19 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
 
                                       List<Map<String, dynamic>> servicesList =
                                           [];
-                                      if (cptHealthFormData != null) {
+                                      if (cptHealthFormData != null &&
+                                          cptHealthFormData.serviceIds !=
+                                              null &&
+                                          cptHealthFormData.goalId != null &&
+                                          cptHealthFormData.gapId != null &&
+                                          cptHealthFormData.priorityId !=
+                                              null &&
+                                          cptHealthFormData.responsibleIds !=
+                                              null &&
+                                          cptHealthFormData.resultsId != null &&
+                                          cptHealthFormData.reasonId != null) {
                                         Map<String, dynamic> healthService = {
-                                          'domainId':
-                                              cptHealthFormData.domainId,
+                                          'domainId': "DHNU",
                                           'serviceIds':
                                               cptHealthFormData.serviceIds,
                                           'goalId': cptHealthFormData.goalId,
@@ -225,9 +232,17 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                         servicesList.add(healthService);
                                       }
 
-                                      if (cptSafeFormData != null) {
+                                      if (cptSafeFormData != null &&
+                                          cptSafeFormData.serviceIds != null &&
+                                          cptSafeFormData.goalId != null &&
+                                          cptSafeFormData.gapId != null &&
+                                          cptSafeFormData.priorityId != null &&
+                                          cptSafeFormData.responsibleIds !=
+                                              null &&
+                                          cptSafeFormData.resultsId != null &&
+                                          cptSafeFormData.reasonId != null ) {
                                         Map<String, dynamic> safeService = {
-                                          'domainId': cptSafeFormData.domainId,
+                                          'domainId': 'DPRO',
                                           'serviceIds':
                                               cptSafeFormData.serviceIds,
                                           'goalId': cptSafeFormData.goalId,
@@ -245,10 +260,19 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                         servicesList.add(safeService);
                                       }
 
-                                      if (cptStableFormData != null) {
+                                      if (cptStableFormData != null &&
+                                          cptStableFormData.serviceIds !=
+                                              null &&
+                                          cptStableFormData.goalId != null &&
+                                          cptStableFormData.gapId != null &&
+                                          cptStableFormData.priorityId !=
+                                              null &&
+                                          cptStableFormData.responsibleIds !=
+                                              null &&
+                                          cptStableFormData.resultsId != null &&
+                                          cptStableFormData.reasonId != null) {
                                         Map<String, dynamic> stableService = {
-                                          'domainId':
-                                              cptStableFormData.domainId,
+                                          'domainId': 'DPRO',
                                           'serviceIds':
                                               cptStableFormData.serviceIds,
                                           'goalId': cptStableFormData.goalId,
@@ -267,10 +291,17 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                         servicesList.add(stableService);
                                       }
 
-                                      if (cptschooledFormData != null) {
+                                      if (cptschooledFormData != null
+                                      && cptschooledFormData.serviceIds != null
+                                      && cptschooledFormData.goalId != null
+                                      && cptschooledFormData.gapId != null
+                                      && cptschooledFormData.priorityId != null
+                                      && cptschooledFormData.responsibleIds != null
+                                      && cptschooledFormData.resultsId != null
+                                      && cptschooledFormData.reasonId != null
+                                      ) {
                                         Map<String, dynamic> schooledService = {
-                                          'domainId':
-                                              cptschooledFormData.domainId,
+                                          'domainId': 'DEDU',
                                           'serviceIds':
                                               cptschooledFormData.serviceIds,
                                           'goalId': cptschooledFormData.goalId,
@@ -291,14 +322,17 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
 
                                       Map<String, dynamic> payload = {
                                         'ovc_cpims_id': ovsId,
-                                        'date_of_event': DateTime.now()
-                                            .toIso8601String()
-                                            .split('T')[0],
+                                        'date_of_event': formattedDate,
                                         'services': servicesList,
                                       };
-
                                       print(
                                           "Final payload is${jsonEncode(payload)}");
+
+                                      //save this to db
+                                      // bool isFormSaved = await cptProvider
+                                      //     .saveCasePlanData(payload);
+
+
                                     } catch (e) {
                                       debugPrint(e.toString());
                                     }
@@ -358,78 +392,4 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
       ),
     );
   }
-
-  bool checkDatesAreFilled() {
-    // Check the date fields in your models
-    CptHealthFormData cptHealthFormData =
-        context.read<CptProvider>().cptHealthFormData ?? CptHealthFormData();
-    CptSafeFormData cptSafeFormData =
-        context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
-    CptStableFormData cptStableFormData =
-        context.read<CptProvider>().cptStableFormData ?? CptStableFormData();
-    CasePlanschooledModel casePlanStableModel =
-        context.read<CptProvider>().casePlanStableModel ??
-            CasePlanschooledModel();
-
-    if (cptHealthFormData.dateOfEvent == null ||
-        cptSafeFormData.dateOfEvent == null ||
-        cptStableFormData.dateOfEvent == null ||
-        casePlanStableModel.dateOfEvent == null) {
-      return false; // Return false if any date field is empty
-    }
-
-    return true; // Return true if all date fields are filled
-  }
-}
-
-CheckResult checkFieldsAreFilled(CptHealthFormData data) {
-  List<String> unfilledFields = [];
-
-  if (data.dateOfEvent == null) {
-    unfilledFields.add('Date of Event');
-  }
-  if (data.domainId == null) {
-    unfilledFields.add('Domain');
-  }
-  if (data.serviceIds == null || data.serviceIds!.isEmpty) {
-    unfilledFields.add('Services');
-  }
-  if (data.goalId == null) {
-    unfilledFields.add('Goal');
-  }
-  if (data.gapId == null) {
-    unfilledFields.add('Needs/Gaps');
-  }
-  if (data.priorityId == null) {
-    unfilledFields.add('Priority Actions');
-  }
-  if (data.responsibleIds == null || data.responsibleIds!.isEmpty) {
-    unfilledFields.add('Person(s) Responsible');
-  }
-  if (data.resultsId == null) {
-    unfilledFields.add('Results');
-  }
-  if (data.reasonId == null) {
-    unfilledFields.add('Reason(s)');
-  }
-  if (data.completionDate == null) {
-    unfilledFields.add('Completion Date');
-  }
-
-  if (unfilledFields.isEmpty) {
-    return CheckResult(isAllFieldsFilled: true, unfilledFields: []);
-  } else {
-    return CheckResult(
-        isAllFieldsFilled: false, unfilledFields: unfilledFields);
-  }
-}
-
-class CheckResult {
-  bool isAllFieldsFilled;
-  List<String> unfilledFields;
-
-  CheckResult({
-    required this.isAllFieldsFilled,
-    required this.unfilledFields,
-  });
 }

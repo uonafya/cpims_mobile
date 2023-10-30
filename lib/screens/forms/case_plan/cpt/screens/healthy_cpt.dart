@@ -103,9 +103,6 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
     // fetching the data from the provider
     CptHealthFormData cptHealthFormData = context.read<CptProvider>().cptHealthFormData ?? CptHealthFormData();
     // Update respective fields
-    currentDateOfCasePlan = cptHealthFormData.dateOfEvent != null
-        ? DateTime.parse(cptHealthFormData.dateOfEvent!)
-        : currentDateOfCasePlan;
     if(cptHealthFormData.goalId != null){
       selectedGoalOptions = casePlanGoalHealthList.where((element) => element.value?.trim().toLowerCase() == cptHealthFormData.goalId?.trim().toLowerCase()).toList();
     }
@@ -144,30 +141,30 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
     return StepsWrapper(
       title: 'Health Domain Case Plan',
       children: [
-        const Row(
-          children: [
-            Text(
-              'Date of Case Plan*',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        CustomFormsDatePicker(
-          hintText: 'Please select the Date',
-          selectedDateTime: currentDateOfCasePlan,
-          onDateSelected: (selectedDate) {
-            currentDateOfCasePlan = selectedDate;
-            CptHealthFormData cptHealthFormData =
-                context.read<CptProvider>().cptHealthFormData ??
-                    CptHealthFormData();
-            context.read<CptProvider>().updateCptFormData(
-                cptHealthFormData.copyWith(
-                    dateOfEvent: currentDateOfCasePlan.toIso8601String()));
-            print("The selected date was $currentDateOfCasePlan");
-          },
-        ),
-        const SizedBox(height: 10),
+        // const Row(
+        //   children: [
+        //     Text(
+        //       'Date of Case Plan*',
+        //       style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        //     ),
+        //   ],
+        // ),
+        // const SizedBox(height: 10),
+        // CustomFormsDatePicker(
+        //   hintText: 'Please select the Date',
+        //   selectedDateTime: currentDateOfCasePlan,
+        //   onDateSelected: (selectedDate) {
+        //     currentDateOfCasePlan = selectedDate;
+        //     CptHealthFormData cptHealthFormData =
+        //         context.read<CptProvider>().cptHealthFormData ??
+        //             CptHealthFormData();
+        //     context.read<CptProvider>().updateCptFormData(
+        //         cptHealthFormData.copyWith(
+        //             dateOfEvent: currentDateOfCasePlan.toIso8601String()));
+        //     print("The selected date was $currentDateOfCasePlan");
+        //   },
+        // ),
+        // const SizedBox(height: 10),
         const Row(
           children: [
             Text(
@@ -199,7 +196,6 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           showClearIcon: true,
           hint: 'Please select the Goal',
           onOptionSelected: (selectedEvents) {
-            // Ensure that you have a valid CasePlanHealthyModel instance
             CptHealthFormData cptHealtFormData =
                 context.read<CptProvider>().cptHealthFormData ??
                     CptHealthFormData();

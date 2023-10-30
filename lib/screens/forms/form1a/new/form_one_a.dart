@@ -4,8 +4,10 @@ import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_safe.dar
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_stable.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/form_one_a_healthy.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/form_one_a_schooled.dart';
+import 'package:cpims_mobile/screens/forms/location_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
@@ -180,6 +182,9 @@ class _FomOneAState extends State<FomOneA> {
                                         "Please select the date of event");
                                     return;
                                   } else {
+                                    print("The location of the user is: ${_getUserLocation().then((value) {
+                                      print("The location of the user is: $value");
+                                    })}"); // This is the location of the user
                                     bool isFormSaved =
                                         await form1AProvider.saveForm1AData(
                                       form1AProvider.formData,
@@ -233,5 +238,24 @@ class _FomOneAState extends State<FomOneA> {
         ],
       ),
     );
+  }
+
+  Future<Position> _getUserLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      throw Exception('Location services are disabled.');
+    }
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error("Location permissions denied");
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('Location denied again.Please turn on location');
+    }
+    return await Geolocator.getCurrentPosition();
   }
 }

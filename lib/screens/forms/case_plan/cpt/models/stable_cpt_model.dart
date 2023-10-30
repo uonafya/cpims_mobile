@@ -154,9 +154,7 @@ class CasePlanServiceStableModel {
 }
 
 class CptStableFormData {
-  final String? ovcCpimsId;
-  final String? dateOfEvent;
-  final String? domainId;
+  String? domainId = "DHES";
   final List<String?>? serviceIds;
   final String? goalId;
   final String? gapId;
@@ -167,8 +165,6 @@ class CptStableFormData {
   final String? completionDate;
 
   CptStableFormData({
-    this.ovcCpimsId,
-    this.dateOfEvent,
     this.domainId,
     this.serviceIds,
     this.goalId,
@@ -181,8 +177,6 @@ class CptStableFormData {
   });
 
   CptStableFormData copyWith({
-    String? ovcCpimsId,
-    String? dateOfEvent,
     String? domainId,
     List<String?>? serviceIds,
     String? goalId,
@@ -194,8 +188,6 @@ class CptStableFormData {
     String? completionDate,
   }) {
     return CptStableFormData(
-      ovcCpimsId: ovcCpimsId ?? this.ovcCpimsId,
-      dateOfEvent: dateOfEvent ?? this.dateOfEvent,
       domainId: domainId ?? this.domainId,
       serviceIds: serviceIds ?? this.serviceIds,
       goalId: goalId ?? this.goalId,
@@ -211,8 +203,6 @@ class CptStableFormData {
   @override
   String toString() {
     return 'CptStableFormData('
-        'ovcCpimsId: $ovcCpimsId, '
-        'dateOfEvent: $dateOfEvent, '
         'domainId: $domainId, '
         'serviceIds: $serviceIds, '
         'goalId: $goalId, '
@@ -226,8 +216,6 @@ class CptStableFormData {
 
   Map<String, dynamic> toJson() {
     return {
-      'ovcCpimsId': ovcCpimsId,
-      'dateOfEvent': dateOfEvent,
       'domainId': domainId,
       'serviceIds': serviceIds,
       'goalId': goalId,
@@ -242,8 +230,6 @@ class CptStableFormData {
 
   factory CptStableFormData.fromJson(Map<String, dynamic> json) {
     return CptStableFormData(
-      ovcCpimsId: json['ovcCpimsId'],
-      dateOfEvent: json['dateOfEvent'],
       domainId: json['domainId'],
       serviceIds: List<String?>.from(json['serviceIds']),
       goalId: json['goalId'],
@@ -283,8 +269,6 @@ CasePlanStableModel mapCptStableFormDataToCasePlan(CptStableFormData formData) {
   }
 
   return CasePlanStableModel(
-    ovcCpimsId: formData.ovcCpimsId,
-    dateOfEvent: formData.dateOfEvent,
     services: services,
   );
 }

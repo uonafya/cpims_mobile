@@ -100,10 +100,6 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
     CptschooledFormData cptSchooledFormData =
         context.read<CptProvider>().cptschooledFormData ??
             CptschooledFormData();
-    // Update respective fields
-    currentDateOfCasePlan = cptSchooledFormData.dateOfEvent != null
-        ? DateTime.parse(cptSchooledFormData.dateOfEvent!)
-        : currentDateOfCasePlan;
     if (cptSchooledFormData.goalId != null) {
       selectedGoalOptions = casePlanGoalSchooledList
           .where((element) =>
@@ -169,30 +165,30 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
     return StepsWrapper(
       title: 'Schooled',
       children: [
-        const Row(
-          children: [
-            Text(
-              'Date of Case Plan*',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        CustomFormsDatePicker(
-          hintText: 'Please select the Date',
-          selectedDateTime: currentDateOfCasePlan,
-          onDateSelected: (selectedDate) {
-            currentDateOfCasePlan = selectedDate;
-            CptschooledFormData cptSchooledFormData =
-                context.read<CptProvider>().cptschooledFormData ??
-                    CptschooledFormData();
-            context.read<CptProvider>().updateCptSchooledFormData(
-                cptSchooledFormData.copyWith(
-                    dateOfEvent: currentDateOfCasePlan.toIso8601String()));
-            print("The selected date was $currentDateOfCasePlan");
-          },
-        ),
-        const SizedBox(height: 10),
+        // const Row(
+        //   children: [
+        //     Text(
+        //       'Date of Case Plan*',
+        //       style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        //     ),
+        //   ],
+        // ),
+        // const SizedBox(height: 10),
+        // CustomFormsDatePicker(
+        //   hintText: 'Please select the Date',
+        //   selectedDateTime: currentDateOfCasePlan,
+        //   onDateSelected: (selectedDate) {
+        //     currentDateOfCasePlan = selectedDate;
+        //     CptschooledFormData cptSchooledFormData =
+        //         context.read<CptProvider>().cptschooledFormData ??
+        //             CptschooledFormData();
+        //     context.read<CptProvider>().updateCptSchooledFormData(
+        //         cptSchooledFormData.copyWith(
+        //             dateOfEvent: currentDateOfCasePlan.toIso8601String()));
+        //     print("The selected date was $currentDateOfCasePlan");
+        //   },
+        // ),
+        // const SizedBox(height: 10),
         const Row(
           children: [
             Text(
@@ -474,7 +470,6 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
             CptschooledFormData cptSchooledFormData =
                 context.read<CptProvider>().cptschooledFormData ??
                     CptschooledFormData();
-
             CptschooledFormData updatedFormData = cptSchooledFormData.copyWith(
               reasonId: val,
             );

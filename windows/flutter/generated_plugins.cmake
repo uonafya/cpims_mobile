@@ -4,7 +4,9 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus
+  geolocator_windows
   local_auth_windows
+  permission_handler_windows
   platform_device_id_windows
   url_launcher_windows
 )

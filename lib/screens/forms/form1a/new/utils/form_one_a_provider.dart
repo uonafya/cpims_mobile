@@ -112,6 +112,7 @@ class Form1AProviderNew extends ChangeNotifier {
   void setFinalFormDataDOE(DateTime? dateOfEvent) {
     _finalServicesFormData.date_of_event =
         DateFormat('yyyy-MM-dd').format(dateOfEvent!);
+    _criticalEventDataForm1b.selectedDate = dateOfEvent;
     notifyListeners();
   }
 
@@ -161,18 +162,11 @@ class Form1AProviderNew extends ChangeNotifier {
         services: servicesList,
         criticalEvents: criticalEventsList);
     String data = jsonEncode(toDbData);
-    print("The json data for form 1 b is $data");
+    print("The json data for form 1 a is $data");
     print("form1b payload:==========>$criticalEventsList");
 
     bool isFormSaved = await Form1Service.saveFormLocal("form1a", toDbData);
     if (isFormSaved == true) {
-      Get.snackbar(
-        'Success',
-        'Saved data locally.Ensure to sync on internet connection',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.yellow,
-        colorText: Colors.white,
-      );
       resetFormData();
       notifyListeners();
     }

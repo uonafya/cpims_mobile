@@ -88,6 +88,7 @@ class CptProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+
   void clearProviderData() {
     casePlanHealthyModel = null;
     cptHealthFormData = null;

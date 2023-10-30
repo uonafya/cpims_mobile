@@ -102,9 +102,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
     CptSafeFormData cptsafeFormData =
         context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
     // Update respective fields
-    currentDateOfCasePlan = cptsafeFormData.dateOfEvent != null
-        ? DateTime.parse(cptsafeFormData.dateOfEvent!)
-        : currentDateOfCasePlan;
     if (cptsafeFormData.goalId != null) {
       selectedGoalOptions = casePlanGoalSafeList
           .where((element) =>
@@ -164,27 +161,27 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
     textEditingController.text = cptsafeFormData.reasonId ?? "";
 
     return StepsWrapper(title: 'Safe', children: [
-      const Row(
-        children: [
-          Text(
-            'Date of Case Plan*',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-      const SizedBox(height: 10),
-      CustomFormsDatePicker(
-        hintText: 'Please select the Date',
-        selectedDateTime: currentDateOfCasePlan,
-        onDateSelected: (selectedDate) {
-          currentDateOfCasePlan = selectedDate;
-          CptSafeFormData cptSafeFormData =
-              context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
-          context.read<CptProvider>().updateCptSafeFormData(cptSafeFormData
-              .copyWith(dateOfEvent: currentDateOfCasePlan.toIso8601String()));
-        },
-      ),
-      const SizedBox(height: 10),
+      // const Row(
+      //   children: [
+      //     // Text(
+      //     //   'Date of Case Plan*',
+      //     //   style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+      //     // ),
+      //   ],
+      // ),
+      // const SizedBox(height: 10),
+      // CustomFormsDatePicker(
+      //   hintText: 'Please select the Date',
+      //   selectedDateTime: currentDateOfCasePlan,
+      //   onDateSelected: (selectedDate) {
+      //     currentDateOfCasePlan = selectedDate;
+      //     CptSafeFormData cptSafeFormData =
+      //         context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
+      //     context.read<CptProvider>().updateCptSafeFormData(cptSafeFormData
+      //         .copyWith(dateOfEvent: currentDateOfCasePlan.toIso8601String()));
+      //   },
+      // ),
+      // const SizedBox(height: 10),
       const Row(
         children: [
           Text(
@@ -436,20 +433,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
               .copyWith(completionDate: completionDate.toIso8601String()));
           print("The selected date was $completionDate");
         },
-      ),
-      const SizedBox(height: 10),
-      const Row(
-        children: [
-          Text(
-            'Reason(s)',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-      const SizedBox(height: 10),
-      CustomTextField(
-        hintText: 'Please Write the Reasons',
-        controller: _textEditingController,
       ),
       const SizedBox(height: 10),
       CustomTextField(

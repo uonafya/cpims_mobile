@@ -153,9 +153,7 @@ class CasePlanServiceHealthyModel {
 }
 
 class CptHealthFormData {
-  final String? ovcCpimsId;
-  final String? dateOfEvent;
-  final String? domainId;
+  String? domainId = "DHNU";
   final List<String?>? serviceIds;
   late final String? goalId;
   final String? gapId;
@@ -166,8 +164,6 @@ class CptHealthFormData {
   final String? completionDate;
 
   CptHealthFormData({
-    this.ovcCpimsId,
-    this.dateOfEvent,
     this.domainId,
     this.serviceIds,
     this.goalId,
@@ -193,8 +189,6 @@ class CptHealthFormData {
     String? completionDate,
   }) {
     return CptHealthFormData(
-      ovcCpimsId: ovcCpimsId ?? this.ovcCpimsId,
-      dateOfEvent: dateOfEvent ?? this.dateOfEvent,
       domainId: domainId ?? this.domainId,
       serviceIds: serviceIds ?? this.serviceIds,
       goalId: goalId ?? this.goalId,
@@ -210,8 +204,6 @@ class CptHealthFormData {
   @override
   String toString() {
     return 'CptHealthFormData('
-        'ovcCpimsId: $ovcCpimsId, '
-        'dateOfEvent: $dateOfEvent, '
         'domainId: $domainId, '
         'serviceIds: $serviceIds, '
         'goalId: $goalId, '
@@ -225,8 +217,6 @@ class CptHealthFormData {
 
   Map<String, dynamic> toJson() {
     return {
-      'ovcCpimsId': ovcCpimsId,
-      'dateOfEvent': dateOfEvent,
       'domainId': domainId,
       'serviceIds': serviceIds,
       'goalId': goalId,
@@ -241,8 +231,6 @@ class CptHealthFormData {
 
   factory CptHealthFormData.fromJson(Map<String, dynamic> json) {
     return CptHealthFormData(
-      ovcCpimsId: json['ovcCpimsId'],
-      dateOfEvent: json['dateOfEvent'],
       domainId: json['domainId'],
       serviceIds: List<String?>.from(json['serviceIds']),
       goalId: json['goalId'],
@@ -283,8 +271,6 @@ CasePlanHealthyModel mapCptHealthFormDataToCasePlan(
   }
 
   return CasePlanHealthyModel(
-    ovcCpimsId: formData.ovcCpimsId,
-    dateOfEvent: formData.dateOfEvent,
     services: services,
   );
 }
@@ -318,5 +304,3 @@ CasePlanModel mapCasePlanHealthyToCasePlan(CasePlanHealthyModel healthyModel) {
     services: services,
   );
 }
-
-

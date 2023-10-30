@@ -154,9 +154,7 @@ class CasePlanServiceschooledModel {
 }
 
 class CptschooledFormData {
-  final String? ovcCpimsId;
-  final String? dateOfEvent;
-  final String? domainId;
+  String? domainId = "DEDU";
   final List<String?>? serviceIds;
   final String? goalId;
   final String? gapId;
@@ -167,8 +165,6 @@ class CptschooledFormData {
   final String? completionDate;
 
   CptschooledFormData({
-    this.ovcCpimsId,
-    this.dateOfEvent,
     this.domainId,
     this.serviceIds,
     this.goalId,
@@ -194,8 +190,6 @@ class CptschooledFormData {
     String? completionDate,
   }) {
     return CptschooledFormData(
-      ovcCpimsId: ovcCpimsId ?? this.ovcCpimsId,
-      dateOfEvent: dateOfEvent ?? this.dateOfEvent,
       domainId: domainId ?? this.domainId,
       serviceIds: serviceIds ?? this.serviceIds,
       goalId: goalId ?? this.goalId,
@@ -211,8 +205,6 @@ class CptschooledFormData {
   @override
   String toString() {
     return 'CptschooledFormData('
-        'ovcCpimsId: $ovcCpimsId, '
-        'dateOfEvent: $dateOfEvent, '
         'domainId: $domainId, '
         'serviceIds: $serviceIds, '
         'goalId: $goalId, '
@@ -226,8 +218,6 @@ class CptschooledFormData {
 
   Map<String, dynamic> toJson() {
     return {
-      'ovcCpimsId': ovcCpimsId,
-      'dateOfEvent': dateOfEvent,
       'domainId': domainId,
       'serviceIds': serviceIds,
       'goalId': goalId,
@@ -242,8 +232,6 @@ class CptschooledFormData {
 
   factory CptschooledFormData.fromJson(Map<String, dynamic> json) {
     return CptschooledFormData(
-      ovcCpimsId: json['ovcCpimsId'],
-      dateOfEvent: json['dateOfEvent'],
       domainId: json['domainId'],
       serviceIds: List<String?>.from(json['serviceIds']),
       goalId: json['goalId'],
@@ -257,7 +245,8 @@ class CptschooledFormData {
   }
 }
 
-CasePlanschooledModel mapCptschooledFormDataToCasePlan(CptschooledFormData formData) {
+CasePlanschooledModel mapCptschooledFormDataToCasePlan(
+    CptschooledFormData formData) {
   List<CasePlanServiceschooledModel> services = [];
   if (formData.serviceIds != null) {
     List<String?> combinedServiceIds = [];
@@ -283,18 +272,17 @@ CasePlanschooledModel mapCptschooledFormDataToCasePlan(CptschooledFormData formD
   }
 
   return CasePlanschooledModel(
-    ovcCpimsId: formData.ovcCpimsId,
-    dateOfEvent: formData.dateOfEvent,
     services: services,
   );
 }
 
-
-CasePlanModel mapCasePlanschooledToCasePlan(CasePlanschooledModel schooledModel) {
+CasePlanModel mapCasePlanschooledToCasePlan(
+    CasePlanschooledModel schooledModel) {
   // Map the services
   List<CasePlanServiceModel> services = [];
   if (schooledModel.services != null) {
-    for (CasePlanServiceschooledModel serviceschooled in schooledModel.services!) {
+    for (CasePlanServiceschooledModel serviceschooled
+        in schooledModel.services!) {
       // Convert serviceHealthy to serviceModel
       List<String?> serviceIds = serviceschooled.serviceIds;
       CasePlanServiceModel serviceModel = CasePlanServiceModel(
@@ -319,5 +307,3 @@ CasePlanModel mapCasePlanschooledToCasePlan(CasePlanschooledModel schooledModel)
     services: services,
   );
 }
-
-

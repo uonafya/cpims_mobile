@@ -109,10 +109,6 @@ class _StableCasePlanState extends State<StableCasePlan> {
     // fetching the data from the provider
     CptStableFormData cptStableFormData =
         context.read<CptProvider>().cptStableFormData ?? CptStableFormData();
-    // Update respective fields
-    currentDateOfCasePlan = cptStableFormData.dateOfEvent != null
-        ? DateTime.parse(cptStableFormData.dateOfEvent!)
-        : currentDateOfCasePlan;
     if (cptStableFormData.goalId != null) {
       selectedGoalOptions = casePlanGoalStableList
           .where((element) =>
@@ -177,30 +173,30 @@ class _StableCasePlanState extends State<StableCasePlan> {
     return StepsWrapper(
       title: 'Stable',
       children: [
-        const Row(
-          children: [
-            Text(
-              'Date of Case Plan*',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        CustomFormsDatePicker(
-          hintText: 'Please select the Date',
-          selectedDateTime: currentDateOfCasePlan,
-          onDateSelected: (selectedDate) {
-            currentDateOfCasePlan = selectedDate;
-            CptStableFormData cptStableFormData =
-                context.read<CptProvider>().cptStableFormData ??
-                    CptStableFormData();
-            context.read<CptProvider>().updateCptStableFormData(
-                cptStableFormData.copyWith(
-                    dateOfEvent: currentDateOfCasePlan.toIso8601String()));
-            print("The selected date was $currentDateOfCasePlan");
-          },
-        ),
-        const SizedBox(height: 10),
+        // const Row(
+        //   children: [
+        //     Text(
+        //       'Date of Case Plan*',
+        //       style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        //     ),
+        //   ],
+        // ),
+        // const SizedBox(height: 10),
+        // CustomFormsDatePicker(
+        //   hintText: 'Please select the Date',
+        //   selectedDateTime: currentDateOfCasePlan,
+        //   onDateSelected: (selectedDate) {
+        //     currentDateOfCasePlan = selectedDate;
+        //     CptStableFormData cptStableFormData =
+        //         context.read<CptProvider>().cptStableFormData ??
+        //             CptStableFormData();
+        //     context.read<CptProvider>().updateCptStableFormData(
+        //         cptStableFormData.copyWith(
+        //             dateOfEvent: currentDateOfCasePlan.toIso8601String()));
+        //     print("The selected date was $currentDateOfCasePlan");
+        //   },
+        // ),
+        // const SizedBox(height: 10),
         const Row(
           children: [
             Text(
