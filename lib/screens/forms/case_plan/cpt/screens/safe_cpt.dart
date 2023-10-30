@@ -15,7 +15,6 @@ import '../../../../../widgets/custom_button.dart';
 import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
-import '../models/healthy_cpt_model.dart';
 import '../new_cpt_provider.dart';
 
 class SafeCasePlan extends StatefulWidget {
@@ -39,6 +38,16 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
   List<ValueItem> selectedResultsOptions = [];
   List<String?> selectedServiceIds = [];
   List<String?> selectedPersonResponsibleIds = [];
+
+  TextEditingController textEditingController = TextEditingController();
+  List<ValueItem> casePlanProviderDomainList = [];
+  List<ValueItem> casePlanGoalSafeList = [];
+  List<ValueItem> casePlanGapsSafeList = [];
+  List<ValueItem> casePlanPrioritiesSafeList = [];
+  List<ValueItem> casePlanServicesSafeList = [];
+  List<ValueItem> casePlanProviderPersonsResponsibleList = [];
+  List<ValueItem> casePlanProviderResultList = [];
+  CptProvider cptProvider = CptProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +97,71 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
+
+    // fetching the data from the provider
+    CptSafeFormData cptsafeFormData =
+        context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
+    // Update respective fields
+    currentDateOfCasePlan = cptsafeFormData.dateOfEvent != null
+        ? DateTime.parse(cptsafeFormData.dateOfEvent!)
+        : currentDateOfCasePlan;
+    if (cptsafeFormData.goalId != null) {
+      selectedGoalOptions = casePlanGoalSafeList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptsafeFormData.goalId?.trim().toLowerCase())
+          .toList();
+    }
+    if (cptsafeFormData.gapId != null) {
+      selectedNeedOptions = casePlanGapsSafeList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptsafeFormData.gapId?.trim().toLowerCase())
+          .toList();
+    }
+    if (cptsafeFormData.priorityId != null) {
+      selectedPriorityActionOptions = casePlanPrioritiesSafeList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptsafeFormData.priorityId?.trim().toLowerCase())
+          .toList();
+    }
+    if (cptsafeFormData.serviceIds != null &&
+        cptsafeFormData.serviceIds!.isNotEmpty) {
+      for (String? serviceId in cptsafeFormData.serviceIds!) {
+        selectedServicesOptions.add(casePlanServicesSafeList
+            .where((element) =>
+                element.value?.trim().toLowerCase() ==
+                serviceId?.trim().toLowerCase())
+            .toList()[0]);
+      }
+    }
+
+    if (cptsafeFormData.responsibleIds != null &&
+        cptsafeFormData.responsibleIds!.isNotEmpty) {
+      for (String? responsibleId in cptsafeFormData.responsibleIds!) {
+        selectedPersonsResponsibleOptions.add(
+            casePlanProviderPersonsResponsibleList
+                .where((element) =>
+                    element.value?.trim().toLowerCase() ==
+                    responsibleId?.trim().toLowerCase())
+                .toList()[0]);
+      }
+    }
+
+    if (cptsafeFormData.resultsId != null) {
+      selectedResultsOptions = casePlanProviderResultList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptsafeFormData.resultsId?.trim().toLowerCase())
+          .toList();
+    }
+
+    completionDate = cptsafeFormData.completionDate != null
+        ? DateTime.parse(cptsafeFormData.completionDate!)
+        : completionDate;
+
+    textEditingController.text = cptsafeFormData.reasonId ?? "";
 
     return StepsWrapper(title: 'Safe', children: [
       const Row(
@@ -378,55 +452,22 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
         controller: _textEditingController,
       ),
       const SizedBox(height: 10),
-      Row(
-        children: [
-          Expanded(
-            child: CustomButton(
-              text: 'Save',
-              onTap: () async {
-                String ovcId = widget.caseLoadModel!.cpimsId ?? "";
-                reasonForNotAchievingCasePlan =
-                    _textEditingController.text.toString();
+      CustomTextField(
+        hintText: 'Please Write the Reasons',
+        controller: textEditingController,
+        onChanged: (val) {
+          CptSafeFormData cptSafeFormData =
+              context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
 
-                CptSafeFormData cptSafeFormData =
-                    context.read<CptProvider>().cptSafeFormData ??
-                        CptSafeFormData();
-
-                // Update all the fields at once
-                CptSafeFormData updatedSafeFormData = cptSafeFormData.copyWith(
-                  reasonId: reasonForNotAchievingCasePlan,
-                  ovcCpimsId: ovcId,
-                  domainId: casePlanProviderDomainList[3].value,
-                );
-                context
-                    .read<CptProvider>()
-                    .updateCptSafeFormData(updatedSafeFormData);
-                CptSafeFormData? safeCptFormData =
-                    context.read<CptProvider>().cptSafeFormData;
-                print("The case plan model is $safeCptFormData");
-
-                CasePlanSafeModel caseSafePlanModel =
-                    mapCptSafeFormDataToCasePlan(safeCptFormData!);
-                CasePlanModel casePlanFormSafeModel =
-                    mapCasePlanSafeToCasePlan(caseSafePlanModel);
-                bool isFormSaved = await CasePlanService.saveCasePlanLocal(
-                    casePlanFormSafeModel);
-                if (isFormSaved) {
-                  Get.snackbar(
-                    'Success',
-                    'Safe Case Plan Saved Successfully',
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: Colors.green,
-                    colorText: Colors.white,
-                    duration: const Duration(seconds: 2),
-                  );
-                }
-              },
-              //navigate to the next step
-            ),
-          )
-        ],
-      )
+          CptSafeFormData updatedSafeFormData = cptSafeFormData.copyWith(
+            reasonId: val,
+          );
+          context
+              .read<CptProvider>()
+              .updateCptSafeFormData(updatedSafeFormData);
+        },
+      ),
+      const SizedBox(height: 10),
       //BUTTON TO SAVE
     ]);
   }

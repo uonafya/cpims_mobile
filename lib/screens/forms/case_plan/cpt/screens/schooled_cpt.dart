@@ -22,7 +22,8 @@ import '../new_cpt_provider.dart';
 class SchooledCasePlanTemplate extends StatefulWidget {
   final CaseLoadModel? caseLoadModel;
 
-  SchooledCasePlanTemplate({Key? key, this.caseLoadModel}) : super(key: key);
+  const SchooledCasePlanTemplate({Key? key, this.caseLoadModel})
+      : super(key: key);
 
   @override
   State<SchooledCasePlanTemplate> createState() =>
@@ -39,6 +40,7 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
   List<ValueItem> selectedServicesOptions = [];
   List<ValueItem> selectedPersonsResponsibleOptions = [];
   List<ValueItem> selectedResultsOptions = [];
+
   List<String?> selectedServiceIds = [];
   List<String?> selectedPersonResponsibleIds = [];
   List<ValueItem> casePlanProviderDomainList = [];
@@ -49,12 +51,14 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
   List<ValueItem> casePlanProviderPersonsResponsibleList = [];
   List<ValueItem> casePlanProviderResultList = [];
   bool allFieldsFilled = true;
+  TextEditingController textEditingController = TextEditingController();
+  CptProvider cptProvider = CptProvider();
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+    cptProvider = context.read<CptProvider>();
 
-    CptProvider cptProvider = Provider.of<CptProvider>(context);
     casePlanProviderDomainList = cptProvider.csAllDomains.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
@@ -91,48 +95,72 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
       return ValueItem(
           label: "- ${resultList['name']}", value: resultList['id']);
     }).toList();
-  }
 
-  @override
-  void initState() {
-    super.initState();
-    // CptProvider cptProvider = Provider.of<CptProvider>(context);
-    // casePlanProviderDomainList = cptProvider.csAllDomains.map((domain) {
-    //   return ValueItem(
-    //       label: "- ${domain['item_description']}", value: domain['item_id']);
-    // }).toList();
-    // casePlanGoalSchooledList = cptProvider.cpGoalsSchool.map((domain) {
-    //   return ValueItem(
-    //       label: "- ${domain['item_description']}", value: domain['item_id']);
-    // }).toList();
-    //
-    // casePlanGapsSchooledList = cptProvider.cpGapssSchool.map((domain) {
-    //   return ValueItem(
-    //       label: "- ${domain['item_description']}", value: domain['item_id']);
-    // }).toList();
-    //
-    // casePlanPrioritiesSchooledList =
-    //     cptProvider.cpPrioritiesSchool.map((domain) {
-    //   return ValueItem(
-    //       label: "- ${domain['item_description']}", value: domain['item_id']);
-    // }).toList();
-    //
-    // casePlanServicesSchooledList = cptProvider.cpServicesSchool.map((domain) {
-    //   return ValueItem(
-    //       label: "- ${domain['item_description']}", value: domain['item_id']);
-    // }).toList();
-    //
-    // casePlanProviderPersonsResponsibleList =
-    //     cptProvider.csPersonsResponsibleList.map((personResponsible) {
-    //   return ValueItem(
-    //       label: "- ${personResponsible['item_description']}",
-    //       value: personResponsible['item_id']);
-    // }).toList();
-    //
-    // casePlanProviderResultList = cptProvider.csResultsList.map((resultList) {
-    //   return ValueItem(
-    //       label: "- ${resultList['name']}", value: resultList['id']);
-    // }).toList();
+    // fetching the data from the provider
+    CptschooledFormData cptSchooledFormData =
+        context.read<CptProvider>().cptschooledFormData ??
+            CptschooledFormData();
+    // Update respective fields
+    currentDateOfCasePlan = cptSchooledFormData.dateOfEvent != null
+        ? DateTime.parse(cptSchooledFormData.dateOfEvent!)
+        : currentDateOfCasePlan;
+    if (cptSchooledFormData.goalId != null) {
+      selectedGoalOptions = casePlanGoalSchooledList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptSchooledFormData.goalId?.trim().toLowerCase())
+          .toList();
+    }
+    if (cptSchooledFormData.gapId != null) {
+      selectedNeedOptions = casePlanGapsSchooledList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptSchooledFormData.gapId?.trim().toLowerCase())
+          .toList();
+    }
+    if (cptSchooledFormData.priorityId != null) {
+      selectedPriorityActionOptions = casePlanPrioritiesSchooledList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptSchooledFormData.priorityId?.trim().toLowerCase())
+          .toList();
+    }
+    if (cptSchooledFormData.serviceIds != null &&
+        cptSchooledFormData.serviceIds!.isNotEmpty) {
+      for (String? serviceId in cptSchooledFormData.serviceIds!) {
+        selectedServicesOptions.add(casePlanServicesSchooledList
+            .where((element) =>
+                element.value?.trim().toLowerCase() ==
+                serviceId?.trim().toLowerCase())
+            .toList()[0]);
+      }
+    }
+
+    if (cptSchooledFormData.responsibleIds != null &&
+        cptSchooledFormData.responsibleIds!.isNotEmpty) {
+      for (String? responsibleId in cptSchooledFormData.responsibleIds!) {
+        selectedPersonsResponsibleOptions.add(
+            casePlanProviderPersonsResponsibleList
+                .where((element) =>
+                    element.value?.trim().toLowerCase() ==
+                    responsibleId?.trim().toLowerCase())
+                .toList()[0]);
+      }
+    }
+
+    if (cptSchooledFormData.resultsId != null) {
+      selectedResultsOptions = casePlanProviderResultList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptSchooledFormData.resultsId?.trim().toLowerCase())
+          .toList();
+    }
+
+    completionDate = cptSchooledFormData.completionDate != null
+        ? DateTime.parse(cptSchooledFormData.completionDate!)
+        : completionDate;
+
+    textEditingController.text = cptSchooledFormData.reasonId ?? "";
   }
 
   @override
@@ -231,7 +259,6 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
           showClearIcon: true,
           hint: 'Please select the Needs/Gaps',
           onOptionSelected: (selectedEvents) {
-            // Ensure that you have a valid CasePlanHealthyModel instance
             CptschooledFormData cptschooledFormData =
                 context.read<CptProvider>().cptschooledFormData ??
                     CptschooledFormData();
@@ -442,96 +469,21 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
         const SizedBox(height: 10),
         CustomTextField(
           hintText: 'Please Write the Reasons',
-          controller: _textEditingController,
+          controller: textEditingController,
+          onChanged: (val) {
+            CptschooledFormData cptSchooledFormData =
+                context.read<CptProvider>().cptschooledFormData ??
+                    CptschooledFormData();
+
+            CptschooledFormData updatedFormData = cptSchooledFormData.copyWith(
+              reasonId: val,
+            );
+            context
+                .read<CptProvider>()
+                .updateCptSchooledFormData(updatedFormData);
+          },
         ),
         const SizedBox(height: 10),
-        Row(
-          children: [
-            Expanded(
-                child: CustomButton(
-              text: 'Save',
-              onTap: () async {
-                allFieldsFilled =
-                    true; // Reset the variable before checking again.
-
-                if (currentDateOfCasePlan == null) {
-                  allFieldsFilled = false;
-                }
-                if (selectedGoalOptions.isEmpty) {
-                  allFieldsFilled = false;
-                }
-                if (selectedNeedOptions.isEmpty) {
-                  allFieldsFilled = false;
-                }
-                if (selectedPriorityActionOptions.isEmpty) {
-                  allFieldsFilled = false;
-                }
-                if (selectedServicesOptions.isEmpty) {
-                  allFieldsFilled = false;
-                }
-                if (selectedPersonsResponsibleOptions.isEmpty) {
-                  allFieldsFilled = false;
-                }
-                if (selectedResultsOptions.isEmpty) {
-                  allFieldsFilled = false;
-                }
-
-                if (!allFieldsFilled) {
-                  Get.snackbar(
-                    'Error',
-                    'Please fill all required fields before saving.',
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: Colors.red,
-                    colorText: Colors.white,
-                    duration: const Duration(seconds: 2),
-                  );
-                } else {
-                  String ovcId = widget.caseLoadModel!.cpimsId ?? "";
-                  reasonForNotAchievingCasePlan =
-                      _textEditingController.text.toString();
-                  CptschooledFormData cptschooledFormData =
-                      context.read<CptProvider>().cptschooledFormData ??
-                          CptschooledFormData();
-                  CptschooledFormData updatedSchooledFormData =
-                      cptschooledFormData.copyWith(
-                    reasonId: reasonForNotAchievingCasePlan,
-                    ovcCpimsId: ovcId,
-                    domainId: casePlanProviderDomainList[0].value,
-                  );
-
-                  context
-                      .read<CptProvider>()
-                      .updateCptSchooledFormData(updatedSchooledFormData);
-
-                  CptschooledFormData? schooledCptFormData =
-                      context.read<CptProvider>().cptschooledFormData;
-
-                  print("The case plan model is $schooledCptFormData");
-
-                  CasePlanschooledModel caseSafePlanModel =
-                      mapCptschooledFormDataToCasePlan(schooledCptFormData!);
-
-                  CasePlanModel casePlanFormSafeModel =
-                      mapCasePlanschooledToCasePlan(caseSafePlanModel);
-
-                  bool isFormSaved = await CasePlanService.saveCasePlanLocal(
-                      casePlanFormSafeModel);
-                  if (isFormSaved) {
-                    Get.snackbar(
-                      'Success',
-                      'Schooled Case Plan Saved Successfully',
-                      snackPosition: SnackPosition.BOTTOM,
-                      backgroundColor: Colors.green,
-                      colorText: Colors.white,
-                      duration: const Duration(seconds: 2),
-                    );
-                  }
-                }
-              },
-              //navigate to the next step
-            ))
-          ],
-        ),
       ],
     );
   }

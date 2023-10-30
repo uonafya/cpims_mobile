@@ -44,74 +44,136 @@ class _StableCasePlanState extends State<StableCasePlan> {
   List<String?> selectedServiceIds = [];
   List<String?> selectedPersonResponsibleIds = [];
 
-  @override
-  Widget build(BuildContext context) {
-    CptProvider cptProvider = Provider.of<CptProvider>(context);
-    TextEditingController _textEditingController = TextEditingController();
+  TextEditingController textEditingController = TextEditingController();
+  List<ValueItem> cptProviderDomainList = [];
+  List<ValueItem> casePlanGoalStableList = [];
+  List<ValueItem> casePlanGapsStableList = [];
+  List<ValueItem> casePlanPrioritiesStableList = [];
+  List<ValueItem> casePlanServicesStableList = [];
+  List<ValueItem> casePlanProviderPersonsResponsibleList = [];
+  List<ValueItem> casePlanProviderResultList = [];
+  CptProvider cptProvider = CptProvider();
 
-    List<ValueItem> cptProviderDomainList =
-        cptProvider.csAllDomains.map((domain) {
+  @override
+  void initState() {
+    cptProvider = context.read<CptProvider>();
+    cptProviderDomainList = cptProvider.csAllDomains.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    List<ValueItem> cptProviderPersonsResponsibleList =
+    casePlanProviderPersonsResponsibleList =
         cptProvider.csPersonsResponsibleList.map((personResponsible) {
       return ValueItem(
           label: "- ${personResponsible['item_description']}",
           value: personResponsible['item_id']);
     }).toList();
 
-    List<ValueItem> cptProviderResultList =
-        cptProvider.csResultsList.map((resultList) {
+    casePlanProviderResultList = cptProvider.csResultsList.map((resultList) {
       return ValueItem(
           label: "- ${resultList['name']}", value: resultList['id']);
     }).toList();
 
     //stable
-    List<ValueItem> casePlanGoalStableList =
-        cptProvider.cpGoalsStable.map((domain) {
+    casePlanGoalStableList = cptProvider.cpGoalsStable.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    List<ValueItem> casePlanGapsStableList =
-        cptProvider.cpGapsStable.map((domain) {
+    casePlanGapsStableList = cptProvider.cpGapsStable.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+    casePlanPrioritiesStableList = cptProvider.cpPrioritiesStable.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    List<ValueItem> casePlanPrioritiesStableList =
-        cptProvider.cpPrioritiesStable.map((domain) {
+    casePlanServicesStableList = cptProvider.cpServicesStable.map((domain) {
       return ValueItem(
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    List<ValueItem> casePlanServicesStableList =
-        cptProvider.cpServicesStable.map((domain) {
-      return ValueItem(
-          label: "- ${domain['item_description']}", value: domain['item_id']);
-    }).toList();
-
-    List<ValueItem> casePlanProviderPersonsResponsibleList =
+    casePlanProviderPersonsResponsibleList =
         cptProvider.csPersonsResponsibleList.map((personResponsible) {
       return ValueItem(
           label: "- ${personResponsible['item_description']}",
           value: personResponsible['item_id']);
     }).toList();
 
-    List<ValueItem> casePlanProviderResultList =
-        cptProvider.csResultsList.map((resultList) {
+    casePlanProviderResultList = cptProvider.csResultsList.map((resultList) {
       return ValueItem(
           label: "- ${resultList['name']}", value: resultList['id']);
     }).toList();
 
-    List<ValueItem> casePlanProviderDomainList =
-        cptProvider.csAllDomains.map((domain) {
-      return ValueItem(
-          label: "- ${domain['item_description']}", value: domain['item_id']);
-    }).toList();
+    // fetching the data from the provider
+    CptStableFormData cptStableFormData =
+        context.read<CptProvider>().cptStableFormData ?? CptStableFormData();
+    // Update respective fields
+    currentDateOfCasePlan = cptStableFormData.dateOfEvent != null
+        ? DateTime.parse(cptStableFormData.dateOfEvent!)
+        : currentDateOfCasePlan;
+    if (cptStableFormData.goalId != null) {
+      selectedGoalOptions = casePlanGoalStableList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptStableFormData.goalId?.trim().toLowerCase())
+          .toList();
+    }
+    if (cptStableFormData.gapId != null) {
+      selectedNeedOptions = casePlanGapsStableList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptStableFormData.gapId?.trim().toLowerCase())
+          .toList();
+    }
+    if (cptStableFormData.priorityId != null) {
+      selectedPriorityActionOptions = casePlanPrioritiesStableList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptStableFormData.priorityId?.trim().toLowerCase())
+          .toList();
+    }
+    if (cptStableFormData.serviceIds != null &&
+        cptStableFormData.serviceIds!.isNotEmpty) {
+      for (String? serviceId in cptStableFormData.serviceIds!) {
+        selectedServicesOptions.add(casePlanServicesStableList
+            .where((element) =>
+                element.value?.trim().toLowerCase() ==
+                serviceId?.trim().toLowerCase())
+            .toList()[0]);
+      }
+    }
 
+    if (cptStableFormData.responsibleIds != null &&
+        cptStableFormData.responsibleIds!.isNotEmpty) {
+      for (String? responsibleId in cptStableFormData.responsibleIds!) {
+        selectedPersonsResponsibleOptions.add(
+            casePlanProviderPersonsResponsibleList
+                .where((element) =>
+                    element.value?.trim().toLowerCase() ==
+                    responsibleId?.trim().toLowerCase())
+                .toList()[0]);
+      }
+    }
+
+    if (cptStableFormData.resultsId != null) {
+      selectedResultsOptions = casePlanProviderResultList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptStableFormData.resultsId?.trim().toLowerCase())
+          .toList();
+    }
+
+    completionDate = cptStableFormData.completionDate != null
+        ? DateTime.parse(cptStableFormData.completionDate!)
+        : completionDate;
+
+    textEditingController.text = cptStableFormData.reasonId ?? "";
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return StepsWrapper(
       title: 'Stable',
       children: [
@@ -413,56 +475,21 @@ class _StableCasePlanState extends State<StableCasePlan> {
         const SizedBox(height: 10),
         CustomTextField(
           hintText: 'Please Write the Reasons',
-          controller: _textEditingController,
-        ),
-        const SizedBox(height: 10),
-        //BUTTON TO SAVE
-        ElevatedButton(
-          onPressed: () async {
-            String ovcId = widget.caseLoadModel!.cpimsId ?? "";
-            reasonForNotAchievingCasePlan =
-                _textEditingController.text.toString();
-
+          controller: textEditingController,
+          onChanged: (val) {
             CptStableFormData cptStableFormData =
                 context.read<CptProvider>().cptStableFormData ??
                     CptStableFormData();
 
-            // Update all the fields at once
             CptStableFormData updatedFormData = cptStableFormData.copyWith(
-              reasonId: reasonForNotAchievingCasePlan,
-              ovcCpimsId: ovcId,
-              domainId: casePlanProviderDomainList[2].value,
+              reasonId: val,
             );
-
             context
                 .read<CptProvider>()
                 .updateCptStableFormData(updatedFormData);
-
-            // Retrieve the updated CptStableFormData
-            CptStableFormData? stableCptFormData =
-                context.read<CptProvider>().cptStableFormData;
-
-            print("The case plan model is $stableCptFormData");
-            CasePlanStableModel casePlanModel =
-                mapCptStableFormDataToCasePlan(stableCptFormData!);
-            CasePlanModel casePlanFormModel =
-                mapCasePlanStableToCasePlan(casePlanModel);
-            bool isFormSaved =
-                await CasePlanService.saveCasePlanLocal(casePlanFormModel);
-            if (isFormSaved) {
-              Get.snackbar(
-                'Success',
-                'Stable Case Plan Saved Successfully',
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.green,
-                colorText: Colors.white,
-                duration: const Duration(seconds: 2),
-              );
-            }
           },
-          child: const Text('Save'),
-          //navigate to the next step
         ),
+        const SizedBox(height: 10),
       ],
     );
   }

@@ -19,6 +19,7 @@ import '../../../../../widgets/custom_text_field.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
 import '../models/healthy_cpt_model.dart';
 
+
 class HealthyCasePlan extends StatefulWidget {
   final CaseLoadModel? caseLoadModel;
 
@@ -41,54 +42,104 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
   List<String?> selectedServiceIds = [];
   List<String?> selectedPersonResponsibleIds = [];
 
+  TextEditingController textEditingController = TextEditingController();
+  List<ValueItem> casePlanProviderDomainList = [];
+  List<ValueItem> casePlanGoalHealthList = [];
+  List<ValueItem> casePlanGapsHealthList = [];
+  List<ValueItem> casePlanPrioritiesHealthList = [];
+  List<ValueItem> casePlanServicesHealthList = [];
+  List<ValueItem> casePlanProviderPersonsResponsibleList = [];
+  List<ValueItem> casePlanProviderResultList = [];
+  CptProvider cptProvider = CptProvider();
+
+  @override
+  void initState() {
+    super.initState();
+    cptProvider = context.read<CptProvider>();
+
+    casePlanProviderDomainList =
+        cptProvider.csAllDomains.map((domain) {
+          return ValueItem(
+              label: "- ${domain['item_description']}", value: domain['item_id']);
+        }).toList();
+
+    casePlanGoalHealthList =
+        cptProvider.cpGoalsHealth.map((domain) {
+          return ValueItem(
+              label: "- ${domain['item_description']}", value: domain['item_id']);
+        }).toList();
+
+    casePlanGapsHealthList =
+        cptProvider.cpGapsHealth.map((domain) {
+          return ValueItem(
+              label: "- ${domain['item_description']}", value: domain['item_id']);
+        }).toList();
+
+    casePlanPrioritiesHealthList =
+        cptProvider.cpPrioritiesHealth.map((domain) {
+          return ValueItem(
+              label: "- ${domain['item_description']}", value: domain['item_id']);
+        }).toList();
+
+    casePlanServicesHealthList =
+        cptProvider.cpServicesHealth.map((domain) {
+          return ValueItem(
+              label: "- ${domain['item_description']}", value: domain['item_id']);
+        }).toList();
+
+    casePlanProviderPersonsResponsibleList =
+        cptProvider.csPersonsResponsibleList.map((personResponsible) {
+          return ValueItem(
+              label: "- ${personResponsible['item_description']}",
+              value: personResponsible['item_id']);
+        }).toList();
+
+    casePlanProviderResultList =
+        cptProvider.csResultsList.map((resultList) {
+          return ValueItem(
+              label: "- ${resultList['name']}", value: resultList['id']);
+        }).toList();
+
+    // fetching the data from the provider
+    CptHealthFormData cptHealthFormData = context.read<CptProvider>().cptHealthFormData ?? CptHealthFormData();
+    // Update respective fields
+    currentDateOfCasePlan = cptHealthFormData.dateOfEvent != null
+        ? DateTime.parse(cptHealthFormData.dateOfEvent!)
+        : currentDateOfCasePlan;
+    if(cptHealthFormData.goalId != null){
+      selectedGoalOptions = casePlanGoalHealthList.where((element) => element.value?.trim().toLowerCase() == cptHealthFormData.goalId?.trim().toLowerCase()).toList();
+    }
+    if(cptHealthFormData.gapId != null){
+      selectedNeedOptions = casePlanGapsHealthList.where((element) => element.value?.trim().toLowerCase() == cptHealthFormData.gapId?.trim().toLowerCase()).toList();
+    }
+    if(cptHealthFormData.priorityId != null){
+      selectedPriorityActionOptions = casePlanPrioritiesHealthList.where((element) => element.value?.trim().toLowerCase() == cptHealthFormData.priorityId?.trim().toLowerCase()).toList();
+    }
+    if(cptHealthFormData.serviceIds != null && cptHealthFormData.serviceIds!.isNotEmpty){
+      for(String? serviceId in cptHealthFormData.serviceIds!){
+        selectedServicesOptions.add(casePlanServicesHealthList.where((element) => element.value?.trim().toLowerCase() == serviceId?.trim().toLowerCase()).toList()[0]);
+      }
+    }
+
+    if(cptHealthFormData.responsibleIds != null && cptHealthFormData.responsibleIds!.isNotEmpty){
+      for(String? responsibleId in cptHealthFormData.responsibleIds!){
+        selectedPersonsResponsibleOptions.add(casePlanProviderPersonsResponsibleList.where((element) => element.value?.trim().toLowerCase() == responsibleId?.trim().toLowerCase()).toList()[0]);
+      }
+    }
+
+    if(cptHealthFormData.resultsId != null){
+      selectedResultsOptions = casePlanProviderResultList.where((element) => element.value?.trim().toLowerCase() == cptHealthFormData.resultsId?.trim().toLowerCase()).toList();
+    }
+
+    completionDate = cptHealthFormData.completionDate != null
+        ? DateTime.parse(cptHealthFormData.completionDate!)
+        : completionDate;
+
+    textEditingController.text = cptHealthFormData.reasonId ?? "";
+  }
+
   @override
   Widget build(BuildContext context) {
-    CptProvider cptProvider = Provider.of<CptProvider>(context);
-    TextEditingController _textEditingController = TextEditingController();
-    // selectedGoalOptions =cptProvider.cptHealth.goalId != null ? [ValueItem(label: cptProvider.cptHealth.goalId!, value: cptProvider.cptHealth.goalId!)] : [];
-
-    List<ValueItem> casePlanProviderDomainList =
-        cptProvider.csAllDomains.map((domain) {
-      return ValueItem(
-          label: "- ${domain['item_description']}", value: domain['item_id']);
-    }).toList();
-
-    List<ValueItem> casePlanGoalHealthList =
-        cptProvider.cpGoalsHealth.map((domain) {
-      return ValueItem(
-          label: "- ${domain['item_description']}", value: domain['item_id']);
-    }).toList();
-
-    List<ValueItem> casePlanGapsHealthList =
-        cptProvider.cpGapsHealth.map((domain) {
-      return ValueItem(
-          label: "- ${domain['item_description']}", value: domain['item_id']);
-    }).toList();
-
-    List<ValueItem> casePlanPrioritiesHealthList =
-        cptProvider.cpPrioritiesHealth.map((domain) {
-      return ValueItem(
-          label: "- ${domain['item_description']}", value: domain['item_id']);
-    }).toList();
-
-    List<ValueItem> casePlanServicesHealthList =
-        cptProvider.cpServicesHealth.map((domain) {
-      return ValueItem(
-          label: "- ${domain['item_description']}", value: domain['item_id']);
-    }).toList();
-
-    List<ValueItem> casePlanProviderPersonsResponsibleList =
-        cptProvider.csPersonsResponsibleList.map((personResponsible) {
-      return ValueItem(
-          label: "- ${personResponsible['item_description']}",
-          value: personResponsible['item_id']);
-    }).toList();
-
-    List<ValueItem> casePlanProviderResultList =
-        cptProvider.csResultsList.map((resultList) {
-      return ValueItem(
-          label: "- ${resultList['name']}", value: resultList['id']);
-    }).toList();
 
     return StepsWrapper(
       title: 'Health Domain Case Plan',
@@ -130,7 +181,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           readOnly: true,
           initialValue: 'Health',
           decoration: const InputDecoration(
-            labelText: 'Label text',
+            labelText: 'Health',
             border: OutlineInputBorder(),
           ),
         ),
@@ -185,11 +236,11 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           hint: 'Please select the Needs/Gaps',
           onOptionSelected: (selectedEvents) {
             // Ensure that you have a valid CasePlanHealthyModel instance
-            CptHealthFormData cptHealtFormData =
+            CptHealthFormData cptHealthFormData =
                 context.read<CptProvider>().cptHealthFormData ??
                     CptHealthFormData();
             context.read<CptProvider>().updateCptFormData(
-                cptHealtFormData.copyWith(gapId: selectedEvents[0].value));
+                cptHealthFormData.copyWith(gapId: selectedEvents[0].value));
             // Print the updated goalId
             print("The selected need was ${selectedEvents[0].value}");
           },
@@ -263,8 +314,8 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
             context
                 .read<CptProvider>()
                 .updateCptFormData(cptHealtFormData.copyWith(
-                  serviceIds: selectedEvents.map((item) => item.value).toList(),
-                ));
+              serviceIds: selectedEvents.map((item) => item.value).toList(),
+            ));
             selectedServiceIds =
                 selectedEvents.map((item) => item.value).toList();
             print("The selected service IDs are $selectedServiceIds");
@@ -303,9 +354,9 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
             context
                 .read<CptProvider>()
                 .updateCptFormData(cptHealtFormData.copyWith(
-                  responsibleIds:
-                      selectedEvents.map((item) => item.value).toList(),
-                ));
+              responsibleIds:
+              selectedEvents.map((item) => item.value).toList(),
+            ));
             selectedPersonResponsibleIds =
                 selectedEvents.map((item) => item.value).toList();
             print(
@@ -394,62 +445,73 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
         const SizedBox(height: 10),
         CustomTextField(
           hintText: 'Please Write the Reasons',
-          controller: _textEditingController,
+          controller: textEditingController,
+          onChanged: (val) {
+            CptHealthFormData cptHealthFormData =
+                context.read<CptProvider>().cptHealthFormData ??
+                    CptHealthFormData();
+
+            CptHealthFormData updatedFormData = cptHealthFormData.copyWith(
+              reasonId: val,
+            );
+            context.read<CptProvider>().updateCptFormData(updatedFormData);
+          },
         ),
         const SizedBox(height: 10),
         //BUTTON TO SAVE
-        Row(
-          children: [
-            Expanded(
-                child: CustomButton(
-              onTap: () async {
-                String ovcId = widget.caseLoadModel!.cpimsId ?? "";
-                reasonForNotAchievingCasePlan =
-                    _textEditingController.text.toString();
-
-                CptHealthFormData cptHealthFormData =
-                    context.read<CptProvider>().cptHealthFormData ??
-                        CptHealthFormData();
-
-                // Update all the fields at once
-                CptHealthFormData updatedFormData = cptHealthFormData.copyWith(
-                  reasonId: reasonForNotAchievingCasePlan,
-                  ovcCpimsId: ovcId,
-                  domainId: casePlanProviderDomainList[0].value,
-                );
-
-                context.read<CptProvider>().updateCptFormData(updatedFormData);
-
-                // Retrieve the updated CptHealthFormData
-                CptHealthFormData? healthCptFormData =
-                    context.read<CptProvider>().cptHealthFormData;
-
-                // Map the updated CptHealthFormData to CasePlanHealthyModel
-                CasePlanHealthyModel casePlanModel =
-                    mapCptHealthFormDataToCasePlan(healthCptFormData!);
-
-                //map caseplan healthyModelToCasePlanFormModel
-                CasePlanModel casePlanFormModel =
-                    mapCasePlanHealthyToCasePlan(casePlanModel);
-
-                bool isFormSaved =
-                    await CasePlanService.saveCasePlanLocal(casePlanFormModel);
-                if (isFormSaved) {
-                  Get.snackbar(
-                    'Success',
-                    'Health Case Plan Saved Successfully',
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: Colors.green,
-                    colorText: Colors.white,
-                    duration: const Duration(seconds: 2),
-                  );
-                }
-              },
-              text: 'Save',
-            )),
-          ],
-        ),
+        // Row(
+        //   children: [
+        //     Expanded(
+        //         child: CustomButton(
+        //       onTap: () async {
+        //         String ovcId = widget.caseLoadModel!.cpimsId ?? "";
+        //         reasonForNotAchievingCasePlan =
+        //             textEditingController.text.toString();
+        //
+        //         CptHealthFormData cptHealthFormData =
+        //             context.read<CptProvider>().cptHealthFormData ??
+        //                 CptHealthFormData();
+        //
+        //         // Update all the fields at once
+        //         CptHealthFormData updatedFormData = cptHealthFormData.copyWith(
+        //           reasonId: reasonForNotAchievingCasePlan,
+        //           ovcCpimsId: ovcId,
+        //           domainId: casePlanProviderDomainList[0].value,
+        //         );
+        //
+        //         context.read<CptProvider>().updateCptFormData(updatedFormData);
+        //
+        //         // Retrieve the updated CptHealthFormData
+        //         CptHealthFormData? healthCptFormData =
+        //             context.read<CptProvider>().cptHealthFormData;
+        //
+        //         // Map the updated CptHealthFormData to CasePlanHealthyModel
+        //         CasePlanHealthyModel casePlanModel =
+        //             mapCptHealthFormDataToCasePlan(healthCptFormData!);
+        //
+        //         //map caseplan healthyModelToCasePlanFormModel
+        //         CasePlanModel casePlanFormModel =
+        //             mapCasePlanHealthyToCasePlan(casePlanModel);
+        //
+        //         bool isFormSaved =
+        //             await CasePlanService.saveCasePlanLocal(casePlanFormModel);
+        //         if (isFormSaved) {
+        //           Get.snackbar(
+        //             'Success',
+        //             'Health Case Plan Saved Successfully',
+        //             snackPosition: SnackPosition.BOTTOM,
+        //             backgroundColor: Colors.green,
+        //             colorText: Colors.white,
+        //             duration: const Duration(seconds: 2),
+        //           );
+        //         }
+        //       },
+        //       text: 'Save',
+        //     )),
+        //   ],
+        // ),
       ],
     );
   }
 }
+

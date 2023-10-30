@@ -13,6 +13,7 @@ import '../../../../Models/case_load_model.dart';
 import '../../../../constants.dart';
 import '../../../../widgets/app_bar.dart';
 import '../../../../widgets/custom_button.dart';
+import '../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../widgets/custom_stepper.dart';
 import '../../../../widgets/drawer.dart';
 import '../../../../widgets/footer.dart';
@@ -32,12 +33,12 @@ class CasePlanTemplateForm extends StatefulWidget {
 }
 
 class _Form1BScreen extends State<CasePlanTemplateForm> {
+  DateTime currentDateOfCasePlan = DateTime.now();
   int selectedStep = 0;
   List<Widget> steps = [];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     steps = [
       HealthyCasePlan(caseLoadModel: widget.caseLoad),
@@ -45,12 +46,17 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
       SchooledCasePlanTemplate(caseLoadModel: widget.caseLoad),
       StableCasePlan(caseLoadModel: widget.caseLoad),
     ];
+
+    currentDateOfCasePlan = cptStableFormData.dateOfEvent != null
+        ? DateTime.parse(cptStableFormData.dateOfEvent!)
+        : currentDateOfCasePlan;
   }
 
   @override
   Widget build(BuildContext context) {
     // Form1bProvider form1bProvider =
     // Provider.of<Form1bProvider>(context, listen: false);
+    bool isLastStep = selectedStep == steps.length - 1;
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -110,6 +116,30 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                         const SizedBox(
                           height: 30,
                         ),
+                        Visibility(
+                          visible: isLastStep,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Date of Event',
+                                  style: TextStyle(
+                                      fontSize: 12, fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 10),
+                                CustomFormsDatePicker(
+                                    hintText: 'Select Date of CasePlan',
+                                    selectedDateTime:
+                                    form1AProvider.formData.selectedDate,
+                                    onDateSelected: (selectedDate) {
+                                      form1AProvider
+                                          .setSelectedDate(selectedDate);
+                                    }),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                              ]),
+                        ),
                         Row(
                           children: [
                             Expanded(
@@ -132,6 +162,9 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                             const SizedBox(
                               width: 50,
                             ),
+
+
+
                             Expanded(
                               child: CustomButton(
                                 text: selectedStep == steps.length - 1
@@ -145,25 +178,26 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                           .caseLoadModel
                                           ?.cpimsId;
 
-                                      bool allDatesFilled = checkDatesAreFilled();
+                                      bool allDatesFilled =
+                                          checkDatesAreFilled();
                                       CptHealthFormData? cptHealthFormData =
                                           context
-                                              .read<CptProvider>()
-                                              .cptHealthFormData ??
+                                                  .read<CptProvider>()
+                                                  .cptHealthFormData ??
                                               CptHealthFormData();
                                       CptSafeFormData? cptSafeFormData = context
-                                          .read<CptProvider>()
-                                          .cptSafeFormData ??
+                                              .read<CptProvider>()
+                                              .cptSafeFormData ??
                                           CptSafeFormData();
                                       CptStableFormData? cptStableFormData =
                                           context
-                                              .read<CptProvider>()
-                                              .cptStableFormData ??
+                                                  .read<CptProvider>()
+                                                  .cptStableFormData ??
                                               CptStableFormData();
                                       CptschooledFormData? cptschooledFormData =
                                           context
-                                              .read<CptProvider>()
-                                              .cptschooledFormData ??
+                                                  .read<CptProvider>()
+                                                  .cptschooledFormData ??
                                               CptschooledFormData();
 
                                       print("Data colleced from each form");
@@ -173,23 +207,25 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                       print("Schooled $cptschooledFormData");
 
                                       List<Map<String, dynamic>> servicesList =
-                                      [];
+                                          [];
                                       if (cptHealthFormData != null) {
                                         Map<String, dynamic> healthService = {
-                                          'domainId': cptHealthFormData.domainId,
+                                          'domainId':
+                                              cptHealthFormData.domainId,
                                           'serviceIds':
-                                          cptHealthFormData.serviceIds,
+                                              cptHealthFormData.serviceIds,
                                           'goalId': cptHealthFormData.goalId,
                                           'gapId': cptHealthFormData.gapId,
                                           'priorityId':
-                                          cptHealthFormData.priorityId,
+                                              cptHealthFormData.priorityId,
                                           'responsibleIds':
-                                          cptHealthFormData.responsibleIds,
+                                              cptHealthFormData.responsibleIds,
                                           'resultsId':
-                                          cptHealthFormData.resultsId,
-                                          'reasonId': cptHealthFormData.reasonId,
+                                              cptHealthFormData.resultsId,
+                                          'reasonId':
+                                              cptHealthFormData.reasonId,
                                           'completionDate':
-                                          cptHealthFormData.completionDate,
+                                              cptHealthFormData.completionDate,
                                         };
                                         servicesList.add(healthService);
                                       }
@@ -198,37 +234,40 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                         Map<String, dynamic> safeService = {
                                           'domainId': cptSafeFormData.domainId,
                                           'serviceIds':
-                                          cptSafeFormData.serviceIds,
+                                              cptSafeFormData.serviceIds,
                                           'goalId': cptSafeFormData.goalId,
                                           'gapId': cptSafeFormData.gapId,
                                           'priorityId':
-                                          cptSafeFormData.priorityId,
+                                              cptSafeFormData.priorityId,
                                           'responsibleIds':
-                                          cptSafeFormData.responsibleIds,
-                                          'resultsId': cptSafeFormData.resultsId,
+                                              cptSafeFormData.responsibleIds,
+                                          'resultsId':
+                                              cptSafeFormData.resultsId,
                                           'reasonId': cptSafeFormData.reasonId,
                                           'completionDate':
-                                          cptSafeFormData.completionDate,
+                                              cptSafeFormData.completionDate,
                                         };
                                         servicesList.add(safeService);
                                       }
 
                                       if (cptStableFormData != null) {
                                         Map<String, dynamic> stableService = {
-                                          'domainId': cptStableFormData.domainId,
+                                          'domainId':
+                                              cptStableFormData.domainId,
                                           'serviceIds':
-                                          cptStableFormData.serviceIds,
+                                              cptStableFormData.serviceIds,
                                           'goalId': cptStableFormData.goalId,
                                           'gapId': cptStableFormData.gapId,
                                           'priorityId':
-                                          cptStableFormData.priorityId,
+                                              cptStableFormData.priorityId,
                                           'responsibleIds':
-                                          cptStableFormData.responsibleIds,
+                                              cptStableFormData.responsibleIds,
                                           'resultsId':
-                                          cptStableFormData.resultsId,
-                                          'reasonId': cptStableFormData.reasonId,
+                                              cptStableFormData.resultsId,
+                                          'reasonId':
+                                              cptStableFormData.reasonId,
                                           'completionDate':
-                                          cptStableFormData.completionDate,
+                                              cptStableFormData.completionDate,
                                         };
                                         servicesList.add(stableService);
                                       }
@@ -236,21 +275,21 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                       if (cptschooledFormData != null) {
                                         Map<String, dynamic> schooledService = {
                                           'domainId':
-                                          cptschooledFormData.domainId,
+                                              cptschooledFormData.domainId,
                                           'serviceIds':
-                                          cptschooledFormData.serviceIds,
+                                              cptschooledFormData.serviceIds,
                                           'goalId': cptschooledFormData.goalId,
                                           'gapId': cptschooledFormData.gapId,
                                           'priorityId':
-                                          cptschooledFormData.priorityId,
-                                          'responsibleIds':
-                                          cptschooledFormData.responsibleIds,
+                                              cptschooledFormData.priorityId,
+                                          'responsibleIds': cptschooledFormData
+                                              .responsibleIds,
                                           'resultsId':
-                                          cptschooledFormData.resultsId,
+                                              cptschooledFormData.resultsId,
                                           'reasonId':
-                                          cptschooledFormData.reasonId,
-                                          'completionDate':
-                                          cptschooledFormData.completionDate,
+                                              cptschooledFormData.reasonId,
+                                          'completionDate': cptschooledFormData
+                                              .completionDate,
                                         };
                                         servicesList.add(schooledService);
                                       }
@@ -263,8 +302,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                         'services': servicesList,
                                       };
 
-                                      print("Final payload is${jsonEncode(payload)}");
-
+                                      print(
+                                          "Final payload is${jsonEncode(payload)}");
                                     } catch (e) {
                                       debugPrint(e.toString());
                                     }
