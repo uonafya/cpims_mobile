@@ -415,7 +415,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
                 CptHealthFormData updatedFormData = cptHealthFormData.copyWith(
                   reasonId: reasonForNotAchievingCasePlan,
                   ovcCpimsId: ovcId,
-                  domainId: casePlanProviderDomainList[1].value,
+                  domainId: casePlanProviderDomainList[0].value,
                 );
 
                 context.read<CptProvider>().updateCptFormData(updatedFormData);
