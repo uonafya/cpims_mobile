@@ -300,7 +300,7 @@ CasePlanModel mapCasePlanHealthyToCasePlan(CasePlanHealthyModel healthyModel) {
   return CasePlanModel(
     id: healthyModel.id,
     ovcCpimsId: healthyModel.ovcCpimsId ?? "",
-    dateOfEvent: DateTime.parse(jsonDecode(healthyModel.dateOfEvent!)),
+    dateOfEvent: healthyModel.dateOfEvent ?? "",
     services: services,
   );
 }

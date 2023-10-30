@@ -1,29 +1,28 @@
 class CasePlanModel {
   final int? id;
   late final String ovcCpimsId;
-  late final DateTime dateOfEvent;
+  late final String dateOfEvent;
   late final List<CasePlanServiceModel> services;
 
-  CasePlanModel({
-    required this.ovcCpimsId,
-    required this.dateOfEvent,
-    required this.services,
-    this.id
-  });
+  CasePlanModel(
+      {required this.ovcCpimsId,
+      required this.dateOfEvent,
+      required this.services,
+      this.id});
 
   factory CasePlanModel.fromJson(Map<String, dynamic> json) {
     List<CasePlanServiceModel> services = [];
     if (json['services'] != null) {
-      // Parse the list of services
-      for (var serviceJson in json['services']) {
-        services.add(CasePlanServiceModel.fromJson(serviceJson));
+      if (json['services'] is List) { // Check if 'services' is a list
+        for (var serviceJson in json['services']) {
+          services.add(CasePlanServiceModel.fromJson(serviceJson));
+        }
       }
     }
-
     return CasePlanModel(
       id: json['id'],
-      ovcCpimsId: json['ovc_cpims_id'] as String,
-      dateOfEvent: json['date_of_event'],
+      ovcCpimsId: json['ovc_cpims_id'] as String? ?? '', // Handle possible null value
+      dateOfEvent: json['date_of_event'] as String? ?? '', // Handle possible null value
       services: services,
     );
   }
@@ -72,15 +71,15 @@ class CasePlanServiceModel {
 
   factory CasePlanServiceModel.fromJson(Map<String, dynamic> json) {
     return CasePlanServiceModel(
-      domainId: json['domain_id'] as String,
-      serviceIds: List<String>.from(json['service_id']),
-      goalId: json['goal_id'] as String,
-      gapId: json['gap_id'] as String,
-      priorityId: json['priority_id'] as String,
-      responsibleIds: List<String>.from(json['responsible_id']),
-      resultsId: json['results_id'] as String,
-      reasonId: json['reason_id'] as String,
-      completionDate: json['completion_date'] as String,
+      domainId: json['domain_id'] as String? ?? '', // Handle possible null value
+      serviceIds: List<String>.from(json['service_id'] ?? []), // Handle possible null value
+      goalId: json['goal_id'] as String? ?? '', // Handle possible null value
+      gapId: json['gap_id'] as String? ?? '', // Handle possible null value
+      priorityId: json['priority_id'] as String? ?? '', // Handle possible null value
+      responsibleIds: List<String>.from(json['responsible_id'] ?? []), // Handle possible null value
+      resultsId: json['results_id'] as String? ?? '', // Handle possible null value
+      reasonId: json['reason_id'] as String? ?? '', // Handle possible null value
+      completionDate: json['completion_date'] as String? ?? '', // Handle possible null value
     );
   }
 

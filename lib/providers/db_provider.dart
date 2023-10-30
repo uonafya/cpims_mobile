@@ -646,8 +646,7 @@ class LocalDb {
         // Create and return the CasePlanModel instance
         return CasePlanModel(
           ovcCpimsId: mainQueryResult.first[CasePlan.ovcCpimsId] as String,
-          dateOfEvent: DateTime.parse(
-              mainQueryResult.first[CasePlan.dateOfEvent] as String),
+          dateOfEvent: mainQueryResult.first[CasePlan.dateOfEvent] as String,
           services: services,
         );
       }
@@ -699,7 +698,7 @@ class LocalDb {
         casePlans.add(CasePlanModel(
           id: row[CasePlan.id] as int,
           ovcCpimsId: row[CasePlan.ovcCpimsId] as String,
-          dateOfEvent: DateTime.parse(row[CasePlan.dateOfEvent] as String),
+          dateOfEvent: row[CasePlan.dateOfEvent] as String,
           services: services,
         ));
       }

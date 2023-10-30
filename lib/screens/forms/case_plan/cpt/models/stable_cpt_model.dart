@@ -298,7 +298,7 @@ CasePlanModel mapCasePlanStableToCasePlan(CasePlanStableModel stableModel) {
   return CasePlanModel(
     id: stableModel.id,
     ovcCpimsId: stableModel.ovcCpimsId ?? "",
-    dateOfEvent: DateTime.parse(jsonDecode(stableModel.dateOfEvent!)),
+    dateOfEvent: stableModel.dateOfEvent ?? "",
     services: services,
   );
 }

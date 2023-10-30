@@ -303,7 +303,7 @@ CasePlanModel mapCasePlanschooledToCasePlan(
   return CasePlanModel(
     id: schooledModel.id,
     ovcCpimsId: schooledModel.ovcCpimsId ?? "",
-    dateOfEvent: DateTime.parse(jsonDecode(schooledModel.dateOfEvent!)),
+    dateOfEvent: schooledModel.dateOfEvent ?? "",
     services: services,
   );
 }

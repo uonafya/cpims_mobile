@@ -298,7 +298,7 @@ CasePlanModel mapCasePlanSafeToCasePlan(CasePlanSafeModel safeModel) {
   return CasePlanModel(
     id: safeModel.id,
     ovcCpimsId: safeModel.ovcCpimsId ?? "",
-    dateOfEvent: DateTime.parse(jsonDecode(safeModel.dateOfEvent!)),
+    dateOfEvent: safeModel.dateOfEvent ?? "",
     services: services,
   );
 }

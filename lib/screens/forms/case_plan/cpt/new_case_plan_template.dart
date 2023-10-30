@@ -5,11 +5,13 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/healthy_cpt.dar
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/safe_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/schooled_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/stable_cpt.dart';
+import 'package:cpims_mobile/services/form_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Models/case_load_model.dart';
+import '../../../../Models/caseplan_form_model.dart';
 import '../../../../constants.dart';
 import '../../../../widgets/app_bar.dart';
 import '../../../../widgets/custom_button.dart';
@@ -48,6 +50,24 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
     ];
 
     currentDateOfCasePlan = DateTime.now();
+  }
+
+  Future<bool> saveCasePlanLocal(String jsonPayload) async {
+    try {
+      // Parse the JSON string into a Map
+      Map<String, dynamic> payload = json.decode(jsonPayload);
+
+      // Create a new CasePlanModel object from the Map
+      CasePlanModel casePlanModel = CasePlanModel.fromJson(payload);
+
+      // Save the CasePlanModel object to the local database
+      await CasePlanService.saveCasePlanLocal(casePlanModel);
+
+      return true; // Return true if the data was successfully saved.
+    } catch (e) {
+      print("Error saving case plan locally: $e");
+      return false; // Return false if there was an error.
+    }
   }
 
   @override
@@ -240,7 +260,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                           cptSafeFormData.responsibleIds !=
                                               null &&
                                           cptSafeFormData.resultsId != null &&
-                                          cptSafeFormData.reasonId != null ) {
+                                          cptSafeFormData.reasonId != null) {
                                         Map<String, dynamic> safeService = {
                                           'domainId': 'DPRO',
                                           'serviceIds':
@@ -291,15 +311,19 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                         servicesList.add(stableService);
                                       }
 
-                                      if (cptschooledFormData != null
-                                      && cptschooledFormData.serviceIds != null
-                                      && cptschooledFormData.goalId != null
-                                      && cptschooledFormData.gapId != null
-                                      && cptschooledFormData.priorityId != null
-                                      && cptschooledFormData.responsibleIds != null
-                                      && cptschooledFormData.resultsId != null
-                                      && cptschooledFormData.reasonId != null
-                                      ) {
+                                      if (cptschooledFormData != null &&
+                                          cptschooledFormData.serviceIds !=
+                                              null &&
+                                          cptschooledFormData.goalId != null &&
+                                          cptschooledFormData.gapId != null &&
+                                          cptschooledFormData.priorityId !=
+                                              null &&
+                                          cptschooledFormData.responsibleIds !=
+                                              null &&
+                                          cptschooledFormData.resultsId !=
+                                              null &&
+                                          cptschooledFormData.reasonId !=
+                                              null) {
                                         Map<String, dynamic> schooledService = {
                                           'domainId': 'DEDU',
                                           'serviceIds':
@@ -327,12 +351,24 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                       };
                                       print(
                                           "Final payload is${jsonEncode(payload)}");
+                                      print(
+                                          "Final payload is not json $payload");
+
+                                      //save here to local
+                                      saveCasePlanLocal(jsonEncode(payload));
+
+
+                                      //json data
+                                      // CasePlanModel casePlanModel =
+                                      //     CasePlanModel.fromJson(payload);
+                                      //
+                                      // //save caseplan locally
+                                      // CasePlanService.saveCasePlanLocal();
+                                      //save caseplan to server
 
                                       //save this to db
                                       // bool isFormSaved = await cptProvider
                                       //     .saveCasePlanData(payload);
-
-
                                     } catch (e) {
                                       debugPrint(e.toString());
                                     }
