@@ -1,24 +1,29 @@
-import 'package:cpims_mobile/screens/forms/form1b/utils/form1bConstants.dart';
-import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:multi_dropdown/models/value_item.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../providers/form1b_provider.dart';
+import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
+import '../../../form1b/utils/form1bConstants.dart';
+import '../../utils/form_1a_options.dart';
+import '../utils/form_one_a_provider.dart';
 
-class StableForm1b extends StatefulWidget {
-  const StableForm1b({super.key});
+
+class FormOneAStable extends StatefulWidget {
+  const FormOneAStable({super.key});
+
 
   @override
-  State<StableForm1b> createState() => _StableForm1bState();
+  State<FormOneAStable> createState() => _FormOneAStableState();
 }
 
-class _StableForm1bState extends State<StableForm1b> {
-  List<ValueItem> caregiverEconomicItems =
-      careGiverEconomicServices.map((service) {
-    return ValueItem(
-        label: service['item_description'], value: service['item_id']);
+class _FormOneAStableState extends State<FormOneAStable> {
+
+  List<ValueItem> stableServices =
+  stableServicesOptions.map((service) {
+    return ValueItem(label: service['item_description'], value: service['item_id']);
   }).toList();
 
   List<ValueItem> selectedCareGiverStableServices = [];
@@ -26,13 +31,13 @@ class _StableForm1bState extends State<StableForm1b> {
 
   @override
   Widget build(BuildContext context) {
-    Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
-    selectedCareGiverStableServicesOptions =
-        form1bProvider.stableFormData.selectedServices;
+    Form1AProviderNew form1aProvider = Provider.of<Form1AProviderNew>(context);
+    selectedCareGiverStableServicesOptions = form1aProvider.stableFormData.selectedServices;
     String domainId = domainsList[2]['item_id'];
 
+
     return StepsWrapper(
-      title: 'Caregiver household economic strengthening status',
+      title: 'Stable',
       children: [
         const Text(
           'Service(s)',
@@ -44,12 +49,10 @@ class _StableForm1bState extends State<StableForm1b> {
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             selectedCareGiverStableServices = selectedServices;
-            form1bProvider.setSelectedStableFormDataServices(
-                selectedCareGiverStableServices, domainId);
+            form1aProvider.setSelectedStableFormDataServices(selectedCareGiverStableServices, domainId);
           },
-          options: caregiverEconomicItems,
-          selectedOptions:
-              selectedCareGiverStableServicesOptions.cast<ValueItem>(),
+          options: stableServices,
+          selectedOptions: selectedCareGiverStableServicesOptions.cast<ValueItem>(),
           maxItems: 50,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
@@ -66,3 +69,4 @@ class _StableForm1bState extends State<StableForm1b> {
     );
   }
 }
+

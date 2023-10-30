@@ -82,7 +82,8 @@ class _ServicesDetailsState extends State<ServicesDetails> {
             showClearIcon: true,
             hint: 'Select the Domains',
             onOptionSelected: (selectedDomain) {
-              domainValue = selectedDomain.last.value ?? domainValue;
+              ValueItem selectedValue = selectedDomain.first;
+              domainValue = selectedValue.value ?? domainValue;
               selectedDomainOptions = selectedDomain;
               form1aProvider.setSelectedDomain(selectedDomain);
             },

@@ -21,6 +21,7 @@ import 'package:provider/provider.dart';
 
 import '../cpara/widgets/ovc_sub_population_form.dart';
 import '../forms/case_plan/cpt/new_case_plan_template.dart';
+import '../forms/form1a/new/form_one_a.dart';
 
 class OVCDetailsScreen extends StatefulWidget {
   const OVCDetailsScreen({super.key, required this.caseLoadModel});
@@ -135,7 +136,7 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                 context
                     .read<Form1AProvider>()
                     .updateCaseLoadModel(widget.caseLoadModel);
-                Get.to(() => Form1AScreen(caseLoadModel: widget.caseLoadModel));
+                Get.to(() => FomOneA(caseLoadModel: widget.caseLoadModel));
               },
             ),
             ChildDetailsWorkflowButton(

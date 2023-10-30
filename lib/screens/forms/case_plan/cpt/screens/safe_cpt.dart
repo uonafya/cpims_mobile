@@ -2,6 +2,7 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/safe_cpt_model.d
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/route_manager.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
@@ -10,10 +11,10 @@ import '../../../../../Models/case_load_model.dart';
 import '../../../../../Models/caseplan_form_model.dart';
 import '../../../../../providers/case_plan_provider.dart';
 import '../../../../../services/form_service.dart';
+import '../../../../../widgets/custom_button.dart';
 import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
-import '../models/healthy_cpt_model.dart';
 import '../new_cpt_provider.dart';
 
 class SafeCasePlan extends StatefulWidget {
@@ -37,6 +38,16 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
   List<ValueItem> selectedResultsOptions = [];
   List<String?> selectedServiceIds = [];
   List<String?> selectedPersonResponsibleIds = [];
+
+  TextEditingController textEditingController = TextEditingController();
+  List<ValueItem> casePlanProviderDomainList = [];
+  List<ValueItem> casePlanGoalSafeList = [];
+  List<ValueItem> casePlanGapsSafeList = [];
+  List<ValueItem> casePlanPrioritiesSafeList = [];
+  List<ValueItem> casePlanServicesSafeList = [];
+  List<ValueItem> casePlanProviderPersonsResponsibleList = [];
+  List<ValueItem> casePlanProviderResultList = [];
+  CptProvider cptProvider = CptProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -87,31 +98,90 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
           label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    return StepsWrapper(title: 'Safe',
-        children: [
-      const Row(
-        children: [
-          Text(
-            'Date of Case Plan*',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-      const SizedBox(height: 10),
-      CustomFormsDatePicker(
-        hintText: 'Please select the Date',
-        selectedDateTime: currentDateOfCasePlan,
-        onDateSelected: (selectedDate) {
-          currentDateOfCasePlan = selectedDate;
-          CptHealthFormData cptHealthFormData =
-              context.read<CptProvider>().cptHealthFormData ??
-                  CptHealthFormData();
-          context.read<CptProvider>().updateCptFormData(cptHealthFormData
-              .copyWith(dateOfEvent: currentDateOfCasePlan.toIso8601String()));
-          print("The selected date was $currentDateOfCasePlan");
-        },
-      ),
-      const SizedBox(height: 10),
+    // fetching the data from the provider
+    CptSafeFormData cptsafeFormData =
+        context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
+    // Update respective fields
+    if (cptsafeFormData.goalId != null) {
+      selectedGoalOptions = casePlanGoalSafeList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptsafeFormData.goalId?.trim().toLowerCase())
+          .toList();
+    }
+    if (cptsafeFormData.gapId != null) {
+      selectedNeedOptions = casePlanGapsSafeList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptsafeFormData.gapId?.trim().toLowerCase())
+          .toList();
+    }
+    if (cptsafeFormData.priorityId != null) {
+      selectedPriorityActionOptions = casePlanPrioritiesSafeList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptsafeFormData.priorityId?.trim().toLowerCase())
+          .toList();
+    }
+    if (cptsafeFormData.serviceIds != null &&
+        cptsafeFormData.serviceIds!.isNotEmpty) {
+      for (String? serviceId in cptsafeFormData.serviceIds!) {
+        selectedServicesOptions.add(casePlanServicesSafeList
+            .where((element) =>
+                element.value?.trim().toLowerCase() ==
+                serviceId?.trim().toLowerCase())
+            .toList()[0]);
+      }
+    }
+
+    if (cptsafeFormData.responsibleIds != null &&
+        cptsafeFormData.responsibleIds!.isNotEmpty) {
+      for (String? responsibleId in cptsafeFormData.responsibleIds!) {
+        selectedPersonsResponsibleOptions.add(
+            casePlanProviderPersonsResponsibleList
+                .where((element) =>
+                    element.value?.trim().toLowerCase() ==
+                    responsibleId?.trim().toLowerCase())
+                .toList()[0]);
+      }
+    }
+
+    if (cptsafeFormData.resultsId != null) {
+      selectedResultsOptions = casePlanProviderResultList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptsafeFormData.resultsId?.trim().toLowerCase())
+          .toList();
+    }
+
+    completionDate = cptsafeFormData.completionDate != null
+        ? DateTime.parse(cptsafeFormData.completionDate!)
+        : completionDate;
+
+    textEditingController.text = cptsafeFormData.reasonId ?? "";
+
+    return StepsWrapper(title: 'Safe', children: [
+      // const Row(
+      //   children: [
+      //     // Text(
+      //     //   'Date of Case Plan*',
+      //     //   style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+      //     // ),
+      //   ],
+      // ),
+      // const SizedBox(height: 10),
+      // CustomFormsDatePicker(
+      //   hintText: 'Please select the Date',
+      //   selectedDateTime: currentDateOfCasePlan,
+      //   onDateSelected: (selectedDate) {
+      //     currentDateOfCasePlan = selectedDate;
+      //     CptSafeFormData cptSafeFormData =
+      //         context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
+      //     context.read<CptProvider>().updateCptSafeFormData(cptSafeFormData
+      //         .copyWith(dateOfEvent: currentDateOfCasePlan.toIso8601String()));
+      //   },
+      // ),
+      // const SizedBox(height: 10),
       const Row(
         children: [
           Text(
@@ -123,9 +193,9 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
       const SizedBox(height: 10),
       TextFormField(
         readOnly: true,
-        initialValue: 'Health',
+        initialValue: 'Safe',
         decoration: const InputDecoration(
-          labelText: 'Label text',
+          labelText: 'Safe',
           border: OutlineInputBorder(),
         ),
       ),
@@ -143,7 +213,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
         showClearIcon: true,
         hint: 'Please select the Goal',
         onOptionSelected: (selectedEvents) {
-          // Ensure that you have a valid CasePlanHealthyModel instance
           CptSafeFormData cptSafeFormData =
               context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
           context.read<CptProvider>().updateCptSafeFormData(
@@ -178,7 +247,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
         showClearIcon: true,
         hint: 'Please select the Needs/Gaps',
         onOptionSelected: (selectedEvents) {
-          // Ensure that you have a valid CasePlanHealthyModel instance
           CptSafeFormData cptSafeFormData =
               context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
           context.read<CptProvider>().updateCptSafeFormData(
@@ -246,7 +314,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
         showClearIcon: true,
         hint: 'Please Select the Services',
         onOptionSelected: (selectedEvents) {
-          // Ensure that you have a valid CasePlanHealthyModel instance
           CptSafeFormData cptSafeFormData =
               context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
           context
@@ -285,7 +352,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
         showClearIcon: true,
         hint: 'Please select Person(s) Responsible',
         onOptionSelected: (selectedEvents) {
-          // Ensure that you have a valid CasePlanHealthyModel instance
           CptSafeFormData cptSafeFormData =
               context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
           context
@@ -372,7 +438,7 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
       const Row(
         children: [
           Text(
-            'Reason(s)',
+            'Reasons',
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
           ),
         ],
@@ -380,54 +446,21 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
       const SizedBox(height: 10),
       CustomTextField(
         hintText: 'Please Write the Reasons',
-        controller: _textEditingController,
-      ),
-      const SizedBox(height: 10),
-      //BUTTON TO SAVE
-      ElevatedButton(
-        onPressed: () async {
-          String ovcId = widget.caseLoadModel!.cpimsId ?? "";
-          reasonForNotAchievingCasePlan =
-              _textEditingController.text.toString();
-
+        controller: textEditingController,
+        onChanged: (val) {
           CptSafeFormData cptSafeFormData =
               context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
 
-          // Update all the fields at once
           CptSafeFormData updatedSafeFormData = cptSafeFormData.copyWith(
-            reasonId: reasonForNotAchievingCasePlan,
-            ovcCpimsId: ovcId,
-            domainId: casePlanProviderDomainList[3].value,
+            reasonId: val,
           );
-
           context
               .read<CptProvider>()
               .updateCptSafeFormData(updatedSafeFormData);
-
-          // Retrieve the updated CptHealthFormData
-          CptSafeFormData? safeCptFormData =
-              context.read<CptProvider>().cptSafeFormData;
-
-          print("The case plan model is $safeCptFormData");
-
-          // Map the updated CptHealthFormData to CasePlanHealthyModel
-          CasePlanSafeModel caseSafePlanModel =
-              mapCptSafeHealthFormDataToCasePlan(safeCptFormData!);
-
-          //map caseplan healthyModelToCasePlanFormModel
-          CasePlanModel casePlanFormSafeModel =
-              mapCasePlanSafeToCasePlan(caseSafePlanModel);
-
-          bool isFormSaved =
-              await CasePlanService.saveCasePlanLocal(casePlanFormSafeModel);
-          if (isFormSaved) {
-            print("The case plan model is $casePlanFormSafeModel");
-          }
         },
-        child: const Text('Save'),
-        //navigate to the next step
       ),
-    ]
-    );
+      const SizedBox(height: 10),
+      //BUTTON TO SAVE
+    ]);
   }
 }

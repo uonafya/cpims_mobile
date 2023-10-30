@@ -17,7 +17,7 @@ class CriticalEventsScreen extends StatefulWidget {
 }
 
 class _CriticalEventsScreenState extends State<CriticalEventsScreen> {
-  List<ValueItem> listOfCriticalEvents = optionsEvents.map((events) {
+  List<ValueItem> listOfCriticalEvents = formOneACriticalEvents.map((events) {
     return ValueItem(
         label: "${events['event_description']}",
         value: "${events['event_id']}");

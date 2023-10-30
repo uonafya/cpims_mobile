@@ -15,6 +15,7 @@ import 'package:cpims_mobile/screens/cpara/widgets/cpara_healthy_widget_update.d
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_safe_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_schooled_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
+import 'package:cpims_mobile/screens/homepage/provider/stats_provider.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
@@ -258,6 +259,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                         context
                                             .read<CparaProvider>()
                                             .clearCparaProvider();
+                                        context
+                                            .read<StatsProvider>()
+                                            .updateCparaFormStats();
                                         showDialog(
                                           context: context,
                                           // Use the context from the build method

@@ -5,6 +5,7 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/caregiver/caregiver.dart';
+import 'package:cpims_mobile/screens/homepage/provider/stats_provider.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
@@ -55,6 +56,9 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     super.initState();
     showCountUnsyncedForms();
+    context
+        .read<StatsProvider>()
+        .updateFormStats();
     syncWorkflows();
   }
 
@@ -139,11 +143,16 @@ class _HomepageState extends State<Homepage> {
         await Provider.of<ConnectivityProvider>(context, listen: false)
             .checkInternetConnection();
     if (isConnected) {
-      submitCparaToUpstream();
-      postCasePlansToServer();
-      fetchAndPostToServerOvcSubpopulationData();
-      postFormOneToServer();
-      showCountUnsyncedForms();
+      await submitCparaToUpstream();
+      await postCasePlansToServer();
+     fetchAndPostToServerOvcSubpopulationData();
+     postFormOneToServer();
+      await showCountUnsyncedForms();
+      if(mounted) {
+        context
+            .read<StatsProvider>()
+            .updateFormStats();
+      }
     }
   }
 
@@ -166,6 +175,8 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     final SummaryDataModel dashData =
         context.select((UIProvider provider) => provider.getDashData);
+
+    StatsProvider formStats = context.watch<StatsProvider>();
 
     if (dashData == null) {
       return const Center(
@@ -210,7 +221,7 @@ class _HomepageState extends State<Homepage> {
                     ),
                     GestureDetector(
                         child: const Text(
-                          'Click to Sync',
+                          'Sync',
                           style: TextStyle(
                             color: kPrimaryColor,
                             fontWeight: FontWeight.bold,
@@ -226,10 +237,10 @@ class _HomepageState extends State<Homepage> {
                   icon: FontAwesomeIcons.arrowsRotate,
                   color: const Color(0xffa10036),
                   secondaryColor: const Color(0xff630122),
-                  form1ACount: formOneACount,
-                  form1BCount: formOneBCount,
-                  cpaCount: cptCount,
-                  cparaCount: ovcSubpopulatoiCount + cparaCount,
+                  form1ACount: formStats.formOneACount,
+                  form1BCount: formStats.formOneBCount,
+                  cpaCount: formStats.cptCount,
+                  cparaCount: formStats.cparaCount,
                   onClick: () {},
                 ),
                 // StatisticsItem(
@@ -251,41 +262,41 @@ class _HomepageState extends State<Homepage> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
-                    const StatisticsGridItem(
-                      title: 'FORM 1A',
-                      value: "10/20",
-                      icon: FontAwesomeIcons.fileLines,
-                      color: kPrimaryColor,
-                      secondaryColor: Color(0xff0E6668),
-                    ),
-                    const StatisticsGridItem(
-                      title: 'FORM 1B',
-                      value: "10/20",
-                      icon: FontAwesomeIcons.fileLines,
-                      color: Color(0xff348FE2),
-                      secondaryColor: Color(0xff1F5788),
-                    ),
-                    const StatisticsGridItem(
-                      title: 'CPARA',
-                      value: "10/20",
-                      icon: FontAwesomeIcons.fileLines,
-                      color: Color(0xff727DB6),
-                      secondaryColor: Color(0xff454A6D),
-                    ),
-                    const StatisticsGridItem(
-                      title: 'CPT',
-                      value: "10/20",
-                      icon: FontAwesomeIcons.fileLines,
-                      color: Color(0xff49B6D5),
-                      secondaryColor: Color(0xff2C6E80),
-                    ),
-                    const StatisticsGridItem(
-                      title: 'CLHIV',
-                      value: "10/20",
-                      icon: FontAwesomeIcons.heart,
-                      color: Color(0xff49B6D5),
-                      secondaryColor: Color(0xff2C6E80),
-                    ),
+                    // const StatisticsGridItem(
+                    //   title: 'FORM 1A',
+                    //   value: "10/20",
+                    //   icon: FontAwesomeIcons.fileLines,
+                    //   color: kPrimaryColor,
+                    //   secondaryColor: Color(0xff0E6668),
+                    // ),
+                    // const StatisticsGridItem(
+                    //   title: 'FORM 1B',
+                    //   value: "10/20",
+                    //   icon: FontAwesomeIcons.fileLines,
+                    //   color: Color(0xff348FE2),
+                    //   secondaryColor: Color(0xff1F5788),
+                    // ),
+                    // const StatisticsGridItem(
+                    //   title: 'CPARA',
+                    //   value: "10/20",
+                    //   icon: FontAwesomeIcons.fileLines,
+                    //   color: Color(0xff727DB6),
+                    //   secondaryColor: Color(0xff454A6D),
+                    // ),
+                    // const StatisticsGridItem(
+                    //   title: 'CPT',
+                    //   value: "10/20",
+                    //   icon: FontAwesomeIcons.fileLines,
+                    //   color: Color(0xff49B6D5),
+                    //   secondaryColor: Color(0xff2C6E80),
+                    // ),
+                    // const StatisticsGridItem(
+                    //   title: 'CLHIV',
+                    //   value: "10/20",
+                    //   icon: FontAwesomeIcons.heart,
+                    //   color: Color(0xff49B6D5),
+                    //   secondaryColor: Color(0xff2C6E80),
+                    // ),
                     StatisticsGridItem(
                       title: 'Org Unit Id',
                       value: dashData.orgUnitId.toString(),

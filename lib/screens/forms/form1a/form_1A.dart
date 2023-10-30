@@ -3,6 +3,7 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/screens/forms/form1a/widgets/critical_events_details.dart';
 import 'package:cpims_mobile/screens/forms/form1a/widgets/services_details.dart';
+import 'package:cpims_mobile/screens/homepage/provider/stats_provider.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
@@ -122,7 +123,9 @@ class _Form1AScreenState extends State<Form1AScreen> {
                             ),
                             Expanded(
                               child: CustomButton(
-                                text: selectedStep == steps.length - 1 ? 'Submit Form1A' : 'Next',
+                                text: selectedStep == steps.length - 1
+                                    ? 'Submit Form1A'
+                                    : 'Next',
                                 onTap: () {
                                   setState(() {
                                     if (selectedStep < steps.length - 1) {
@@ -130,9 +133,11 @@ class _Form1AScreenState extends State<Form1AScreen> {
                                     } else {
                                       var cpimsId =
                                           widget.caseLoadModel.cpimsId;
-
                                       form1aProvider
                                           .submitCriticalServices(cpimsId);
+                                      context
+                                          .read<StatsProvider>()
+                                          .updateFormOneAStats();
                                       Get.snackbar(
                                         'Success',
                                         'Form1A data saved successfully.',

@@ -44,6 +44,7 @@ class LocalDb {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
     const textTypeNull = 'TEXT NULL';
+    const defaultTime = 'DATETIME DEFAULT CURRENT_TIMESTAMP';
     const intType = 'INTEGER';
 
     await db.execute('''
@@ -128,9 +129,14 @@ class LocalDb {
           ${Form1.ovcCpimsId} $textType,
           ${Form1.dateOfEvent} $textType,
           ${Form1.formType} $textType,
-          ${Form1.formDateSynced} $textTypeNull
+          ${Form1.formDateSynced} $textTypeNull,
+          ${Form1.collected_at} $defaultTime,
+          ${Form1.location_lat} $textTypeNull,
+          ${Form1.location_long} $textTypeNull
         )
         ''');
+
+    // created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     await db.execute('''
   CREATE TABLE $form1ServicesTable (
@@ -167,7 +173,8 @@ class LocalDb {
     }
   }
 
-  Future<void> insertMultipleCaseLoad(List<CaseLoadModel> caseLoadModelList) async {
+  Future<void> insertMultipleCaseLoad(
+      List<CaseLoadModel> caseLoadModelList) async {
     try {
       final db = await instance.database;
 
@@ -188,7 +195,8 @@ class LocalDb {
     }
   }
 
-  Future<void> updateMultipleCaseLoad(List<CaseLoadModel> caseLoadModelList) async {
+  Future<void> updateMultipleCaseLoad(
+      List<CaseLoadModel> caseLoadModelList) async {
     try {
       final db = await instance.database;
 
@@ -199,8 +207,10 @@ class LocalDb {
         batch.update(
           caseloadTable,
           caseLoadModel.toMap(),
-          where: 'ovc_cpims_id = ?', // Provide a condition to specify which records to update
-          whereArgs: [caseLoadModel.cpimsId], // Provide the ID of the record to update
+          where: 'ovc_cpims_id = ?',
+          // Provide a condition to specify which records to update
+          whereArgs: [caseLoadModel.cpimsId],
+          // Provide the ID of the record to update
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
       }
@@ -560,12 +570,12 @@ class LocalDb {
             'ovc_cpims_id': casePlan.ovcCpimsId,
             'date_of_event': casePlan.dateOfEvent,
             'form_date_synced': null,
-
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
 
         for (var service in casePlan.services) {
+          debugPrint("Here the services ${casePlan.services}");
           final serviceIdList = service.serviceIds.join(',');
           final responsibleIdList = service.responsibleIds.join(',');
 
@@ -589,12 +599,12 @@ class LocalDb {
       });
 
       return true;
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('Error inserting case plan: $e');
+      print('Stack trace: $stackTrace');
       return false;
     }
   }
-
 
   Future<CasePlanModel?> getCasePlanById(String ovcCpimsId) async {
     try {
@@ -919,7 +929,7 @@ class CasePlanServices {
     responsibleIds,
     serviceIds
   ];
-  static const String id = '_id';
+  static const String id = 'id';
   static const String formId = 'form_id';
   static const String domainId = 'domain_id';
   static const String goalId = 'goal_id';
@@ -938,6 +948,8 @@ class Form1 {
     formType,
     ovcCpimsId,
     dateOfEvent,
+    location_lat,
+    location_long
   ];
 
   static const String id = "_id";
@@ -945,6 +957,9 @@ class Form1 {
   static const String ovcCpimsId = "ovc_cpims_id";
   static const String dateOfEvent = 'date_of_event';
   static const String formDateSynced = 'form_date_synced';
+  static const String collected_at = 'collected_at';
+  static const String location_lat = 'location_lat';
+  static const String location_long = 'location_long';
 }
 
 class Form1Services {

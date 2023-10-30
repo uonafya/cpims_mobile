@@ -1,25 +1,25 @@
-import 'package:cpims_mobile/providers/form1b_provider.dart';
-import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
-import 'package:cpims_mobile/widgets/custom_button.dart';
-import 'package:cpims_mobile/widgets/custom_toast.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:multi_dropdown/models/value_item.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../widgets/custom_forms_date_picker.dart';
-import '../utils/form1bConstants.dart';
+import '../../../../../widgets/custom_forms_date_picker.dart';
+import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
+import '../../../form1b/utils/form1bConstants.dart';
+import '../../utils/form_1a_options.dart';
+import '../utils/form_one_a_provider.dart';
 
-class HealthyForm1b extends StatefulWidget {
-  const HealthyForm1b({Key? key}) : super(key: key);
+class FormOneAHealthy extends StatefulWidget {
+  const FormOneAHealthy({Key? key}) : super(key: key);
 
   @override
-  State<HealthyForm1b> createState() => _HealthyForm1bState();
+  State<FormOneAHealthy> createState() => _FormOneAHealthy();
 }
 
-class _HealthyForm1bState extends State<HealthyForm1b> {
-  List<ValueItem> caregiverHealthServiceItems =
-      careGiverHealthServices.map((service) {
+class _FormOneAHealthy extends State<FormOneAHealthy> {
+  List<ValueItem> healthServices = healthServicesOptions.map((service) {
     return ValueItem(
         label: service['item_description'], value: service['item_id']);
   }).toList();
@@ -30,13 +30,13 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
 
   @override
   Widget build(BuildContext context) {
-    Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
-    selectedCareGiverServicesOptions = form1bProvider.formData.selectedServices;
-    currentlySelectedDate = form1bProvider.formData.selectedDate!;
+    Form1AProviderNew form1aProvider = Provider.of<Form1AProviderNew>(context);
+    selectedCareGiverServicesOptions = form1aProvider.formData.selectedServices;
+    currentlySelectedDate = form1aProvider.formData.selectedDate!;
     String healthDomainId = domainsList[1]['item_id'];
 
     return StepsWrapper(
-      title: 'Caregiver health and nutrition status',
+      title: 'Healthy',
       children: [
         const Text(
           'Service(s)',
@@ -48,10 +48,10 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             selectedCareGiverServices = selectedServices;
-            form1bProvider.setSelectedHealthServices(
+            form1aProvider.setSelectedHealthServices(
                 selectedCareGiverServices, healthDomainId);
           },
-          options: caregiverHealthServiceItems,
+          options: healthServices,
           maxItems: 13,
           selectedOptions: selectedCareGiverServicesOptions.cast<ValueItem>(),
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],

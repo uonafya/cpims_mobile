@@ -21,6 +21,57 @@ List<Map<String, dynamic>> form1bsStepper = [
   },
 ];
 
+List<Map<String, dynamic>> form1asStepper = [
+  {
+    'title': 'Healthy',
+    'subtitle': '',
+    'onTap': () {}
+  },
+  {
+    'title': 'Safe',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Stable',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Schooled',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Critical Event',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+];
+
+List<Map<String, dynamic>> caseplanStepperTitles = [
+  {
+    'title': 'Healthy',
+    'subtitle': '',
+    'onTap': () {}
+  },
+  {
+    'title': 'Safe',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Schooled',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+  {
+    'title': 'Stable',
+    'subtitle': '',
+    'onTap': () => {},
+  },
+];
+
 List<Map<String, dynamic>> ServiceDomains = [
   {
     'title': 'Healthy',

@@ -627,15 +627,15 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                              )).toList();
                             //
                             //  //caseplan model
-                             CasePlanModel casePlanModel = CasePlanModel(
-                               ovcCpimsId: ovcCpimsId,
-                               dateOfEvent: dateOfCaseplan,
-                               services: servicesList,
-                             );
+                            //  CasePlanModel casePlanModel = CasePlanModel(
+                            //    ovcCpimsId: ovcCpimsId,
+                            //    dateOfEvent: dateOfCaseplan,
+                            //    services: servicesList,
+                            //  );
 
-                             print("JSON caseplan is ${casePlanModel.toJson()}");
-                              caseplanModelFoThisOvC.add(casePlanModel);
-                              print("caseplan model: $casePlanModel");
+                             // print("JSON caseplan is ${casePlanModel.toJson()}");
+                             //  caseplanModelFoThisOvC.add(casePlanModel);
+                             //  print("caseplan model: $casePlanModel");
                             //
                              debugPrint("caseplan model selected: $caseplanModelFoThisOvC");
 

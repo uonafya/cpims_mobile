@@ -1,32 +1,34 @@
-// import 'package:cpims_mobile/Models/form1_data_basemodel.dart';
-// import 'package:cpims_mobile/Models/form_1b.dart';
-
 import 'dart:convert';
 
-import 'package:cpims_mobile/services/form_service.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../Models/form_1_model.dart';
-import 'package:get/get.dart';
-import '../screens/forms/form1b/model/critical_events_form1b_model.dart';
-import '../screens/forms/form1b/model/health_form1b_model.dart';
-import '../screens/forms/form1b/utils/FinalServicesForm1bModel.dart';
-import '../screens/forms/form1b/utils/MasterServicesForm1bModel.dart';
-import '../screens/forms/form1b/utils/SafeForm1bModel.dart';
-import '../screens/forms/form1b/utils/StableForm1bModel.dart';
-import '../widgets/custom_toast.dart';
-import 'connection_provider.dart';
-import 'db_provider.dart';
 
-class Form1bProvider extends ChangeNotifier {
+import '../../../../../Models/form_1_model.dart';
+import '../../../../../providers/connection_provider.dart';
+import '../../../../../providers/db_provider.dart';
+import '../../../../../services/form_service.dart';
+import '../../../form1b/model/critical_events_form1b_model.dart';
+import '../../../form1b/model/health_form1b_model.dart';
+import '../../../form1b/utils/FinalServicesForm1bModel.dart';
+import '../../../form1b/utils/MasterServicesForm1bModel.dart';
+import '../../../form1b/utils/SafeForm1bModel.dart';
+import '../../../form1b/utils/StableForm1bModel.dart';
+
+class Form1AProviderNew extends ChangeNotifier {
   final HealthFormData _formData = HealthFormData(
       selectedServices: [], selectedDate: DateTime.now(), domainId: "");
   final StableFormData _stableFormData =
       StableFormData(selectedServices: [], domainId: "");
+  final SchooledFormData _schooledFormData =
+      SchooledFormData(selectedServices: [], domainId: "");
   final SafeFormData _safeFormData =
       SafeFormData(selectedServices: [], domainId: "");
   final FinalServicesFormData _finalServicesFormData = FinalServicesFormData(
@@ -46,6 +48,8 @@ class Form1bProvider extends ChangeNotifier {
   StableFormData get stableFormData => _stableFormData;
 
   SafeFormData get safeFormData => _safeFormData;
+
+  SchooledFormData get schooledFormData => _schooledFormData;
 
   CriticalEventDataForm1b get criticalEventDataForm1b =>
       _criticalEventDataForm1b;
@@ -76,8 +80,15 @@ class Form1bProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setSelectedDate(DateTime? selectedDate) {
-    // CustomToastWidget.showToast(selectedDate);
+  void setSelectedSchooledFormDataServices(
+      List<ValueItem> selectedServices, String domainId) {
+    _schooledFormData.selectedServices.clear(); // Clear the current list
+    _schooledFormData.selectedServices.addAll(selectedServices);
+    _schooledFormData.domainId = domainId;
+    notifyListeners();
+  }
+
+  void setSelectedDate(DateTime selectedDate) {
     _formData.selectedDate = selectedDate;
     notifyListeners();
   }
@@ -98,9 +109,9 @@ class Form1bProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setFinalFormDataDOE(DateTime dateOfEvent) {
+  void setFinalFormDataDOE(DateTime? dateOfEvent) {
     _finalServicesFormData.date_of_event =
-        DateFormat('yyyy-MM-dd').format(dateOfEvent);
+        DateFormat('yyyy-MM-dd').format(dateOfEvent!);
     _criticalEventDataForm1b.selectedDate = dateOfEvent;
     notifyListeners();
   }
@@ -117,13 +128,13 @@ class Form1bProvider extends ChangeNotifier {
     return criticalEvents;
   }
 
-  Future<bool> saveForm1bData(HealthFormData healthFormData) async {
+  Future<bool> saveForm1AData(HealthFormData healthFormData) async {
     List<MasterServicesFormData> masterServicesList =
         convertToMasterServicesFormData();
     //creating our data to be sent for saving
     setFinalFormDataServices(masterServicesList);
     setFinalFormDataOvcId(_finalServicesFormData.ovc_cpims_id);
-    setFinalFormDataDOE(formData.selectedDate!);
+    setFinalFormDataDOE(formData.selectedDate);
     List<Form1CriticalEventsModel> criticalEventsFormData =
         getFinalCriticalEventsFormData();
 
@@ -151,18 +162,11 @@ class Form1bProvider extends ChangeNotifier {
         services: servicesList,
         criticalEvents: criticalEventsList);
     String data = jsonEncode(toDbData);
-    print("The json data for form 1 b is $data");
+    print("The json data for form 1 a is $data");
     print("form1b payload:==========>$criticalEventsList");
 
-    bool isFormSaved = await Form1Service.saveFormLocal("form1b", toDbData);
+    bool isFormSaved = await Form1Service.saveFormLocal("form1a", toDbData);
     if (isFormSaved == true) {
-      Get.snackbar(
-        'Success',
-        'Saved data locally.Ensure to sync on internet connection',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.yellow,
-        colorText: Colors.white,
-      );
       resetFormData();
       notifyListeners();
     }
@@ -262,7 +266,7 @@ class Form1bProvider extends ChangeNotifier {
   }
 
   Future<void> handleSubmitToServer(
-      String data, Form1DataModel formOneBdata) async {
+      String data, Form1DataModel formOneAData) async {
     final localDb = LocalDb.instance;
     var prefs = await SharedPreferences.getInstance();
     var accessToken = prefs.getString('access');
@@ -287,7 +291,7 @@ class Form1bProvider extends ChangeNotifier {
           print("Data posted  successfully to server is $data");
           Get.snackbar(
             'Success',
-            'Form 1B submitted to the server successfully',
+            'Form 1A submitted to the server successfully',
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.green,
             colorText: Colors.white,
@@ -303,7 +307,7 @@ class Form1bProvider extends ChangeNotifier {
         }
       } else {
         try {
-          Form1Service.saveFormLocal("form1a", formOneBdata);
+          Form1Service.saveFormLocal("form1a", formOneAData);
           Get.snackbar(
             'Success',
             'Saved data locally.Ensure to sync on internet connection',

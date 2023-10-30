@@ -4,6 +4,7 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/stable_cpt_model
 import 'package:flutter/cupertino.dart';
 
 import '../../../../Models/case_load_model.dart';
+import '../../../../Models/caseplan_form_model.dart';
 import '../utils/case_plan_dummy_data.dart';
 import 'models/schooled_cpt_model.dart';
 
@@ -45,12 +46,17 @@ class CptProvider extends ChangeNotifier {
 
   CasePlanHealthyModel? casePlanHealthyModel;
   CasePlanSafeModel? casePlanSafeModel;
-  CptHealthFormData? cptHealthFormData;
+  CasePlanschooledModel? casePlanStableModel;
+  CaseLoadModel? caseLoadModel;
+
   CptSafeFormData? cptSafeFormData;
   CptStableFormData? cptStableFormData;
-  CaseLoadModel? caseLoadModel;
-  CasePlanschooledModel? casePlanStableModel;
   CptschooledFormData? cptschooledFormData;
+  CptHealthFormData? cptHealthFormData;
+
+  CptHealthFormData get cptHealth => cptHealthFormData!;
+
+  late CasePlanModel casePlanModel;
 
   void updateCptFormData(CptHealthFormData cptHealthFormData) {
     this.cptHealthFormData = cptHealthFormData;
@@ -62,21 +68,33 @@ class CptProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateSelectedGoalOptionsHealt(String selectedGoalHealth) {
+    this.cptHealthFormData?.goalId = selectedGoalHealth;
+    notifyListeners();
+  }
+
   void updateCptStableFormData(CptStableFormData cptStableFormData) {
     this.cptStableFormData = cptStableFormData;
     notifyListeners();
   }
 
   void updateCptSchooledFormData(CptschooledFormData cptschooledFormData) {
-    this.cptStableFormData = cptStableFormData;
+    this.cptschooledFormData = cptschooledFormData;
     notifyListeners();
   }
+
+    void updateDateOfCasePlan(String? dateOfCasePlan) {
+    this.casePlanModel.dateOfEvent = dateOfCasePlan!;
+    notifyListeners();
+  }
+
 
   void clearProviderData() {
     casePlanHealthyModel = null;
     cptHealthFormData = null;
     casePlanSafeModel = null;
     cptSafeFormData = null;
+    casePlanStableModel = null;
     notifyListeners();
   }
 }

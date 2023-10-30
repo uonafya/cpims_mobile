@@ -74,22 +74,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
       ),
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child:  Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             const SizedBox(
               height: 6,
             ),
-           const Text(
-              'App Version',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            Text(
+              'Version ${AppVersionUtil.getAppVersion()}',
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
             const SizedBox(
               height: 6,
-            ),
-            Text(
-              AppVersionUtil.getAppVersion(),
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ],
         ),

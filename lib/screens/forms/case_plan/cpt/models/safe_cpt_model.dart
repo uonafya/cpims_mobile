@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../../../../Models/caseplan_form_model.dart';
 import 'healthy_cpt_model.dart';
 
@@ -152,9 +154,7 @@ class CasePlanServiceSafeModel {
 }
 
 class CptSafeFormData {
-  final String? ovcCpimsId;
-  final String? dateOfEvent;
-  final String? domainId;
+  String? domainId = "DPRO";
   final List<String?>? serviceIds;
   final String? goalId;
   final String? gapId;
@@ -165,8 +165,6 @@ class CptSafeFormData {
   final String? completionDate;
 
   CptSafeFormData({
-    this.ovcCpimsId,
-    this.dateOfEvent,
     this.domainId,
     this.serviceIds,
     this.goalId,
@@ -179,8 +177,6 @@ class CptSafeFormData {
   });
 
   CptSafeFormData copyWith({
-    String? ovcCpimsId,
-    String? dateOfEvent,
     String? domainId,
     List<String?>? serviceIds,
     String? goalId,
@@ -192,8 +188,6 @@ class CptSafeFormData {
     String? completionDate,
   }) {
     return CptSafeFormData(
-      ovcCpimsId: ovcCpimsId ?? this.ovcCpimsId,
-      dateOfEvent: dateOfEvent ?? this.dateOfEvent,
       domainId: domainId ?? this.domainId,
       serviceIds: serviceIds ?? this.serviceIds,
       goalId: goalId ?? this.goalId,
@@ -208,9 +202,7 @@ class CptSafeFormData {
 
   @override
   String toString() {
-    return 'CptHealthFormData('
-        'ovcCpimsId: $ovcCpimsId, '
-        'dateOfEvent: $dateOfEvent, '
+    return 'CptSafeFormData('
         'domainId: $domainId, '
         'serviceIds: $serviceIds, '
         'goalId: $goalId, '
@@ -224,38 +216,34 @@ class CptSafeFormData {
 
   Map<String, dynamic> toJson() {
     return {
-      'ovcCpimsId': ovcCpimsId,
-      'dateOfEvent': dateOfEvent,
-      'domainId': domainId,
-      'serviceIds': serviceIds,
-      'goalId': goalId,
-      'gapId': gapId,
-      'priorityId': priorityId,
-      'responsibleIds': responsibleIds,
-      'resultsId': resultsId,
-      'reasonId': reasonId,
-      'completionDate': completionDate,
+      'domain_id': domainId,
+      'service_id': serviceIds,
+      'goal_id': goalId,
+      'gap_id': gapId,
+      'priority_id': priorityId,
+      'responsible_id': responsibleIds,
+      'results_id': resultsId,
+      'reason_id': reasonId,
+      'completion_date': completionDate,
     };
   }
 
   factory CptSafeFormData.fromJson(Map<String, dynamic> json) {
     return CptSafeFormData(
-      ovcCpimsId: json['ovcCpimsId'],
-      dateOfEvent: json['dateOfEvent'],
-      domainId: json['domainId'],
-      serviceIds: List<String?>.from(json['serviceIds']),
-      goalId: json['goalId'],
-      gapId: json['gapId'],
-      priorityId: json['priorityId'],
-      responsibleIds: List<String?>.from(json['responsibleIds']),
-      resultsId: json['resultsId'],
-      reasonId: json['reasonId'],
-      completionDate: json['completionDate'],
+      domainId: json['domain_id'],
+      serviceIds: List<String?>.from(json['service_id']),
+      goalId: json['goal_id'],
+      gapId: json['gap_id'],
+      priorityId: json['priority_id'],
+      responsibleIds: List<String?>.from(json['responsible_id']),
+      resultsId: json['results_id'],
+      reasonId: json['reason_id'],
+      completionDate: json['completion_date'],
     );
   }
 }
 
-CasePlanSafeModel mapCptSafeHealthFormDataToCasePlan(CptSafeFormData formData) {
+CasePlanSafeModel mapCptSafeFormDataToCasePlan(CptSafeFormData formData) {
   List<CasePlanServiceSafeModel> services = [];
   if (formData.serviceIds != null) {
     List<String?> combinedServiceIds = [];
@@ -281,12 +269,9 @@ CasePlanSafeModel mapCptSafeHealthFormDataToCasePlan(CptSafeFormData formData) {
   }
 
   return CasePlanSafeModel(
-    ovcCpimsId: formData.ovcCpimsId,
-    dateOfEvent: formData.dateOfEvent,
     services: services,
   );
 }
-
 
 CasePlanModel mapCasePlanSafeToCasePlan(CasePlanSafeModel safeModel) {
   // Map the services
@@ -317,5 +302,3 @@ CasePlanModel mapCasePlanSafeToCasePlan(CasePlanSafeModel safeModel) {
     services: services,
   );
 }
-
-

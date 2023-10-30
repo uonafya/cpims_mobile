@@ -1,38 +1,42 @@
-import 'package:cpims_mobile/screens/forms/form1b/utils/form1bConstants.dart';
-import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:multi_dropdown/models/value_item.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../providers/form1b_provider.dart';
+import '../../../../../providers/form1a_provider.dart';
+import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
+import '../../../form1b/utils/form1bConstants.dart';
+import '../../utils/form_1a_options.dart';
+import '../utils/form_one_a_provider.dart';
 
-class StableForm1b extends StatefulWidget {
-  const StableForm1b({super.key});
+class FormOneASafe extends StatefulWidget {
+  const FormOneASafe({super.key});
 
   @override
-  State<StableForm1b> createState() => _StableForm1bState();
+  State<FormOneASafe> createState() => _FormOneASafeState();
 }
 
-class _StableForm1bState extends State<StableForm1b> {
-  List<ValueItem> caregiverEconomicItems =
-      careGiverEconomicServices.map((service) {
+class _FormOneASafeState extends State<FormOneASafe> {
+  List<ValueItem> safeServicesOptions = safeServices.map((service) {
     return ValueItem(
         label: service['item_description'], value: service['item_id']);
   }).toList();
 
-  List<ValueItem> selectedCareGiverStableServices = [];
-  List<ValueItem> selectedCareGiverStableServicesOptions = [];
+  List<ValueItem> selectedSafeServicesOptions = [];
+  List<ValueItem> selectedSafeServicesOptionsOptions = [];
 
   @override
   Widget build(BuildContext context) {
-    Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
-    selectedCareGiverStableServicesOptions =
-        form1bProvider.stableFormData.selectedServices;
-    String domainId = domainsList[2]['item_id'];
+    Form1AProviderNew form1aProvider = Provider.of<Form1AProviderNew>(context);
+    selectedSafeServicesOptionsOptions =
+        form1aProvider.safeFormData.selectedServices;
+
+    String domainId = domainsList[3]['item_id'];
 
     return StepsWrapper(
-      title: 'Caregiver household economic strengthening status',
+      title: 'Safe',
       children: [
         const Text(
           'Service(s)',
@@ -43,14 +47,14 @@ class _StableForm1bState extends State<StableForm1b> {
           showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
-            selectedCareGiverStableServices = selectedServices;
-            form1bProvider.setSelectedStableFormDataServices(
-                selectedCareGiverStableServices, domainId);
+            selectedSafeServicesOptions = selectedServices;
+            form1aProvider.setSelectedSafeFormDataServices(
+                selectedSafeServicesOptions, domainId);
           },
-          options: caregiverEconomicItems,
+          options: safeServicesOptions,
           selectedOptions:
-              selectedCareGiverStableServicesOptions.cast<ValueItem>(),
-          maxItems: 50,
+              selectedSafeServicesOptionsOptions.cast<ValueItem>(),
+          maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
           chipConfig: const ChipConfig(wrapType: WrapType.wrap),

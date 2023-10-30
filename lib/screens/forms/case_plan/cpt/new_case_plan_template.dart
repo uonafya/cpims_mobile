@@ -1,16 +1,23 @@
+import 'dart:convert';
+
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/healthy_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/safe_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/schooled_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/stable_cpt.dart';
+import 'package:cpims_mobile/services/form_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../Models/case_load_model.dart';
+import '../../../../Models/caseplan_form_model.dart';
 import '../../../../constants.dart';
 import '../../../../widgets/app_bar.dart';
 import '../../../../widgets/custom_button.dart';
+import '../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../widgets/custom_stepper.dart';
 import '../../../../widgets/drawer.dart';
 import '../../../../widgets/footer.dart';
@@ -30,12 +37,12 @@ class CasePlanTemplateForm extends StatefulWidget {
 }
 
 class _Form1BScreen extends State<CasePlanTemplateForm> {
+  DateTime currentDateOfCasePlan = DateTime.now();
   int selectedStep = 0;
   List<Widget> steps = [];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     steps = [
       HealthyCasePlan(caseLoadModel: widget.caseLoad),
@@ -43,17 +50,32 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
       SchooledCasePlanTemplate(caseLoadModel: widget.caseLoad),
       StableCasePlan(caseLoadModel: widget.caseLoad),
     ];
-    // Future.delayed(Duration.zero, () {
-    //   Form1bProvider form1bProvider =
-    //   Provider.of<Form1bProvider>(context, listen: false);
-    //   form1bProvider.setFinalFormDataOvcId(widget.caseLoad.cpimsId!);
-    // });
+
+    currentDateOfCasePlan = DateTime.now();
   }
+
+  // Future<bool> saveCasePlanLocal(String jsonPayload) async {
+  //   try {
+  //     // Parse the JSON string into a Map
+  //     Map<String, dynamic> payload = json.decode(jsonPayload);
+  //
+  //     // Create a new CasePlanModel object from the Map
+  //     CasePlanModel casePlanModel = CasePlanModel.fromJson(payload);
+  //
+  //     // Save the CasePlanModel object to the local database
+  //     await CasePlanService.saveCasePlanLocal(casePlanModel);
+  //
+  //     return true; // Return true if the data was successfully saved.
+  //   } catch (e) {
+  //     print("Error saving case plan locally: $e");
+  //     return false; // Return false if there was an error.
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    // Form1bProvider form1bProvider =
-    // Provider.of<Form1bProvider>(context, listen: false);
+    CptProvider cptProvider = Provider.of<CptProvider>(context, listen: false);
+    bool isLastStep = selectedStep == steps.length - 1;
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -86,7 +108,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(10),
-                    width: double.infinity,
+                    width: MediaQuery.of(context).size.width,
                     color: Colors.black,
                     child: Text(
                       ' CASE PLAN TEMPLATE \n CARE GIVER: ${widget.caseLoad.caregiverNames} \n CPIMS NAME :${widget.caseLoad.ovcFirstName} ${widget.caseLoad.ovcSurname} \n CPIMS ID: ${widget.caseLoad.cpimsId}',
@@ -103,7 +125,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                               selectedStep = index;
                             });
                           },
-                          data: form1bsStepper,
+                          data: caseplanStepperTitles,
                           selectedIndex: selectedStep,
                         ),
                         const SizedBox(
@@ -112,6 +134,31 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                         steps[selectedStep],
                         const SizedBox(
                           height: 30,
+                        ),
+                        Visibility(
+                          visible: isLastStep,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Date of Event',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 10),
+                                CustomFormsDatePicker(
+                                    hintText: 'Select Date of CasePlan',
+                                    selectedDateTime: currentDateOfCasePlan,
+                                    onDateSelected: (DateTime date) {
+                                      setState(() {
+                                        currentDateOfCasePlan = date;
+                                      });
+                                    }),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                              ]),
                         ),
                         Row(
                           children: [
@@ -142,41 +189,256 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                     : 'Next',
                                 onTap: () async {
                                   if (selectedStep == steps.length - 1) {
-                                    // bool isFormSaved =
-                                    // await form1bProvider.saveForm1bData(
-                                    //   form1bProvider.formData,
-                                    // );
-                                    CptHealthFormData cptHealthFormData =
-                                        context
-                                                .read<CptProvider>()
-                                                .cptHealthFormData ??
-                                            CptHealthFormData();
-                                    CptSafeFormData cptSafeFormData = context
-                                            .read<CptProvider>()
-                                            .cptSafeFormData ??
-                                        CptSafeFormData();
-                                    CptStableFormData cptStableFormData =
-                                        context
-                                                .read<CptProvider>()
-                                                .cptStableFormData ??
-                                            CptStableFormData();
-                                    CasePlanschooledModel casePlanStableModel =
-                                        context
-                                                .read<CptProvider>()
-                                                .casePlanStableModel ??
-                                            CasePlanschooledModel();
-
-                                    print("Data colleced from each form");
-                                    print("Health $cptHealthFormData");
-                                    print("Safe $cptSafeFormData");
-                                    print("Stable $cptStableFormData");
-                                    print("Schooled $casePlanStableModel");
-
                                     try {
-                                      String? ovsId = context
-                                          .read<CptProvider>()
-                                          .caseLoadModel
-                                          ?.cpimsId;
+                                      String? ovsId = widget.caseLoad.cpimsId!;
+                                      String formattedDate =
+                                          currentDateOfCasePlan
+                                              .toIso8601String();
+
+                                      CptHealthFormData? cptHealthFormData =
+                                          context
+                                                  .read<CptProvider>()
+                                                  .cptHealthFormData ??
+                                              CptHealthFormData();
+                                      CptSafeFormData? cptSafeFormData = context
+                                              .read<CptProvider>()
+                                              .cptSafeFormData ??
+                                          CptSafeFormData();
+                                      CptStableFormData? cptStableFormData =
+                                          context
+                                                  .read<CptProvider>()
+                                                  .cptStableFormData ??
+                                              CptStableFormData();
+                                      CptschooledFormData? cptschooledFormData =
+                                          context
+                                                  .read<CptProvider>()
+                                                  .cptschooledFormData ??
+                                              CptschooledFormData();
+
+                                      print("Data colleced from each form");
+                                      print("Health $cptHealthFormData");
+                                      print("Safe $cptSafeFormData");
+                                      print("Stable $cptStableFormData");
+                                      print("Schooled $cptschooledFormData");
+
+                                      List<Map<String, dynamic>> servicesList = [];
+                                      if (cptHealthFormData != null &&
+                                          cptHealthFormData.serviceIds !=
+                                              null &&
+                                          cptHealthFormData.goalId != null &&
+                                          cptHealthFormData.gapId != null &&
+                                          cptHealthFormData.priorityId !=
+                                              null &&
+                                          cptHealthFormData.responsibleIds !=
+                                              null &&
+                                          cptHealthFormData.resultsId != null &&
+                                          cptHealthFormData.reasonId != null) {
+                                        Map<String, dynamic> healthService = {
+                                          'domain_id': "DHNU",
+                                          'service_id':
+                                              cptHealthFormData.serviceIds,
+                                          'goal_id': cptHealthFormData.goalId,
+                                          'gap_id': cptHealthFormData.gapId,
+                                          'priority_id':
+                                              cptHealthFormData.priorityId,
+                                          'responsible_id':
+                                              cptHealthFormData.responsibleIds,
+                                          'results_id':
+                                              cptHealthFormData.resultsId,
+                                          'reason_id':
+                                              cptHealthFormData.reasonId,
+                                          'completion_date':
+                                              cptHealthFormData.completionDate,
+                                        };
+                                        servicesList.add(healthService);
+                                      }
+
+                                      if (cptSafeFormData != null &&
+                                          cptSafeFormData.serviceIds != null &&
+                                          cptSafeFormData.goalId != null &&
+                                          cptSafeFormData.gapId != null &&
+                                          cptSafeFormData.priorityId != null &&
+                                          cptSafeFormData.responsibleIds !=
+                                              null &&
+                                          cptSafeFormData.resultsId != null &&
+                                          cptSafeFormData.reasonId != null) {
+                                        Map<String, dynamic> safeService = {
+                                          'domain_id': 'DPRO',
+                                          'service_id':
+                                              cptSafeFormData.serviceIds,
+                                          'goal_id': cptSafeFormData.goalId,
+                                          'gap_id': cptSafeFormData.gapId,
+                                          'priority_id':
+                                              cptSafeFormData.priorityId,
+                                          'responsible_id':
+                                              cptSafeFormData.responsibleIds,
+                                          'results_id':
+                                              cptSafeFormData.resultsId,
+                                          'reason_id': cptSafeFormData.reasonId,
+                                          'completion_date':
+                                              cptSafeFormData.completionDate,
+                                        };
+                                        servicesList.add(safeService);
+                                      }
+
+                                      if (cptStableFormData != null &&
+                                          cptStableFormData.serviceIds !=
+                                              null &&
+                                          cptStableFormData.goalId != null &&
+                                          cptStableFormData.gapId != null &&
+                                          cptStableFormData.priorityId !=
+                                              null &&
+                                          cptStableFormData.responsibleIds !=
+                                              null &&
+                                          cptStableFormData.resultsId != null &&
+                                          cptStableFormData.reasonId != null) {
+                                        Map<String, dynamic> stableService = {
+                                          'domain_id': 'DPRO',
+                                          'service_id':
+                                              cptStableFormData.serviceIds,
+                                          'goal_id': cptStableFormData.goalId,
+                                          'gap_id': cptStableFormData.gapId,
+                                          'priority_id':
+                                              cptStableFormData.priorityId,
+                                          'responsible_id':
+                                              cptStableFormData.responsibleIds,
+                                          'results_id':
+                                              cptStableFormData.resultsId,
+                                          'reason_id':
+                                              cptStableFormData.reasonId,
+                                          'completion_date':
+                                              cptStableFormData.completionDate,
+                                        };
+                                        servicesList.add(stableService);
+                                      }
+
+                                      if (cptschooledFormData != null &&
+                                          cptschooledFormData.serviceIds !=
+                                              null &&
+                                          cptschooledFormData.goalId != null &&
+                                          cptschooledFormData.gapId != null &&
+                                          cptschooledFormData.priorityId !=
+                                              null &&
+                                          cptschooledFormData.responsibleIds !=
+                                              null &&
+                                          cptschooledFormData.resultsId !=
+                                              null &&
+                                          cptschooledFormData.reasonId !=
+                                              null) {
+                                        Map<String, dynamic> schooledService = {
+                                          'domain_id': 'DEDU',
+                                          'service_id':
+                                              cptschooledFormData.serviceIds,
+                                          'goal_id': cptschooledFormData.goalId,
+                                          'gap_id': cptschooledFormData.gapId,
+                                          'priority_id':
+                                              cptschooledFormData.priorityId,
+                                          'responsible_id': cptschooledFormData
+                                              .responsibleIds,
+                                          'results_id':
+                                              cptschooledFormData.resultsId,
+                                          'reason_id':
+                                              cptschooledFormData.reasonId,
+                                          'completion_date': cptschooledFormData
+                                              .completionDate,
+                                        };
+                                        servicesList.add(schooledService);
+                                      }
+                                      debugPrint("HERE AEE THE SERVICES ${servicesList}");
+
+                                      Map<String, dynamic> payload = {
+                                        'ovc_cpims_id': ovsId,
+                                        'date_of_event': formattedDate,
+                                        'services': servicesList,
+                                      };
+                                      print(
+                                          "Final payload is${jsonEncode(payload)}");
+                                      print(
+                                          "Final payload is not json $payload");
+                                      CasePlanService.saveCasePlanLocal(jsonEncode(payload));
+                                      CasePlanService.saveCasePlanLocal(CasePlanModel.fromJson(payload));
+
+
+                                      //save to server
+                                      // Future<void> postCasePlansToServer() async {
+                                      //   List<Map<String, dynamic>> caseplanFromDbData =
+                                      //   await CasePlanService.getAllCasePlans();
+                                      //   List<CasePlanModel> caseplanFromDb =
+                                      //   caseplanFromDbData.map((map) => CasePlanModel.fromJson(map)).toList();
+                                      //
+                                      //   var prefs = await SharedPreferences.getInstance();
+                                      //   var accessToken = prefs.getString('access');
+                                      //   String bearerAuth = "Bearer $accessToken";
+                                      //   Dio dio = Dio();
+                                      //   dio.interceptors.add(LogInterceptor());
+                                      //   Database db = await LocalDb.instance.database;
+                                      //
+                                      //   int successfulFormCount = 0;
+                                      //
+                                      //   for (var caseplan in caseplanFromDb) {
+                                      //     var payload = caseplan.toJson();
+                                      //     try {
+                                      //       const cptEndpoint = "cpt/";
+                                      //       var response = await dio.post("https://dev.cpims.net/mobile/cpt/",
+                                      //           data: payload,
+                                      //           options: Options(headers: {"Authorization": bearerAuth}));
+                                      //
+                                      //       if (response.statusCode == 201) {
+                                      //         updateFormCasePlanDateSync(caseplan.id!, db);
+                                      //         successfulFormCount++;
+                                      //         if (successfulFormCount == caseplanFromDb.length) {
+                                      //           Get.snackbar(
+                                      //             'Success',
+                                      //             'Successfully synced all CasePlan forms',
+                                      //             backgroundColor: Colors.green,
+                                      //             colorText: Colors.white,
+                                      //           );
+                                      //         }
+                                      //       }
+                                      //     } catch (e) {
+                                      //       print("The error is $e");
+                                      //       Get.snackbar(
+                                      //         'Error',
+                                      //         'Failed to sync CasePlan forms',
+                                      //         backgroundColor: Colors.red,
+                                      //         colorText: Colors.white,
+                                      //       );
+                                      //     }
+                                      //   }
+                                      // }
+                                      Dio dio = Dio();
+                                      dio.interceptors.add(LogInterceptor());
+                                      var prefs =
+                                          await SharedPreferences.getInstance();
+                                      var accessToken = prefs.getString('access');
+                                      String bearerAuth = "Bearer $accessToken";
+
+                                      try{
+                                        var response = await dio.post("https://dev.cpims.net/mobile/cpt/",
+                                            data: payload,
+                                            options: Options(headers: {"Authorization": bearerAuth}));
+                                        print("The response is ${response.data}");
+
+
+                                      }catch(e){
+                                        print("The error is ${e.toString()}");
+                                      }
+
+
+                                      //save here to local
+                                      // saveCasePlanLocal(jsonEncode(payload));
+
+                                      //json data
+                                      // CasePlanModel casePlanModel =
+                                      //     CasePlanModel.fromJson(payload);
+                                      //
+                                      // //save caseplan locally
+                                      // CasePlanService.saveCasePlanLocal();
+                                      //save caseplan to server
+
+                                      //save this to db
+                                      // bool isFormSaved = await cptProvider
+                                      //     .saveCasePlanData(payload);
                                     } catch (e) {
                                       debugPrint(e.toString());
                                     }

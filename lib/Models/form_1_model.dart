@@ -4,13 +4,15 @@ class Form1DataModel {
   final String date_of_event;
   final List<Form1ServicesModel> services;
   final List<Form1CriticalEventsModel> criticalEvents;
+  final String? collected_at;
 
   Form1DataModel({
-     this.id,
+    this.id,
     required this.ovcCpimsId,
     required this.date_of_event,
     required this.services,
     required this.criticalEvents,
+    this.collected_at,
   });
 
   factory Form1DataModel.fromJson(Map<String, dynamic> json) {
@@ -35,6 +37,7 @@ class Form1DataModel {
       date_of_event: json['date_of_event'] as String,
       services: services,
       criticalEvents: criticalEvents,
+      collected_at: json['collected_at'],
     );
   }
 
@@ -44,6 +47,7 @@ class Form1DataModel {
       'date_of_event': date_of_event,
       'services': services.map((service) => service.toJson()).toList(),
       'critical_events': criticalEvents.map((event) => event.toJson()).toList(),
+      'collected_at': collected_at,
     };
   }
 
@@ -57,10 +61,9 @@ class Form1DataModel {
   }
 
 
-
   @override
   String toString() {
-    return 'Form1DataModel{ovcCpimsId: $ovcCpimsId, date_of_event: $date_of_event, services: $services, criticalEvents: $criticalEvents}';
+    return 'Form1DataModel{ovcCpimsId: $ovcCpimsId, date_of_event: $date_of_event, services: $services, criticalEvents: $criticalEvents} , collected_at: $collected_at';
   }
 }
 
