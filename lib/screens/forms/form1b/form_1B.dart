@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/form1b_provider.dart';
 import '../../../widgets/custom_toast.dart';
+import '../../homepage/provider/stats_provider.dart';
 import '../form1a/form1A_history.dart';
 
 class Form1BScreen extends StatefulWidget {
@@ -148,6 +149,11 @@ class _Form1BScreen extends State<Form1BScreen> {
                                     );
                                     setState(() {
                                       if (isFormSaved == true) {
+                                        if(context.mounted){
+                                          context
+                                              .read<StatsProvider>()
+                                              .updateCparaFormStats();
+                                        }
                                         CustomToastWidget.showToast(
                                             "Form saved successfully");
                                         Navigator.pop(context);
