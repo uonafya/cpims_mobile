@@ -216,29 +216,29 @@ class CptSafeFormData {
 
   Map<String, dynamic> toJson() {
     return {
-      'domainId': domainId,
-      'serviceIds': serviceIds,
-      'goalId': goalId,
-      'gapId': gapId,
-      'priorityId': priorityId,
-      'responsibleIds': responsibleIds,
-      'resultsId': resultsId,
-      'reasonId': reasonId,
-      'completionDate': completionDate,
+      'domain_id': domainId,
+      'service_id': serviceIds,
+      'goal_id': goalId,
+      'gap_id': gapId,
+      'priority_id': priorityId,
+      'responsible_id': responsibleIds,
+      'results_id': resultsId,
+      'reason_id': reasonId,
+      'completion_date': completionDate,
     };
   }
 
   factory CptSafeFormData.fromJson(Map<String, dynamic> json) {
     return CptSafeFormData(
-      domainId: json['domainId'],
-      serviceIds: List<String?>.from(json['serviceIds']),
-      goalId: json['goalId'],
-      gapId: json['gapId'],
-      priorityId: json['priorityId'],
-      responsibleIds: List<String?>.from(json['responsibleIds']),
-      resultsId: json['resultsId'],
-      reasonId: json['reasonId'],
-      completionDate: json['completionDate'],
+      domainId: json['domain_id'],
+      serviceIds: List<String?>.from(json['service_id']),
+      goalId: json['goal_id'],
+      gapId: json['gap_id'],
+      priorityId: json['priority_id'],
+      responsibleIds: List<String?>.from(json['responsible_id']),
+      resultsId: json['results_id'],
+      reasonId: json['reason_id'],
+      completionDate: json['completion_date'],
     );
   }
 }

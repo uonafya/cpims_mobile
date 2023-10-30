@@ -435,6 +435,15 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
         },
       ),
       const SizedBox(height: 10),
+      const Row(
+        children: [
+          Text(
+            'Reasons',
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+      const SizedBox(height: 10),
       CustomTextField(
         hintText: 'Please Write the Reasons',
         controller: textEditingController,

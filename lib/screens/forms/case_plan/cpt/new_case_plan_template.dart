@@ -6,9 +6,11 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/safe_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/schooled_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/stable_cpt.dart';
 import 'package:cpims_mobile/services/form_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../Models/case_load_model.dart';
 import '../../../../Models/caseplan_form_model.dart';
@@ -52,23 +54,23 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
     currentDateOfCasePlan = DateTime.now();
   }
 
-  Future<bool> saveCasePlanLocal(String jsonPayload) async {
-    try {
-      // Parse the JSON string into a Map
-      Map<String, dynamic> payload = json.decode(jsonPayload);
-
-      // Create a new CasePlanModel object from the Map
-      CasePlanModel casePlanModel = CasePlanModel.fromJson(payload);
-
-      // Save the CasePlanModel object to the local database
-      await CasePlanService.saveCasePlanLocal(casePlanModel);
-
-      return true; // Return true if the data was successfully saved.
-    } catch (e) {
-      print("Error saving case plan locally: $e");
-      return false; // Return false if there was an error.
-    }
-  }
+  // Future<bool> saveCasePlanLocal(String jsonPayload) async {
+  //   try {
+  //     // Parse the JSON string into a Map
+  //     Map<String, dynamic> payload = json.decode(jsonPayload);
+  //
+  //     // Create a new CasePlanModel object from the Map
+  //     CasePlanModel casePlanModel = CasePlanModel.fromJson(payload);
+  //
+  //     // Save the CasePlanModel object to the local database
+  //     await CasePlanService.saveCasePlanLocal(casePlanModel);
+  //
+  //     return true; // Return true if the data was successfully saved.
+  //   } catch (e) {
+  //     print("Error saving case plan locally: $e");
+  //     return false; // Return false if there was an error.
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -219,8 +221,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                       print("Stable $cptStableFormData");
                                       print("Schooled $cptschooledFormData");
 
-                                      List<Map<String, dynamic>> servicesList =
-                                          [];
+                                      List<Map<String, dynamic>> servicesList = [];
                                       if (cptHealthFormData != null &&
                                           cptHealthFormData.serviceIds !=
                                               null &&
@@ -233,20 +234,20 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                           cptHealthFormData.resultsId != null &&
                                           cptHealthFormData.reasonId != null) {
                                         Map<String, dynamic> healthService = {
-                                          'domainId': "DHNU",
-                                          'serviceIds':
+                                          'domain_id': "DHNU",
+                                          'service_id':
                                               cptHealthFormData.serviceIds,
-                                          'goalId': cptHealthFormData.goalId,
-                                          'gapId': cptHealthFormData.gapId,
-                                          'priorityId':
+                                          'goal_id': cptHealthFormData.goalId,
+                                          'gap_id': cptHealthFormData.gapId,
+                                          'priority_id':
                                               cptHealthFormData.priorityId,
-                                          'responsibleIds':
+                                          'responsible_id':
                                               cptHealthFormData.responsibleIds,
-                                          'resultsId':
+                                          'results_id':
                                               cptHealthFormData.resultsId,
-                                          'reasonId':
+                                          'reason_id':
                                               cptHealthFormData.reasonId,
-                                          'completionDate':
+                                          'completion_date':
                                               cptHealthFormData.completionDate,
                                         };
                                         servicesList.add(healthService);
@@ -262,19 +263,19 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                           cptSafeFormData.resultsId != null &&
                                           cptSafeFormData.reasonId != null) {
                                         Map<String, dynamic> safeService = {
-                                          'domainId': 'DPRO',
-                                          'serviceIds':
+                                          'domain_id': 'DPRO',
+                                          'service_id':
                                               cptSafeFormData.serviceIds,
-                                          'goalId': cptSafeFormData.goalId,
-                                          'gapId': cptSafeFormData.gapId,
-                                          'priorityId':
+                                          'goal_id': cptSafeFormData.goalId,
+                                          'gap_id': cptSafeFormData.gapId,
+                                          'priority_id':
                                               cptSafeFormData.priorityId,
-                                          'responsibleIds':
+                                          'responsible_id':
                                               cptSafeFormData.responsibleIds,
-                                          'resultsId':
+                                          'results_id':
                                               cptSafeFormData.resultsId,
-                                          'reasonId': cptSafeFormData.reasonId,
-                                          'completionDate':
+                                          'reason_id': cptSafeFormData.reasonId,
+                                          'completion_date':
                                               cptSafeFormData.completionDate,
                                         };
                                         servicesList.add(safeService);
@@ -292,20 +293,20 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                           cptStableFormData.resultsId != null &&
                                           cptStableFormData.reasonId != null) {
                                         Map<String, dynamic> stableService = {
-                                          'domainId': 'DPRO',
-                                          'serviceIds':
+                                          'domain_id': 'DPRO',
+                                          'service_id':
                                               cptStableFormData.serviceIds,
-                                          'goalId': cptStableFormData.goalId,
-                                          'gapId': cptStableFormData.gapId,
-                                          'priorityId':
+                                          'goal_id': cptStableFormData.goalId,
+                                          'gap_id': cptStableFormData.gapId,
+                                          'priority_id':
                                               cptStableFormData.priorityId,
-                                          'responsibleIds':
+                                          'responsible_id':
                                               cptStableFormData.responsibleIds,
-                                          'resultsId':
+                                          'results_id':
                                               cptStableFormData.resultsId,
-                                          'reasonId':
+                                          'reason_id':
                                               cptStableFormData.reasonId,
-                                          'completionDate':
+                                          'completion_date':
                                               cptStableFormData.completionDate,
                                         };
                                         servicesList.add(stableService);
@@ -325,24 +326,25 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                           cptschooledFormData.reasonId !=
                                               null) {
                                         Map<String, dynamic> schooledService = {
-                                          'domainId': 'DEDU',
-                                          'serviceIds':
+                                          'domain_id': 'DEDU',
+                                          'service_id':
                                               cptschooledFormData.serviceIds,
-                                          'goalId': cptschooledFormData.goalId,
-                                          'gapId': cptschooledFormData.gapId,
-                                          'priorityId':
+                                          'goal_id': cptschooledFormData.goalId,
+                                          'gap_id': cptschooledFormData.gapId,
+                                          'priority_id':
                                               cptschooledFormData.priorityId,
-                                          'responsibleIds': cptschooledFormData
+                                          'responsible_id': cptschooledFormData
                                               .responsibleIds,
-                                          'resultsId':
+                                          'results_id':
                                               cptschooledFormData.resultsId,
-                                          'reasonId':
+                                          'reason_id':
                                               cptschooledFormData.reasonId,
-                                          'completionDate': cptschooledFormData
+                                          'completion_date': cptschooledFormData
                                               .completionDate,
                                         };
                                         servicesList.add(schooledService);
                                       }
+                                      debugPrint("HERE AEE THE SERVICES ${servicesList}");
 
                                       Map<String, dynamic> payload = {
                                         'ovc_cpims_id': ovsId,
@@ -353,10 +355,78 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                           "Final payload is${jsonEncode(payload)}");
                                       print(
                                           "Final payload is not json $payload");
+                                      CasePlanService.saveCasePlanLocal(jsonEncode(payload));
+                                      CasePlanService.saveCasePlanLocal(CasePlanModel.fromJson(payload));
+
+
+                                      //save to server
+                                      // Future<void> postCasePlansToServer() async {
+                                      //   List<Map<String, dynamic>> caseplanFromDbData =
+                                      //   await CasePlanService.getAllCasePlans();
+                                      //   List<CasePlanModel> caseplanFromDb =
+                                      //   caseplanFromDbData.map((map) => CasePlanModel.fromJson(map)).toList();
+                                      //
+                                      //   var prefs = await SharedPreferences.getInstance();
+                                      //   var accessToken = prefs.getString('access');
+                                      //   String bearerAuth = "Bearer $accessToken";
+                                      //   Dio dio = Dio();
+                                      //   dio.interceptors.add(LogInterceptor());
+                                      //   Database db = await LocalDb.instance.database;
+                                      //
+                                      //   int successfulFormCount = 0;
+                                      //
+                                      //   for (var caseplan in caseplanFromDb) {
+                                      //     var payload = caseplan.toJson();
+                                      //     try {
+                                      //       const cptEndpoint = "cpt/";
+                                      //       var response = await dio.post("https://dev.cpims.net/mobile/cpt/",
+                                      //           data: payload,
+                                      //           options: Options(headers: {"Authorization": bearerAuth}));
+                                      //
+                                      //       if (response.statusCode == 201) {
+                                      //         updateFormCasePlanDateSync(caseplan.id!, db);
+                                      //         successfulFormCount++;
+                                      //         if (successfulFormCount == caseplanFromDb.length) {
+                                      //           Get.snackbar(
+                                      //             'Success',
+                                      //             'Successfully synced all CasePlan forms',
+                                      //             backgroundColor: Colors.green,
+                                      //             colorText: Colors.white,
+                                      //           );
+                                      //         }
+                                      //       }
+                                      //     } catch (e) {
+                                      //       print("The error is $e");
+                                      //       Get.snackbar(
+                                      //         'Error',
+                                      //         'Failed to sync CasePlan forms',
+                                      //         backgroundColor: Colors.red,
+                                      //         colorText: Colors.white,
+                                      //       );
+                                      //     }
+                                      //   }
+                                      // }
+                                      Dio dio = Dio();
+                                      dio.interceptors.add(LogInterceptor());
+                                      var prefs =
+                                          await SharedPreferences.getInstance();
+                                      var accessToken = prefs.getString('access');
+                                      String bearerAuth = "Bearer $accessToken";
+
+                                      try{
+                                        var response = await dio.post("https://dev.cpims.net/mobile/cpt/",
+                                            data: payload,
+                                            options: Options(headers: {"Authorization": bearerAuth}));
+                                        print("The response is ${response.data}");
+
+
+                                      }catch(e){
+                                        print("The error is ${e.toString()}");
+                                      }
+
 
                                       //save here to local
-                                      saveCasePlanLocal(jsonEncode(payload));
-
+                                      // saveCasePlanLocal(jsonEncode(payload));
 
                                       //json data
                                       // CasePlanModel casePlanModel =
