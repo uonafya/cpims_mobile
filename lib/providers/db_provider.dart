@@ -570,6 +570,7 @@ class LocalDb {
             'ovc_cpims_id': casePlan.ovcCpimsId,
             'date_of_event': casePlan.dateOfEvent,
             'form_date_synced': null,
+
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
@@ -603,6 +604,7 @@ class LocalDb {
       return false;
     }
   }
+
 
   Future<CasePlanModel?> getCasePlanById(String ovcCpimsId) async {
     try {
