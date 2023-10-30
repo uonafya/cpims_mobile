@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../../../../Models/caseplan_form_model.dart';
 import 'healthy_cpt_model.dart';
 
@@ -287,12 +289,11 @@ CasePlanStableModel mapCptStableFormDataToCasePlan(CptStableFormData formData) {
   );
 }
 
-
-CasePlanModel mapCasePlanStableToCasePlan(CasePlanStableModel StableModel) {
+CasePlanModel mapCasePlanStableToCasePlan(CasePlanStableModel stableModel) {
   // Map the services
   List<CasePlanServiceModel> services = [];
-  if (StableModel.services != null) {
-    for (CasePlanServiceStableModel serviceStable in StableModel.services!) {
+  if (stableModel.services != null) {
+    for (CasePlanServiceStableModel serviceStable in stableModel.services!) {
       // Convert serviceHealthy to serviceModel
       List<String?> serviceIds = serviceStable.serviceIds;
       CasePlanServiceModel serviceModel = CasePlanServiceModel(
@@ -311,11 +312,9 @@ CasePlanModel mapCasePlanStableToCasePlan(CasePlanStableModel StableModel) {
   }
 
   return CasePlanModel(
-    id: StableModel.id,
-    ovcCpimsId: StableModel.ovcCpimsId ?? "",
-    dateOfEvent: StableModel.dateOfEvent ?? "",
+    id: stableModel.id,
+    ovcCpimsId: stableModel.ovcCpimsId ?? "",
+    dateOfEvent: DateTime.parse(jsonDecode(stableModel.dateOfEvent!)),
     services: services,
   );
 }
-
-

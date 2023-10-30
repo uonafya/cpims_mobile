@@ -1,7 +1,7 @@
 class CasePlanModel {
   final int? id;
   late final String ovcCpimsId;
-  late final String dateOfEvent;
+  late final DateTime dateOfEvent;
   late final List<CasePlanServiceModel> services;
 
   CasePlanModel({
@@ -23,7 +23,7 @@ class CasePlanModel {
     return CasePlanModel(
       id: json['id'],
       ovcCpimsId: json['ovc_cpims_id'] as String,
-      dateOfEvent: json['date_of_event'] as String,
+      dateOfEvent: json['date_of_event'],
       services: services,
     );
   }

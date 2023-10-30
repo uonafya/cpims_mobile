@@ -47,15 +47,12 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
       StableCasePlan(caseLoadModel: widget.caseLoad),
     ];
 
-    currentDateOfCasePlan = cptStableFormData.dateOfEvent != null
-        ? DateTime.parse(cptStableFormData.dateOfEvent!)
-        : currentDateOfCasePlan;
+    currentDateOfCasePlan = DateTime.now();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Form1bProvider form1bProvider =
-    // Provider.of<Form1bProvider>(context, listen: false);
+    CptProvider cptProvider = Provider.of<CptProvider>(context, listen: false);
     bool isLastStep = selectedStep == steps.length - 1;
     return Scaffold(
       appBar: customAppBar(),
@@ -124,16 +121,17 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                 const Text(
                                   'Date of Event',
                                   style: TextStyle(
-                                      fontSize: 12, fontWeight: FontWeight.bold),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 10),
                                 CustomFormsDatePicker(
                                     hintText: 'Select Date of CasePlan',
-                                    selectedDateTime:
-                                    form1AProvider.formData.selectedDate,
-                                    onDateSelected: (selectedDate) {
-                                      form1AProvider
-                                          .setSelectedDate(selectedDate);
+                                    selectedDateTime: currentDateOfCasePlan,
+                                    onDateSelected: (DateTime date) {
+                                      setState(() {
+                                        currentDateOfCasePlan = date;
+                                      });
                                     }),
                                 const SizedBox(
                                   height: 15,
@@ -162,9 +160,6 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                             const SizedBox(
                               width: 50,
                             ),
-
-
-
                             Expanded(
                               child: CustomButton(
                                 text: selectedStep == steps.length - 1

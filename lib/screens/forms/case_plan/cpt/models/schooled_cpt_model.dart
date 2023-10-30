@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../../../../Models/caseplan_form_model.dart';
 import 'healthy_cpt_model.dart';
 
@@ -313,7 +315,7 @@ CasePlanModel mapCasePlanschooledToCasePlan(CasePlanschooledModel schooledModel)
   return CasePlanModel(
     id: schooledModel.id,
     ovcCpimsId: schooledModel.ovcCpimsId ?? "",
-    dateOfEvent: schooledModel.dateOfEvent ?? "",
+    dateOfEvent: DateTime.parse(jsonDecode(schooledModel.dateOfEvent!)),
     services: services,
   );
 }

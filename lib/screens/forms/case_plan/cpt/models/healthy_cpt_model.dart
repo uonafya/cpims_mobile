@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../../../../Models/caseplan_form_model.dart';
 
 class CasePlanHealthyModel {
@@ -312,7 +314,7 @@ CasePlanModel mapCasePlanHealthyToCasePlan(CasePlanHealthyModel healthyModel) {
   return CasePlanModel(
     id: healthyModel.id,
     ovcCpimsId: healthyModel.ovcCpimsId ?? "",
-    dateOfEvent: healthyModel.dateOfEvent ?? "",
+    dateOfEvent: DateTime.parse(jsonDecode(healthyModel.dateOfEvent!)),
     services: services,
   );
 }

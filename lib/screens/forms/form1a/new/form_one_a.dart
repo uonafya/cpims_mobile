@@ -96,7 +96,7 @@ class _FomOneAState extends State<FomOneA> {
                   width: double.infinity,
                   color: Colors.black,
                   child: Text(
-                    ' FORM 1B DETAILS \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n CPIMS ID: ${widget.caseLoadModel.cpimsId}',
+                    ' FORM 1A DETAILS \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n CPIMS ID: ${widget.caseLoadModel.cpimsId}',
                     style: const TextStyle(color: Colors.white),
                   ),
                 ),

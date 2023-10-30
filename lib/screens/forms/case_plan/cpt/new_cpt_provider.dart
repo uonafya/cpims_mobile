@@ -4,6 +4,7 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/stable_cpt_model
 import 'package:flutter/cupertino.dart';
 
 import '../../../../Models/case_load_model.dart';
+import '../../../../Models/caseplan_form_model.dart';
 import '../utils/case_plan_dummy_data.dart';
 import 'models/schooled_cpt_model.dart';
 
@@ -55,6 +56,8 @@ class CptProvider extends ChangeNotifier {
 
   CptHealthFormData get cptHealth => cptHealthFormData!;
 
+  late CasePlanModel casePlanModel;
+
   void updateCptFormData(CptHealthFormData cptHealthFormData) {
     this.cptHealthFormData = cptHealthFormData;
     notifyListeners();
@@ -80,11 +83,17 @@ class CptProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateDateOfCasePlan(DateTime? dateOfCasePlan) {
+    this.casePlanModel.dateOfEvent = dateOfCasePlan!;
+    notifyListeners();
+  }
+
   void clearProviderData() {
     casePlanHealthyModel = null;
     cptHealthFormData = null;
     casePlanSafeModel = null;
     cptSafeFormData = null;
+    casePlanStableModel = null;
     notifyListeners();
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../../../../Models/caseplan_form_model.dart';
 import 'healthy_cpt_model.dart';
 
@@ -313,7 +315,7 @@ CasePlanModel mapCasePlanSafeToCasePlan(CasePlanSafeModel safeModel) {
   return CasePlanModel(
     id: safeModel.id,
     ovcCpimsId: safeModel.ovcCpimsId ?? "",
-    dateOfEvent: safeModel.dateOfEvent ?? "",
+    dateOfEvent: DateTime.parse(jsonDecode(safeModel.dateOfEvent!)),
     services: services,
   );
 }
