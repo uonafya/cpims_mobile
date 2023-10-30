@@ -347,8 +347,6 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                         };
                                         servicesList.add(schooledService);
                                       }
-                                      debugPrint(
-                                          "HERE AEE THE SERVICES ${servicesList}");
 
                                       Map<String, dynamic> payload = {
                                         'ovc_cpims_id': ovsId,
@@ -381,89 +379,6 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                         );
                                         Navigator.pop(context);
                                       }
-
-                                      //save to server
-                                      // Future<void> postCasePlansToServer() async {
-                                      //   List<Map<String, dynamic>> caseplanFromDbData =
-                                      //   await CasePlanService.getAllCasePlans();
-                                      //   List<CasePlanModel> caseplanFromDb =
-                                      //   caseplanFromDbData.map((map) => CasePlanModel.fromJson(map)).toList();
-                                      //
-                                      //   var prefs = await SharedPreferences.getInstance();
-                                      //   var accessToken = prefs.getString('access');
-                                      //   String bearerAuth = "Bearer $accessToken";
-                                      //   Dio dio = Dio();
-                                      //   dio.interceptors.add(LogInterceptor());
-                                      //   Database db = await LocalDb.instance.database;
-                                      //
-                                      //   int successfulFormCount = 0;
-                                      //
-                                      //   for (var caseplan in caseplanFromDb) {
-                                      //     var payload = caseplan.toJson();
-                                      //     try {
-                                      //       const cptEndpoint = "cpt/";
-                                      //       var response = await dio.post("https://dev.cpims.net/mobile/cpt/",
-                                      //           data: payload,
-                                      //           options: Options(headers: {"Authorization": bearerAuth}));
-                                      //
-                                      //       if (response.statusCode == 201) {
-                                      //         updateFormCasePlanDateSync(caseplan.id!, db);
-                                      //         successfulFormCount++;
-                                      //         if (successfulFormCount == caseplanFromDb.length) {
-                                      //           Get.snackbar(
-                                      //             'Success',
-                                      //             'Successfully synced all CasePlan forms',
-                                      //             backgroundColor: Colors.green,
-                                      //             colorText: Colors.white,
-                                      //           );
-                                      //         }
-                                      //       }
-                                      //     } catch (e) {
-                                      //       print("The error is $e");
-                                      //       Get.snackbar(
-                                      //         'Error',
-                                      //         'Failed to sync CasePlan forms',
-                                      //         backgroundColor: Colors.red,
-                                      //         colorText: Colors.white,
-                                      //       );
-                                      //     }
-                                      //   }
-                                      // }
-                                      Dio dio = Dio();
-                                      dio.interceptors.add(LogInterceptor());
-                                      var prefs =
-                                          await SharedPreferences.getInstance();
-                                      var accessToken =
-                                          prefs.getString('access');
-                                      String bearerAuth = "Bearer $accessToken";
-
-                                      try {
-                                        var response = await dio.post(
-                                            "https://dev.cpims.net/mobile/cpt/",
-                                            data: payload,
-                                            options: Options(headers: {
-                                              "Authorization": bearerAuth
-                                            }));
-                                        print(
-                                            "The response is ${response.data}");
-                                      } catch (e) {
-                                        print("The error is ${e.toString()}");
-                                      }
-
-                                      //save here to local
-                                      // saveCasePlanLocal(jsonEncode(payload));
-
-                                      //json data
-                                      // CasePlanModel casePlanModel =
-                                      //     CasePlanModel.fromJson(payload);
-                                      //
-                                      // //save caseplan locally
-                                      // CasePlanService.saveCasePlanLocal();
-                                      //save caseplan to server
-
-                                      //save this to db
-                                      // bool isFormSaved = await cptProvider
-                                      //     .saveCasePlanData(payload);
                                     } catch (e) {
                                       debugPrint(e.toString());
                                     }

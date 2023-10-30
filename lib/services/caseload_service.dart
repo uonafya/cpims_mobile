@@ -8,7 +8,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../providers/auth_provider.dart';
 
 class CaseLoadService {
   Future<void> fetchCaseLoadData({
@@ -71,10 +74,15 @@ class CaseLoadService {
         if (kDebugMode) {
           print("We have an issue");
         }
+        if (context.mounted) {
+          await Provider.of<AuthProvider>(context, listen: false)
+              .logOut(context);
+        }
       }
     } catch (e) {
       if (context.mounted) {
         errorSnackBar(context, e.toString());
+        await Provider.of<AuthProvider>(context, listen: false).logOut(context);
       }
     } finally {
       Navigator.of(context).pop(); // Dismiss the loading indicator
