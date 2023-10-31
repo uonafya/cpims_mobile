@@ -417,6 +417,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
         ),
         const SizedBox(height: 10),
         CustomFormsDatePicker(
+          allowPastDates: false,
           hintText: 'Select the date',
           selectedDateTime: completionDate,
           onDateSelected: (selectedDate) {

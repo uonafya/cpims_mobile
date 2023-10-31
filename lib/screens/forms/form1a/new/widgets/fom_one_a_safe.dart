@@ -50,6 +50,8 @@ class _FormOneASafeState extends State<FormOneASafe> {
             selectedSafeServicesOptions = selectedServices;
             form1aProvider.setSelectedSafeFormDataServices(
                 selectedSafeServicesOptions, domainId);
+            debugPrint(
+                'selectedSafeServicesOptions: $selectedSafeServicesOptions');
           },
           options: safeServicesOptions,
           selectedOptions:

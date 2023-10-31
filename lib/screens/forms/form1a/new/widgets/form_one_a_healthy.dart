@@ -50,6 +50,8 @@ class _FormOneAHealthy extends State<FormOneAHealthy> {
             selectedCareGiverServices = selectedServices;
             form1aProvider.setSelectedHealthServices(
                 selectedCareGiverServices, healthDomainId);
+            debugPrint('selectedCareGiverServices: $selectedCareGiverServices');
+
           },
           options: healthServices,
           maxItems: 13,

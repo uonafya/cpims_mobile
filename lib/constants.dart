@@ -224,6 +224,13 @@ List drawerOptions(BuildContext context) {
   ];
 }
 
+//function to return device id
+Future<String> getDeviceId() async {
+  const _androidIdPlugin = AndroidId();
+  final String? androidId = await _androidIdPlugin.getId();
+  return androidId!;
+}
+
 List<String> graphTitles = [
   'Case Managenent(Last 21 Days)',
   'IP/LIP Case Load Summary(Last 30 Days)',
@@ -309,7 +316,7 @@ void errorSnackBar(BuildContext context, String message, {Duration duration = co
 }
 
 class AppVersionUtil {
-  static String appVersion = '1.1.0';
+  static String appVersion = '1.1.1';
   static String buildNumber = '1';
   static String appName = 'CPIMS Mobile';
   static String packageName = 'com.healthitkenya.cpims';

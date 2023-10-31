@@ -56,9 +56,7 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     super.initState();
     showCountUnsyncedForms();
-    context
-        .read<StatsProvider>()
-        .updateFormStats();
+    context.read<StatsProvider>().updateFormStats();
     syncWorkflows();
   }
 
@@ -91,6 +89,7 @@ class _HomepageState extends State<Homepage> {
 
         if (response.statusCode == 201) {
           updateFormCasePlanDateSync(caseplan.id!, db);
+          //clear caseplan data in provider
           successfulFormCount++;
           if (successfulFormCount == caseplanFromDb.length) {
             Get.snackbar(
@@ -105,7 +104,7 @@ class _HomepageState extends State<Homepage> {
         print("The error is $e");
         Get.snackbar(
           'Error',
-          'Failed to sync CasePlan forms',
+          'An error occurred $e',
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
@@ -145,13 +144,12 @@ class _HomepageState extends State<Homepage> {
     if (isConnected) {
       await submitCparaToUpstream();
       await postCasePlansToServer();
-     fetchAndPostToServerOvcSubpopulationData();
-     postFormOneToServer();
+      // fetchAndPostToServerOvcSubpopulationData();
+      fetchAndPostToServerOvcSubpopulationDataNew();
+      postFormOneToServer();
       await showCountUnsyncedForms();
-      if(mounted) {
-        context
-            .read<StatsProvider>()
-            .updateFormStats();
+      if (mounted) {
+        context.read<StatsProvider>().updateFormStats();
       }
     }
   }
@@ -186,205 +184,208 @@ class _HomepageState extends State<Homepage> {
         ),
       );
     }
-
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: customAppBar(),
-      drawer: const Drawer(
-        child: CustomDrawer(),
-      ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              children: [
-                const SizedBox(height: 20),
-                Text(
-                  '${dashData.orgUnit} - Dashboard',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    const Text(
-                      'Application data and usage summary',
-                      style: TextStyle(color: kTextGrey),
+        resizeToAvoidBottomInset: false,
+        appBar: customAppBar(),
+        drawer: const Drawer(
+          child: CustomDrawer(),
+        ),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await syncWorkflows();
+          },
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  children: [
+                    const SizedBox(height: 20),
+                    Text(
+                      '${dashData.orgUnit} - Dashboard',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        const Text(
+                          'Application data and usage summary',
+                          style: TextStyle(color: kTextGrey),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        GestureDetector(
+                            child: const Text(
+                              'Sync',
+                              style: TextStyle(
+                                color: kPrimaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            onTap: () {
+                              syncWorkflows();
+                            })
+                      ],
+                    ),
+                    StatisticsItem(
+                      title: 'UNSYNCED RECORDS',
+                      icon: FontAwesomeIcons.arrowsRotate,
+                      color: const Color(0xffa10036),
+                      secondaryColor: const Color(0xff630122),
+                      form1ACount: formStats.formOneACount,
+                      form1BCount: formStats.formOneBCount,
+                      cpaCount: formStats.cptCount,
+                      cparaCount: formStats.cparaCount,
+                      onClick: () {},
+                    ),
+                    // StatisticsItem(
+                    //   title: 'UNAPPROVED RECORDS',
+                    //   icon: FontAwesomeIcons.fileCircleXmark,
+                    //   color: const Color(0xff947901),
+                    //   secondaryColor: const Color(0xff524300),
+                    //   form1ACount: 4,
+                    //   form1BCount: 3,
+                    //   cpaCount: 2,
+                    //   cparaCount: 1,
+                    //   onClick: () {
+                    //     Get.to(() => const UnapprovedRecordsScreens());
+                    //   },
+                    // ),
+                    CustomGridView(
+                      crossAxisCount: 2,
+                      childrenHeight: 180,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        // const StatisticsGridItem(
+                        //   title: 'FORM 1A',
+                        //   value: "10/20",
+                        //   icon: FontAwesomeIcons.fileLines,
+                        //   color: kPrimaryColor,
+                        //   secondaryColor: Color(0xff0E6668),
+                        // ),
+                        // const StatisticsGridItem(
+                        //   title: 'FORM 1B',
+                        //   value: "10/20",
+                        //   icon: FontAwesomeIcons.fileLines,
+                        //   color: Color(0xff348FE2),
+                        //   secondaryColor: Color(0xff1F5788),
+                        // ),
+                        // const StatisticsGridItem(
+                        //   title: 'CPARA',
+                        //   value: "10/20",
+                        //   icon: FontAwesomeIcons.fileLines,
+                        //   color: Color(0xff727DB6),
+                        //   secondaryColor: Color(0xff454A6D),
+                        // ),
+                        // const StatisticsGridItem(
+                        //   title: 'CPT',
+                        //   value: "10/20",
+                        //   icon: FontAwesomeIcons.fileLines,
+                        //   color: Color(0xff49B6D5),
+                        //   secondaryColor: Color(0xff2C6E80),
+                        // ),
+                        // const StatisticsGridItem(
+                        //   title: 'CLHIV',
+                        //   value: "10/20",
+                        //   icon: FontAwesomeIcons.heart,
+                        //   color: Color(0xff49B6D5),
+                        //   secondaryColor: Color(0xff2C6E80),
+                        // ),
+                        StatisticsGridItem(
+                          title: 'Org Unit Id',
+                          value: dashData.orgUnitId.toString(),
+                          icon: FontAwesomeIcons.orcid,
+                          color: Colors.black54,
+                          secondaryColor: Colors.black87,
+                        ),
+                        StatisticsGridItem(
+                          title: 'ACTIVE OVC',
+                          value: '${dashData.children}',
+                          icon: FontAwesomeIcons.person,
+                          color: kPrimaryColor,
+                          secondaryColor: const Color(0xff0E6668),
+                        ),
+                        StatisticsGridItem(
+                          title: 'CAREGIVERS/GUARDIANS',
+                          value: dashData.caregivers.toString(),
+                          icon: FontAwesomeIcons.peopleGroup,
+                          color: const Color(0xff348FE2),
+                          secondaryColor: const Color(0xff1F5788),
+                        ),
+                        StatisticsGridItem(
+                          title: 'WORKFORCE MEMBERS',
+                          value: dashData.workforceMembers.toString(),
+                          icon: Icons.people,
+                          color: const Color(0xff727DB6),
+                          secondaryColor: const Color(0xff454A6D),
+                        ),
+                        StatisticsGridItem(
+                          title: 'ORG UNITS/CBOs',
+                          value: dashData.orgUnits.toString(),
+                          icon: FontAwesomeIcons.landmark,
+                          color: const Color(0xff49B6D5),
+                          secondaryColor: const Color(0xff2C6E80),
+                        ),
+                        StatisticsGridItem(
+                          title: 'HOUSEHOLDS',
+                          value: dashData.household.toString(),
+                          icon: FontAwesomeIcons.house,
+                          color: const Color(0xffFE5C57),
+                          secondaryColor: const Color(0xff9A3734),
+                          onTap: () {
+                            Get.to(
+                              () => const CaregiverScreen(),
+                              transition: Transition.cupertino,
+                              duration: const Duration(
+                                milliseconds: 200,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                     const SizedBox(
-                      width: 10,
-                    ),
-                    GestureDetector(
-                        child: const Text(
-                          'Sync',
-                          style: TextStyle(
-                            color: kPrimaryColor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        onTap: () {
-                          syncWorkflows();
-                        })
+                      height: 90,
+                    )
                   ],
                 ),
-                StatisticsItem(
-                  title: 'UNSYNCED RECORDS',
-                  icon: FontAwesomeIcons.arrowsRotate,
-                  color: const Color(0xffa10036),
-                  secondaryColor: const Color(0xff630122),
-                  form1ACount: formStats.formOneACount,
-                  form1BCount: formStats.formOneBCount,
-                  cpaCount: formStats.cptCount,
-                  cparaCount: formStats.cparaCount,
-                  onClick: () {},
-                ),
-                // StatisticsItem(
-                //   title: 'UNAPPROVED RECORDS',
-                //   icon: FontAwesomeIcons.fileCircleXmark,
-                //   color: const Color(0xff947901),
-                //   secondaryColor: const Color(0xff524300),
-                //   form1ACount: 4,
-                //   form1BCount: 3,
-                //   cpaCount: 2,
-                //   cparaCount: 1,
-                //   onClick: () {
-                //     Get.to(() => const UnapprovedRecordsScreens());
-                //   },
-                // ),
-                CustomGridView(
-                  crossAxisCount: 2,
-                  childrenHeight: 180,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
+              ),
+              Positioned(
+                bottom: 30,
+                right: 30,
+                left: 20,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    // const StatisticsGridItem(
-                    //   title: 'FORM 1A',
-                    //   value: "10/20",
-                    //   icon: FontAwesomeIcons.fileLines,
-                    //   color: kPrimaryColor,
-                    //   secondaryColor: Color(0xff0E6668),
-                    // ),
-                    // const StatisticsGridItem(
-                    //   title: 'FORM 1B',
-                    //   value: "10/20",
-                    //   icon: FontAwesomeIcons.fileLines,
-                    //   color: Color(0xff348FE2),
-                    //   secondaryColor: Color(0xff1F5788),
-                    // ),
-                    // const StatisticsGridItem(
-                    //   title: 'CPARA',
-                    //   value: "10/20",
-                    //   icon: FontAwesomeIcons.fileLines,
-                    //   color: Color(0xff727DB6),
-                    //   secondaryColor: Color(0xff454A6D),
-                    // ),
-                    // const StatisticsGridItem(
-                    //   title: 'CPT',
-                    //   value: "10/20",
-                    //   icon: FontAwesomeIcons.fileLines,
-                    //   color: Color(0xff49B6D5),
-                    //   secondaryColor: Color(0xff2C6E80),
-                    // ),
-                    // const StatisticsGridItem(
-                    //   title: 'CLHIV',
-                    //   value: "10/20",
-                    //   icon: FontAwesomeIcons.heart,
-                    //   color: Color(0xff49B6D5),
-                    //   secondaryColor: Color(0xff2C6E80),
-                    // ),
-                    StatisticsGridItem(
-                      title: 'Org Unit Id',
-                      value: dashData.orgUnitId.toString(),
-                      icon: FontAwesomeIcons.orcid,
-                      color: Colors.black54,
-                      secondaryColor: Colors.black87,
-                    ),
-                    StatisticsGridItem(
-                      title: 'ACTIVE OVC',
-                      value: '${dashData.children}',
-                      icon: FontAwesomeIcons.person,
-                      color: kPrimaryColor,
-                      secondaryColor: const Color(0xff0E6668),
-                    ),
-                    StatisticsGridItem(
-                      title: 'CAREGIVERS/GUARDIANS',
-                      value: dashData.caregivers.toString(),
-                      icon: FontAwesomeIcons.peopleGroup,
-                      color: const Color(0xff348FE2),
-                      secondaryColor: const Color(0xff1F5788),
-                    ),
-                    StatisticsGridItem(
-                      title: 'WORKFORCE MEMBERS',
-                      value: dashData.workforceMembers.toString(),
-                      icon: Icons.people,
-                      color: const Color(0xff727DB6),
-                      secondaryColor: const Color(0xff454A6D),
-                    ),
-                    StatisticsGridItem(
-                      title: 'ORG UNITS/CBOs',
-                      value: dashData.orgUnits.toString(),
-                      icon: FontAwesomeIcons.landmark,
-                      color: const Color(0xff49B6D5),
-                      secondaryColor: const Color(0xff2C6E80),
-                    ),
-                    StatisticsGridItem(
-                      title: 'HOUSEHOLDS',
-                      value: dashData.household.toString(),
-                      icon: FontAwesomeIcons.house,
-                      color: const Color(0xffFE5C57),
-                      secondaryColor: const Color(0xff9A3734),
-                      onTap: () {
-                        Get.to(
-                          () => const CaregiverScreen(),
-                          transition: Transition.cupertino,
-                          duration: const Duration(
-                            milliseconds: 200,
-                          ),
-                        );
-                      },
+                    SizedBox(
+                      width: 140,
+                      child: CustomButton(
+                        onTap: () {
+                          Get.to(
+                            () => const OVCCareScreen(),
+                            transition: Transition.cupertino,
+                            duration: const Duration(
+                              milliseconds: 200,
+                            ),
+                          );
+                        },
+                        text: "OVC Care",
+                        color: Colors.green,
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 90,
-                )
-              ],
-            ),
+              )
+            ],
           ),
-          Positioned(
-            bottom: 30,
-            right: 30,
-            left: 20,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SizedBox(
-                  width: 140,
-                  child: CustomButton(
-                    onTap: () {
-                      Get.to(
-                        () => const OVCCareScreen(),
-                        transition: Transition.cupertino,
-                        duration: const Duration(
-                          milliseconds: 200,
-                        ),
-                      );
-                    },
-                    text: "OVC Care",
-                    color: Colors.green,
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
+        ));
   }
 
   void updateProgress(int formsSynced, int totalFormsToSync) {

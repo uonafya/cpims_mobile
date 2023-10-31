@@ -13,6 +13,8 @@ class CustomFormsDatePicker extends StatefulWidget {
     this.suffixIcon,
     this.labelText,
     this.selectedDateTime,
+    this.allowPastDates = true,  // Add the flag for allowing past dates
+    this.allowFutureDates = true,  // Add the flag for allowing future dates
     required this.onDateSelected, // Add the callback here
   }) : super(key: key);
 
@@ -24,6 +26,8 @@ class CustomFormsDatePicker extends StatefulWidget {
   final IconData? prefixIcon;
   final IconData? suffixIcon;
   final DateTime? selectedDateTime;
+  final bool allowPastDates;  // Add the flag for allowing past dates
+  final bool allowFutureDates;  // Add the flag for allowing future dates
   final Function(DateTime selectedDate)
   onDateSelected; // Define the callback function signature
 
@@ -42,8 +46,23 @@ class _CustomDatePickerState extends State<CustomFormsDatePicker> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime currentDate = selectedDate;
     return GestureDetector(
       onTap: () {
+
+        DateTime firstDate = widget.firstDate ?? DateTime(2012, 1, 1, 11, 59);
+        DateTime lastDate = widget.lastDate ?? DateTime(2100, 12, 31, 11, 59);
+
+        if (!widget.allowPastDates && currentDate.isBefore(DateTime.now())) {
+          // If past dates are not allowed, set the firstDate to the current date
+          firstDate = DateTime.now();
+        }
+
+        if (!widget.allowFutureDates && currentDate.isAfter(DateTime.now())) {
+          // If future dates are not allowed, set the lastDate to the current date
+          lastDate = DateTime.now();
+        }
+
         showDatePicker(
           currentDate: selectedDate,
           context: context,

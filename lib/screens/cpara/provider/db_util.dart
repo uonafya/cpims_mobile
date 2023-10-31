@@ -254,17 +254,24 @@ void fetchAndPostToServerOvcSubpopulationData() async {
         'id': row['id'],
         'uuid': row['uuid'],
         'ovc_cpims_id': row['cpims_id'],
-        'criteria': row['criteria'],
         'date_of_event': row['date_of_event'],
-        'created_at': row['created_at'],
+        'sub_population': [
+          {
+            'ovc_cpims_id': row['cpims_id'],
+            'question_code': row['criteria'],
+            'answer_id': 'AYES',
+          }
+        ],
       };
 
       var ovcPostToServer = {
         "ovc_subpopulation": [ovcSubPopulation],
       };
 
+      debugPrint("Data to be posted to server is ${json.encode(ovcPostToServer)}");
+
       final response =
-          await ovcSubPopulationPostOvcToServer(ovcPostToServer, bearerAuth);
+          await ovcSubPopulationPostOvcToServer(ovcSubPopulation, bearerAuth);
 
       if (response.statusCode == 200) {
         await updateOvcSubpopulationDateSynced(row['id'], database);
@@ -289,30 +296,90 @@ void fetchAndPostToServerOvcSubpopulationData() async {
   }
 }
 
-Future<List<Map<String, dynamic>>> fetchOvcSubPopulationData() async {
+Future<List<Map<String, dynamic>>> fetchQuestionsForOvc(String ovc_cpims_id, String date_of_event) async {
   final db = await LocalDb.instance.database;
-  const sql = "SELECT * FROM ovcsubpopulation WHERE form_date_synced IS NULL";
-  List<Map<String, dynamic>> result = await db.rawQuery(sql);
+  const sql = "SELECT * FROM ovcsubpopulation WHERE cpims_id = ? AND date_of_event = ? AND form_date_synced IS NULL";
+  List<Map<String, dynamic>> result = await db.rawQuery(sql, [ovc_cpims_id, date_of_event]);
   return result;
 }
 
-Future<void> updateOvcSubpopulationDateSynced(int id, Database db) async {
-  try {
-    // Get the current date and time
-    DateTime now = DateTime.now();
-    await db.rawUpdate(
-        "UPDATE ovcsubpopulation SET form_date_synced = ? WHERE id = ?",
-        [now.toUtc().toIso8601String(), id]);
-  } catch (err) {
-    debugPrint("Error updating date_synced: $err");
+void fetchAndPostToServerOvcSubpopulationDataNew() async {
+  var prefs = await SharedPreferences.getInstance();
+  var accessToken = prefs.getString('access');
+  String bearerAuth = "Bearer $accessToken";
+  Database database = await LocalDb.instance.database;
+  List<Map<String, dynamic>> result = await fetchOvcSubPopulationData();
+  int totalForms = result.length;
+  int successfullySubmittedForms = 0;
+
+  for (var row in result) {
+    var ovc_cpims_id = row['cpims_id'];
+    var date_of_event = row['date_of_event'];
+
+    List<Map<String, dynamic>> questions = await fetchQuestionsForOvc(ovc_cpims_id, date_of_event);
+
+    Map<String, dynamic> ovcSubPopulation = {
+      'ovc_cpims_id': ovc_cpims_id,
+      'date_of_event': date_of_event,
+      'sub_population': questions,
+    };
+
+    final response = await ovcSubPopulationPostOvcToServer(ovcSubPopulation, bearerAuth);
+    if (response.statusCode == 201) {
+      await updateOvcSubpopulationDateSynced(ovc_cpims_id, database);
+      successfullySubmittedForms++; // Increment the counter.
+      if (successfullySubmittedForms == totalForms) {
+        Get.snackbar(
+          "Success",
+          "OVC Subpopulation Forms synced successfully",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+      }
+    } else {
+      debugPrint('Failed to post data to the server. Status code: ${response.statusCode}');
+    }
+  }
+}
+
+
+Future<List<Map<String, dynamic>>> fetchOvcSubPopulationData() async {
+  final db = await LocalDb.instance.database;
+  const sql = "SELECT DISTINCT cpims_id, date_of_event FROM ovcsubpopulation WHERE form_date_synced IS NULL";
+  List<Map<String, dynamic>> result = await db.rawQuery(sql);
+  return result;
+}
+//
+// Future<List<Map<String, dynamic>>> fetchOvcSubPopulationData() async {
+//   final db = await LocalDb.instance.database;
+//   const sql = "SELECT * FROM ovcsubpopulation WHERE form_date_synced IS NULL";
+//   List<Map<String, dynamic>> result = await db.rawQuery(sql);
+//   return result;
+// }
+
+Future<void> updateOvcSubpopulationDateSynced(String? ovc_id, Database db) async {
+  if (ovc_id != null) {
+    try {
+      // Get the current date and time
+      DateTime now = DateTime.now();
+      await db.rawUpdate(
+          "UPDATE ovcsubpopulation SET form_date_synced = ? WHERE cpims_id = ?",
+          [now.toUtc().toIso8601String(), ovc_id]);
+    } catch (err) {
+      debugPrint("Error updating date_synced: $err");
+    }
   }
 }
 
 Future<Response> ovcSubPopulationPostOvcToServer(
     Map<String, dynamic> data, String bearerAuth) async {
+  const cparaUrl = "cpara/";
+  dio.interceptors.add(LogInterceptor());
   try {
     final response = await dio.post(
-      'https://dev.cpims.net/api/form/CPR/',
+      "$mobileEndpoint$cparaUrl",
       data: data,
       options: Options(
         headers: {

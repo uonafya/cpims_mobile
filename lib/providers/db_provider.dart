@@ -374,6 +374,8 @@ class LocalDb {
           'date_of_event': formData.date_of_event,
           'form_type': formType,
           'form_date_synced': null,
+          'location_lat': formData.latitude,
+          'location_long': formData.longitude,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -589,7 +591,7 @@ class LocalDb {
               'priority_id': service.priorityId,
               'results_id': service.resultsId,
               'reason_id': service.reasonId,
-              'completion_date': service.completionDate,
+              'completion_date': service.completionDate ?? '',
               'service_ids': serviceIdList,
               'responsible_ids': responsibleIdList,
             },
