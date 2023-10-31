@@ -171,7 +171,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    final SummaryDataModel dashData =
+    final SummaryDataModel? dashData =
         context.select((UIProvider provider) => provider.getDashData);
 
     StatsProvider formStats = context.watch<StatsProvider>();

@@ -279,9 +279,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                         String? completionDateValue =
                                             cptSafeFormData.completionDate ??
                                                 '';
-                                        String? reason = cptSafeFormData
-                                                .reasonId ??
-                                            '';
+                                        String? reason =
+                                            cptSafeFormData.reasonId ?? '';
                                         Map<String, dynamic> safeService = {
                                           'domain_id': 'DPRO',
                                           'service_id':
@@ -295,7 +294,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                           'results_id':
                                               cptSafeFormData.resultsId,
                                           'reason_id': reason,
-                                          'completion_date':completionDateValue,
+                                          'completion_date':
+                                              completionDateValue,
                                         };
                                         servicesList.add(safeService);
                                       }
@@ -313,7 +313,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                         String? completionDateValue =
                                             cptStableFormData.completionDate ??
                                                 '';
-                                        String? reason = cptStableFormData.reasonId ?? '';
+                                        String? reason =
+                                            cptStableFormData.reasonId ?? '';
                                         Map<String, dynamic> stableService = {
                                           'domain_id': 'DHES',
                                           'service_id':
@@ -327,7 +328,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                           'results_id':
                                               cptStableFormData.resultsId,
                                           'reason_id': reason,
-                                          'completion_date':completionDateValue,
+                                          'completion_date':
+                                              completionDateValue,
                                         };
                                         servicesList.add(stableService);
                                       }
@@ -347,7 +349,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                             cptschooledFormData
                                                     .completionDate ??
                                                 '';
-                                        String? reason = cptschooledFormData.reasonId ?? '';
+                                        String? reason =
+                                            cptschooledFormData.reasonId ?? '';
                                         Map<String, dynamic> schooledService = {
                                           'domain_id': 'DEDU',
                                           'service_id':
@@ -360,51 +363,60 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                               .responsibleIds,
                                           'results_id':
                                               cptschooledFormData.resultsId,
-                                          'reason_id':reason,
-                                          'completion_date': completionDateValue,
+                                          'reason_id': reason,
+                                          'completion_date':
+                                              completionDateValue,
                                         };
                                         servicesList.add(schooledService);
                                       }
 
-                                      Map<String, dynamic> payload = {
-                                        'ovc_cpims_id': ovsId,
-                                        'date_of_event': formattedDate,
-                                        'services': servicesList,
-                                      };
-                                      print(
-                                          "Final payload is${jsonEncode(payload)}");
-                                      print(
-                                          "Final payload is not json $payload");
-                                      bool isFormSaved = await CasePlanService
-                                          .saveCasePlanLocal(
-                                              CasePlanModel.fromJson(payload));
-                                      //provider clear
+                                      if (servicesList.isNotEmpty) {
+                                        Map<String, dynamic> payload = {
+                                          'ovc_cpims_id': ovsId,
+                                          'date_of_event': formattedDate,
+                                          'services': servicesList,
+                                        };
+                                        print(
+                                            "Final payload is${jsonEncode(payload)}");
+                                        bool isFormSaved = await CasePlanService
+                                            .saveCasePlanLocal(
+                                                CasePlanModel.fromJson(
+                                                    payload));
+                                        //provider clear
 
-                                      if (isFormSaved) {
-                                        cptProvider.clearProviderData();
-                                        if (context.mounted) {
-                                          context
-                                              .read<StatsProvider>()
-                                              .updateFormStats();
+                                        if (isFormSaved) {
+                                          cptProvider.clearProviderData();
+                                          if (context.mounted) {
+                                            context
+                                                .read<StatsProvider>()
+                                                .updateFormStats();
+                                          }
+                                          Get.snackbar(
+                                            'Success',
+                                            'Successfully saved CasePlan form',
+                                            backgroundColor: Colors.green,
+                                            colorText: Colors.white,
+                                          );
+                                          //get back to the previous screen
+                                          Navigator.pop(context);
+                                        } else {
+                                          Get.snackbar(
+                                            'Error',
+                                            'Failed to save CasePlan form',
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white,
+                                          );
+                                          Navigator.pop(context);
+                                          //clear provider data
+                                          cptProvider.clearProviderData();
                                         }
-                                        Get.snackbar(
-                                          'Success',
-                                          'Successfully saved CasePlan form',
-                                          backgroundColor: Colors.green,
-                                          colorText: Colors.white,
-                                        );
-                                        //get back to the previous screen
-                                        Navigator.pop(context);
                                       } else {
                                         Get.snackbar(
                                           'Error',
-                                          'Failed to save CasePlan form',
+                                          'Please fill atleast one form',
                                           backgroundColor: Colors.red,
                                           colorText: Colors.white,
                                         );
-                                        Navigator.pop(context);
-                                        //clear provider data
-                                        cptProvider.clearProviderData();
                                       }
                                     } catch (e) {
                                       debugPrint(e.toString());
