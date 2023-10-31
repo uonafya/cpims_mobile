@@ -7,7 +7,6 @@ class Form1DataModel {
   final String? collected_at;
   final String? latitude;
   final String? longitude;
-  final String ? deviceId;
 
   Form1DataModel({
     this.id,
@@ -18,7 +17,6 @@ class Form1DataModel {
     this.collected_at,
     this.latitude,
     this.longitude,
-    this.deviceId,
   });
 
   factory Form1DataModel.fromJson(Map<String, dynamic> json) {

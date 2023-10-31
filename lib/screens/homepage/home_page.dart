@@ -143,7 +143,8 @@ class _HomepageState extends State<Homepage> {
     if (isConnected) {
       await submitCparaToUpstream();
       await postCasePlansToServer();
-      fetchAndPostToServerOvcSubpopulationData();
+      // fetchAndPostToServerOvcSubpopulationData();
+      fetchAndPostToServerOvcSubpopulationDataNew();
       postFormOneToServer();
       await showCountUnsyncedForms();
       if (mounted) {
