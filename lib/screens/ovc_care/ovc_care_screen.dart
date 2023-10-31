@@ -98,7 +98,6 @@ class _OVCCareScreenState extends State<OVCCareScreen> {
                 items: const [
                   'Select Criteria',
                   'Names',
-                  'Org Unit',
                   'Caregiver Names',
                   'CPIMS ID',
                 ],
