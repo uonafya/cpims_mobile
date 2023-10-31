@@ -181,6 +181,9 @@ class _Form1BScreen extends State<Form1BScreen> {
                                           await form1bProvider.saveForm1bData(
                                         form1bProvider.formData,
                                       );
+                                      context
+                                          .read<StatsProvider>()
+                                          .updateCparaFormStats();
                                       setState(() {
                                         if (isFormSaved == true) {
                                           if (context.mounted) {

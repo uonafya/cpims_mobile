@@ -385,8 +385,10 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                         //provider clear
 
                                         if (isFormSaved) {
-                                          cptProvider.clearProviderData();
                                           if (context.mounted) {
+                                            context
+                                                .read<CptProvider>()
+                                                .clearProviderData();
                                             context
                                                 .read<StatsProvider>()
                                                 .updateFormStats();
