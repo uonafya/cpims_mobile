@@ -232,6 +232,13 @@ class _HomepageState extends State<Homepage> {
                             })
                       ],
                     ),
+                    const SizedBox(height: 20),
+                   const InfoCard(
+                      title: 'THIS IS A TEST APPLICATION',
+                      icon: FontAwesomeIcons.warning,
+                      color: Color(0xffa10036),
+                      secondaryColor: Color(0xff630122),
+                    ),
                     StatisticsItem(
                       title: 'UNSYNCED RECORDS',
                       icon: FontAwesomeIcons.arrowsRotate,

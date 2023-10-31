@@ -145,3 +145,86 @@ class StatisticsItem extends StatelessWidget {
     );
   }
 }
+
+
+class InfoCard extends StatelessWidget {
+  const InfoCard(
+      {Key? key,
+        required this.title,
+        required this.icon,
+        required this.color,
+        required this.secondaryColor,
+       })
+      : super(key: key);
+  final String title;
+  final IconData icon;
+  final Color color;
+  final Color secondaryColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: 70,
+        width: double.infinity,
+        color: color,
+        margin: const EdgeInsets.symmetric(vertical: 7.5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: Row(children: [
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  icon,
+                  size: 20,
+                  color: Colors.white12.withOpacity(0.3),
+                )
+              ]),
+            ),
+            const Spacer(),
+            // Container(
+            //   height: 35,
+            //   width: double.infinity,
+            //   color: secondaryColor,
+            //   child: const Row(
+            //       mainAxisAlignment: MainAxisAlignment.end,
+            //       children: [
+            //         Text(
+            //           'View Details',
+            //           style: TextStyle(color: Colors.white, fontSize: 12),
+            //         ),
+            //         SizedBox(
+            //           width: 5,
+            //         ),
+            //         Icon(
+            //           Icons.arrow_circle_right_outlined,
+            //           color: Colors.white,
+            //           size: 14,
+            //         ),
+            //         SizedBox(
+            //           width: 10,
+            //         ),
+            //       ]),
+            // )
+          ],
+        ),
+    );
+  }
+}
