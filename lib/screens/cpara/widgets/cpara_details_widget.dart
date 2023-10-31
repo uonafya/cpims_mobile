@@ -288,6 +288,7 @@ class _TextViewsColumnState extends State<TextViewsColumn> {
     final SummaryDataModel dashData =
     context.select((UIProvider provider) => provider.getDashData);
 
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
