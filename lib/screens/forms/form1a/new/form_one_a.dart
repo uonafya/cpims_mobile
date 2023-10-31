@@ -178,40 +178,56 @@ class _FomOneAState extends State<FomOneA> {
                                 if (isLastStep) {
                                   if (form1AProvider.formData.selectedDate ==
                                       null) {
-                                    CustomToastWidget.showToast(
-                                        "Please select the date of event");
+                                    Get.snackbar(
+                                      'Error',
+                                      'Please select the date of event',
+                                      duration: const Duration(seconds: 2),
+                                      snackPosition: SnackPosition.TOP,
+                                      backgroundColor: Colors.red,
+                                      colorText: Colors.white,
+                                      margin: const EdgeInsets.all(16),
+                                      borderRadius: 8,
+                                    );
                                     return;
                                   } else {
-                                    String lat = "";
-                                    String longitude = "";
-                                    print("The location of the user is: ${_getUserLocation().then((value) {
-                                      lat = value.latitude.toString();
-                                      longitude = value.longitude.toString();
-                                    })}"); // This is the location of the user
-                                    bool isFormSaved =
-                                        await form1AProvider.saveForm1AData(form1AProvider.formData,lat,longitude);
-                                    setState(() {
-                                      if (isFormSaved == true) {
-                                        if (context.mounted) {
-                                          context
-                                              .read<StatsProvider>()
-                                              .updateFormOneAStats();
+                                    try {
+                                      Position userLocation =
+                                          await _getUserLocation(); // Await the location here
+                                      String lat =
+                                          userLocation.latitude.toString();
+                                      String longitude =
+                                          userLocation.longitude.toString();
+
+                                      bool isFormSaved =
+                                          await form1AProvider.saveForm1AData(
+                                              form1AProvider.formData,
+                                              lat,
+                                              longitude);
+                                      setState(() {
+                                        if (isFormSaved == true) {
+                                          if (context.mounted) {
+                                            context
+                                                .read<StatsProvider>()
+                                                .updateFormOneAStats();
+                                          }
+                                          Get.snackbar(
+                                            'Success',
+                                            'Form1A data saved successfully.',
+                                            duration:
+                                                const Duration(seconds: 2),
+                                            snackPosition: SnackPosition.TOP,
+                                            backgroundColor: Colors.green,
+                                            colorText: Colors.white,
+                                            margin: const EdgeInsets.all(16),
+                                            borderRadius: 8,
+                                          );
+                                          Navigator.pop(context);
+                                          selectedStep = 0;
                                         }
-                                        Get.snackbar(
-                                          'Success',
-                                          'Form1A data saved successfully.',
-                                          duration: const Duration(seconds: 2),
-                                          snackPosition: SnackPosition.TOP,
-                                          // Display at the top of the screen
-                                          backgroundColor: Colors.green,
-                                          colorText: Colors.white,
-                                          margin: const EdgeInsets.all(16),
-                                          borderRadius: 8,
-                                        );
-                                        Navigator.pop(context);
-                                        selectedStep = 0;
-                                      }
-                                    });
+                                      });
+                                    } catch (e) {
+                                      print("Error getting user location: $e");
+                                    }
                                   }
                                 } else {
                                   setState(() {

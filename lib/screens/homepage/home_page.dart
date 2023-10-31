@@ -144,7 +144,6 @@ class _HomepageState extends State<Homepage> {
     if (isConnected) {
       await submitCparaToUpstream();
       await postCasePlansToServer();
-      // fetchAndPostToServerOvcSubpopulationData();
       fetchAndPostToServerOvcSubpopulationDataNew();
       postFormOneToServer();
       await showCountUnsyncedForms();
@@ -232,6 +231,13 @@ class _HomepageState extends State<Homepage> {
                               syncWorkflows();
                             })
                       ],
+                    ),
+                    const SizedBox(height: 20),
+                   const InfoCard(
+                      title: 'THIS IS A TEST APPLICATION',
+                      icon: FontAwesomeIcons.warning,
+                      color: Color(0xffa10036),
+                      secondaryColor: Color(0xff630122),
                     ),
                     StatisticsItem(
                       title: 'UNSYNCED RECORDS',
@@ -432,12 +438,12 @@ class _HomepageState extends State<Homepage> {
         );
 
         if (response.statusCode == 201) {
+          debugPrint("Data to sync is $formData");
           await Form1Service.updateFormLocalDateSync(
             formType['formType']!,
             formData.id,
           );
           formsSynced++;
-
           if (formsSynced == totalFormsToSync) {
             Get.snackbar(
               'Success',

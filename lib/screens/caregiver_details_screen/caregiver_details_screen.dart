@@ -16,6 +16,7 @@ class CareGiverDetailsScreen extends StatefulWidget {
     required this.caseLoadModel,
     required this.children,
   });
+
   final CaseLoadModel caseLoadModel;
   final List<CaseLoadModel> children;
 
@@ -92,10 +93,6 @@ class _CareGiverDetailsScreenState extends State<CareGiverDetailsScreen> {
                       ),
                       const CustomCardGridItem(
                         header: "Age",
-                        details: "-",
-                      ),
-                      const CustomCardGridItem(
-                        header: "Other",
                         details: "-",
                       ),
                     ],
@@ -225,10 +222,10 @@ class _CareGiverDetailsScreenState extends State<CareGiverDetailsScreen> {
                     child: const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
-                        "Scores: ",
+                        "Benchmarks:",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 12,
+                          fontSize: 11,
                         ),
                       ),
                     ),
@@ -256,21 +253,20 @@ class _CareGiverDetailsScreenState extends State<CareGiverDetailsScreen> {
                     child: const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
-                        "Count: ",
+                        "Scores: ",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 12,
+                          fontSize: 11,
                         ),
                       ),
                     ),
                   ),
-                  ...List<int>.generate(9, (int index) => index + 1,
-                          growable: false)
-                      .map((e) => Padding(
-                            padding: const EdgeInsets.all(8.0),
+                  ...List<int>.generate(9, (int index) => 0, growable: false)
+                      .map((e) => const Padding(
+                            padding: EdgeInsets.all(8.0),
                             child: Text(
-                              "$e",
-                              style: const TextStyle(
+                              "0",
+                              style: TextStyle(
                                 fontSize: 12,
                               ),
                             ),
