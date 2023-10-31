@@ -8,10 +8,8 @@ import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
-import 'package:cpims_mobile/screens/cpara/provider/db_util.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_healthy_widget.dart';
-import 'package:cpims_mobile/screens/cpara/widgets/cpara_healthy_widget_update.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_safe_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_schooled_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
@@ -26,12 +24,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart' as p;
 
 import '../../Models/case_load_model.dart';
 
-class
-CparaFormsScreen extends StatefulWidget {
+class CparaFormsScreen extends StatefulWidget {
   final CaseLoadModel caseLoadModel;
 
   const CparaFormsScreen({super.key, required this.caseLoadModel});
@@ -53,7 +49,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
   ];
 
   Database? database;
-  static const databaseName = "CPARAv2.db";
 
   // Initialize database
   @override
@@ -235,11 +230,10 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           .read<CparaProvider>()
                                           .caseLoadModel
                                           ?.cpimsId;
-                                      // String? careGiverId = context.read<CparaProvider>().caseLoadModel?.cpimsId;
 
                                       if (ovsId == null)
                                         throw ("No CPMSID found");
-                                      String ovcpmisid = ovsId ?? "0";
+                                      String ovcpmisid = ovsId;
                                       // Insert to db
                                       CparaModel cparaModelDB = CparaModel(
                                         detail: detailModel,
@@ -253,8 +247,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           cparaModelDB: cparaModelDB,
                                           ovcId: ovcpmisid,
                                           careProviderId: ovcpmisid);
-
-                                      debugPrint("Here is the cpara data being saved $cparaModelDB");
                                       if (context.mounted) {
                                         context
                                             .read<CparaProvider>()
@@ -282,13 +274,10 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                         );
                                       }
                                     } catch (err) {
-                                      debugPrint("Error saving cpara data ${err.toString()}");
+                                      debugPrint(
+                                          "Error saving cpara data ${err.toString()}");
                                     }
                                   }
-                                  // else{
-                                  //   var form = await getUnsynchedForms(await LocalDb.instance.database);
-                                  //   print(form);
-                                  // }
 
                                   _scrollController.animateTo(
                                     0,
@@ -311,16 +300,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                 ],
               )),
           const SizedBox(height: 20),
-          // const PastCPARAWidget(),
-          // ElevatedButton(
-          //     onPressed: () async {
-          //       await submitCparaToUpstream();
-          //     },
-          //     child: const Text("Sync")),
           const Footer(),
         ],
       ),
     );
   }
-
 }
