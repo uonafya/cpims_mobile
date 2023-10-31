@@ -23,14 +23,10 @@ import '../../../form1b/utils/SafeForm1bModel.dart';
 import '../../../form1b/utils/StableForm1bModel.dart';
 
 class Form1AProviderNew extends ChangeNotifier {
-  final HealthFormData _formData = HealthFormData(
-      selectedServices: [], selectedDate: DateTime.now(), domainId: "");
-  final StableFormData _stableFormData =
-      StableFormData(selectedServices: [], domainId: "");
-  final SchooledFormData _schooledFormData =
-      SchooledFormData(selectedServices: [], domainId: "");
-  final SafeFormData _safeFormData =
-      SafeFormData(selectedServices: [], domainId: "");
+  final HealthFormData _formData = HealthFormData(selectedServices: [], selectedDate: DateTime.now(), domainId: "");
+  final StableFormData _stableFormData = StableFormData(selectedServices: [], domainId: "");
+  final SchooledFormData _schooledFormData = SchooledFormData(selectedServices: [], domainId: "");
+  final SafeFormData _safeFormData = SafeFormData(selectedServices: [], domainId: "");
   final FinalServicesFormData _finalServicesFormData = FinalServicesFormData(
     services: [],
     date_of_event: DateFormat('yyyy-MM-dd').format(DateTime.now()),
