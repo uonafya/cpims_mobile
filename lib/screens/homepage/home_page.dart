@@ -89,6 +89,7 @@ class _HomepageState extends State<Homepage> {
 
         if (response.statusCode == 201) {
           updateFormCasePlanDateSync(caseplan.id!, db);
+          //clear caseplan data in provider
           successfulFormCount++;
           if (successfulFormCount == caseplanFromDb.length) {
             Get.snackbar(

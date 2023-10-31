@@ -23,6 +23,7 @@ import '../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../widgets/custom_stepper.dart';
 import '../../../../widgets/drawer.dart';
 import '../../../../widgets/footer.dart';
+import '../../../homepage/provider/stats_provider.dart';
 import '../../form1b/utils/form1bConstants.dart';
 import 'models/healthy_cpt_model.dart';
 import 'models/safe_cpt_model.dart';
@@ -193,10 +194,18 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                   if (selectedStep == steps.length - 1) {
                                     try {
                                       String? ovsId = widget.caseLoad.cpimsId!;
-                                      String formattedDate =
+                                      String? formattedDate =
                                           currentDateOfCasePlan
                                               .toIso8601String();
-
+                                      if (formattedDate.isEmpty) {
+                                        Get.snackbar(
+                                          'Error',
+                                          'Please select date of caseplan',
+                                          backgroundColor: Colors.red,
+                                          colorText: Colors.white,
+                                        );
+                                        return;
+                                      }
                                       CptHealthFormData? cptHealthFormData =
                                           context
                                                   .read<CptProvider>()
@@ -360,8 +369,15 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                       bool isFormSaved = await CasePlanService
                                           .saveCasePlanLocal(
                                               CasePlanModel.fromJson(payload));
+                                      //provider clear
 
                                       if (isFormSaved) {
+                                        cptProvider.clearProviderData();
+                                        if (context.mounted) {
+                                          context
+                                              .read<StatsProvider>()
+                                              .updateFormStats();
+                                        }
                                         Get.snackbar(
                                           'Success',
                                           'Successfully saved CasePlan form',

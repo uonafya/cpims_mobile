@@ -316,7 +316,7 @@ void errorSnackBar(BuildContext context, String message, {Duration duration = co
 }
 
 class AppVersionUtil {
-  static String appVersion = '1.1.0';
+  static String appVersion = '1.1.1';
   static String buildNumber = '1';
   static String appName = 'CPIMS Mobile';
   static String packageName = 'com.healthitkenya.cpims';

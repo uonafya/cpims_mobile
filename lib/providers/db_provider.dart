@@ -591,7 +591,7 @@ class LocalDb {
               'priority_id': service.priorityId,
               'results_id': service.resultsId,
               'reason_id': service.reasonId,
-              'completion_date': service.completionDate,
+              'completion_date': service.completionDate ?? '',
               'service_ids': serviceIdList,
               'responsible_ids': responsibleIdList,
             },
