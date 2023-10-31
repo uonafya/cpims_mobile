@@ -74,12 +74,17 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
       }
     } else {
       for (CaseLoadModel model in models) {
-        children.add(HealthChild(
-            id: "${model.cpimsId}",
-            question1: "",
-            question2: "",
-            question3: "",
-            name: "${model.ovcFirstName} ${model.ovcSurname}"));
+        DateTime birthDate = DateTime.parse(model.dateOfBirth!);
+        DateTime currentDate = DateTime.now();
+        int age = currentDate.year - birthDate.year;
+        if (age >= 10 && age <= 17) {
+          children.add(HealthChild(
+              id: "${model.cpimsId}",
+              question1: "",
+              question2: "",
+              question3: "",
+              name: "${model.ovcFirstName} ${model.ovcSurname}"));
+        }
       }
     }
 

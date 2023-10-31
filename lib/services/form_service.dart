@@ -197,7 +197,6 @@ class Form1Service {
 
   // send form to server
   static Future<Response> postFormRemote(
-  // https://dev.cpims.net/mobile/form/F1A/
       formData, String formType, String authToken) async {
     String formOneEndpoint = "${cpimsApiUrl}form/${formType}";
     String formEndpointModile = "${mobileEndpoint}form/${formType}/";

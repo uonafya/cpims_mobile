@@ -5,8 +5,8 @@ class Form1DataModel {
   final List<Form1ServicesModel> services;
   final List<Form1CriticalEventsModel> criticalEvents;
   final String? collected_at;
-  final String? latitude;
-  final String? longitude;
+  final String? location_lat;
+  final String? location_long;
 
   Form1DataModel({
     this.id,
@@ -15,8 +15,8 @@ class Form1DataModel {
     required this.services,
     required this.criticalEvents,
     this.collected_at,
-    this.latitude,
-    this.longitude,
+    this.location_lat,
+    this.location_long,
   });
 
   factory Form1DataModel.fromJson(Map<String, dynamic> json) {
@@ -42,8 +42,8 @@ class Form1DataModel {
       services: services,
       criticalEvents: criticalEvents,
       collected_at: json['collected_at'],
-      latitude: json['latitude'],
-      longitude: json['longitude'],
+      location_lat: json['location_lat'],
+      location_long: json['location_long'],
     );
   }
 
@@ -54,8 +54,8 @@ class Form1DataModel {
       'services': services.map((service) => service.toJson()).toList(),
       'critical_events': criticalEvents.map((event) => event.toJson()).toList(),
       'collected_at': collected_at,
-      'latitude': latitude,
-      'longitude': longitude,
+      'location_lat': location_lat,
+      'location_long': location_long,
     };
   }
 

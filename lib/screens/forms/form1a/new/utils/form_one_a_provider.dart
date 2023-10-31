@@ -127,7 +127,6 @@ class Form1AProviderNew extends ChangeNotifier {
   Future<bool> saveForm1AData(HealthFormData healthFormData,String latitude,String longitude) async {
     List<MasterServicesFormData> masterServicesList =
         convertToMasterServicesFormData();
-    //creating our data to be sent for saving
     setFinalFormDataServices(masterServicesList);
     setFinalFormDataOvcId(_finalServicesFormData.ovc_cpims_id);
     setFinalFormDataDOE(formData.selectedDate);
@@ -157,8 +156,8 @@ class Form1AProviderNew extends ChangeNotifier {
         date_of_event: finalServicesFormData.date_of_event,
         services: servicesList,
         criticalEvents: criticalEventsList,
-        latitude: latitude,
-        longitude: longitude,
+        location_lat: latitude,
+        location_long: longitude,
     );
     String data = jsonEncode(toDbData);
     print("The json data for form 1 a is $data");
