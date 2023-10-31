@@ -236,7 +236,7 @@ class _HomepageState extends State<Homepage> {
                    const InfoCard(
                       title: 'THIS IS A TEST APPLICATION',
                       icon: FontAwesomeIcons.warning,
-                      color: Color(0xffa10036),
+                      color: Color(0xffff0010),
                       secondaryColor: Color(0xff630122),
                     ),
                     StatisticsItem(

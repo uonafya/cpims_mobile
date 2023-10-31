@@ -164,10 +164,10 @@ class InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 70,
+        height: 50,
         width: double.infinity,
         color: color,
-        margin: const EdgeInsets.symmetric(vertical: 7.5),
+        margin: const EdgeInsets.symmetric(vertical: 5.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -185,44 +185,11 @@ class InfoCard extends StatelessWidget {
                             color: Colors.white,
                             fontWeight: FontWeight.w600),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
                     ],
                   ),
                 ),
-                Icon(
-                  icon,
-                  size: 20,
-                  color: Colors.white12.withOpacity(0.3),
-                )
               ]),
             ),
-            const Spacer(),
-            // Container(
-            //   height: 35,
-            //   width: double.infinity,
-            //   color: secondaryColor,
-            //   child: const Row(
-            //       mainAxisAlignment: MainAxisAlignment.end,
-            //       children: [
-            //         Text(
-            //           'View Details',
-            //           style: TextStyle(color: Colors.white, fontSize: 12),
-            //         ),
-            //         SizedBox(
-            //           width: 5,
-            //         ),
-            //         Icon(
-            //           Icons.arrow_circle_right_outlined,
-            //           color: Colors.white,
-            //           size: 14,
-            //         ),
-            //         SizedBox(
-            //           width: 10,
-            //         ),
-            //       ]),
-            // )
           ],
         ),
     );
