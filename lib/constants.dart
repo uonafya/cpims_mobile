@@ -224,6 +224,13 @@ List drawerOptions(BuildContext context) {
   ];
 }
 
+//function to return device id
+Future<String> getDeviceId() async {
+  const _androidIdPlugin = AndroidId();
+  final String? androidId = await _androidIdPlugin.getId();
+  return androidId!;
+}
+
 List<String> graphTitles = [
   'Case Managenent(Last 21 Days)',
   'IP/LIP Case Load Summary(Last 30 Days)',

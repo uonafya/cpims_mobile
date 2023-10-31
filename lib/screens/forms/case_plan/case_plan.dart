@@ -30,7 +30,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
   List<ValueItem> selectedPersonsResponsible = [];
   DateTime currentDateOfCasePlan = DateTime.now();
   DateTime completionDate = DateTime.now();
-  String reasonForNotAchievingCasePlan= "";
+  String reasonForNotAchievingCasePlan = "";
 
   @override
   Widget build(BuildContext context) {
@@ -168,8 +168,6 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
 
     List<CasePlanModel> caseplanModelFoThisOvC = [];
 
-
-
     void resetDomain() {
       selectedDomain = [];
     }
@@ -254,7 +252,8 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                             ],
                           ),
                           const SizedBox(height: 10),
-                           CustomFormsDatePicker(
+                          CustomFormsDatePicker(
+                            allowFutureDates: false,
                             hintText: 'Please select the Date',
                             selectedDateTime: currentDateOfCasePlan,
                             onDateSelected: (selectedDate) {
@@ -574,7 +573,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                             ],
                           ),
                           const SizedBox(height: 10),
-                           CustomFormsDatePicker(
+                          CustomFormsDatePicker(
                             hintText: 'Select the date',
                             selectedDateTime: completionDate,
                             onDateSelected: (selectedDate) {
@@ -596,9 +595,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           const SizedBox(height: 10),
                           CustomTextField(
                             hintText: 'Please Write the Reasons',
-                            controller: _textEditingController
-                            ,
-
+                            controller: _textEditingController,
                           ),
                         ],
                       ),
@@ -610,21 +607,39 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           text: "Add",
                           onTap: () async {
                             String ovcCpimsId = widget.caseLoadModel.cpimsId!;
-                            reasonForNotAchievingCasePlan = _textEditingController.text;
-                            casePlanProvider.setSelectedReason(reasonForNotAchievingCasePlan);
-                            String dateOfCaseplan=currentDateOfCasePlan.toString();
-                             String dateToBeCompleted=completionDate.toString();
-                             List<CasePlanServiceModel> servicesList = selectedServicesList.map((e) => CasePlanServiceModel(
-                               domainId: e.value!,
-                               serviceIds: selectedServicesList.map((e) => e.value).where((value) => value != null).toList(), // Filter out null values
-                               goalId: selectedGoals[0].value!,
-                               gapId: selectedNeed[0].value!,
-                               priorityId: selectedPriorityAction[0].value!,
-                               responsibleIds: selectedPersonsResponsible.map((e) => e.value).where((value) => value != null).toList(), // Filter out null values
-                               resultsId: selectedResult[0].value!,
-                               reasonId: _textEditingController.text,
-                               completionDate: dateToBeCompleted,
-                             )).toList();
+                            reasonForNotAchievingCasePlan =
+                                _textEditingController.text;
+                            casePlanProvider.setSelectedReason(
+                                reasonForNotAchievingCasePlan);
+                            String dateOfCaseplan =
+                                currentDateOfCasePlan.toString();
+                            String dateToBeCompleted =
+                                completionDate.toString();
+                            List<CasePlanServiceModel> servicesList =
+                                selectedServicesList
+                                    .map((e) => CasePlanServiceModel(
+                                          domainId: e.value!,
+                                          serviceIds: selectedServicesList
+                                              .map((e) => e.value)
+                                              .where((value) => value != null)
+                                              .toList(),
+                                          // Filter out null values
+                                          goalId: selectedGoals[0].value!,
+                                          gapId: selectedNeed[0].value!,
+                                          priorityId:
+                                              selectedPriorityAction[0].value!,
+                                          responsibleIds:
+                                              selectedPersonsResponsible
+                                                  .map((e) => e.value)
+                                                  .where(
+                                                      (value) => value != null)
+                                                  .toList(),
+                                          // Filter out null values
+                                          resultsId: selectedResult[0].value!,
+                                          reasonId: _textEditingController.text,
+                                          completionDate: dateToBeCompleted,
+                                        ))
+                                    .toList();
                             //
                             //  //caseplan model
                             //  CasePlanModel casePlanModel = CasePlanModel(
@@ -633,14 +648,12 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                             //    services: servicesList,
                             //  );
 
-                             // print("JSON caseplan is ${casePlanModel.toJson()}");
-                             //  caseplanModelFoThisOvC.add(casePlanModel);
-                             //  print("caseplan model: $casePlanModel");
+                            // print("JSON caseplan is ${casePlanModel.toJson()}");
+                            //  caseplanModelFoThisOvC.add(casePlanModel);
+                            //  print("caseplan model: $casePlanModel");
                             //
-                             debugPrint("caseplan model selected: $caseplanModelFoThisOvC");
-
-
-
+                            debugPrint(
+                                "caseplan model selected: $caseplanModelFoThisOvC");
                           },
                         ),
                       ),

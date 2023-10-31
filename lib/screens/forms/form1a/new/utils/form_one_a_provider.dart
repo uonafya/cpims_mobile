@@ -128,7 +128,7 @@ class Form1AProviderNew extends ChangeNotifier {
     return criticalEvents;
   }
 
-  Future<bool> saveForm1AData(HealthFormData healthFormData) async {
+  Future<bool> saveForm1AData(HealthFormData healthFormData,String latitude,String longitude) async {
     List<MasterServicesFormData> masterServicesList =
         convertToMasterServicesFormData();
     //creating our data to be sent for saving
@@ -160,7 +160,10 @@ class Form1AProviderNew extends ChangeNotifier {
         ovcCpimsId: finalServicesFormData.ovc_cpims_id,
         date_of_event: finalServicesFormData.date_of_event,
         services: servicesList,
-        criticalEvents: criticalEventsList);
+        criticalEvents: criticalEventsList,
+        latitude: latitude,
+        longitude: longitude,
+    );
     String data = jsonEncode(toDbData);
     print("The json data for form 1 a is $data");
     print("form1b payload:==========>$criticalEventsList");
@@ -203,6 +206,15 @@ class Form1AProviderNew extends ChangeNotifier {
           selectedServiceId: serviceItem.value,
           domainId: safeFormData.domainId,
           // dateOfEvent: DateFormat('yyyy-MM-dd').format(healthFormData.selectedDate),
+        ),
+      );
+    }
+
+    for(dynamic serviceItem in schooledFormData.selectedServices){
+      masterServicesList.add(
+        MasterServicesFormData(
+          selectedServiceId: serviceItem.value,
+          domainId: schooledFormData.domainId,
         ),
       );
     }

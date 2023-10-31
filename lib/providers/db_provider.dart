@@ -374,6 +374,8 @@ class LocalDb {
           'date_of_event': formData.date_of_event,
           'form_type': formType,
           'form_date_synced': null,
+          'location_lat': formData.latitude,
+          'location_long': formData.longitude,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );

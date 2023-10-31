@@ -182,13 +182,14 @@ class _FomOneAState extends State<FomOneA> {
                                         "Please select the date of event");
                                     return;
                                   } else {
+                                    String lat = "";
+                                    String longitude = "";
                                     print("The location of the user is: ${_getUserLocation().then((value) {
-                                      print("The location of the user is: $value");
+                                      lat = value.latitude.toString();
+                                      longitude = value.longitude.toString();
                                     })}"); // This is the location of the user
                                     bool isFormSaved =
-                                        await form1AProvider.saveForm1AData(
-                                      form1AProvider.formData,
-                                    );
+                                        await form1AProvider.saveForm1AData(form1AProvider.formData,lat,longitude);
                                     setState(() {
                                       if (isFormSaved == true) {
                                         if (context.mounted) {

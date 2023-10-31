@@ -378,6 +378,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                           colorText: Colors.white,
                                         );
                                         Navigator.pop(context);
+                                        //clear provider data
+                                        cptProvider.clearProviderData();
                                       }
                                     } catch (e) {
                                       debugPrint(e.toString());

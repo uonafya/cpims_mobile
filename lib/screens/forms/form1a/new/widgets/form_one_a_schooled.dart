@@ -48,6 +48,7 @@ class _FormOneASchooledState extends State<FormOneASchooled> {
             selectedSchooledServices = selectedServices;
             form1aProvider.setSelectedSafeFormDataServices(
                 selectedSchooledServices, domainId);
+            debugPrint('selectedSchooledServices: $selectedSchooledServices');
           },
           options: schooledServices,
           selectedOptions:

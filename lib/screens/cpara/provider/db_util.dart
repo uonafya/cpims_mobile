@@ -254,14 +254,21 @@ void fetchAndPostToServerOvcSubpopulationData() async {
         'id': row['id'],
         'uuid': row['uuid'],
         'ovc_cpims_id': row['cpims_id'],
-        'criteria': row['criteria'],
         'date_of_event': row['date_of_event'],
-        'created_at': row['created_at'],
+        'sub_population': [
+          {
+            'ovc_cpims_id': row['cpims_id'],
+            'question_code': row['criteria'],
+            'answer_id': 'AYES',
+          }
+        ],
       };
 
       var ovcPostToServer = {
         "ovc_subpopulation": [ovcSubPopulation],
       };
+
+      debugPrint("Data to be posted to server $ovcPostToServer");
 
       final response =
           await ovcSubPopulationPostOvcToServer(ovcPostToServer, bearerAuth);

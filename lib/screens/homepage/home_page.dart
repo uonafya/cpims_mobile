@@ -103,7 +103,7 @@ class _HomepageState extends State<Homepage> {
         print("The error is $e");
         Get.snackbar(
           'Error',
-          'Failed to sync CasePlan forms',
+          'An error occurred $e',
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
@@ -182,7 +182,6 @@ class _HomepageState extends State<Homepage> {
         ),
       );
     }
-
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: customAppBar(),

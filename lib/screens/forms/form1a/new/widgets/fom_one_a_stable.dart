@@ -50,6 +50,7 @@ class _FormOneAStableState extends State<FormOneAStable> {
           onOptionSelected: (selectedServices) {
             selectedCareGiverStableServices = selectedServices;
             form1aProvider.setSelectedStableFormDataServices(selectedCareGiverStableServices, domainId);
+            debugPrint('selectedCareGiverStableServices: $selectedCareGiverStableServices');
           },
           options: stableServices,
           selectedOptions: selectedCareGiverStableServicesOptions.cast<ValueItem>(),
