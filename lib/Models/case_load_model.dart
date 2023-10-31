@@ -8,6 +8,7 @@ class CaseLoadModel {
   String? sex;
   String? caregiverCpimsId;
   String? chvCpimsId;
+  String? ovchivstatus;
 
   CaseLoadModel({
     this.cpimsId,
@@ -19,6 +20,7 @@ class CaseLoadModel {
     this.sex,
     this.caregiverCpimsId,
     this.chvCpimsId,
+    this.ovchivstatus,
   });
 
   CaseLoadModel.fromJson(Map<String, dynamic> json) {
@@ -31,6 +33,7 @@ class CaseLoadModel {
     sex = json['sex'];
     caregiverCpimsId = json['caregiver_cpims_id'].toString();
     chvCpimsId = json['chv_cpims_id'].toString();
+    ovchivstatus = json['ovchivstatus'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -44,6 +47,7 @@ class CaseLoadModel {
     data['sex'] = sex;
     data['caregiver_cpims_id'] = caregiverCpimsId;
     data['chv_cpims_id'] = chvCpimsId;
+    data['ovchivstatus'] = ovchivstatus;
     return data;
   }
 
@@ -58,6 +62,7 @@ class CaseLoadModel {
       'sex': sex,
       'caregiver_cpims_id': caregiverCpimsId,
       'chv_cpims_id': chvCpimsId,
+      'ovchivstatus': ovchivstatus,
     };
   }
 
@@ -72,6 +77,7 @@ class CaseLoadModel {
       sex: map['sex'],
       caregiverCpimsId: map['caregiver_cpims_id'],
       chvCpimsId: map['chv_cpims_id'],
+      ovchivstatus: map['h_status'],
     );
   }
 }

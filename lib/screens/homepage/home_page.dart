@@ -15,6 +15,7 @@ import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_grid_view.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
@@ -61,6 +62,8 @@ class _HomepageState extends State<Homepage> {
   }
 
   bool isSyncing = false;
+
+  bool isDebugMode = false;
 
   bool noFormsToSync = true;
 
@@ -233,12 +236,13 @@ class _HomepageState extends State<Homepage> {
                       ],
                     ),
                     const SizedBox(height: 20),
-                   const InfoCard(
-                      title: 'THIS IS A TEST APPLICATION',
-                      icon: FontAwesomeIcons.warning,
-                      color: Color(0xffff0010),
-                      secondaryColor: Color(0xff630122),
-                    ),
+                    if (kDebugMode)
+                      const InfoCard(
+                        title: 'THIS IS A TEST APPLICATION',
+                        icon: FontAwesomeIcons.warning,
+                        color: Color(0xffff0010),
+                        secondaryColor: Color(0xff630122),
+                      ),
                     StatisticsItem(
                       title: 'UNSYNCED RECORDS',
                       icon: FontAwesomeIcons.arrowsRotate,
