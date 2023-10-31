@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/screens/notifications/all_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -5,9 +6,14 @@ import 'package:get/route_manager.dart';
 
 AppBar customAppBar() {
   return AppBar(
-    leading: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Image.asset('assets/images/logo_gok.png'),
+    leading: GestureDetector(
+      onTap: () {
+        Get.to(const Homepage());
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Image.asset('assets/images/logo_gok.png'),
+      ),
     ),
     title: const Text('CPIMS - Kenya'),
     actions: [
