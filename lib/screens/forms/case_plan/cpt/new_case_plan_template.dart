@@ -243,8 +243,12 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                               null &&
                                           cptHealthFormData.responsibleIds !=
                                               null &&
-                                          cptHealthFormData.resultsId != null &&
-                                          cptHealthFormData.reasonId != null) {
+                                          cptHealthFormData.resultsId != null) {
+                                        String? completionDateValue =
+                                            cptHealthFormData.completionDate ??
+                                                '';
+                                        String? reason =
+                                            cptHealthFormData.reasonId ?? '';
                                         Map<String, dynamic> healthService = {
                                           'domain_id': "DHNU",
                                           'service_id':
@@ -257,10 +261,9 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                               cptHealthFormData.responsibleIds,
                                           'results_id':
                                               cptHealthFormData.resultsId,
-                                          'reason_id':
-                                              cptHealthFormData.reasonId,
+                                          'reason_id': reason,
                                           'completion_date':
-                                              cptHealthFormData.completionDate,
+                                              completionDateValue,
                                         };
                                         servicesList.add(healthService);
                                       }
@@ -272,8 +275,13 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                           cptSafeFormData.priorityId != null &&
                                           cptSafeFormData.responsibleIds !=
                                               null &&
-                                          cptSafeFormData.resultsId != null &&
-                                          cptSafeFormData.reasonId != null) {
+                                          cptSafeFormData.resultsId != null) {
+                                        String? completionDateValue =
+                                            cptSafeFormData.completionDate ??
+                                                '';
+                                        String? reason = cptSafeFormData
+                                                .reasonId ??
+                                            '';
                                         Map<String, dynamic> safeService = {
                                           'domain_id': 'DPRO',
                                           'service_id':
@@ -286,9 +294,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                               cptSafeFormData.responsibleIds,
                                           'results_id':
                                               cptSafeFormData.resultsId,
-                                          'reason_id': cptSafeFormData.reasonId,
-                                          'completion_date':
-                                              cptSafeFormData.completionDate,
+                                          'reason_id': reason,
+                                          'completion_date':completionDateValue,
                                         };
                                         servicesList.add(safeService);
                                       }
@@ -302,10 +309,13 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                               null &&
                                           cptStableFormData.responsibleIds !=
                                               null &&
-                                          cptStableFormData.resultsId != null &&
-                                          cptStableFormData.reasonId != null) {
+                                          cptStableFormData.resultsId != null) {
+                                        String? completionDateValue =
+                                            cptStableFormData.completionDate ??
+                                                '';
+                                        String? reason = cptStableFormData.reasonId ?? '';
                                         Map<String, dynamic> stableService = {
-                                          'domain_id': 'DPRO',
+                                          'domain_id': 'DHES',
                                           'service_id':
                                               cptStableFormData.serviceIds,
                                           'goal_id': cptStableFormData.goalId,
@@ -316,10 +326,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                               cptStableFormData.responsibleIds,
                                           'results_id':
                                               cptStableFormData.resultsId,
-                                          'reason_id':
-                                              cptStableFormData.reasonId,
-                                          'completion_date':
-                                              cptStableFormData.completionDate,
+                                          'reason_id': reason,
+                                          'completion_date':completionDateValue,
                                         };
                                         servicesList.add(stableService);
                                       }
@@ -334,9 +342,12 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                           cptschooledFormData.responsibleIds !=
                                               null &&
                                           cptschooledFormData.resultsId !=
-                                              null &&
-                                          cptschooledFormData.reasonId !=
                                               null) {
+                                        String? completionDateValue =
+                                            cptschooledFormData
+                                                    .completionDate ??
+                                                '';
+                                        String? reason = cptschooledFormData.reasonId ?? '';
                                         Map<String, dynamic> schooledService = {
                                           'domain_id': 'DEDU',
                                           'service_id':
@@ -349,10 +360,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                               .responsibleIds,
                                           'results_id':
                                               cptschooledFormData.resultsId,
-                                          'reason_id':
-                                              cptschooledFormData.reasonId,
-                                          'completion_date': cptschooledFormData
-                                              .completionDate,
+                                          'reason_id':reason,
+                                          'completion_date': completionDateValue,
                                         };
                                         servicesList.add(schooledService);
                                       }

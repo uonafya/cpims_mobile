@@ -162,7 +162,7 @@ class CptSafeFormData {
   final List<String?>? responsibleIds;
   final String? resultsId;
   final String? reasonId;
-  final String? completionDate;
+   String? completionDate = "";
 
   CptSafeFormData({
     this.domainId,
