@@ -375,8 +375,8 @@ class LocalDb {
           'date_of_event': formData.date_of_event,
           'form_type': formType,
           'form_date_synced': null,
-          'location_lat': formData.latitude,
-          'location_long': formData.longitude,
+          'location_lat': formData.location_lat,
+          'location_long': formData.location_long,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -398,7 +398,8 @@ class LocalDb {
           {
             'form_id': formId,
             'event_id': criticalEvent.event_id,
-            'event_date': criticalEvent.event_date
+            'event_date': criticalEvent.event_date,
+
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );

@@ -70,16 +70,20 @@ class CaseLoadService {
 
         final int timestamp = DateTime.now().millisecondsSinceEpoch;
         await preferences.setInt('caseload_last_save', timestamp);
+        await preferences.setBool("hasUserSetup", true);
       } else {
         if (kDebugMode) {
           print("We have an issue");
+          await preferences.setBool("hasUserSetup", false);
         }
         if (context.mounted) {
+          await preferences.setBool("hasUserSetup", false);
           await Provider.of<AuthProvider>(context, listen: false)
               .logOut(context);
         }
       }
     } catch (e) {
+      await preferences.setBool("hasUserSetup", false);
       if (context.mounted) {
         errorSnackBar(context, e.toString());
         await Provider.of<AuthProvider>(context, listen: false).logOut(context);

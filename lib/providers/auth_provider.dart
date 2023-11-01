@@ -69,7 +69,7 @@ class AuthProvider with ChangeNotifier {
 
           await prefs.setString('access', responseData['access']);
           await prefs.setString('refresh', responseData['refresh']);
-          await prefs.setBool("hasUserSetup", true);
+          // await prefs.setBool("hasUserSetup", true);
 
           await prefs.setInt(
             'authTokenTimestamp',
