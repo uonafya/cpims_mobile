@@ -129,6 +129,10 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                 onTap: () {
                                   if (selectedStep == 0) {
                                     Navigator.pop(context);
+                                    context
+                                        .read<CparaProvider>()
+                                        .clearCparaProvider();
+
                                   }
                                   _scrollController.animateTo(
                                     0,
