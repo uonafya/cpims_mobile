@@ -58,7 +58,8 @@ class LocalDb {
         ${OvcFields.caregiverNames} $textType,
         ${OvcFields.sex} $textType,
         ${OvcFields.caregiverCpimsId} $textType,
-        ${OvcFields.chvCpimsId} $textType
+        ${OvcFields.chvCpimsId} $textType,
+        ${OvcFields.ovchivstatus} $textType
       )
     ''');
 
@@ -374,8 +375,8 @@ class LocalDb {
           'date_of_event': formData.date_of_event,
           'form_type': formType,
           'form_date_synced': null,
-          'location_lat': formData.latitude,
-          'location_long': formData.longitude,
+          'location_lat': formData.location_lat,
+          'location_long': formData.location_long,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -397,7 +398,8 @@ class LocalDb {
           {
             'form_id': formId,
             'event_id': criticalEvent.event_id,
-            'event_date': criticalEvent.event_date
+            'event_date': criticalEvent.event_date,
+
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
@@ -828,6 +830,7 @@ class OvcFields {
     sex,
     caregiverCpimsId,
     chvCpimsId,
+    ovchivstatus,
   ];
 
   static const String id = '_id';
@@ -840,6 +843,7 @@ class OvcFields {
   static const String sex = 'sex';
   static const String caregiverCpimsId = 'caregiver_cpims_id';
   static const String chvCpimsId = 'chv_cpims_id';
+  static const String ovchivstatus = 'ovchivstatus';
 }
 
 class SummaryFields {

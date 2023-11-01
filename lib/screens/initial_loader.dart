@@ -64,7 +64,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
                   .checkInternetConnection();
           final prefs = await SharedPreferences.getInstance();
 
-          final hasUserSetup = prefs.getBool("hasUserSetup");
+          final hasUserSetup = prefs.getBool("hasUserSetup"); //todo: remove
 
           if (hasConnection == false) {
             if (hasUserSetup == null) {

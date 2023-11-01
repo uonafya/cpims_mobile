@@ -149,7 +149,8 @@ class Form1bProvider extends ChangeNotifier {
         ovcCpimsId: finalServicesFormData.ovc_cpims_id,
         date_of_event: finalServicesFormData.date_of_event,
         services: servicesList,
-        criticalEvents: criticalEventsList);
+        criticalEvents: criticalEventsList,
+    );
     String data = jsonEncode(toDbData);
     print("The json data for form 1 b is $data");
     print("form1b payload:==========>$criticalEventsList");

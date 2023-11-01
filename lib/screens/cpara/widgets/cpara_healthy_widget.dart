@@ -600,7 +600,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
     debugPrint(members.toString() + message);
     // If all the values are yes return RadioButtonOptions.yes, if not return RadioButtonOptions.no
     if (members.isEmpty) {
-      return RadioButtonOptions.no;
+      return RadioButtonOptions.yes;
     } else if (members.any(
         (element) => element == RadioButtonOptions.no || element == null)) {
       return RadioButtonOptions.no;

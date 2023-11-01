@@ -164,7 +164,7 @@ class InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 50,
+        height: 60,
         width: double.infinity,
         color: color,
         margin: const EdgeInsets.symmetric(vertical: 5.0),

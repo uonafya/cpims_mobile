@@ -23,10 +23,14 @@ import '../../../form1b/utils/SafeForm1bModel.dart';
 import '../../../form1b/utils/StableForm1bModel.dart';
 
 class Form1AProviderNew extends ChangeNotifier {
-  final HealthFormData _formData = HealthFormData(selectedServices: [], selectedDate: DateTime.now(), domainId: "");
-  final StableFormData _stableFormData = StableFormData(selectedServices: [], domainId: "");
-  final SchooledFormData _schooledFormData = SchooledFormData(selectedServices: [], domainId: "");
-  final SafeFormData _safeFormData = SafeFormData(selectedServices: [], domainId: "");
+  final HealthFormData _formData = HealthFormData(
+      selectedServices: [], selectedDate: DateTime.now(), domainId: "");
+  final StableFormData _stableFormData =
+      StableFormData(selectedServices: [], domainId: "");
+  final SchooledFormData _schooledFormData =
+      SchooledFormData(selectedServices: [], domainId: "");
+  final SafeFormData _safeFormData =
+      SafeFormData(selectedServices: [], domainId: "");
   final FinalServicesFormData _finalServicesFormData = FinalServicesFormData(
     services: [],
     date_of_event: DateFormat('yyyy-MM-dd').format(DateTime.now()),
@@ -124,7 +128,8 @@ class Form1AProviderNew extends ChangeNotifier {
     return criticalEvents;
   }
 
-  Future<bool> saveForm1AData(HealthFormData healthFormData,String latitude,String longitude) async {
+  Future<bool> saveForm1AData(
+      HealthFormData healthFormData, String latitude, String longitude) async {
     List<MasterServicesFormData> masterServicesList =
         convertToMasterServicesFormData();
     setFinalFormDataServices(masterServicesList);
@@ -152,12 +157,12 @@ class Form1AProviderNew extends ChangeNotifier {
     }
 
     Form1DataModel toDbData = Form1DataModel(
-        ovcCpimsId: finalServicesFormData.ovc_cpims_id,
-        date_of_event: finalServicesFormData.date_of_event,
-        services: servicesList,
-        criticalEvents: criticalEventsList,
-        location_lat: latitude,
-        location_long: longitude,
+      ovcCpimsId: finalServicesFormData.ovc_cpims_id,
+      date_of_event: finalServicesFormData.date_of_event,
+      services: servicesList,
+      criticalEvents: criticalEventsList,
+      location_lat: latitude,
+      location_long: longitude,
     );
     String data = jsonEncode(toDbData);
     print("The json data for form 1 a is $data");
@@ -205,7 +210,7 @@ class Form1AProviderNew extends ChangeNotifier {
       );
     }
 
-    for(dynamic serviceItem in schooledFormData.selectedServices){
+    for (dynamic serviceItem in schooledFormData.selectedServices) {
       masterServicesList.add(
         MasterServicesFormData(
           selectedServiceId: serviceItem.value,
