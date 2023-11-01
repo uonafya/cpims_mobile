@@ -22,6 +22,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
   RadioButtonOptions? _child_below_12;
   RadioButtonOptions? _adolescents_older_than_12;
   RadioButtonOptions? _exposed_to_violence;
+
   // RadioButtonOptions? _no_siblings_over_10;
   RadioButtonOptions? _referred_for_services;
   RadioButtonOptions? _tick_Yes;
@@ -32,8 +33,10 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
   RadioButtonOptions? _benchmark_7;
   RadioButtonOptions? _legal_documents;
   RadioButtonOptions? _benchmark_8;
+
 // List of children
   late List<SafeChild> children;
+
   // question 3 is for child
   RadioButtonOptions? question1Option,
       question2Option,
@@ -159,13 +162,23 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
   void noChangeToRadio(RadioButtonOptions? val) {}
 
+  int calculateAge(DateTime birthDate) {
+    final now = DateTime.now();
+    final age = now.year -
+        birthDate.year -
+        (now.month > birthDate.month ||
+                (now.month == birthDate.month && now.day >= birthDate.day)
+            ? 0
+            : 1);
+    return age;
+  }
+
   @override
   void initState() {
-    children =  [];
+    children = [];
     SafeModel safeModel =
         context.read<CparaProvider>().safeModel ?? SafeModel();
-    List<CaseLoadModel> models =
-        context.read<CparaProvider>().children ?? [];
+    List<CaseLoadModel> models = context.read<CparaProvider>().children ?? [];
     question1Option = safeModel.question1 == null
         ? question1Option
         : convertingStringToRadioButtonOptions(safeModel.question1!);
@@ -220,9 +233,32 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
     //      SafeChild(id: "45", question1: "question1"),
     //       SafeChild(id: "76", question1: "question1")
     //     ];
+    int calculateAge(DateTime birthDate) {
+      final now = DateTime.now();
+      final age = now.year -
+          birthDate.year -
+          (now.month > birthDate.month ||
+                  (now.month == birthDate.month && now.day >= birthDate.day)
+              ? 0
+              : 1);
+      return age;
+    }
 
-    for (CaseLoadModel model in models){
-      children.add(SafeChild(ovcId: "${model.cpimsId}", question1: "", name: "${model.ovcFirstName} ${model.ovcSurname}"));
+    for (CaseLoadModel model in models) {
+      final DateTime? birthDate = DateTime.tryParse(model.dateOfBirth ?? "");
+      if (birthDate != null) {
+        final age = calculateAge(birthDate);
+        if (age > 11) {
+          // Only add children with age less than 12
+          children.add(
+            SafeChild(
+              ovcId: model.cpimsId ?? "",
+              question1: "",
+              name: "${model.ovcFirstName} ${model.ovcSurname}",
+            ),
+          );
+        }
+      }
     }
     // children = safeModel.childrenQuestions ??
     //     [
@@ -444,17 +480,24 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                         convertingRadioButtonOptionsToString(value);
                     //todo: update the children questions
                     List<SafeChild> childrenQuestions = children;
-                        // safeModel.childrenQuestions ??
-                        //     [SafeChild(question1: "")];
+                    // safeModel.childrenQuestions ??
+                    //     [SafeChild(question1: "")];
 
                     try {
-                      childrenQuestions[i] =
-                          SafeChild(question1: selectedOption, ovcId: children[i].ovcId, name: children[i].name);
+                      childrenQuestions[i] = SafeChild(
+                          question1: selectedOption,
+                          ovcId: children[i].ovcId,
+                          name: children[i].name);
                     } catch (e) {
                       if (e is RangeError) {
-                        childrenQuestions.add(SafeChild(question1: "", ovcId: children[i].ovcId, name: children[i].name));
-                        childrenQuestions[i] =
-                            SafeChild(question1: selectedOption, ovcId: children[i].ovcId, name: children[i].name);
+                        childrenQuestions.add(SafeChild(
+                            question1: "",
+                            ovcId: children[i].ovcId,
+                            name: children[i].name));
+                        childrenQuestions[i] = SafeChild(
+                            question1: selectedOption,
+                            ovcId: children[i].ovcId,
+                            name: children[i].name);
                       }
                     }
 
@@ -679,7 +722,9 @@ const darkTextColor = Colors.black;
 class SafeGoalWidget extends StatelessWidget {
   final String title;
   final String sub_title;
+
   const SafeGoalWidget({super.key, required this.title, this.sub_title = ""});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -715,6 +760,7 @@ class MainCardQuestion extends StatelessWidget {
   final String card_question;
   final RadioButtonOptions? option;
   final Function(RadioButtonOptions?) selectedOption;
+
   const MainCardQuestion(
       {super.key,
       required this.card_question,
@@ -767,6 +813,7 @@ const large_height = 25.0;
 
 class QuestionForCard extends StatelessWidget {
   final String text;
+
   const QuestionForCard({super.key, required this.text});
 
   @override
