@@ -199,7 +199,7 @@ class Form1Service {
   static Future<Response> postFormRemote(
       formData, String formType, String authToken) async {
     String formOneEndpoint = "${cpimsApiUrl}form/${formType}";
-    String formEndpointModile = "${mobileEndpoint}form/${formType}/";
+    String formEndpointModile = "${liveEndpoint}form/${formType}/";
     return _postForm(formData, formEndpointModile, authToken);
   }
 }

@@ -86,7 +86,7 @@ class _HomepageState extends State<Homepage> {
       var payload = caseplan.toJson();
       try {
         const cptEndpoint = "cpt/";
-        var response = await dio.post("https://dev.cpims.net/mobile/cpt/",
+        var response = await dio.post("$liveEndpoint$cptEndpoint",
             data: payload,
             options: Options(headers: {"Authorization": bearerAuth}));
 

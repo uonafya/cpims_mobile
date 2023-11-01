@@ -225,7 +225,7 @@ Future<void> singleCparaFormSubmission(
 
   dio.interceptors.add(LogInterceptor());
   const cparaUrl = "cpara/";
-  var response = await dio.post("$mobileEndpoint$cparaUrl",
+  var response = await dio.post("$liveEndpoint$cparaUrl",
       data: cparaMapData,
       options: Options(
           contentType: 'application/json',
@@ -379,7 +379,7 @@ Future<Response> ovcSubPopulationPostOvcToServer(
   dio.interceptors.add(LogInterceptor());
   try {
     final response = await dio.post(
-      "$mobileEndpoint$cparaUrl",
+      "$liveEndpoint$cparaUrl",
       data: data,
       options: Options(
         headers: {
