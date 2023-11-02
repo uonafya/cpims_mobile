@@ -71,12 +71,12 @@ List drawerOptions(BuildContext context) {
     {
       'title': 'Caseload',
       'icon': FontAwesomeIcons.briefcase,
-      'children':[],
+      'children': [],
       'onTap': () => {
-        Get.off(() => const OVCCareScreen(),
-            transition: Transition.fadeIn,
-            duration: const Duration(milliseconds: 1000))
-      },
+            Get.off(() => const OVCCareScreen(),
+                transition: Transition.fadeIn,
+                duration: const Duration(milliseconds: 1000))
+          },
 
       // 'children': [
       //   {
@@ -143,8 +143,8 @@ List drawerOptions(BuildContext context) {
         try {
           const _androidIdPlugin = AndroidId();
           final String? androidId = await _androidIdPlugin.getId();
-          CaseLoadService().updateCaseLoadData(
-              context: context, deviceID: androidId!);
+          CaseLoadService()
+              .updateCaseLoadData(context: context, deviceID: androidId!);
           // syncWorkflows();
           snackBar = SnackBar(
             content: const Text(
@@ -302,13 +302,13 @@ List<Map<String, dynamic>> personRegistryStepper = [
   },
 ];
 
-const String cpimsApiUrl = "https://ovc.childprotection.uonbi.ac.ke/api/";
-const String mobileEndpoint = "https://dev.cpims.net/mobile/";
-const String liveEndpoint = "https://ovc.childprotection.uonbi.ac.ke/mobile/";
+const String cpimsApiUrl = "https://ovc.childprotection.uonbi.ac.ke/";
+// const String cpimsApiUrl = "https://dev.cpims.net/";
 
 const Map<String, String> headers = {"Content-Type": "application/json"};
 
-void errorSnackBar(BuildContext context, String message, {Duration duration = const Duration(seconds: 8)}) {
+void errorSnackBar(BuildContext context, String message,
+    {Duration duration = const Duration(seconds: 8)}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     backgroundColor: Colors.red,
     content: Text(message),
@@ -452,3 +452,4 @@ List<Map<String, dynamic>> unapprovedItems = [
     's_color': const Color(0xff9A3734),
   },
 ];
+

@@ -102,7 +102,7 @@ class _CareGiverDetailsScreenState extends State<CareGiverDetailsScreen> {
               height: 20,
             ),
             CustomCard(
-              title: "Caregiver ID: Children",
+              title: "Caregiver: Children",
               children: [
                 Table(
                   border: TableBorder.symmetric(

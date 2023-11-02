@@ -2,32 +2,56 @@
 List<Map> formOneACriticalEvents = [
   {
     'event_id': 'CEOCE1',
-    'event_description': 'Child Pregnant',
+    'event_description': 'OCE1 - Child Pregnant',
   },
   {
     'event_id': 'CEOCE2',
-    'event_description': 'Child not Adhering to ARVS',
+    'event_description': 'OCE2 - Child not Adhering to ARVS',
   },
   {
     'event_id': 'CEOCE3',
-    'event_description': 'Child Malnourished',
+    'event_description': 'OCE3 - Child Malnourished',
   },
   {
     'event_id': 'CEOCE4',
-    'event_description': 'Child HIV status Changed',
+    'event_description': 'OCE4 - Child HIV status Changed',
   },
   {
     'event_id': 'CEOCE5',
-    'event_description': 'Child acquired opportunistic infection',
+    'event_description': 'OCE5 - Child acquired opportunistic infection',
   },
   {
     'event_id': 'CEOCE6',
-    'event_description': 'Child missed HIV clinic appointment',
+    'event_description': 'OCE6 - Child missed HIV clinic appointment',
   },
   {
     'event_id': 'CEOCE7',
-    'event_description': 'Child headed household',
+    'event_description': 'OCE7 - Child headed household',
   },
+  {
+    'event_id': 'CEOCE8',
+    'event_description': 'OCE8 - Child abused',
+  },
+  {
+    'event_id': 'CEOCE9',
+    'event_description': 'OCE9 - Child dropped out of school',
+  },
+  {
+    'event_id': 'CEOCE10',
+    'event_description': 'OCE10 - Change of caregiver',
+  },
+  {
+    'event_id': 'CEOCE11',
+    'event_description': 'OCE11 - Relocation',
+  },
+  {
+    'event_id': 'CEOCE12',
+    'event_description': 'OCE12 - Death',
+  },
+  {
+    'event_id': 'CEOCE13',
+    'event_description': 'OCE13 - Others',
+  }
 ];
 
 List<Map> healthServicesOptions = [

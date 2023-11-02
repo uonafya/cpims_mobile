@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class DashBoardService {
   dashBoard(access) async {
-    var response = await ApiService().getSecureData("dashboard/", access);
+    var response = await ApiService().getSecureData("api/dashboard/", access);
     var dashboard = json.decode(response.body);
 
     final prefs = await SharedPreferences.getInstance();

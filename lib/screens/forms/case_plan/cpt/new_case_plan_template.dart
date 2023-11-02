@@ -415,7 +415,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                       } else {
                                         Get.snackbar(
                                           'Error',
-                                          'Please fill atleast one form',
+                                          'Please fill all mandatory fields.',
                                           backgroundColor: Colors.red,
                                           colorText: Colors.white,
                                         );

@@ -150,6 +150,7 @@ class _Form1BScreen extends State<Form1BScreen> {
                                 onTap: () {
                                   if (selectedStep == 0) {
                                     Navigator.pop(context);
+                                    form1bProvider.resetFormData();
                                   } else {
                                     setState(() {
                                       if (selectedStep > 0) {

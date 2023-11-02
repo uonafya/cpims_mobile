@@ -52,7 +52,7 @@ class AuthProvider with ChangeNotifier {
 
     final http.Response response = await http.post(
       Uri.parse(
-        '${cpimsApiUrl}token/',
+        '${cpimsApiUrl}api/token/',
       ),
       body: {
         'username': username,
@@ -144,7 +144,7 @@ class AuthProvider with ChangeNotifier {
           // get new token
           final http.Response response = await http.post(
             Uri.parse(
-              '${cpimsApiUrl}token/refresh/',
+              '${cpimsApiUrl}api/token/refresh/',
             ),
             body: {
               'refresh': refreshToken,

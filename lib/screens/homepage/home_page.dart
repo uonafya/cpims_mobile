@@ -85,8 +85,8 @@ class _HomepageState extends State<Homepage> {
     for (var caseplan in caseplanFromDb) {
       var payload = caseplan.toJson();
       try {
-        const cptEndpoint = "cpt/";
-        var response = await dio.post("$liveEndpoint$cptEndpoint",
+        const cptEndpoint = "mobile/cpt/";
+        var response = await dio.post("$cpimsApiUrl$cptEndpoint",
             data: payload,
             options: Options(headers: {"Authorization": bearerAuth}));
 
@@ -102,6 +102,22 @@ class _HomepageState extends State<Homepage> {
               colorText: Colors.white,
             );
           }
+        } else if (response.statusCode == 403) {
+          Get.dialog(
+            AlertDialog(
+              title: const Text("Session Expired"),
+              content:
+                  const Text("Your session has expired. Please log in again"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: const Text("OK"),
+                ),
+              ],
+            ),
+          );
         }
       } catch (e) {
         print("The error is $e");
@@ -440,7 +456,6 @@ class _HomepageState extends State<Homepage> {
           formType['endpoint']!,
           accessToken!,
         );
-
         if (response.statusCode == 201) {
           debugPrint("Data to sync is $formData");
           await Form1Service.updateFormLocalDateSync(
@@ -458,6 +473,22 @@ class _HomepageState extends State<Homepage> {
           }
 
           updateProgress(formsSynced, totalFormsToSync);
+        } else if (response.statusCode == 403) {
+          Get.dialog(
+            AlertDialog(
+              title: const Text("Session Expired"),
+              content:
+                  const Text("Your session has expired. Please log in again"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: const Text("OK"),
+                ),
+              ],
+            ),
+          );
         } else {
           debugPrint(
               "Failed to sync ${formType['formType']} and error is ${response.data}");

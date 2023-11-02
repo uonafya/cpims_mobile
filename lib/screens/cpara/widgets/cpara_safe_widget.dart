@@ -598,10 +598,6 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 // Benchmak 6 results
         BenchMarkQuestion(
             groupValue: allShouldBeYes([
-              _experienced_violence,
-              _child_below_12,
-              _exposed_to_violence,
-              // _no_siblings_over_10,
               _referred_for_services,
               _received_services,
             ], "message"),
