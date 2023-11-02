@@ -55,7 +55,6 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
         /// We then navigate to the homepage
         /// If the user is coming from the login screen, we don't check for biometrics because they might have used biometric login
         /// If the user is coming from the splash screen, we check for biometrics(Subsequent logins)
-
         try {
           // Your asynchronous operations here...
 

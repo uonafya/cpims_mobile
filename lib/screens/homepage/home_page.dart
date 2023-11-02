@@ -85,8 +85,8 @@ class _HomepageState extends State<Homepage> {
     for (var caseplan in caseplanFromDb) {
       var payload = caseplan.toJson();
       try {
-        const cptEndpoint = "cpt/";
-        var response = await dio.post("$liveEndpoint$cptEndpoint",
+        const cptEndpoint = "mobile/cpt/";
+        var response = await dio.post("$cpimsApiUrl$cptEndpoint",
             data: payload,
             options: Options(headers: {"Authorization": bearerAuth}));
 

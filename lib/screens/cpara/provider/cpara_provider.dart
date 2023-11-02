@@ -128,8 +128,7 @@ class CparaProvider extends ChangeNotifier {
 // Calculate stable benchmark
   int stableBenchMark() {
     int stableBenchmark = 0;
-    if (stableModel?.question1 == "Yes" ||
-        stableModel?.question1 == "N/A" && stableModel?.question2 == "Yes" ||
+    if (stableModel?.question1 == "Yes" || stableModel?.question1 == "N/A" && stableModel?.question2 == "Yes" ||
         stableModel?.question2 == "N/A" && stableModel?.question3 == "Yes") {
       stableBenchmark = 1;
     } else {
@@ -153,9 +152,7 @@ class CparaProvider extends ChangeNotifier {
 
     // bool isAllChildrenYes = overallChildrenBenchmark(childrenOptions: childQuestions).toLowerCase() == "yes";
 
-    if (safeModel?.overallQuestion1 == "No" ||
-        safeModel?.question1 == "Yes" &&
-            safeModel?.question2 == "Yes" &&
+    if (safeModel?.overallQuestion1 == "No" || safeModel?.question1 == "Yes" && safeModel?.question2 == "Yes" &&
             // safeModel?.question3 == "Yes" &&
             safeModel?.question4 == "Yes" &&
             safeModel?.question5 == "Yes" &&

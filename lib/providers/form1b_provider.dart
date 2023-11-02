@@ -53,7 +53,7 @@ class Form1bProvider extends ChangeNotifier {
   FinalServicesFormData get finalServicesFormData => _finalServicesFormData;
 
   void setSelectedHealthServices(
-      List<ValueItem> selectedServices, String domainIdn) {
+      List<ValueItem> selectedServices, String domainId) {
     _formData.selectedServices.clear(); // Clear the current list
     _formData.selectedServices.addAll(selectedServices);
     _formData.domainId = domainId;

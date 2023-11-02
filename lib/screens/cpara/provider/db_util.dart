@@ -220,12 +220,10 @@ Future<void> singleCparaFormSubmission(
     "scores": scoreList,
   };
   debugPrint(json.encode(cparaMapData));
-  String cparaJsonData = json.encode(cparaMapData);
-  print("Cpara data is $cparaJsonData");
 
   dio.interceptors.add(LogInterceptor());
   const cparaUrl = "cpara/";
-  var response = await dio.post("$liveEndpoint$cparaUrl",
+  var response = await dio.post("mobile/$cpimsApiUrl$cparaUrl",
       data: cparaMapData,
       options: Options(
           contentType: 'application/json',
@@ -375,11 +373,11 @@ Future<void> updateOvcSubpopulationDateSynced(String? ovc_id, Database db) async
 
 Future<Response> ovcSubPopulationPostOvcToServer(
     Map<String, dynamic> data, String bearerAuth) async {
-  const cparaUrl = "cpara/";
+  const cparaUrl = "mobile/cpara/";
   dio.interceptors.add(LogInterceptor());
   try {
     final response = await dio.post(
-      "$liveEndpoint$cparaUrl",
+      "$cpimsApiUrl$cparaUrl",
       data: data,
       options: Options(
         headers: {

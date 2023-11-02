@@ -303,7 +303,7 @@ List<Map<String, dynamic>> personRegistryStepper = [
 ];
 
 const String cpimsApiUrl = "https://dev.cpims.net/api/";
-const String mobileEndpoint = "https://dev.cpims.net/mobile/";
+const String test = "https://dev.cpims.net/mobile/";
 
 const Map<String, String> headers = {"Content-Type": "application/json"};
 
