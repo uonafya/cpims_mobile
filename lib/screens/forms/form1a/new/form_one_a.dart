@@ -79,7 +79,7 @@ class _FomOneAState extends State<FomOneA> {
                   color: Colors.black)),
           const SizedBox(height: 5),
           const Text(
-            '',
+            'OVC Service and Monitoring',
             style: TextStyle(color: kTextGrey),
           ),
           const SizedBox(height: 15),
@@ -157,6 +157,7 @@ class _FomOneAState extends State<FomOneA> {
                               onTap: () {
                                 if (selectedStep == 0) {
                                   Navigator.pop(context);
+                                  form1AProvider.resetFormData();
                                 } else {
                                   setState(() {
                                     if (selectedStep > 0) {
