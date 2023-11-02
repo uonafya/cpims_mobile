@@ -7,6 +7,7 @@ import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,8 +54,8 @@ class CaseLoadService {
     dio.interceptors.add(LogInterceptor());
 
     try {
-      final Response response =
-          await dio.get('api/caseload', queryParameters: {'deviceID': deviceID});
+      final Response response = await dio
+          .get('api/caseload', queryParameters: {'deviceID': deviceID});
 
       if (response.statusCode == 200) {
         final List<CaseLoadModel> caseLoadModelList = (response.data as List)
@@ -71,6 +72,16 @@ class CaseLoadService {
         final int timestamp = DateTime.now().millisecondsSinceEpoch;
         await preferences.setInt('caseload_last_save', timestamp);
         await preferences.setBool("hasUserSetup", true);
+      } else if (response.statusCode == 254) {
+        if (context.mounted) {
+          Get.snackbar(
+            "Error",
+            "You are not authorized to access this resource",
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
       } else {
         if (kDebugMode) {
           print("We have an issue");
@@ -78,15 +89,12 @@ class CaseLoadService {
         }
         if (context.mounted) {
           await preferences.setBool("hasUserSetup", false);
-          await Provider.of<AuthProvider>(context, listen: false)
-              .logOut(context);
         }
       }
     } catch (e) {
       await preferences.setBool("hasUserSetup", false);
       if (context.mounted) {
         errorSnackBar(context, e.toString());
-        await Provider.of<AuthProvider>(context, listen: false).logOut(context);
       }
     } finally {
       Navigator.of(context).pop(); // Dismiss the loading indicator

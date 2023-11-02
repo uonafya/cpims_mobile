@@ -1122,6 +1122,12 @@ List<Map<String, dynamic>> cp_responsible = [
     "item_description": "DCS",
     "item_sub_category": "",
     "the_order": 5
+  },
+  {
+    "item_id": "RGOK",
+    "item_description": "GOK Agent",
+    "item_sub_category": "",
+    "the_order": 5
   }
 ];
 
