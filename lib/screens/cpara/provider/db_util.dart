@@ -222,8 +222,8 @@ Future<void> singleCparaFormSubmission(
   debugPrint(json.encode(cparaMapData));
 
   dio.interceptors.add(LogInterceptor());
-  const cparaUrl = "cpara/";
-  var response = await dio.post("mobile/$cpimsApiUrl$cparaUrl",
+  const cparaUrl = "mobile/cpara/";
+  var response = await dio.post("$cpimsApiUrl$cparaUrl",
       data: cparaMapData,
       options: Options(
           contentType: 'application/json',
@@ -231,6 +231,21 @@ Future<void> singleCparaFormSubmission(
 
   if (response.statusCode != 201) {
     throw ("Submission to upstream failed");
+  } else if (response.statusCode == 403) {
+    Get.dialog(
+      AlertDialog(
+        title: const Text("Session Expired"),
+        content: const Text("Your session has expired. Please log in again"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
   }
   debugPrint("${response.statusCode}");
   debugPrint(response.data.toString());
@@ -266,7 +281,8 @@ void fetchAndPostToServerOvcSubpopulationData() async {
         "ovc_subpopulation": [ovcSubPopulation],
       };
 
-      debugPrint("Data to be posted to server is ${json.encode(ovcPostToServer)}");
+      debugPrint(
+          "Data to be posted to server is ${json.encode(ovcPostToServer)}");
 
       final response =
           await ovcSubPopulationPostOvcToServer(ovcSubPopulation, bearerAuth);
@@ -294,10 +310,13 @@ void fetchAndPostToServerOvcSubpopulationData() async {
   }
 }
 
-Future<List<Map<String, dynamic>>> fetchQuestionsForOvc(String ovc_cpims_id, String date_of_event) async {
+Future<List<Map<String, dynamic>>> fetchQuestionsForOvc(
+    String ovc_cpims_id, String date_of_event) async {
   final db = await LocalDb.instance.database;
-  const sql = "SELECT * FROM ovcsubpopulation WHERE cpims_id = ? AND date_of_event = ? AND form_date_synced IS NULL";
-  List<Map<String, dynamic>> result = await db.rawQuery(sql, [ovc_cpims_id, date_of_event]);
+  const sql =
+      "SELECT * FROM ovcsubpopulation WHERE cpims_id = ? AND date_of_event = ? AND form_date_synced IS NULL";
+  List<Map<String, dynamic>> result =
+      await db.rawQuery(sql, [ovc_cpims_id, date_of_event]);
   return result;
 }
 
@@ -314,7 +333,8 @@ void fetchAndPostToServerOvcSubpopulationDataNew() async {
     var ovc_cpims_id = row['cpims_id'];
     var date_of_event = row['date_of_event'];
 
-    List<Map<String, dynamic>> questions = await fetchQuestionsForOvc(ovc_cpims_id, date_of_event);
+    List<Map<String, dynamic>> questions =
+        await fetchQuestionsForOvc(ovc_cpims_id, date_of_event);
 
     Map<String, dynamic> ovcSubPopulation = {
       'ovc_cpims_id': ovc_cpims_id,
@@ -322,7 +342,8 @@ void fetchAndPostToServerOvcSubpopulationDataNew() async {
       'sub_population': questions,
     };
 
-    final response = await ovcSubPopulationPostOvcToServer(ovcSubPopulation, bearerAuth);
+    final response =
+        await ovcSubPopulationPostOvcToServer(ovcSubPopulation, bearerAuth);
     if (response.statusCode == 201) {
       await updateOvcSubpopulationDateSynced(ovc_cpims_id, database);
       successfullySubmittedForms++; // Increment the counter.
@@ -336,16 +357,29 @@ void fetchAndPostToServerOvcSubpopulationDataNew() async {
           duration: const Duration(seconds: 3),
         );
       }
-    } else {
-      debugPrint('Failed to post data to the server. Status code: ${response.statusCode}');
+    } else if (response.statusCode == 403) {
+      Get.dialog(
+        AlertDialog(
+          title: const Text("Session Expired"),
+          content: const Text("Your session has expired. Please log in again"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
     }
   }
 }
 
-
 Future<List<Map<String, dynamic>>> fetchOvcSubPopulationData() async {
   final db = await LocalDb.instance.database;
-  const sql = "SELECT DISTINCT cpims_id, date_of_event FROM ovcsubpopulation WHERE form_date_synced IS NULL";
+  const sql =
+      "SELECT DISTINCT cpims_id, date_of_event FROM ovcsubpopulation WHERE form_date_synced IS NULL";
   List<Map<String, dynamic>> result = await db.rawQuery(sql);
   return result;
 }
@@ -357,7 +391,8 @@ Future<List<Map<String, dynamic>>> fetchOvcSubPopulationData() async {
 //   return result;
 // }
 
-Future<void> updateOvcSubpopulationDateSynced(String? ovc_id, Database db) async {
+Future<void> updateOvcSubpopulationDateSynced(
+    String? ovc_id, Database db) async {
   if (ovc_id != null) {
     try {
       // Get the current date and time
