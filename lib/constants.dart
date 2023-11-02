@@ -302,8 +302,8 @@ List<Map<String, dynamic>> personRegistryStepper = [
   },
 ];
 
-// const String cpimsApiUrl = "https://ovc.childprotection.uonbi.ac.ke/";
-const String cpimsApiUrl = "https://dev.cpims.net/";
+const String cpimsApiUrl = "https://ovc.childprotection.uonbi.ac.ke/";
+// const String cpimsApiUrl = "https://dev.cpims.net/";
 
 const Map<String, String> headers = {"Content-Type": "application/json"};
 

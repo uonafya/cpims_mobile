@@ -127,109 +127,109 @@ List<Map<String, dynamic>> domainsList = [
 List<Map> careGiverHealthServices = [
   {
     "item_id": "CP29HEGs",
-    "item_description": "Linked to a structured PLHA support group",
+    "item_description": "CP29HEGs - Linked to a structured PLHA support group",
     "item_sub_category": "1s",
     "the_order": 11
   },
   {
     "item_id": "CP45aHEGs",
-    "item_description": "Provided with Insecticide Treated Mosquito net (ITN)",
+    "item_description": "CP45aHEGs - Provided with Insecticide Treated Mosquito net (ITN)",
     "item_sub_category": "1s",
     "the_order": 17
   },
   {
     "item_id": "CP45bHEGs",
-    "item_description": "Completed a referral for provision of  Insecticide Treated Mosquito net (ITN)",
+    "item_description": "CP45bHEGs - Completed a referral for provision of  Insecticide Treated Mosquito net (ITN)",
     "item_sub_category": "1s",
     "the_order": 18
   },
   {
     "item_id": "CP46aHEGs",
-    "item_description": "Facilitated to obtain perinatal care including PMTCT",
+    "item_description": "CP46aHEGs - Facilitated to obtain perinatal care including PMTCT",
     "item_sub_category": "1s",
     "the_order": 19
   },
   {
     "item_id": "CP46bHEGs",
-    "item_description": "Completed referral to obtain perinatal care including PMTCT",
+    "item_description": "CP46bHEGs - Completed referral to obtain perinatal care including PMTCT",
     "item_sub_category": "1s",
     "the_order": 20
   },
   {
     "item_id": "CP47HEGs",
-    "item_description": "Provided with hygiene counseling and WASH messaging",
+    "item_description": "CP47HEGs - Provided with hygiene counseling and WASH messaging",
     "item_sub_category": "1s",
     "the_order": 21
   },
   {
     "item_id": "CP11HEGs",
-    "item_description": "Facilitated to obtain HIV test",
+    "item_description": "CP11HEGs - Facilitated to obtain HIV test",
     "item_sub_category": "1s",
     "the_order": 1
   },
   {
     "item_id": "CP12HEGs",
-    "item_description": "Completed a referral for HIV test",
+    "item_description": "CP12HEGs - Completed a referral for HIV test",
     "item_sub_category": "1s",
     "the_order": 2
   },
   {
     "item_id": "CP21HEGs",
-    "item_description": "Completed a referral for enrollment to care and treatment",
+    "item_description": "CP21HEGs - Completed a referral for enrollment to care and treatment",
     "item_sub_category": "1s",
     "the_order": 3
   },
   {
     "item_id": "CP22aHEGs",
-    "item_description": "Facilitated to access viral load testing services",
+    "item_description": "CP22aHEGs - Facilitated to access viral load testing services",
     "item_sub_category": "1s",
     "the_order": 4
   },
   {
     "item_id": "CP22bHEGs",
-    "item_description": "Completed referral to access viral load testing services",
+    "item_description": "CP22bHEGs - Completed referral to access viral load testing services",
     "item_sub_category": "1s",
     "the_order": 5
   },
   {
     "item_id": "CP23HEGs",
-    "item_description": "Provided with transport to clinic appointment",
+    "item_description": "CP23HEGs - Provided with transport to clinic appointment",
     "item_sub_category": "1s",
     "the_order": 6
   },
   {
     "item_id": "CP24HEGs",
-    "item_description": "Provided with appointment reminder messages",
+    "item_description": "CP24HEGs - Provided with appointment reminder messages",
     "item_sub_category": "1s",
     "the_order": 7
   },
   {
     "item_id": "CP25HEGs",
-    "item_description": "Provided with counseling and HIV disclosure support",
+    "item_description": "CP25HEGs - Provided with counseling and HIV disclosure support",
     "item_sub_category": "1s",
     "the_order": 8
   },
   {
     "item_id": "CP26HEGs",
-    "item_description": "Provided with health literacy messages",
+    "item_description": "CP26HEGs - Provided with health literacy messages",
     "item_sub_category": "1s",
     "the_order": 9
   },
   {
     "item_id": "CP27HEGs",
-    "item_description": "Completed a referral for HIV related opportunistic infection treatment and care",
+    "item_description": "CP27HEGs - Completed a referral for HIV related opportunistic infection treatment and care",
     "item_sub_category": "1s",
     "the_order": 10
   },
   {
     "item_id": "CP210HEGs",
-    "item_description": "Provided with HIV adherence support (EAC, DWI, Counseling, MDT)",
+    "item_description": "CP210HEGs - Provided with HIV adherence support (EAC, DWI, Counseling, MDT)",
     "item_sub_category": "1s",
     "the_order": 12
   },
   {
     "item_id": "CP211aHEGs",
-    "item_description": "Facilitated to obtain routine/ emergency healthcare",
+    "item_description": "CP211aHEGs - Facilitated to obtain routine/ emergency healthcare",
     "item_sub_category": "1s",
     "the_order": 13
   },
@@ -241,25 +241,25 @@ List<Map> careGiverHealthServices = [
   },
   {
     "item_id": "CP213aHEGs",
-    "item_description": "Facilitated to obtain STI treatment",
+    "item_description": "CP213aHEGs - Facilitated to obtain STI treatment",
     "item_sub_category": "1s",
     "the_order": 15
   },
   {
     "item_id": "CP213bHEGs",
-    "item_description": "Completed a referral to obtain STI treatment",
+    "item_description": "CP213bHEGs - Completed a referral to obtain STI treatment",
     "item_sub_category": "1s",
     "the_order": 16
   },
   {
     "item_id": "CP214aHEGs",
-    "item_description": "HEGs Facilitated to obtain Food basket",
+    "item_description": "CP214aHEGs - HEGs Facilitated to obtain Food basket",
     "item_sub_category": "1s",
     "the_order": 17
   },
   {
     "item_id": "CP214bHEGs",
-    "item_description": "HEGs Completed a referral to obtain Food basket",
+    "item_description": "CP214bHEGs - HEGs Completed a referral to obtain Food basket",
     "item_sub_category": "1s",
     "the_order": 18
   }
