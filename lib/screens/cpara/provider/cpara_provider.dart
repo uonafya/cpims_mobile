@@ -128,15 +128,13 @@ class CparaProvider extends ChangeNotifier {
   }
 
 // Calculate stable benchmark
-  int stableBenchMark() {
-    int stableBenchmark = 0;
-    if (stableModel?.question1 == "Yes" ||
-        stableModel?.question1 == "N/A" && stableModel?.question2 == "Yes" ||
-        stableModel?.question2 == "N/A" && stableModel?.question3 == "Yes") {
-      stableBenchmark = 1;
-    } else {
-      stableBenchmark = 0;
-    }
+  int stableBenchmark() {
+    bool isQuestion1YesOrNA = stableModel?.question1 == "Yes" || stableModel?.question1 == "N/A";
+    bool isQuestion2YesOrNA = stableModel?.question2 == "Yes" || stableModel?.question2 == "N/A";
+    bool isQuestion3Yes = stableModel?.question3 == "Yes";
+
+    int stableBenchmark = (isQuestion1YesOrNA && isQuestion2YesOrNA && isQuestion3Yes) ? 1 : 0;
+
     return stableBenchmark;
   }
 
@@ -199,9 +197,8 @@ class CparaProvider extends ChangeNotifier {
 // Calculate final benchmark
   int finalScore() {
     int finalBenchmarkScore = schooledBenchmark() +
-        healthyBenchmark() +
-        stableBenchMark() +
-        safeBenchMark();
+        healthyBenchmark() + safeBenchMark()+
+        stableBenchmark() ;
 
     return finalBenchmarkScore;
   }

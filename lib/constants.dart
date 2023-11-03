@@ -317,7 +317,7 @@ void errorSnackBar(BuildContext context, String message,
 }
 
 class AppVersionUtil {
-  static String appVersion = '1.1.3';
+  static String appVersion = '1.1.4';
   static String buildNumber = '1';
   static String appName = 'CPIMS Mobile';
   static String packageName = 'com.healthitkenya.cpims';
@@ -452,4 +452,3 @@ List<Map<String, dynamic>> unapprovedItems = [
     's_color': const Color(0xff9A3734),
   },
 ];
-

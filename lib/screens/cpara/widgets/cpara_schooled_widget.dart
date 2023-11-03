@@ -532,7 +532,7 @@ class _FinalBenchMarkState extends State<FinalBenchMark> {
             const DataCell(Text('Stable')),
             const DataCell(Text('1')),
             DataCell(Text(
-                '${Provider.of<CparaProvider>(context).stableBenchMark()}')),
+                '${Provider.of<CparaProvider>(context).stableBenchmark()}')),
           ]),
           DataRow(cells: [
             const DataCell(Text('Safe')),
