@@ -1,13 +1,20 @@
 // ignore_for_file: depend_on_referenced_packages
-
+import 'dart:async';
 
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
+import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+// import '../Models/case_plan_form.dart';
 import '../Models/caseplan_form_model.dart';
+import '../screens/cpara/model/cpara_model.dart';
 
 class LocalDb {
   static final LocalDb instance = LocalDb._init();
@@ -20,7 +27,7 @@ class LocalDb {
     if (_database != null) return _database!;
 
     // If database don't exists, create one
-    _database = await _initDB('children_ovc.db');
+    _database = await _initDB('children_ovc4.db');
 
     return _database!;
   }
@@ -36,6 +43,8 @@ class LocalDb {
   Future<void> _createTables(Database db, int version) async {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
+    const textTypeNull = 'TEXT NULL';
+    const defaultTime = 'DATETIME DEFAULT CURRENT_TIMESTAMP';
     const intType = 'INTEGER';
 
     await db.execute('''
@@ -47,7 +56,10 @@ class LocalDb {
         ${OvcFields.registationDate} $textType,
         ${OvcFields.dateOfBirth} $textType,
         ${OvcFields.caregiverNames} $textType,
-        ${OvcFields.sex} $textType
+        ${OvcFields.sex} $textType,
+        ${OvcFields.caregiverCpimsId} $textType,
+        ${OvcFields.chvCpimsId} $textType,
+        ${OvcFields.ovchivstatus} $textType
       )
     ''');
 
@@ -79,7 +91,8 @@ class LocalDb {
       CREATE TABLE $casePlanTable (
         ${CasePlan.id} $idType,
         ${CasePlan.ovcCpimsId} $textType,
-        ${CasePlan.dateOfEvent} $textType
+        ${CasePlan.dateOfEvent} $textType,
+        ${CasePlan.formDateSynced} $textTypeNull
       )
       ''');
 
@@ -91,9 +104,11 @@ class LocalDb {
           ${CasePlanServices.goalId} $textType,
           ${CasePlanServices.priorityId} $textType,
           ${CasePlanServices.gapId} $textType,
+          ${CasePlanServices.serviceIds} $textType,
           ${CasePlanServices.resultsId} $textType,
           ${CasePlanServices.reasonId} $textType,
           ${CasePlanServices.completionDate} $textType,
+          ${CasePlanServices.responsibleIds} $textType,
           FOREIGN KEY (${CasePlanServices.formId}) REFERENCES $casePlanTable(${CasePlan.id})
         )
         ''');
@@ -113,9 +128,16 @@ class LocalDb {
         CREATE TABLE $form1Table (
           ${Form1.id} $idType,
           ${Form1.ovcCpimsId} $textType,
-          ${Form1.dateOfEvent} $textType
+          ${Form1.dateOfEvent} $textType,
+          ${Form1.formType} $textType,
+          ${Form1.formDateSynced} $textTypeNull,
+          ${Form1.collected_at} $defaultTime,
+          ${Form1.location_lat} $textTypeNull,
+          ${Form1.location_long} $textTypeNull
         )
         ''');
+
+    // created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     await db.execute('''
   CREATE TABLE $form1ServicesTable (
@@ -127,22 +149,87 @@ class LocalDb {
   )
 ''');
 
-
     await db.execute('''
       CREATE TABLE $form1CriticalEventsTable (
         ${Form1CriticalEvents.id} $idType,
         ${Form1CriticalEvents.formId} $textType,
-        ${Form1CriticalEvents.domainId} $textType,
-        ${Form1CriticalEvents.serviceId} $textType,
+        ${Form1CriticalEvents.eventId} $textType,
+        ${Form1CriticalEvents.event_date} $textType,
         FOREIGN KEY (${Form1CriticalEvents.formId}) REFERENCES $form1Table(${Form1.id})
         )
       ''');
+
+    await creatingCparaTables(db, version);
+    await createOvcSubPopulation(db, version);
   }
 
   Future<void> insertCaseLoad(CaseLoadModel caseLoadModel) async {
-    final db = await instance.database;
+    try {
+      final db = await instance.database;
 
-    await db.insert(caseloadTable, caseLoadModel.toJson());
+      await db.insert(caseloadTable, caseLoadModel.toJson(),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    } catch (e) {
+      debugPrint("Error inserting caseload data: $e");
+    }
+  }
+
+  Future<void> insertMultipleCaseLoad(
+      List<CaseLoadModel> caseLoadModelList) async {
+    try {
+      final db = await instance.database;
+
+      // Use a batch to insert all the data at once
+      final batch = db.batch();
+
+      for (final caseLoadModel in caseLoadModelList) {
+        batch.insert(
+          caseloadTable,
+          caseLoadModel.toMap(), // Convert the model to a map
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      // Commit the batch to insert all the data in a single transaction
+      await batch.commit(noResult: true);
+    } catch (e) {
+      debugPrint("Error inserting caseload data: $e");
+    }
+  }
+
+  Future<void> updateMultipleCaseLoad(
+      List<CaseLoadModel> caseLoadModelList) async {
+    try {
+      final db = await instance.database;
+
+      // Use a batch to update all the data at once
+      final batch = db.batch();
+
+      for (final caseLoadModel in caseLoadModelList) {
+        batch.update(
+          caseloadTable,
+          caseLoadModel.toMap(),
+          where: 'ovc_cpims_id = ?',
+          // Provide a condition to specify which records to update
+          whereArgs: [caseLoadModel.cpimsId],
+          // Provide the ID of the record to update
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      // Commit the batch to update all the data in a single transaction
+      await batch.commit(noResult: true);
+    } catch (e) {
+      debugPrint("Error updating caseload data: $e");
+    }
+  }
+
+  //delete all caseload data
+  Future<void> deleteAllCaseLoad() async {
+    try {
+      final db = await instance.database;
+      await db.delete(caseloadTable);
+    } catch (e) {
+      debugPrint("Error deleting caseload data: $e");
+    }
   }
 
   Future<void> insertStatistics(SummaryDataModel summaryModel) async {
@@ -161,6 +248,96 @@ class LocalDb {
     final db = await instance.database;
     final result = await db.query(statisticsTable);
     return result.map((json) => SummaryDataModel.fromJson(json)).toList();
+  }
+
+  Future<void> creatingCparaTables(Database db, int version) async {
+    await createCparaForms(db, version);
+    try {
+      debugPrint("Creating Cpara tables");
+      await db.execute(
+          "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER, id INTEGER PRIMARY KEY, houseHoldID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (formID) REFERENCES Form(id));");
+
+      await db.execute(
+          "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionid TEXT, answer TEXT, FOREIGN KEY (formID) REFERENCES Form(id));");
+    } catch (err) {
+      debugPrint("Error creating Cpara tables: $err");
+    }
+  }
+
+  Future<void> insertCparaData(
+      {required CparaModel cparaModelDB,
+      required String ovcId,
+      required String careProviderId}) async {
+    final db = await instance.database;
+
+    // Create form
+    cparaModelDB.createForm(db).then((value) {
+      // Get formID
+      cparaModelDB.getLatestFormID(db).then((formData) {
+        var formDate = formData.formDate;
+        var formDateString = formDate.toString().split(' ')[0];
+        var formID = formData.formID;
+        cparaModelDB.addHouseholdFilledQuestionsToDB(
+            db, formDateString, ovcId, formID);
+      });
+    });
+  }
+
+  Future<void> createOvcSubPopulation(Database db, int version) async {
+    try {
+      await db.execute('''
+      CREATE TABLE $ovcsubpopulation (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        uuid TEXT,
+        cpims_id TEXT,
+        criteria TEXT,
+        date_of_event TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        form_date_synced TEXT NULL
+      )
+    ''');
+    } catch (err) {
+      debugPrint(err.toString());
+    }
+  }
+
+  Future<void> createCparaForms(Database db, int version) async {
+    try {
+      await db.execute('''
+      CREATE TABLE $cparaForms (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        form_id INTEGER,
+        date TEXT,
+        form_date_synced TEXT NULL
+      )
+    ''');
+    } catch (err) {
+      debugPrint(err.toString());
+    }
+  }
+
+  Future<void> insertOvcSubpopulationData(String uuid, String cpimsId,
+      String date_of_assessment, List<CheckboxQuestion> questions) async {
+    final db = await instance.database;
+    for (var question in questions) {
+      int value = question.isChecked! ? 1 : 0;
+      await db.insert(
+          ovcsubpopulation,
+          {
+            'uuid': uuid,
+            'cpims_id': cpimsId,
+            'criteria': question.questionID,
+            'date_of_event': date_of_assessment,
+            'form_date_synced': null
+          },
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchOvcSubPopulationData() async {
+    final db = await LocalDb.instance.database;
+    final result = await db.query(ovcsubpopulation);
+    return result;
   }
 
   // insert Metadata
@@ -189,132 +366,251 @@ class LocalDb {
 
   // insert formData(either form1a or form1b)
   Future<void> insertForm1Data(String formType, formData) async {
-    final db = await instance.database;
-    final formId = await db.insert(
-      form1Table,
-      {
-        'ovc_cpims_id': formData.ovcCpimsId,
-        'date_of_event': formData.dateOfEvent,
-        'form_type': formType,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-    // insert services
-    for (var service in formData.services) {
-      await db.insert(
-        form1ServicesTable,
-        {
-          'form_id': formId,
-          'domain_id': service['domain_id'],
-          'service_id': service['service_id'],
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    }
-    for (var criticalEvent in formData.criticalEvents) {
-      await db.insert(
-        form1CriticalEventsTable,
-        {
-          'form_id': formId,
-          'domain_id': criticalEvent['domain_id'],
-          'service_id': criticalEvent['service_id'],
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    }
-  }
-
-  // get all form1a or form1b data
-  // including their services and critical events
-  Future<List<Map<String, dynamic>>> queryAllForm1Rows(String formType) async {
-    final db = await instance.database;
-    const sql = 'SELECT * FROM $form1Table WHERE form_type = ?';
-    final List<Map<String, dynamic>> results = await db.rawQuery(sql, [formType]);
-    return results;
-  }
-
-
-  // get a single row(form 1a or 1b)
-  Future<bool> deleteForm1Data(String formType, int id) async {
-    try{
-      final db = await instance.database;
-    final queryResults = await db.query(
-      form1Table,
-      where: '${Form1.id} = ?',
-      whereArgs: [id],
-    );
-
-    if (queryResults.isNotEmpty) {
-      final form1Id = queryResults.first[Form1.id] as int;
-      await db.delete(
-        casePlanServicesTable,
-        where: 'form_id = ?',
-        whereArgs: [form1Id],
-      );
-      final rowsAffected = await db.delete(
-        casePlanTable,
-        where: '${Form1.id} = ?',
-        whereArgs: [form1Id],
-      );
-      return rowsAffected > 0;
-    }
-    return false;
-    } catch(e){
-      print(e);
-      return false;
-    }
-    
-  }
-
-
-
-// inserting case plan
-  Future<bool> insertCasePlan(CasePlanModel casePlan) async {
     try {
-      // Insert the main case plan information
       final db = await instance.database;
-      final casePlanId = await db.insert(
-        casePlanTable,
+      final formId = await db.insert(
+        form1Table,
         {
-          'ovc_cpims_id': casePlan.ovcCpimsId,
-          'date_of_event': casePlan.dateOfEvent,
+          'ovc_cpims_id': formData.ovcCpimsId,
+          'date_of_event': formData.date_of_event,
+          'form_type': formType,
+          'form_date_synced': null,
+          'location_lat': formData.location_lat,
+          'location_long': formData.location_long,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-
-      // Insert the associated services
-      for (var service in casePlan.services) {
-        final serviceIdList =
-            service.serviceIds.join(','); // Join service IDs with commas
-        final responsibleIdList = service.responsibleIds
-            .join(','); // Join responsible IDs with commas
-
+      // insert services
+      for (var service in formData.services) {
         await db.insert(
-          casePlanServicesTable,
+          form1ServicesTable,
           {
-            'form_id': casePlanId,
+            'form_id': formId,
             'domain_id': service.domainId,
-            'goal_id': service.goalId,
-            'gap_id': service.gapId,
-            'priority_id': service.priorityId,
-            'results_id': service.resultsId,
-            'reason_id': service.reasonId,
-            'completion_id': service.completionDate,
-            'service_ids': serviceIdList,
-            'responsible_ids': responsibleIdList,
+            'service_id': service.serviceId,
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
       }
+      for (var criticalEvent in formData.criticalEvents) {
+        await db.insert(
+          form1CriticalEventsTable,
+          {
+            'form_id': formId,
+            'event_id': criticalEvent.event_id,
+            'event_date': criticalEvent.event_date,
+
+          },
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+    } catch (e) {
+      print('Error inserting form1 data: $e');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> queryAllForm1Rows(String formType) async {
+    try {
+      final db = await instance.database;
+      const sql =
+          'SELECT * FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
+      final List<Map<String, dynamic>> form1Rows =
+          await db.rawQuery(sql, [formType]);
+
+      List<Map<String, dynamic>> updatedForm1Rows = [];
+
+      for (var form1row in form1Rows) {
+        int formId = form1row['_id'];
+
+        // Fetch associated services
+        final List<Map<String, dynamic>> services = await db.query(
+          form1ServicesTable,
+          where: '${Form1Services.formId} = ?',
+          whereArgs: [formId],
+        );
+
+        // Fetch associated critical events
+        final List<Map<String, dynamic>> criticalEvents = await db.query(
+          form1CriticalEventsTable,
+          where: '${Form1CriticalEvents.formId} = ?',
+          whereArgs: [formId],
+        );
+
+        // Create a new map that includes existing form1row data, services, critical_events, and ID
+        Map<String, dynamic> updatedForm1Row = {
+          ...form1row,
+          'services': services,
+          'critical_events': criticalEvents,
+          'id': formId,
+        };
+
+        // Add the updated map to the list
+        updatedForm1Rows.add(updatedForm1Row);
+      }
+      debugPrint("Updated form1 rows: $updatedForm1Rows");
+
+      return updatedForm1Rows;
+    } catch (e) {
+      print("Error querying form1 data: $e");
+      return [];
+    }
+  }
+
+  Future<int?> queryForm1UnsyncedForms(String formType) async {
+    try {
+      final db = await instance.database;
+      const sql =
+          'SELECT COUNT(*) FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
+      final List<Map<String, dynamic>> result =
+          await db.rawQuery(sql, [formType]);
+
+      if (result.isNotEmpty) {
+        return Sqflite.firstIntValue(result);
+      } else {
+        return 0; // Return 0 if no count is found.
+      }
+    } catch (e) {
+      print("Error querying form1 count: $e");
+      return 0; // Return 0 if there is an error.
+    }
+  }
+
+  Future<Stream<int>> queryForm1UnsyncedFormsStream(String formType) async {
+    final controller = StreamController<int>();
+
+    try {
+      final db = await instance.database;
+      const sql =
+          'SELECT COUNT(*) FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
+      final List<Map<String, dynamic>> result =
+          await db.rawQuery(sql, [formType]);
+
+      if (result.isNotEmpty) {
+        controller.add(Sqflite.firstIntValue(result)!);
+      } else {
+        controller.add(0); // Return 0 if no count is found.
+      }
+
+      controller.close(); // Close the stream when the operation is complete.
+    } catch (e) {
+      print("Error querying form1 count: $e");
+      controller.addError(e);
+      controller.close();
+    }
+
+    return controller.stream;
+  }
+
+  // get a single row(form 1a or 1b)
+  Future<bool> deleteForm1Data(String formType, int id) async {
+    try {
+      final db = await instance.database;
+      final queryResults = await db.query(
+        form1Table,
+        where: '${Form1.id} = ?',
+        whereArgs: [id],
+      );
+
+      if (queryResults.isNotEmpty) {
+        final form1Id = queryResults.first[Form1.id] as int;
+        await db.delete(
+          form1ServicesTable,
+          where: 'form_id = ?',
+          whereArgs: [form1Id],
+        );
+        await db.delete(
+          form1CriticalEventsTable,
+          where: 'form_id = ?',
+          whereArgs: [form1Id],
+        );
+        final rowsAffected = await db.delete(
+          form1Table,
+          where: '${Form1.id} = ?',
+          whereArgs: [form1Id],
+        );
+        return rowsAffected > 0;
+      }
+      return false;
+    } catch (e) {
+      debugPrint("Error deleting form1 data: $e");
+    }
+    return false;
+  }
+
+  //update form1 date_synced column
+  Future<void> updateForm1DataDateSync(String formType, int id) async {
+    try {
+      final db = await instance.database;
+      final queryResults = await db.query(
+        form1Table,
+        where: '${Form1.id} = ?',
+        whereArgs: [id],
+      );
+
+      if (queryResults.isNotEmpty) {
+        final form1Id = queryResults.first[Form1.id] as int;
+        await db.update(
+          form1Table,
+          {
+            'form_date_synced': DateTime.now().toString(),
+          },
+          where: '${Form1.id} = ?',
+          whereArgs: [form1Id],
+        );
+      }
+    } catch (e) {
+      debugPrint("Error updating form1 data: $e");
+    }
+  }
+
+  //new insert case plan
+  Future<bool> insertCasePlanNew(CasePlanModel casePlan) async {
+    try {
+      final db = await instance.database;
+      final transaction = await db.transaction((txn) async {
+        final casePlanId = await txn.insert(
+          casePlanTable,
+          {
+            'ovc_cpims_id': casePlan.ovcCpimsId,
+            'date_of_event': casePlan.dateOfEvent,
+            'form_date_synced': null,
+          },
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+
+        for (var service in casePlan.services) {
+          debugPrint("Here the services ${casePlan.services}");
+          final serviceIdList = service.serviceIds.join(',');
+          final responsibleIdList = service.responsibleIds.join(',');
+
+          await txn.insert(
+            casePlanServicesTable,
+            {
+              'form_id': casePlanId,
+              'domain_id': service.domainId,
+              'goal_id': service.goalId,
+              'gap_id': service.gapId,
+              'priority_id': service.priorityId,
+              'results_id': service.resultsId,
+              'reason_id': service.reasonId,
+              'completion_date': service.completionDate ?? '',
+              'service_ids': serviceIdList,
+              'responsible_ids': responsibleIdList,
+            },
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+        }
+      });
 
       return true;
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('Error inserting case plan: $e');
+      print('Stack trace: $stackTrace');
       return false;
     }
   }
 
-  Future<CasePlanModel?> getCasePlan(String ovcCpimsId) async {
+  Future<CasePlanModel?> getCasePlanById(String ovcCpimsId) async {
     try {
       // Retrieve the main case plan information
       final db = await instance.database;
@@ -368,6 +664,78 @@ class LocalDb {
     }
   }
 
+  Future<List<CasePlanModel>> getAllUnsyncedCasePlans() async {
+    try {
+      final db = await instance.database;
+
+      // Use a raw SQL query to select all rows from the table
+      final queryResult = await db.rawQuery(
+          'SELECT * FROM $casePlanTable WHERE form_date_synced IS NULL');
+
+      List<CasePlanModel> casePlans = [];
+
+      for (var row in queryResult) {
+        final casePlanId = row[CasePlan.id] as int;
+
+        // Retrieve the associated services
+        final serviceQueryResult = await db.query(
+          casePlanServicesTable,
+          where: 'form_id = ?',
+          whereArgs: [casePlanId],
+        );
+
+        List<CasePlanServiceModel> services = [];
+        for (var serviceRow in serviceQueryResult) {
+          services.add(CasePlanServiceModel(
+            domainId: serviceRow['domain_id'] as String,
+            serviceIds: (serviceRow['service_ids'] as String).split(','),
+            goalId: serviceRow[CasePlanServices.goalId] as String,
+            gapId: serviceRow[CasePlanServices.gapId] as String,
+            priorityId: serviceRow[CasePlanServices.priorityId] as String,
+            responsibleIds:
+                (serviceRow['responsible_ids'] as String).split(','),
+            resultsId: serviceRow[CasePlanServices.resultsId] as String,
+            reasonId: serviceRow[CasePlanServices.reasonId] as String,
+            completionDate:
+                serviceRow[CasePlanServices.completionDate] as String,
+          ));
+        }
+
+        casePlans.add(CasePlanModel(
+          id: row[CasePlan.id] as int,
+          ovcCpimsId: row[CasePlan.ovcCpimsId] as String,
+          dateOfEvent: row[CasePlan.dateOfEvent] as String,
+          services: services,
+        ));
+      }
+
+      return casePlans;
+    } catch (e) {
+      print('Error retrieving case plans: $e');
+      return [];
+    }
+  }
+
+  Future<int> getUnsyncedCasePlanCount() async {
+    try {
+      final db = await instance.database;
+      final queryResult = await db.rawQuery(
+          'SELECT COUNT(*) FROM $casePlanTable WHERE form_date_synced IS NULL');
+
+      if (queryResult.isEmpty) {
+        return 0; // No unsynced case plans found
+      }
+
+      // Extract the count from the first row
+      final count = queryResult.first.values.first as int;
+
+      return count;
+    } catch (e) {
+      debugPrint('Error retrieving unsynced case plan count: $e');
+      return 0; // Handle the error and return 0
+    }
+  }
+
   Future<bool> deleteCasePlan(String ovcCpimsId) async {
     try {
       // Retrieve the case plan id to be deleted
@@ -407,16 +775,49 @@ class LocalDb {
     }
   }
 
-  // table name and field names
-  static const caseloadTable = 'ovcs';
-  static const statisticsTable = 'statistics';
-  static const tableFormMetadata = 'form_metadata';
-  static const casePlanTable = 'case_plan';
-  static const casePlanServicesTable = 'case_plan_services';
-  static const form1Table = 'form1';
-  static const form1ServicesTable = 'form1_services';
-  static const form1CriticalEventsTable = 'form1_critical_events';
+  Future<int> getUnsyncedCparaFormCount() async {
+    final db = await instance.database;
+    try {
+      List<Map<String, dynamic>> countResult = await db.rawQuery(
+          "SELECT COUNT(id) AS count FROM Form WHERE form_date_synced IS NULL");
+
+      if (countResult.isNotEmpty) {
+        int count = countResult[0]['count'];
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (err) {
+      throw ("Could Not Get Unsynced Forms Count: ${err.toString()}");
+    }
+  }
+
+  Future<int> countOvcSubpopulationDataWithNullDateSynced() async {
+    final db = await LocalDb.instance.database;
+    const sql =
+        "SELECT COUNT(*) as count FROM ovcsubpopulation WHERE form_date_synced IS NULL";
+    List<Map<String, dynamic>> result = await db.rawQuery(sql);
+    if (result.isNotEmpty) {
+      return result[0]['count'];
+    } else {
+      return 0;
+    }
+  }
 }
+
+// table name and field names
+const caseloadTable = 'ovcs';
+const statisticsTable = 'statistics';
+const tableFormMetadata = 'form_metadata';
+const casePlanTable = 'case_plan';
+const casePlanServicesTable = 'case_plan_services';
+const form1Table = 'form1';
+const form1ServicesTable = 'form1_services';
+const form1CriticalEventsTable = 'form1_critical_events';
+const ovcsubpopulation = 'ovcsubpopulation';
+const cparaForms = 'Form';
+const cparaHouseholdAnswers = 'cpara_household_answers';
+const cparaChildAnswers = 'cpara_child_answers';
 
 class OvcFields {
   static final List<String> values = [
@@ -426,17 +827,23 @@ class OvcFields {
     ovcSurname,
     dateOfBirth,
     caregiverNames,
-    sex
+    sex,
+    caregiverCpimsId,
+    chvCpimsId,
+    ovchivstatus,
   ];
 
   static const String id = '_id';
-  static const String cboID = 'cbo_id';
+  static const String cboID = 'ovc_cpims_id';
   static const String ovcFirstName = 'ovc_first_name';
   static const String ovcSurname = 'ovc_surname';
   static const String dateOfBirth = 'date_of_birth';
   static const String registationDate = 'registration_date';
   static const String caregiverNames = 'caregiver_names';
   static const String sex = 'sex';
+  static const String caregiverCpimsId = 'caregiver_cpims_id';
+  static const String chvCpimsId = 'chv_cpims_id';
+  static const String ovchivstatus = 'ovchivstatus';
 }
 
 class SummaryFields {
@@ -501,11 +908,17 @@ class FormMetadata {
 }
 
 class CasePlan {
-  static final List<String> values = [id, ovcCpimsId, dateOfEvent];
+  static final List<String> values = [
+    id,
+    ovcCpimsId,
+    dateOfEvent,
+    formDateSynced
+  ];
 
-  static const String id = '_id';
+  static const String id = 'id';
   static const String ovcCpimsId = 'ovc_cpims_id';
   static const String dateOfEvent = 'date_of_event';
+  static const String formDateSynced = 'form_date_synced';
 }
 
 class CasePlanServices {
@@ -519,14 +932,18 @@ class CasePlanServices {
     resultsId,
     reasonId,
     completionDate,
+    responsibleIds,
+    serviceIds
   ];
-  static const String id = '_id';
+  static const String id = 'id';
   static const String formId = 'form_id';
   static const String domainId = 'domain_id';
   static const String goalId = 'goal_id';
   static const String priorityId = 'priority_id';
   static const String gapId = 'gap_id';
   static const String resultsId = 'results_id';
+  static const String serviceIds = 'service_ids';
+  static const String responsibleIds = 'responsible_ids';
   static const String reasonId = 'reason_id';
   static const String completionDate = 'completion_date';
 }
@@ -537,12 +954,18 @@ class Form1 {
     formType,
     ovcCpimsId,
     dateOfEvent,
+    location_lat,
+    location_long
   ];
 
-  static const String id = "_d";
+  static const String id = "_id";
   static const String formType = "form_type";
   static const String ovcCpimsId = "ovc_cpims_id";
   static const String dateOfEvent = 'date_of_event';
+  static const String formDateSynced = 'form_date_synced';
+  static const String collected_at = 'collected_at';
+  static const String location_lat = 'location_lat';
+  static const String location_long = 'location_long';
 }
 
 class Form1Services {
@@ -563,12 +986,12 @@ class Form1CriticalEvents {
   static final List<String> values = [
     id,
     formId,
-    domainId,
-    serviceId,
+    eventId,
+    event_date,
   ];
 
   static const String id = "_id";
   static const String formId = "form_id";
-  static const String domainId = "domain_id";
-  static const String serviceId = "service_id";
+  static const String eventId = "event_id";
+  static const String event_date = "event_date";
 }

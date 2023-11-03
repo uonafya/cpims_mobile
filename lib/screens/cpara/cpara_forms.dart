@@ -1,4 +1,6 @@
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/db_provider.dart';
+import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
@@ -11,18 +13,24 @@ import 'package:cpims_mobile/screens/cpara/widgets/cpara_healthy_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_safe_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_schooled_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
+import 'package:cpims_mobile/screens/homepage/provider/stats_provider.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart' as p;
+
+import '../../Models/case_load_model.dart';
 
 class CparaFormsScreen extends StatefulWidget {
-  const CparaFormsScreen({super.key});
+  final CaseLoadModel caseLoadModel;
+
+  const CparaFormsScreen({super.key, required this.caseLoadModel});
 
   @override
   State<CparaFormsScreen> createState() => _CparaFormsScreenState();
@@ -41,41 +49,26 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
   ];
 
   Database? database;
-  static const databaseName = "CPARAv2.db";
+
   // Initialize database
   @override
   void initState() {
     super.initState();
-
-    // initialize the database
-    initializeDatabase();
+    final caseLoadData =
+        Provider.of<UIProvider>(context, listen: false).caseLoadData;
+    // todo: update case load data in Cpara provider
+    fetchChildren(caseLoadData);
   }
 
-  // Function that creates the database and tables
-  void initializeDatabase() async {
-    try {
-      debugPrint("This has been created");
-      database =
-          await openDatabase(p.join(await getDatabasesPath(), databaseName),
-              onCreate: (db, version) async {
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS Form(id INTEGER PRIMARY KEY, date TEXT);");
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS Child(childOVCCPMISID TEXT PRIMARY KEY, childName TEXT, childAge TEXT, childGender TEXT, childSchool TEXT, childOVCRegistered TEXT);");
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS Household(householdID TEXT PRIMARY KEY);");
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS HouseholdChild(childID TEXT, householdID TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (householdID) REFERENCES Household(householdID), PRIMARY KEY(childID, householdID));");
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS HouseholdAnswer(formID INTEGER, id INTEGER PRIMARY KEY, houseHoldID TEXT, questionID TEXT, answer TEXT, FOREIGN KEY (houseHoldID) REFERENCES Household(householdid), FOREIGN KEY (formID) REFERENCES Form(id));");
-        await db.execute(
-            "CREATE TABLE IF NOT EXISTS ChildAnswer(formID INTEGER, id INTEGER PRIMARY KEY, childID TEXT, questionid TEXT, answer TEXT, FOREIGN KEY (childID) REFERENCES Child(childovccpmisid), FOREIGN KEY (formID) REFERENCES Form(id));");
-      }, version: 2);
-    } catch (err) {
-      debugPrint("OHH SHIT!");
-      debugPrint(err.toString());
-      debugPrint("OHH SHIT");
-    }
+  Future<void> initializeDbInstance() async {
+    database = await LocalDb.instance.database;
+    if (mounted) setState(() {});
+  }
+
+  fetchChildren(caseList) async {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<CparaProvider>().updateChildren(caseList);
+    });
   }
 
   @override
@@ -103,9 +96,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                     padding: const EdgeInsets.all(10),
                     width: double.infinity,
                     color: Colors.black,
-                    child: const Text(
-                      'Case Plan Achievement Readiness Assessment || {Caregiver Name}',
-                      style: TextStyle(color: Colors.white),
+                    child: Text(
+                      'Case Plan Achievement Readiness Assessment \n ${widget.caseLoadModel.caregiverNames}',
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                   Padding(
@@ -136,10 +129,14 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                 onTap: () {
                                   if (selectedStep == 0) {
                                     Navigator.pop(context);
+                                    context
+                                        .read<CparaProvider>()
+                                        .clearCparaProvider();
+
                                   }
                                   _scrollController.animateTo(
                                     0,
-                                    duration: const Duration(milliseconds: 500),
+                                    duration: const Duration(milliseconds: 100),
                                     curve: Curves.easeInOut,
                                   );
                                   setState(() {
@@ -159,203 +156,130 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                 text: selectedStep == steps.length - 1
                                     ? 'Submit'
                                     : 'Next',
-                                onTap: () {
+                                onTap: () async {
                                   if (selectedStep == steps.length - 1) {
                                     // display collected data
-                                    DetailModel? detailModel = context
-                                        .read<CparaProvider>()
-                                        .detailModel;
-                                    HealthModel? healthModel = context
-                                        .read<CparaProvider>()
-                                        .healthModel;
-                                    StableModel? stableModel = context
-                                        .read<CparaProvider>()
-                                        .stableModel;
-                                    SafeModel? safeModel =
-                                        context.read<CparaProvider>().safeModel;
-                                    SchooledModel? schooledModel = context
-                                        .read<CparaProvider>()
-                                        .schooledModel;
+                                    DetailModel detailModel = context
+                                            .read<CparaProvider>()
+                                            .detailModel ??
+                                        DetailModel();
+                                    HealthModel healthModel = context
+                                            .read<CparaProvider>()
+                                            .healthModel ??
+                                        HealthModel();
+                                    // context.read<CparaProvider>().updateHealthModel((healthModel ?? HealthModel()
+                                    //     ));
+                                    StableModel stableModel = context
+                                            .read<CparaProvider>()
+                                            .stableModel ??
+                                        StableModel();
+                                    SafeModel safeModel = context
+                                            .read<CparaProvider>()
+                                            .safeModel ??
+                                        SafeModel();
+                                    SchooledModel schooledModel = context
+                                            .read<CparaProvider>()
+                                            .schooledModel ??
+                                        SchooledModel();
+
+                                    // number of children
+                                    List<CaseLoadModel> children =
+                                        context.read<CparaProvider>().children;
+
+                                    if (safeModel.childrenQuestions == null) {
+                                      List<SafeChild> childrenQuestions = [];
+                                      for (int i = 0;
+                                          i < children.length;
+                                          i++) {
+                                        childrenQuestions.add(SafeChild(
+                                            question1: null,
+                                            ovcId: "${children[i].cpimsId}",
+                                            name:
+                                                "${children[i].ovcFirstName} ${children[i].ovcSurname}"));
+                                      }
+
+                                      safeModel = safeModel.copyWith(
+                                          childrenQuestions: childrenQuestions);
+                                      context
+                                          .read<CparaProvider>()
+                                          .updateSafeModel(safeModel);
+                                    }
+
+                                    if (healthModel.childrenQuestions == null) {
+                                      List<HealthChild> childrenQuestions = [];
+                                      for (int i = 0;
+                                          i < children.length;
+                                          i++) {
+                                        childrenQuestions.add(HealthChild(
+                                            question1: "",
+                                            question2: '',
+                                            question3: '',
+                                            id: "${children[i].cpimsId}",
+                                            name:
+                                                "${children[i].ovcFirstName} ${children[i].ovcSurname}"));
+                                      }
+                                      healthModel = healthModel.copyWith(
+                                          childrenQuestions: childrenQuestions);
+                                      context
+                                          .read<CparaProvider>()
+                                          .updateHealthModel(healthModel);
+                                    }
+
                                     CparaModel? cparaModel = context
                                         .read<CparaProvider>()
                                         .cparaModel;
 
-                                    showDialog(
-                                        context: context,
-                                        builder: (_) => AlertDialog(
-                                              title:
-                                                  const Text('Collected Data'),
-                                              content: SingleChildScrollView(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    const Text("Stable Model:"),
-                                                    Row(
-                                                      children: [
-                                                        const Text("Question: 1"),
-                                                        Text(
-                                                            "Answer: ${stableModel?.question1}"),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            "Question: 2"),
-                                                        Text(
-                                                            " || Answer: ${stableModel?.question2}"),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            "Question: 3"),
-                                                        Text(
-                                                            " || Answer: ${stableModel?.question3}"),
-                                                      ],
-                                                    ),
-
-                                                    // Health Model
-                                                    const HealthModelCollected(),
-                                                    const Text("Safe Model:"),
-                                                    Row(
-                                                      children: [
-                                                        const Text("Question: 1"),
-                                                        Text(
-                                                            "Answer: ${safeModel?.question1}"),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            "Question: 2"),
-                                                        Text(
-                                                            " || Answer: ${stableModel?.question2}"),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            "Question: 3"),
-                                                        Text(
-                                                            " || Answer: ${stableModel?.question3}"),
-                                                      ],
-                                                    ),
-                                                    const Text("Detail model:"),
-                                                    const Text("Detail model:"),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            'Date of Assessment'),
-                                                        Text(
-                                                            'Answer: ${detailModel?.dateOfAssessment}'),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            'Is this first case plan readiness assessment?'),
-                                                        Text(
-                                                            'Answer: ${detailModel?.isFirstAssessment}'),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            'Date of Previous Assessment'),
-                                                        Text(
-                                                            'Answer: ${detailModel?.dateOfLastAssessment}'),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            'Is the child headed household?'),
-                                                        Text(
-                                                            'Answer: ${detailModel?.isChildHeaded}'),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            'Does the child have an HIV exposed infant?'),
-                                                        Text(
-                                                            'Answer: ${detailModel?.hasHivExposedInfant}'),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            'Does this HH currently have a pregnant and/or breastfeeding woman/adolescent?'),
-                                                        Text(
-                                                            'Answer: ${detailModel?.hasPregnantOrBreastfeedingWoman}'),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(height: 20),
-                                                    const Text(
-                                                        "OVC Sub Population Form"),
-                                                    const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question1}'),
-                                                    const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question2}'),
-                                                    const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question3}'),
-                                                    const SizedBox(height: 10),
-                                                    Text(
-                                                        '${detailModel?.childrenQuestions?[0].question4}'),
-                                                  ],
-                                                ),
-                                              ),
-                                            ));
-
                                     try {
-                                      String ovcpmisid = "1573288";
+                                      String? ovsId = context
+                                          .read<CparaProvider>()
+                                          .caseLoadModel
+                                          ?.cpimsId;
+
+                                      if (ovsId == null)
+                                        throw ("No CPMSID found");
+                                      String ovcpmisid = ovsId;
                                       // Insert to db
                                       CparaModel cparaModelDB = CparaModel(
-                                          detail: detailModel ?? DetailModel(),
-                                          safe: safeModel ?? SafeModel(),
-                                          stable: stableModel ?? StableModel(),
-                                          schooled: schooledModel ??
-                                              SchooledModel(
-                                                  question1: "",
-                                                  question2: "question2",
-                                                  question3: "question3",
-                                                  question4: "question4"),
-                                          health: healthModel ?? HealthModel());
+                                        detail: detailModel,
+                                        safe: safeModel,
+                                        stable: stableModel,
+                                        schooled: schooledModel,
+                                        health: (healthModel),
+                                      );
                                       // Create form
-                                      cparaModelDB
-                                          .createForm(database)
-                                          .then((value) {
-                                        // Get formID
-                                        cparaModelDB
-                                            .getLatestFormID(database)
-                                            .then((formData) {
-                                          var formDate = formData.formDate;
-                                          var formDateString =
-                                              formDate.toString().split(' ')[0];
-                                          var formID = formData.formID;
-                                          cparaModelDB
-                                              .addHouseholdFilledQuestionsToDB(
-                                                  database,
-                                                  "Test House",
-                                                  formDateString,
-                                                  ovcpmisid,
-                                                  formID);
-                                        });
-                                      });
+                                      await LocalDb.instance.insertCparaData(
+                                          cparaModelDB: cparaModelDB,
+                                          ovcId: ovcpmisid,
+                                          careProviderId: ovcpmisid);
+                                      if (context.mounted) {
+                                        context
+                                            .read<CparaProvider>()
+                                            .clearCparaProvider();
+                                        context
+                                            .read<StatsProvider>()
+                                            .updateCparaFormStats();
+                                       //navigate back
+                                        Get.snackbar(
+                                          'Success',
+                                          'Successfully saved CPARA form',
+                                          backgroundColor: Colors.green,
+                                          colorText: Colors.white,
+                                        );
+                                        Navigator.pop(context);
+                                      }
                                     } catch (err) {
-                                      debugPrint("OHH SHIT!");
-                                      debugPrint(err.toString());
-                                      debugPrint("OHH SHIT");
+                                      Get.snackbar(
+                                        'Success',
+                                        'Successfully saved CPARA form',
+                                        backgroundColor: Colors.red,
+                                        colorText: Colors.white,
+                                      );
                                     }
                                   }
 
                                   _scrollController.animateTo(
                                     0,
-                                    duration: const Duration(milliseconds: 500),
+                                    duration: const Duration(milliseconds: 100),
                                     curve: Curves.easeInOut,
                                   );
                                   setState(() {
@@ -374,7 +298,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                 ],
               )),
           const SizedBox(height: 20),
-          const PastCPARAWidget(),
           const Footer(),
         ],
       ),

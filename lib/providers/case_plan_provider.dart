@@ -1,21 +1,31 @@
+import 'dart:convert';
+
+import 'package:cpims_mobile/Models/caseplan_form_model.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/models/case_plan_main_model.dart';
+import 'package:cpims_mobile/services/form_service.dart';
+import 'package:cpims_mobile/widgets/custom_toast.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/forms/case_plan/utils/case_plan_dummy_data.dart';
 
 class CasePlanProvider extends ChangeNotifier {
   final CasePlanModelData _casePlanModelData = CasePlanModelData(
-      selectedDomain: [],
+    selectedDomain: [],
     selectedServices: [],
     selectedPersonsResponsible: [],
     selectedGoal: [],
     selectedNeed: [],
     selectedPriorityAction: [],
     selectedResult: [],
-    ovc_cpims_id: "", selectedDate: DateTime.now(),
-
+    ovc_cpims_id: "",
+    selectedDate: DateTime.now(),
+    selectedDateToBeCompleted: DateTime.now(),
   );
+
+  List csAllDomains = allDomains;
 
   List csDomainList = casePlanDomainList;
   List csGoalList = casePlanGoalList;
@@ -23,11 +33,34 @@ class CasePlanProvider extends ChangeNotifier {
   List csPriorityActionList = casePlanPriorityActionList;
   List csServicesList = casePlanServiceList;
 
-  List csPersonsResponsibleList = casePlanPersonsResponsibleList;
+  //Goals
+  List cpGoalsHealth = cp_goals_health;
+  List cpGoalsStable = cp_goals_stable;
+  List cpGoalsSchool = cp_goal_school;
+  List cpGoalsSafe = cp_goal_safe;
+
+  //Gaps
+  List cpGapsHealth = cp_gaps_health;
+  List cpGapsStable = cp_gaps_stable;
+  List cpGapssSchool = cp_gaps_school;
+  List cpGapssSafe = cp_gaps_safe;
+
+  //priorities
+  List cpPrioritiesHealth = cp_priorities_health;
+  List cpPrioritiesStable = cp_priorities_stable;
+  List cpPrioritiesSchool = cp_priorities_school;
+  List cpPrioritiesSafe = cp_priorities_safe;
+
+  //services
+  List cpServicesHealth = cp_services_health;
+  List cpServicesStable = cp_services_stable;
+  List cpServicesSchool = cp_services_school;
+  List cpServicesSafe = cp_services_safe;
+
+  List csPersonsResponsibleList = cp_responsible;
   List csResultsList = casePlanResultsOptions;
 
   CasePlanModelData get cpFormData => _casePlanModelData;
-
 
   void setFinalFormDataOvcId(String ovcCpimsId) {
     _casePlanModelData.ovc_cpims_id = ovcCpimsId;
@@ -55,6 +88,7 @@ class CasePlanProvider extends ChangeNotifier {
   }
 
   void setSelectedPriorityAction(List<ValueItem> priorityAction) {
+    _casePlanModelData.selectedPriorityAction.clear();
     _casePlanModelData.selectedPriorityAction.addAll(priorityAction);
     notifyListeners();
   }
@@ -84,22 +118,12 @@ class CasePlanProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
-
-
-
-
-
-
   List<String> generateServicesList() {
     List<String> servicesList = [];
 
     for (int i = 0; i < cpFormData.selectedServices.length; i++) {
       final service = cpFormData.selectedServices[i].value;
-
-      servicesList.add(
-         service!
-      );
+      servicesList.add(service!);
     }
     return servicesList;
   }
@@ -109,14 +133,12 @@ class CasePlanProvider extends ChangeNotifier {
     for (int i = 0; i < cpFormData.selectedPersonsResponsible.length; i++) {
       final persons = cpFormData.selectedPersonsResponsible[i].value;
 
-      personsList.add(
-          persons!
-      );
+      personsList.add(persons!);
     }
     return personsList;
   }
 
-  Map<String, dynamic> generatePayload() {
+  Map<String, dynamic> generatePayload(String ovcCpimsId) {
     List<String> services = generateServicesList();
     List<String> responsibleId = generateResponsiblePersonList();
     String priorityId = "";
@@ -124,38 +146,50 @@ class CasePlanProvider extends ChangeNotifier {
     String goalId = "";
     String gapId = "";
     String resultsId = "";
+    String reason_is = "";
     String completionDate = "";
-    completionDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    if(cpFormData.selectedPriorityAction.isNotEmpty){
-      priorityId = cpFormData.selectedPriorityAction[0].value!;
+    String dateOfCasePlan = "";
+    if (_casePlanModelData.selectedPriorityAction.isNotEmpty) {
+      priorityId = _casePlanModelData.selectedPriorityAction[0].value!;
     }
-    if(cpFormData.selectedDomain.isNotEmpty){
-      domainId = cpFormData.selectedPriorityAction[0].value!;
+    if (_casePlanModelData.selectedDomain.isNotEmpty) {
+      domainId = _casePlanModelData.selectedDomain[0].value!;
     }
-    if(cpFormData.selectedGoal.isNotEmpty){
-      goalId = cpFormData.selectedGoal[0].value!;
+    if (_casePlanModelData.selectedGoal.isNotEmpty) {
+      goalId = _casePlanModelData.selectedGoal[0].value!;
     }
-    if(cpFormData.selectedNeed.isNotEmpty){
-      gapId = cpFormData.selectedNeed[0].value!;
+    if (_casePlanModelData.selectedNeed.isNotEmpty) {
+      gapId = _casePlanModelData.selectedNeed[0].value!;
     }
-    if(cpFormData.selectedResult.isNotEmpty){
-      resultsId = cpFormData.selectedResult[0].value!;
+    if (_casePlanModelData.selectedResult.isNotEmpty) {
+      resultsId = _casePlanModelData.selectedResult[0].value!;
+    }
+    if (_casePlanModelData.selectedReason.isNotEmpty) {
+      reason_is = _casePlanModelData.selectedReason;
+    }
+    if(_casePlanModelData.selectedDate != null){
+      dateOfCasePlan = _casePlanModelData.selectedDate.toString();
+    }
+    if(_casePlanModelData.selectedDateToBeCompleted != null){
+      completionDate = _casePlanModelData.selectedDateToBeCompleted.toString();
     }
 
-
-
-    print("goal$goalId");
-    print("goal$priorityId");
-    print("goal$domainId");
-    print("gap$gapId");
-    print("payload$gapId");
-    print("payload$resultsId");
-
-
+    // print("goal --->${cpFormData.selectedGoal[0].value}");
+    print("priority ---> ${_casePlanModelData.selectedPriorityAction}");
+    print("goal ---> ${_casePlanModelData.selectedGoal}");
+    print("need ---> ${_casePlanModelData.selectedNeed}");
+    print("services ---> $services");
+    print("domain ---> $domainId");
+    print("gap ---> $gapId");
+    print("responsible ---> $responsibleId");
+    print("results   ----> $resultsId");
+    print("reason   ----> $reason_is");
+    print("completion date   ----> $completionDate");
+    print("ovc cpims id   ----> $ovcCpimsId");
 
     Map<String, dynamic> payload = {
-      'ovc_cpims_id': cpFormData.ovc_cpims_id,
-      'date_of_event': DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      'ovc_cpims_id': ovcCpimsId,
+      'date_of_event': dateOfCasePlan,
       'services': [
         {
           'domain_id': domainId,
@@ -165,29 +199,73 @@ class CasePlanProvider extends ChangeNotifier {
           'priority_id': priorityId,
           'responsible_id': responsibleId,
           'results_id': resultsId,
-          'reason_id': '', // You can set this as needed
-          'completion_date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
+          'reason_id': reason_is,
+          'completion_date': completionDate
         }
       ]
     };
-
-    print("casePlan Payload$payload");
+    print("casePlan Payload------>$payload");
     return payload;
-
   }
 
-  void saveCasaPlanDataLocally() {
-    Map payload = generatePayload();
-    //now send the data for local saving
+  Future<bool> saveCasePlanLocally(String ovcCpimsId) async {
+    Map<String, dynamic> payload = generatePayload(ovcCpimsId);
 
+    bool isFormSaved = await CasePlanService.saveCasePlanLocal(
+        CasePlanModel.fromJson(payload));
+
+    if (isFormSaved == true) {
+      resetFormData();
+      CustomToastWidget.showToast("Saving...");
+      notifyListeners();
+    }
+
+    return isFormSaved;
   }
 
 
+  void resetFormData() {
+    _casePlanModelData.selectedDomain.clear();
+    _casePlanModelData.selectedServices.clear();
+    _casePlanModelData.selectedPersonsResponsible.clear();
+    _casePlanModelData.selectedGoal.clear();
+    _casePlanModelData.selectedNeed.clear();
+    _casePlanModelData.selectedPriorityAction.clear();
+    _casePlanModelData.selectedResult.clear();
+    _casePlanModelData.ovc_cpims_id = "";
+    _casePlanModelData.selectedDate = DateTime.now();
 
+    notifyListeners();
+  }
 
+// Future<void> handleSubmitToServer(String ovcCpimsId) async {
+//   var prefs = await SharedPreferences.getInstance();
+//   var accessToken = prefs.getString('access');
+//   String bearerAuth = "Bearer $accessToken";
+//   Dio dio = Dio();
+//   dio.interceptors.add(LogInterceptor());
+//
+//   //caseplan from db
+//   List<Map<String, dynamic>> maps = await CasePlanService.getCasePlanRecordLocal(ovcCpimsId);
+//   List<CasePlanModel> casePlanList = [];
+//   for (var map in maps) {
+//     casePlanList.add(CasePlanModel.fromJson(map));
+//   }
+//   var payload = casePlanList[0].toJson();
+//   print("caseplan payload is $payload");
+//
+//   try {
+//     var response = await dio.post("https://dev.cpims.net/api/form/CPT/",
+//         data: payload,
+//         options: Options(headers: {"Authorization": bearerAuth}));
+//
+//     if (response.statusCode == 200) {
+//       debugPrint("Data sent to server was $payload");
+//       CustomToastWidget.showToast("Case Plan Saved Successfully");
+//     }
+//     print("Caseplan data is ${jsonEncode(CasePlanModel.fromJson(payload))}");
+//   } catch (e) {
+//     print("Error posting caseplan form $e");
+//   }
+// }
 }
-
-
-
-
-

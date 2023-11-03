@@ -1,12 +1,9 @@
+import 'package:android_id/android_id.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
-import 'package:cpims_mobile/screens/caseload/caseload.dart';
-import 'package:cpims_mobile/screens/forms/case_record_sheet.dart';
-import 'package:cpims_mobile/screens/forms/follow_ups.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
-import 'package:cpims_mobile/screens/registry/organisation_units/organisation_units.dart';
-import 'package:cpims_mobile/screens/registry/persons_registry/persons_registry.dart';
 import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
+import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
@@ -17,7 +14,10 @@ const kTextGrey = Color(0XFF707478);
 const kSystemPadding = EdgeInsets.symmetric(horizontal: 20, vertical: 0);
 
 var _ovcActiveOrRegistered = '132,294 / 307,005';
-
+const syncName = "Sync";
+bool isSynching = false;
+bool _correct = true;
+dynamic snackBar;
 List<Map<String, dynamic>> homeCardsTitles = [
   {
     'title': 'OVC-ACTIVE/EVER REGISTERED',
@@ -71,67 +71,138 @@ List drawerOptions(BuildContext context) {
     {
       'title': 'Caseload',
       'icon': FontAwesomeIcons.briefcase,
-      'children': [
-        {
-          'title': 'Caseload',
-          'onTap': () => {
-                Get.off(() => const CaseLoad(),
-                    transition: Transition.fadeIn,
-                    duration: const Duration(milliseconds: 1000))
-              },
-        },
-        {
-          'title': 'Organisational Units',
-          'onTap': () => {
-                Get.off(() => const OrganisationUnitsRegistry(),
-                    transition: Transition.fadeIn,
-                    duration: const Duration(milliseconds: 1000))
-              },
-        },
-        {
-          'title': 'Persons Registry',
-          'onTap': () => {
-                Get.off(() => const PersonsRegistry(),
-                    transition: Transition.fadeIn,
-                    duration: const Duration(milliseconds: 1000))
-              },
-        }
-      ]
+      'children': [],
+      'onTap': () => {
+            Get.off(() => const OVCCareScreen(),
+                transition: Transition.fadeIn,
+                duration: const Duration(milliseconds: 1000))
+          },
+
+      // 'children': [
+      //   {
+      //     'title': 'Caseload',
+      //     'onTap': () => {
+      //           Get.off(() => const CaseLoad(),
+      //               transition: Transition.fadeIn,
+      //               duration: const Duration(milliseconds: 1000))
+      //         },
+      //   },
+      //   {
+      //     'title': 'Organisational Units',
+      //     'onTap': () => {
+      //           Get.off(() => const OrganisationUnitsRegistry(),
+      //               transition: Transition.fadeIn,
+      //               duration: const Duration(milliseconds: 1000))
+      //         },
+      //   },
+      //   {
+      //     'title': 'Persons Registry',
+      //     'onTap': () => {
+      //           Get.off(() => const PersonsRegistry(),
+      //               transition: Transition.fadeIn,
+      //               duration: const Duration(milliseconds: 1000))
+      //         },
+      //   }
+      // ]
     },
+    // {
+    //   'title': 'Forms',
+    //   'icon': FontAwesomeIcons.fileLines,
+    //   'children': [
+    //     {
+    //       'title': 'Case Record Sheet',
+    //       'onTap': () => {
+    //             Get.off(() => const CaseRecordSheet(),
+    //                 transition: Transition.cupertino,
+    //                 duration: const Duration(milliseconds: 1000))
+    //           },
+    //     },
+    //     {
+    //       'title': 'Follow-ups',
+    //       'onTap': () => {
+    //             Get.off(() => const FollowUps(),
+    //                 transition: Transition.cupertino,
+    //                 duration: const Duration(milliseconds: 1000))
+    //           },
+    //     },
+    //     {
+    //       'title': 'OVC Care(Comp)',
+    //       'onTap': () => {
+    //             Get.off(() => const OVCCareScreen(),
+    //                 transition: Transition.cupertino,
+    //                 duration: const Duration(milliseconds: 1000))
+    //           },
+    //     },
+    //   ]
+    // },
     {
-      'title': 'Forms',
-      'icon': FontAwesomeIcons.fileLines,
-      'children': [
-        {
-          'title': 'Case Record Sheet',
-          'onTap': () => {
-                Get.off(() => const CaseRecordSheet(),
-                    transition: Transition.cupertino,
-                    duration: const Duration(milliseconds: 1000))
-              },
-        },
-        {
-          'title': 'Follow-ups',
-          'onTap': () => {
-                Get.off(() => const FollowUps(),
-                    transition: Transition.cupertino,
-                    duration: const Duration(milliseconds: 1000))
-              },
-        },
-        {
-          'title': 'OVC Care(Comp)',
-          'onTap': () => {
-                Get.off(() => const OVCCareScreen(),
-                    transition: Transition.cupertino,
-                    duration: const Duration(milliseconds: 1000))
-              },
-        },
-      ]
-    },
-    {
-      'title': 'Sync',
+      'title': syncName,
       'icon': FontAwesomeIcons.rotate,
-      'onTap': () => {},
+      'onTap': () async {
+        Get.back();
+        try {
+          const _androidIdPlugin = AndroidId();
+          final String? androidId = await _androidIdPlugin.getId();
+          CaseLoadService()
+              .updateCaseLoadData(context: context, deviceID: androidId!);
+          // syncWorkflows();
+          snackBar = SnackBar(
+            content: const Text(
+              'Syncing in progress ...',
+              style: TextStyle(color: Colors.green),
+            ),
+            duration:
+                const Duration(seconds: 5), // Duration to display the Snackbar
+            action: SnackBarAction(
+              textColor: Colors.red,
+              label: 'Close',
+              onPressed: () {
+                Get.back();
+                // Action to perform when the "Close" button is pressed
+              },
+            ),
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          Future.delayed(Duration(seconds: 4));
+
+          snackBar = SnackBar(
+            content: const Text(
+              'Sync completed successfully',
+              style: TextStyle(color: Colors.green),
+            ),
+            duration:
+                const Duration(seconds: 1), // Duration to display the Snackbar
+            action: SnackBarAction(
+              textColor: Colors.red,
+              label: 'Close',
+              onPressed: () {
+                Get.back();
+                // Action to perform when the "Close" button is pressed
+              },
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } catch (e) {
+          snackBar = SnackBar(
+            content: Text(
+              'An error occured $e ...',
+              style: TextStyle(color: Colors.red),
+            ),
+            duration:
+                const Duration(seconds: 2), // Duration to display the Snackbar
+            action: SnackBarAction(
+              textColor: Colors.red,
+              label: 'Close',
+              onPressed: () {
+                Get.back();
+                // Action to perform when the "Close" button is pressed
+              },
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      },
       'children': []
     },
     {
@@ -153,6 +224,13 @@ List drawerOptions(BuildContext context) {
   ];
 }
 
+//function to return device id
+Future<String> getDeviceId() async {
+  const _androidIdPlugin = AndroidId();
+  final String? androidId = await _androidIdPlugin.getId();
+  return androidId!;
+}
+
 List<String> graphTitles = [
   'Case Managenent(Last 21 Days)',
   'IP/LIP Case Load Summary(Last 30 Days)',
@@ -162,15 +240,15 @@ List<String> graphTitles = [
 ];
 List<Map<String, dynamic>> form1AStepper = [
   {
-    'title': 'Critical Event(s)',
-    'subtitle': 'Critical events details',
-    'onTap': () {}
-  },
-  {
     'title': 'Services',
     'subtitle': 'Services Details',
     'onTap': () => {},
   },
+  {
+    'title': 'Critical Event(s)',
+    'subtitle': 'Critical events details',
+    'onTap': () {}
+  }
 ];
 
 List<Map<String, dynamic>> organisationRegistryStepper = [
@@ -224,16 +302,41 @@ List<Map<String, dynamic>> personRegistryStepper = [
   },
 ];
 
-const String cpimsApiUrl = "https://dev.cpims.net/api/";
+const String cpimsApiUrl = "https://ovc.childprotection.uonbi.ac.ke/";
+// const String cpimsApiUrl = "https://dev.cpims.net/";
 
 const Map<String, String> headers = {"Content-Type": "application/json"};
 
-errorSnackBar(BuildContext context, message) {
+void errorSnackBar(BuildContext context, String message,
+    {Duration duration = const Duration(seconds: 8)}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     backgroundColor: Colors.red,
     content: Text(message),
-    duration: const Duration(seconds: 8),
+    duration: duration,
   ));
+}
+
+class AppVersionUtil {
+  static String appVersion = '1.1.2';
+  static String buildNumber = '1';
+  static String appName = 'CPIMS Mobile';
+  static String packageName = 'com.healthitkenya.cpims';
+
+  static String getAppVersion() {
+    return appVersion;
+  }
+
+  static String getBuildNumber() {
+    return buildNumber;
+  }
+
+  static String getAppName() {
+    return appName;
+  }
+
+  static String getPackageName() {
+    return packageName;
+  }
 }
 
 successSnackBar(BuildContext context, message) {
@@ -349,3 +452,4 @@ List<Map<String, dynamic>> unapprovedItems = [
     's_color': const Color(0xff9A3734),
   },
 ];
+

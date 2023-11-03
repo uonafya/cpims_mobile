@@ -1,22 +1,23 @@
 class SummaryDataModel {
-  final int children;
-  final int caregivers;
-  final int government;
-  final int ngo;
-  final int caseRecords;
-  final int pendingCases;
-  final int orgUnits;
-  final int workforceMembers;
-  final int household;
-  final int childrenAll;
-  final OvcSummary ovcSummary;
-  final List<dynamic> ovcRegs;
-  final List<dynamic> caseRegs;
-  final Map<String, dynamic> caseCats;
-  final Map<String, dynamic> criteria;
-  final String orgUnit;
-  final int orgUnitId;
-  final String details;
+   int children = 0;
+   int caregivers = 0;
+   int government = 0;
+   int ngo = 0;
+   int caseRecords = 0;
+   int pendingCases = 0;
+   int orgUnits = 0;
+   int workforceMembers = 0;
+   int household = 0;
+   int childrenAll = 0; //ever register
+   OvcSummary ovcSummary = OvcSummary(
+      m0: 0, m1: 0, m2: 0, m3: 0, m4: 0, f0: 0, f1: 0, f2: 0, f3: 0, f4: 0);
+   List<dynamic> ovcRegs = [];
+   List<dynamic> caseRegs = [];
+   Map<String, dynamic> caseCats = {};
+   Map<String, dynamic> criteria = {};
+   String orgUnit = '';
+   int orgUnitId = 0;
+   String details = '';
 
   SummaryDataModel({
     required this.children,

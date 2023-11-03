@@ -52,7 +52,7 @@ class AuthProvider with ChangeNotifier {
 
     final http.Response response = await http.post(
       Uri.parse(
-        '${cpimsApiUrl}token/',
+        '${cpimsApiUrl}api/token/',
       ),
       body: {
         'username': username,
@@ -69,7 +69,7 @@ class AuthProvider with ChangeNotifier {
 
           await prefs.setString('access', responseData['access']);
           await prefs.setString('refresh', responseData['refresh']);
-          await prefs.setBool("hasUserSetup", true);
+          // await prefs.setBool("hasUserSetup", true);
 
           await prefs.setInt(
             'authTokenTimestamp',
@@ -83,7 +83,6 @@ class AuthProvider with ChangeNotifier {
             accessToken: responseData['access'],
             refreshToken: responseData['refresh'],
           );
-
           if (context.mounted) {
             setUser(userModel);
           }
@@ -94,6 +93,9 @@ class AuthProvider with ChangeNotifier {
           Get.off(() => const InitialLoadingScreen(isFromAuth: true),
               transition: Transition.fadeIn,
               duration: const Duration(microseconds: 300));
+        },
+        onFailure: () {
+          // clearUser();
         },
       );
     }
@@ -127,9 +129,7 @@ class AuthProvider with ChangeNotifier {
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-
       String? refreshToken = prefs.getString('refresh');
-
       int? authTokenTimestamp = prefs.getInt('authTokenTimestamp');
 
       if (refreshToken != null && authTokenTimestamp != null) {
@@ -139,17 +139,15 @@ class AuthProvider with ChangeNotifier {
 
         if (currentTimestamp - authTokenTimestamp > tokenExpiryDuration) {
           // Token has expired -- refresh token
-
           // get new token
           final http.Response response = await http.post(
             Uri.parse(
-              '${cpimsApiUrl}token/refresh/',
+              '${cpimsApiUrl}api/token/refresh/',
             ),
             body: {
               'refresh': refreshToken,
             },
           );
-
           if (context.mounted) {
             httpReponseHandler(
               response: response,
@@ -167,6 +165,9 @@ class AuthProvider with ChangeNotifier {
                   ));
                 }
               },
+              onFailure: () async {
+                await logOut(context);
+              },
             );
           }
           return true;
@@ -179,6 +180,7 @@ class AuthProvider with ChangeNotifier {
       if (context.mounted) {
         errorSnackBar(context, e.toString());
       }
+
       return false;
     }
     return false;

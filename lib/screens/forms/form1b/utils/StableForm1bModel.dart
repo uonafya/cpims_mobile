@@ -6,3 +6,10 @@ class StableFormData {
 
   StableFormData({required this.selectedServices, required this.domainId});
 }
+
+class SchooledFormData {
+  late final List<ValueItem> selectedServices;
+  late String domainId;
+
+  SchooledFormData({required this.selectedServices, required this.domainId});
+}

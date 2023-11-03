@@ -9,24 +9,28 @@ class StatisticsGridItem extends StatelessWidget {
       required this.title,
       required this.icon,
       required this.color,
-      required this.secondaryColor})
+      required this.secondaryColor,
+      this.onTap})
       : super(key: key);
   final String value;
+
   final String title;
   final IconData icon;
   final Color color;
   final Color secondaryColor;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Get.to(() => ReportDetailsScreen(
-              title: title,
-            ));
-      },
+      onTap: onTap ??
+          () => Get.to(
+                () => ReportDetailsScreen(
+                  title: title,
+                ),
+              ),
       child: Container(
-        height: 120,
+        height: 140,
         width: double.infinity,
         color: color,
         margin: const EdgeInsets.symmetric(vertical: 7.5),
@@ -43,7 +47,7 @@ class StatisticsGridItem extends StatelessWidget {
                       Text(
                         title,
                         style: const TextStyle(
-                            fontSize: 13,
+                            fontSize: 11,
                             color: Colors.white,
                             fontWeight: FontWeight.w600),
                       ),
@@ -53,7 +57,7 @@ class StatisticsGridItem extends StatelessWidget {
                       Text(
                         value,
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 18,
                           color: Colors.white,
                         ),
                       ),

@@ -10,15 +10,15 @@ import '../../../../providers/form1b_provider.dart';
 class StableForm1b extends StatefulWidget {
   const StableForm1b({super.key});
 
-
   @override
   State<StableForm1b> createState() => _StableForm1bState();
 }
 
 class _StableForm1bState extends State<StableForm1b> {
-
-  List<ValueItem> caregiverEconomicItems = careGiverEconomicServices.map((service) {
-    return ValueItem(label: "- ${service['subtitle']}", value: service['title']);
+  List<ValueItem> caregiverEconomicItems =
+      careGiverEconomicServices.map((service) {
+    return ValueItem(
+        label: service['item_description'], value: service['item_id']);
   }).toList();
 
   List<ValueItem> selectedCareGiverStableServices = [];
@@ -27,9 +27,9 @@ class _StableForm1bState extends State<StableForm1b> {
   @override
   Widget build(BuildContext context) {
     Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
-    selectedCareGiverStableServicesOptions = form1bProvider.stableFormData.selectedServices;
-    String domainId = ServiceDomains[2]['id'];
-
+    selectedCareGiverStableServicesOptions =
+        form1bProvider.stableFormData.selectedServices;
+    String domainId = domainsList[2]['item_id'];
 
     return StepsWrapper(
       title: 'Caregiver household economic strengthening status',
@@ -44,10 +44,12 @@ class _StableForm1bState extends State<StableForm1b> {
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             selectedCareGiverStableServices = selectedServices;
-            form1bProvider.setSelectedStableFormDataServices(selectedCareGiverStableServices, domainId);
+            form1bProvider.setSelectedStableFormDataServices(
+                selectedCareGiverStableServices, domainId);
           },
           options: caregiverEconomicItems,
-          selectedOptions: selectedCareGiverStableServicesOptions.cast<ValueItem>(),
+          selectedOptions:
+              selectedCareGiverStableServicesOptions.cast<ValueItem>(),
           maxItems: 50,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,

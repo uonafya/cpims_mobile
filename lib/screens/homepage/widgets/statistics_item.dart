@@ -67,7 +67,7 @@ class StatisticsItem extends StatelessWidget {
                       ),
                       Row(children: [
                         Text(
-                          "Form 1a ($form1ACount)",
+                          "Form 1A ($form1ACount)",
                           style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,
@@ -88,7 +88,7 @@ class StatisticsItem extends StatelessWidget {
                       ),
                       Row(children: [
                         Text(
-                          "Form 1b ($form1BCount)",
+                          "Form 1B ($form1BCount)",
                           style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,
@@ -142,6 +142,56 @@ class StatisticsItem extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+
+class InfoCard extends StatelessWidget {
+  const InfoCard(
+      {Key? key,
+        required this.title,
+        required this.icon,
+        required this.color,
+        required this.secondaryColor,
+       })
+      : super(key: key);
+  final String title;
+  final IconData icon;
+  final Color color;
+  final Color secondaryColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: 60,
+        width: double.infinity,
+        color: color,
+        margin: const EdgeInsets.symmetric(vertical: 5.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: Row(children: [
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                ),
+              ]),
+            ),
+          ],
+        ),
     );
   }
 }

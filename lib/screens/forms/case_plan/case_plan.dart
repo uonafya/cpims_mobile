@@ -1,91 +1,201 @@
+import 'package:cpims_mobile/Models/caseplan_form_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/case_plan_provider.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
-import 'package:cpims_mobile/widgets/custom_date_picker.dart';
+import 'package:cpims_mobile/widgets/custom_forms_date_picker.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/route_manager.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Models/case_load_model.dart';
+
 class CasePlanTemplateScreen extends StatefulWidget {
-  const CasePlanTemplateScreen({super.key});
+  final CaseLoadModel caseLoadModel;
+
+  const CasePlanTemplateScreen({super.key, required this.caseLoadModel});
 
   @override
   State<CasePlanTemplateScreen> createState() => _CasePlanTemplateScreenState();
 }
 
 class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
-  // List<String> typeOfDomain = [
-  //   'Education - (Schooled)',
-  //   'Health and Nutrition - (Healthy)',
-  //   'Economic Strengthening - (Stable)',
-  //   'Protection - (Safe)',
-  //   'Shelter and Care',
-  // ];
-  // List<String> selectedEvents = [];
-  // List<String> selectedValues = [];
-  //
-  // List<String> typeOfEvents = [
-  //   'OCE1 - Child Pregnant',
-  //   'OCE2 - Child not Adhering to ARVs',
-  //   'OCE3 - Child Malnourished',
-  //   'OCE4 - Child HIV status Changed',
-  //   'OCE5 - Child Acquired Opportunistic Infection'
-  // ];
-
   List<ValueItem> selectedServicesList = [];
   List<ValueItem> selectedPersonsResponsible = [];
-
+  DateTime currentDateOfCasePlan = DateTime.now();
+  DateTime completionDate = DateTime.now();
+  String reasonForNotAchievingCasePlan = "";
 
   @override
   Widget build(BuildContext context) {
     CasePlanProvider casePlanProvider = Provider.of<CasePlanProvider>(context);
+    TextEditingController _textEditingController = TextEditingController();
 
-    List<ValueItem> casePlanProviderDomainList = casePlanProvider.csDomainList.map((domain) {
-      return ValueItem(label: "- ${domain['domainName']}", value: domain['domainId']);
+    List<ValueItem> casePlanProviderDomainList =
+        casePlanProvider.csAllDomains.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    List<ValueItem> casePlanProviderPriorityActionList = casePlanProvider.csPriorityActionList.map((priorityAction) {
-      return ValueItem(label: "- ${priorityAction['actionName']}", value: priorityAction['actionId']);
+    //health
+    List<ValueItem> casePlanGoalHealthList =
+        casePlanProvider.cpGoalsHealth.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    List<ValueItem> casePlanProviderGoalList = casePlanProvider.csNeedsList.map((need) {
-      return ValueItem(label: "- ${need['needName']}", value: need['needId']);
+    List<ValueItem> casePlanGapsHealthList =
+        casePlanProvider.cpGapsHealth.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    List<ValueItem> casePlanProviderNeedsList = casePlanProvider.csGoalList.map((goal) {
-      return ValueItem(label: "- ${goal['goalName']}", value: goal['goalId']);
+    List<ValueItem> casePlanPrioritiesHealthList =
+        casePlanProvider.cpPrioritiesHealth.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    List<ValueItem> casePlanProviderServicesList = casePlanProvider.csServicesList.map((service) {
-      return ValueItem(label: "- ${service['serviceName']}", value: service['serviceId']);
+    List<ValueItem> casePlanServicesHealthList =
+        casePlanProvider.cpServicesHealth.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    List<ValueItem> casePlanProviderPersonsResponsibleList = casePlanProvider.csPersonsResponsibleList.map((personResponsible) {
-      return ValueItem(label: "- ${personResponsible['name']}", value: personResponsible['id']);
+    //safe
+    List<ValueItem> casePlanGoalSafeList =
+        casePlanProvider.cpGoalsSafe.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
     }).toList();
 
-    List<ValueItem> casePlanProviderResultList = casePlanProvider.csResultsList.map((resultList) {
-      return ValueItem(label: "- ${resultList['name']}", value: resultList['id']);
+    List<ValueItem> casePlanGapsSafeList =
+        casePlanProvider.cpGapssSafe.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanPrioritiesSafeList =
+        casePlanProvider.cpPrioritiesSafe.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanServicesSafeList =
+        casePlanProvider.cpServicesSafe.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    //stable
+    List<ValueItem> casePlanGoalStableList =
+        casePlanProvider.cpGoalsStable.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanGapsStableList =
+        casePlanProvider.cpGapsStable.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanPrioritiesStableList =
+        casePlanProvider.cpPrioritiesStable.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanServicesStableList =
+        casePlanProvider.cpServicesStable.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    //schooled
+    List<ValueItem> casePlanGoalSchooledList =
+        casePlanProvider.cpGoalsSchool.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanGapsSchooledList =
+        casePlanProvider.cpGapssSchool.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanPrioritiesSchooledList =
+        casePlanProvider.cpPrioritiesSchool.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanServicesSchooledList =
+        casePlanProvider.cpServicesSchool.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanProviderPersonsResponsibleList =
+        casePlanProvider.csPersonsResponsibleList.map((personResponsible) {
+      return ValueItem(
+          label: "- ${personResponsible['item_description']}",
+          value: personResponsible['item_id']);
+    }).toList();
+
+    List<ValueItem> casePlanProviderResultList =
+        casePlanProvider.csResultsList.map((resultList) {
+      return ValueItem(
+          label: "- ${resultList['name']}", value: resultList['id']);
     }).toList();
 
     selectedServicesList = casePlanProvider.cpFormData.selectedDomain;
     List<ValueItem> selectedDomain = casePlanProvider.cpFormData.selectedDomain;
-    selectedPersonsResponsible = casePlanProvider.cpFormData.selectedPersonsResponsible;
+    selectedPersonsResponsible =
+        casePlanProvider.cpFormData.selectedPersonsResponsible;
     List<ValueItem> selectedGoals = casePlanProvider.cpFormData.selectedGoal;
     List<ValueItem> selectedNeed = casePlanProvider.cpFormData.selectedNeed;
-    List<ValueItem> selectedPriorityAction = casePlanProvider.cpFormData.selectedPriorityAction;
+    List<ValueItem> selectedPriorityAction =
+        casePlanProvider.cpFormData.selectedPriorityAction;
     List<ValueItem> selectedResult = casePlanProvider.cpFormData.selectedResult;
 
-    DateTime currentlySelectedDate = DateTime.now();
-    DateTime completionDate = DateTime.now();
+    List<CasePlanModel> caseplanModelFoThisOvC = [];
 
+    void resetDomain() {
+      selectedDomain = [];
+    }
 
+    void resetResults() {
+      casePlanProvider.setSelectedResults([]);
+    }
+
+    void resetGoal() {
+      casePlanProvider.setSelectedGoal([]); // For multi-select dropdown
+    }
+
+    void resetNeed() {
+      casePlanProvider.setSelectedNeed([]); // For multi-select dropdown
+    }
+
+    void resetPriorityAction() {
+      casePlanProvider
+          .setSelectedPriorityAction([]); // For multi-select dropdown
+    }
+
+    void resetServices() {
+      casePlanProvider.setSelectedServicesList([]); // For multi-select dropdown
+    }
+
+    void resetPersonsResponsible() {
+      casePlanProvider.setSelectedPersonsList([]); // For multi-select dropdown
+    }
 
     return Scaffold(
       appBar: customAppBar(),
@@ -106,332 +216,470 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
             'Case Plan Template',
             style: TextStyle(color: kTextGrey),
           ),
-          const SizedBox(height: 30),
-          Container(
-              decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  blurRadius: 10,
-                  spreadRadius: 5,
-                ),
-              ]),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    width: double.infinity,
-                    color: Colors.black,
-                    child: const Text(
-                      'Case Plan Details',
-                      style: TextStyle(color: Colors.white),
-                    ),
+          const SizedBox(height: 10),
+          Consumer<CasePlanProvider>(
+              builder: (context, casePlanProvider, child) {
+            return Container(
+                decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    blurRadius: 10,
+                    spreadRadius: 5,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Column(
-                      children: [
-                        const Row(
-                          children: [
-                            Text(
-                              'Date of Case Plan*',
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        const CustomDatePicker(
-                          hintText: 'Please select the Date',
-                        ),
-                        const SizedBox(height: 10),
-                        const Row(
-                          children: [
-                            Text(
-                              'Domain*',
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        MultiSelectDropDown(
-                          showClearIcon: true,
-                          hint: 'Please select the Domains',
-                          onOptionSelected: (selectedEvents) {
-                            casePlanProvider.setSelectedDomain(selectedEvents);
-                          },
-                          selectedOptions: selectedDomain,
-                          options: casePlanProviderDomainList,
-                          maxItems: 35,
-                          disabledOptions: const [
-                            ValueItem(label: 'Option 1', value: '1')
-                          ],
-                          selectionType: SelectionType.single,
-                          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                          dropdownHeight: 300,
-                          optionTextStyle: const TextStyle(fontSize: 16),
-                          selectedOptionIcon: const Icon(Icons.check_circle),
-                          borderRadius: BorderRadius.circular(5.w)
-                              .topLeft
-                              .x, // Set the desired border radius value
-                        ),
-                        const SizedBox(height: 10),
-                        const Row(
-                          children: [
-                            Text(
-                              'Goal*',
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        MultiSelectDropDown(
-                          showClearIcon: true,
-                          hint: 'Please select the Goal',
-                          onOptionSelected: (selectedEvents) {
-                            casePlanProvider.setSelectedGoal(selectedEvents);
-                          },
-                          selectedOptions: casePlanProvider.cpFormData.selectedGoal,
-                          options: casePlanProviderGoalList,
-                          maxItems: 35,
-                          disabledOptions: const [
-                            ValueItem(label: 'Option 1', value: '1')
-                          ],
-                          selectionType: SelectionType.single,
-                          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                          dropdownHeight: 300,
-                          optionTextStyle: const TextStyle(fontSize: 16),
-                          selectedOptionIcon: const Icon(Icons.check_circle),
-                          borderRadius: BorderRadius.circular(5.w)
-                              .topLeft
-                              .x, // Set the desired border radius value
-                        ),
-                        const SizedBox(height: 10),
-                        const Row(
-                          children: [
-                            Text(
-                              'Needs/Gaps*',
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        MultiSelectDropDown(
-                          showClearIcon: true,
-                          hint: 'Please select the Needs/Gaps',
-                          onOptionSelected: (selectedEvents) {
-                            casePlanProvider.setSelectedNeed(selectedEvents);
-
-                          },
-                          options: casePlanProviderNeedsList,
-                          selectedOptions: casePlanProvider.cpFormData.selectedNeed,
-                          maxItems: 35,
-                          disabledOptions: const [
-                            ValueItem(label: 'Option 1', value: '1')
-                          ],
-                          selectionType: SelectionType.single,
-                          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                          dropdownHeight: 300,
-                          optionTextStyle: const TextStyle(fontSize: 16),
-                          selectedOptionIcon: const Icon(Icons.check_circle),
-                          borderRadius: BorderRadius.circular(5.w)
-                              .topLeft
-                              .x, // Set the desired border radius value
-                        ),
-                        const SizedBox(height: 10),
-                        const Row(
-                          children: [
-                            Text(
-                              'Priority Actions*',
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        MultiSelectDropDown(
-                          showClearIcon: true,
-                          hint: 'Please select the Priority Actions',
-                          onOptionSelected: (selectedEvents) {
-                            casePlanProvider.setSelectedPriorityAction(selectedEvents);
-
-                          },
-                          options: casePlanProviderPriorityActionList,
-                          selectedOptions: casePlanProvider.cpFormData.selectedPriorityAction,
-                          maxItems: 35,
-                          disabledOptions: const [
-                            ValueItem(label: 'Option 1', value: '1')
-                          ],
-                          selectionType: SelectionType.single,
-                          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                          dropdownHeight: 300,
-                          optionTextStyle: const TextStyle(fontSize: 16),
-                          selectedOptionIcon: const Icon(Icons.check_circle),
-                          borderRadius: BorderRadius.circular(5.w)
-                              .topLeft
-                              .x, // Set the desired border radius value
-                        ),
-                        const SizedBox(height: 10),
-                        const Row(
-                          children: [
-                            Text(
-                              'Services*',
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        MultiSelectDropDown(
-                          showClearIcon: true,
-                          hint: 'Please Select the Services',
-                          onOptionSelected: (selectedEvents) {
-                            casePlanProvider.setSelectedServicesList(selectedEvents);
-
-                          },
-                          selectedOptions: casePlanProvider.cpFormData.selectedServices,
-                          options: casePlanProviderServicesList,
-                          maxItems: 13,
-                          disabledOptions: const [
-                            ValueItem(label: 'Option 1', value: '1')
-                          ],
-                          selectionType: SelectionType.multi,
-                          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                          dropdownHeight: 300,
-                          optionTextStyle: const TextStyle(fontSize: 16),
-                          selectedOptionIcon: const Icon(Icons.check_circle),
-                          borderRadius: BorderRadius.circular(5.w)
-                              .topLeft
-                              .x, // Set the desired border radius value
-                        ),
-                        const SizedBox(height: 10),
-                        const Row(
-                          children: [
-                            Text(
-                              'Person Responsible*',
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        MultiSelectDropDown(
-                          showClearIcon: true,
-                          hint: 'Please select Person(s) Responsible',
-                          onOptionSelected: (selectedEvents) {
-
-                            casePlanProvider.setSelectedPersonsList(selectedEvents);
-                          },
-                          selectedOptions: casePlanProvider.cpFormData.selectedPersonsResponsible,
-                          options: casePlanProviderPersonsResponsibleList,
-                          maxItems: 13,
-                          disabledOptions: const [
-                            ValueItem(label: 'Option 1', value: '1')
-                          ],
-                          selectionType: SelectionType.multi,
-                          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                          dropdownHeight: 300,
-                          optionTextStyle: const TextStyle(fontSize: 16),
-                          selectedOptionIcon: const Icon(Icons.check_circle),
-                          borderRadius: BorderRadius.circular(5.w)
-                              .topLeft
-                              .x, // Set the desired border radius value
-                        ),
-                        const SizedBox(height: 10),
-                        const Row(
-                          children: [
-                            Text(
-                              'Results*',
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        MultiSelectDropDown(
-                          showClearIcon: true,
-                          hint: 'Please select the Result(s)',
-                          onOptionSelected: (selectedEvents) {
-
-                          },
-                          options: casePlanProviderResultList,
-                          maxItems: 13,
-                          disabledOptions: const [
-                            ValueItem(label: 'Option 1', value: '1')
-                          ],
-                          selectionType: SelectionType.single,
-                          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                          dropdownHeight: 300,
-                          optionTextStyle: const TextStyle(fontSize: 16),
-                          selectedOptionIcon: const Icon(Icons.check_circle),
-                          borderRadius: BorderRadius.circular(5.w)
-                              .topLeft
-                              .x, // Set the desired border radius value
-                        ),
-                        const SizedBox(height: 10),
-                        const Row(
-                          children: [
-                            Text(
-                              'Date to be Completed*',
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        const CustomDatePicker(
-                          hintText: 'Select the date',
-                        ),
-                        const SizedBox(height: 10),
-                        const Row(
-                          children: [
-                            Text(
-                              'Reason(s)',
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        const CustomTextField(
-                          hintText: 'Please Write the Reasons',
-                        ),
-                      ],
+                ]),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      width: double.infinity,
+                      color: Colors.black,
+                      child: Text(
+                        ' CASE PLAN TEMPLATE \n CPIMS NAMES: ${widget.caseLoadModel.ovcSurname}  ${widget.caseLoadModel.ovcFirstName} \n CPIMS ID: ${widget.caseLoadModel.cpimsId} \n CARE GIVER: ${widget.caseLoadModel.caregiverNames}',
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                      children: [
-                        Expanded(
-                          child: CustomButton(
-                            text: "Submit",
-                            onTap: () {
-                              // form1bProvider.setSelectedServices(['Service 1', 'Service 2']);
-                              // form1bProvider.setSelectedDate(DateTime.now());
-                              casePlanProvider.saveCasaPlanDataLocally();
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        children: [
+                          const Row(
+                            children: [
+                              Text(
+                                'Date of Case Plan*',
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          CustomFormsDatePicker(
+                            allowFutureDates: false,
+                            hintText: 'Please select the Date',
+                            selectedDateTime: currentDateOfCasePlan,
+                            onDateSelected: (selectedDate) {
+                              currentDateOfCasePlan = selectedDate;
+                              casePlanProvider
+                                  .setSelectedDOE(currentDateOfCasePlan);
                             },
                           ),
-                        ),
-                      ]
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  const SizedBox(
-                    width: 300, // Adjust the width value as needed
-                    child: CustomButton(
-                      text: 'Cancel',
-                      color: kTextGrey,
+                          const SizedBox(height: 10),
+                          const Row(
+                            children: [
+                              Text(
+                                'Domain*',
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          MultiSelectDropDown(
+                            showClearIcon: true,
+                            hint: 'Please select the Domains',
+                            onOptionSelected: (selectedEvents) {
+                              casePlanProvider
+                                  .setSelectedDomain(selectedEvents);
+                              // Print the selected domain value
+                              if (selectedEvents.isNotEmpty) {
+                                print(
+                                    "selected Domain: ${selectedEvents[0].value}");
+                              }
+                            },
+                            selectedOptions: selectedDomain,
+                            options: casePlanProviderDomainList,
+                            maxItems: 35,
+                            disabledOptions: const [
+                              ValueItem(label: 'Option 1', value: '1')
+                            ],
+                            selectionType: SelectionType.single,
+                            chipConfig:
+                                const ChipConfig(wrapType: WrapType.wrap),
+                            dropdownHeight: 300,
+                            optionTextStyle: const TextStyle(fontSize: 16),
+                            selectedOptionIcon: const Icon(Icons.check_circle),
+                            borderRadius: BorderRadius.circular(5.w)
+                                .topLeft
+                                .x, // Set the desired border radius value
+                          ),
+                          const SizedBox(height: 10),
+                          const Row(
+                            children: [
+                              Text(
+                                'Goal*',
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          MultiSelectDropDown(
+                            showClearIcon: true,
+                            hint: 'Please select the Goal',
+                            onOptionSelected: (selectedEvents) {
+                              casePlanProvider.setSelectedGoal(selectedEvents);
+                            },
+                            selectedOptions:
+                                casePlanProvider.cpFormData.selectedGoal,
+                            options: (selectedDomain.isNotEmpty &&
+                                    selectedDomain[0].value == 'DHNU')
+                                ? casePlanGoalHealthList
+                                : (selectedDomain.isNotEmpty &&
+                                        selectedDomain[0].value == 'DPRO')
+                                    ? casePlanGoalSafeList
+                                    : (selectedDomain.isNotEmpty &&
+                                            selectedDomain[0].value == 'DHES')
+                                        ? casePlanGoalStableList
+                                        : (selectedDomain.isNotEmpty &&
+                                                selectedDomain[0].value ==
+                                                    'DEDU')
+                                            ? casePlanGoalSchooledList
+                                            : List.empty(),
+                            maxItems: 35,
+                            disabledOptions: const [
+                              ValueItem(label: 'Option 1', value: '1')
+                            ],
+                            selectionType: SelectionType.single,
+                            chipConfig:
+                                const ChipConfig(wrapType: WrapType.wrap),
+                            dropdownHeight: 300,
+                            optionTextStyle: const TextStyle(fontSize: 16),
+                            selectedOptionIcon: const Icon(Icons.check_circle),
+                            borderRadius: BorderRadius.circular(5.w)
+                                .topLeft
+                                .x, // Set the desired border radius value
+                          ),
+                          const SizedBox(height: 10),
+                          const Row(
+                            children: [
+                              Text(
+                                'Needs/Gaps*',
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          MultiSelectDropDown(
+                            showClearIcon: true,
+                            hint: 'Please select the Needs/Gaps',
+                            onOptionSelected: (selectedEvents) {
+                              casePlanProvider.setSelectedNeed(selectedEvents);
+                            },
+                            options: (selectedDomain.isNotEmpty &&
+                                    selectedDomain[0].value == 'DHNU')
+                                ? casePlanGapsHealthList
+                                : (selectedDomain.isNotEmpty &&
+                                        selectedDomain[0].value == 'DPRO')
+                                    ? casePlanGapsSafeList
+                                    : (selectedDomain.isNotEmpty &&
+                                            selectedDomain[0].value == 'DHES')
+                                        ? casePlanGapsStableList
+                                        : (selectedDomain.isNotEmpty &&
+                                                selectedDomain[0].value ==
+                                                    'DEDU')
+                                            ? casePlanGapsSchooledList
+                                            : List.empty(),
+                            selectedOptions:
+                                casePlanProvider.cpFormData.selectedNeed,
+                            maxItems: 35,
+                            disabledOptions: const [
+                              ValueItem(label: 'Option 1', value: '1')
+                            ],
+                            selectionType: SelectionType.single,
+                            chipConfig:
+                                const ChipConfig(wrapType: WrapType.wrap),
+                            dropdownHeight: 300,
+                            optionTextStyle: const TextStyle(fontSize: 16),
+                            selectedOptionIcon: const Icon(Icons.check_circle),
+                            borderRadius: BorderRadius.circular(5.w)
+                                .topLeft
+                                .x, // Set the desired border radius value
+                          ),
+                          const SizedBox(height: 10),
+                          const Row(
+                            children: [
+                              Text(
+                                'Priority Actions*',
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          MultiSelectDropDown(
+                            showClearIcon: true,
+                            hint: 'Please select the Priority Actions',
+                            onOptionSelected: (selectedEvents) {
+                              casePlanProvider
+                                  .setSelectedPriorityAction(selectedEvents);
+                              // CustomToastWidget.showToast("selected PA: ${casePlanProvider.cpFormData.selectedPriorityAction[0].value}");
+                            },
+                            options: (selectedDomain.isNotEmpty &&
+                                    selectedDomain[0].value == 'DHNU')
+                                ? casePlanPrioritiesHealthList
+                                : (selectedDomain.isNotEmpty &&
+                                        selectedDomain[0].value == 'DPRO')
+                                    ? casePlanPrioritiesSafeList
+                                    : (selectedDomain.isNotEmpty &&
+                                            selectedDomain[0].value == 'DHES')
+                                        ? casePlanPrioritiesStableList
+                                        : (selectedDomain.isNotEmpty &&
+                                                selectedDomain[0].value ==
+                                                    'DEDU')
+                                            ? casePlanPrioritiesSchooledList
+                                            : List.empty(),
+                            selectedOptions: casePlanProvider
+                                .cpFormData.selectedPriorityAction,
+                            maxItems: 35,
+                            disabledOptions: const [
+                              ValueItem(label: 'Option 1', value: '1')
+                            ],
+                            selectionType: SelectionType.single,
+                            chipConfig:
+                                const ChipConfig(wrapType: WrapType.wrap),
+                            dropdownHeight: 300,
+                            optionTextStyle: const TextStyle(fontSize: 16),
+                            selectedOptionIcon: const Icon(Icons.check_circle),
+                            borderRadius: BorderRadius.circular(5.w)
+                                .topLeft
+                                .x, // Set the desired border radius value
+                          ),
+                          const SizedBox(height: 10),
+                          const Row(
+                            children: [
+                              Text(
+                                'Services*',
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          MultiSelectDropDown(
+                            showClearIcon: true,
+                            hint: 'Please Select the Services',
+                            onOptionSelected: (selectedEvents) {
+                              casePlanProvider
+                                  .setSelectedServicesList(selectedEvents);
+                              print(
+                                  "selected Services: ${selectedEvents[0].value}");
+                            },
+                            selectedOptions:
+                                casePlanProvider.cpFormData.selectedServices,
+                            options: (selectedDomain.isNotEmpty &&
+                                    selectedDomain[0].value == 'DHNU')
+                                ? casePlanServicesHealthList
+                                : (selectedDomain.isNotEmpty &&
+                                        selectedDomain[0].value == 'DPRO')
+                                    ? casePlanServicesSafeList
+                                    : (selectedDomain.isNotEmpty &&
+                                            selectedDomain[0].value == 'DHES')
+                                        ? casePlanServicesStableList
+                                        : (selectedDomain.isNotEmpty &&
+                                                selectedDomain[0].value ==
+                                                    'DEDU')
+                                            ? casePlanServicesSchooledList
+                                            : List.empty(),
+                            maxItems: 13,
+                            disabledOptions: const [
+                              ValueItem(label: 'Option 1', value: '1')
+                            ],
+                            selectionType: SelectionType.multi,
+                            chipConfig:
+                                const ChipConfig(wrapType: WrapType.wrap),
+                            dropdownHeight: 300,
+                            optionTextStyle: const TextStyle(fontSize: 16),
+                            selectedOptionIcon: const Icon(Icons.check_circle),
+                            borderRadius: BorderRadius.circular(5.w)
+                                .topLeft
+                                .x, // Set the desired border radius value
+                          ),
+                          const SizedBox(height: 10),
+                          const Row(
+                            children: [
+                              Text(
+                                'Person Responsible*',
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          MultiSelectDropDown(
+                            showClearIcon: true,
+                            hint: 'Please select Person(s) Responsible',
+                            onOptionSelected: (selectedEvents) {
+                              casePlanProvider
+                                  .setSelectedPersonsList(selectedEvents);
+                            },
+                            selectedOptions: casePlanProvider
+                                .cpFormData.selectedPersonsResponsible,
+                            options: casePlanProviderPersonsResponsibleList,
+                            maxItems: 13,
+                            disabledOptions: const [
+                              ValueItem(label: 'Option 1', value: '1')
+                            ],
+                            selectionType: SelectionType.multi,
+                            chipConfig:
+                                const ChipConfig(wrapType: WrapType.wrap),
+                            dropdownHeight: 300,
+                            optionTextStyle: const TextStyle(fontSize: 16),
+                            selectedOptionIcon: const Icon(Icons.check_circle),
+                            borderRadius: BorderRadius.circular(5.w)
+                                .topLeft
+                                .x, // Set the desired border radius value
+                          ),
+                          const SizedBox(height: 10),
+                          const Row(
+                            children: [
+                              Text(
+                                'Results*',
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          MultiSelectDropDown(
+                            showClearIcon: true,
+                            hint: 'Please select the Result(s)',
+                            onOptionSelected: (selectedEvents) {
+                              casePlanProvider
+                                  .setSelectedResults(selectedEvents);
+                            },
+                            options: casePlanProviderResultList,
+                            maxItems: 13,
+                            disabledOptions: const [
+                              ValueItem(label: 'Option 1', value: '1')
+                            ],
+                            selectionType: SelectionType.single,
+                            chipConfig:
+                                const ChipConfig(wrapType: WrapType.wrap),
+                            dropdownHeight: 300,
+                            optionTextStyle: const TextStyle(fontSize: 16),
+                            selectedOptionIcon: const Icon(Icons.check_circle),
+                            borderRadius: BorderRadius.circular(5.w)
+                                .topLeft
+                                .x, // Set the desired border radius value
+                          ),
+                          const SizedBox(height: 10),
+                          const Row(
+                            children: [
+                              Text(
+                                'Date to be Completed*',
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          CustomFormsDatePicker(
+                            hintText: 'Select the date',
+                            selectedDateTime: completionDate,
+                            onDateSelected: (selectedDate) {
+                              completionDate = selectedDate;
+                              casePlanProvider
+                                  .setSelectedDateToBeCompleted(completionDate);
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          const Row(
+                            children: [
+                              Text(
+                                'Reason(s)',
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          CustomTextField(
+                            hintText: 'Please Write the Reasons',
+                            controller: _textEditingController,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  const SizedBox(
-                      width: 300, // Adjust the width value as needed
-                      child: HistoryAssessmentListWidget()),
-                ],
-              )),
+                    const SizedBox(height: 10),
+                    Row(children: [
+                      Expanded(
+                        child: CustomButton(
+                          text: "Add",
+                          onTap: () async {
+                            String ovcCpimsId = widget.caseLoadModel.cpimsId!;
+                            reasonForNotAchievingCasePlan =
+                                _textEditingController.text;
+                            casePlanProvider.setSelectedReason(
+                                reasonForNotAchievingCasePlan);
+                            String dateOfCaseplan =
+                                currentDateOfCasePlan.toString();
+                            String dateToBeCompleted =
+                                completionDate.toString();
+                            List<CasePlanServiceModel> servicesList =
+                                selectedServicesList
+                                    .map((e) => CasePlanServiceModel(
+                                          domainId: e.value!,
+                                          serviceIds: selectedServicesList
+                                              .map((e) => e.value)
+                                              .where((value) => value != null)
+                                              .toList(),
+                                          // Filter out null values
+                                          goalId: selectedGoals[0].value!,
+                                          gapId: selectedNeed[0].value!,
+                                          priorityId:
+                                              selectedPriorityAction[0].value!,
+                                          responsibleIds:
+                                              selectedPersonsResponsible
+                                                  .map((e) => e.value)
+                                                  .where(
+                                                      (value) => value != null)
+                                                  .toList(),
+                                          // Filter out null values
+                                          resultsId: selectedResult[0].value!,
+                                          reasonId: _textEditingController.text,
+                                          completionDate: dateToBeCompleted,
+                                        ))
+                                    .toList();
+                            //
+                            //  //caseplan model
+                            //  CasePlanModel casePlanModel = CasePlanModel(
+                            //    ovcCpimsId: ovcCpimsId,
+                            //    dateOfEvent: dateOfCaseplan,
+                            //    services: servicesList,
+                            //  );
+
+                            // print("JSON caseplan is ${casePlanModel.toJson()}");
+                            //  caseplanModelFoThisOvC.add(casePlanModel);
+                            //  print("caseplan model: $casePlanModel");
+                            //
+                            debugPrint(
+                                "caseplan model selected: $caseplanModelFoThisOvC");
+                          },
+                        ),
+                      ),
+                    ]),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Row(children: [
+                      Expanded(
+                        // Adjust the width value as needed
+                        child: CustomButton(
+                            text: 'Cancel',
+                            color: kTextGrey,
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            }),
+                      )
+                    ]),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                        width: 300, // Adjust the width value as needed
+                        child: HistoryAssessmentListWidget(
+                            casePlanModelFromDb: caseplanModelFoThisOvC)),
+                  ],
+                ));
+          }),
           const Footer(),
         ],
       ),
@@ -440,48 +688,67 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
 }
 
 class HistoryAssessmentListWidget extends StatelessWidget {
-  const HistoryAssessmentListWidget({super.key});
+  List<CasePlanModel> casePlanModelFromDb;
+
+  HistoryAssessmentListWidget({Key? key, required this.casePlanModelFromDb})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: 4,
-        itemBuilder: (context, index) {
-          return const AssessmentItemWidget();
-        });
-  }
-}
-
-class AssessmentItemWidget extends StatelessWidget {
-  const AssessmentItemWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Row(
-      children: [
-        Expanded(
-          child: Text(
-            'Child not Adhering to ARVs',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: DataTable(
+        columnSpacing: 10,
+        columns: const <DataColumn>[
+          DataColumn(
+            label: Text('Domain',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           ),
-        ),
-        SizedBox(
-          height: 50,
-        ),
-        Expanded(
-          child: Text(
-            '28-Aug-2023',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          DataColumn(
+            label: Text('Needs/Gaps',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           ),
-        ),
-        SizedBox(width: 10),
-        Icon(
-          CupertinoIcons.delete,
-          color: Colors.red,
-        )
-      ],
+          DataColumn(
+            label: Text('Priority Actions',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          ),
+          DataColumn(
+            label: Text('Services',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          ),
+          DataColumn(
+            label: Text('Responsible',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          ),
+          DataColumn(
+            label: Text('Completed',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          ),
+          DataColumn(
+            label: Text('Results',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          ),
+          DataColumn(
+            label: Text('Reasons',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          ),
+          DataColumn(
+            label: Text('Action',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          ),
+          DataColumn(
+              label: Text('Delete',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
+        ],
+        rows: casePlanModelFromDb.map((casePlanModel) {
+          return DataRow(
+            cells: <DataCell>[
+              for (var service in casePlanModel.services)
+                DataCell(Text(service.domainId)),
+            ],
+          );
+        }).toList(),
+      ),
     );
   }
 }

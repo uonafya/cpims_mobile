@@ -7,21 +7,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 class MetadataService {
   // send form to server
   static Future<bool> fetchMetadata() async {
-    const urlEndpoint = "metadata/";
+    const urlEndpoint = "api/metadata/";
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('access');
     String? valueToken = "$token";
     try {
       final response =
           await ApiService().getSecureData(urlEndpoint, valueToken);
-      print(response.body);
       var responseData = await jsonDecode(response.body);
-      print("$responseData");
       final db = LocalDb.instance;
       for (var data in responseData) {
         Metadata metadata = Metadata.fromJson(data);
         await db.insertMetadata(metadata);
-        print(metadata.toJson());
       }
       return true;
     } catch (e) {

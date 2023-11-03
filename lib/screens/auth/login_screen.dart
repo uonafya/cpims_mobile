@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
         localizedReason: "Scan your finger to authenticate",
       );
     } on PlatformException catch (e) {
-      if (mounted) errorSnackBar(context, e.message);
+      if (mounted) errorSnackBar(context, e.message.toString());
     }
 
     setState(() {
@@ -97,7 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
         errorSnackBar(context, 'Unable to get available biometrics');
       }
     }
-
     setState(() {});
   }
 
@@ -326,20 +325,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 15,
               ),
               Image.asset(
-                'assets/images/logo_public.jpg',
-                height: 80,
+                'assets/images/logo_private.png',
+                height: 60,
                 width: double.infinity,
                 fit: BoxFit.fitWidth,
+
               ),
               const SizedBox(
                 height: 15,
               ),
-              Center(
-                child: Image.asset(
-                  'assets/images/healthit.jpg',
-                  height: 60,
-                ),
-              ),
+              // Center(
+              //   child: Image.asset(
+              //     'assets/images/healthit.jpg',
+              //     height: 60,
+              //   ),
+              // ),
               const SizedBox(
                 height: 15,
               ),
@@ -360,6 +360,16 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isloading = true;
     });
+    if (username.isEmpty || password.isEmpty) {
+      if (mounted) {
+        errorSnackBar(context, 'Please enter your username and password', duration: const Duration(seconds: 3));
+      }
+      setState(() {
+        _isloading = false;
+      });
+      return;
+    }
+
     final prefs = await SharedPreferences.getInstance();
     final hasUserSetup = prefs.getBool("hasUserSetup");
     final hasConnection =

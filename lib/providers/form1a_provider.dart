@@ -1,8 +1,19 @@
 import 'dart:convert';
 
+import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/services/form_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Models/case_load_model.dart';
+import '../Models/form_1_model.dart';
+import 'connection_provider.dart';
+import 'db_provider.dart';
 
 class CriticalFormData {
   late List<ValueItem> selectedEvents;
@@ -18,29 +29,23 @@ class ServiceFormData {
 
   ServiceFormData(
       {required this.selectedDomain,
-        required this.selectedEventDate,
-        required this.selectedService});
+      required this.selectedEventDate,
+      required this.selectedService});
 }
 
 class Form1AProvider extends ChangeNotifier {
-  // <<<<<<<<<<<critical events >>>>>>>>>>>>>>>>>>>>>>>>>>>>
   final CriticalFormData _criticalFormData =
-  CriticalFormData(selectedEvents: [], selectedDate: DateTime.now());
+      CriticalFormData(selectedEvents: [], selectedDate: DateTime.now());
 
-  // <<<<<<<<<<<< Service >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   final ServiceFormData _serviceFormData = ServiceFormData(
       selectedDomain: [],
       selectedEventDate: DateTime.now(),
       selectedService: []);
 
-//<<<<<<<<<<<<<<<<<<<<<Critical events >>>>>>>>>>>>>>>>>>>>>
-
   CriticalFormData get criticalFormData => _criticalFormData;
+
   ServiceFormData get serviceFormData => _serviceFormData;
 
-  // <<<<<<<<<<<<<<<Set Methods >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-  // <<<<<<<<<<<<<<<Critical methods >>>>>>>>>>>>>>>>>>>>>>>>
   void setSelectedEvents(List<ValueItem> selectedEvents) {
     _criticalFormData.selectedEvents.clear();
     _criticalFormData.selectedEvents.addAll(selectedEvents);
@@ -48,12 +53,9 @@ class Form1AProvider extends ChangeNotifier {
   }
 
   void setEventSelectedDate(DateTime selectedDate) {
-    criticalFormData.selectedDate = selectedDate;
+    _criticalFormData.selectedDate = selectedDate;
     notifyListeners();
   }
-
-  // <<<<<<<<<<<<<<<<<<<<Services >>>>>>>>>>>>>>>>>>>>>>>>>>>
-  // <<<<<<<<<<<<<<<Domain >>>>>>>>>>>>>>>>>>>>>>>>>>>
 
   void setSelectedDomain(List<ValueItem> selectedDomain) {
     _serviceFormData.selectedDomain.clear();
@@ -69,65 +71,99 @@ class Form1AProvider extends ChangeNotifier {
 
   void setServiceSelectedDate(DateTime selectedEventDate) {
     _serviceFormData.selectedEventDate = selectedEventDate;
+    notifyListeners();
   }
 
-  // <<<<<<<<<<<<<<<Submit critical >>>>>>>>>>>>>>>>>>>
   void submitCriticalData() {
     String formattedDate =
-    DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
+        DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
 
     List<Map<String, dynamic>> criticalEvents = [];
-    Map<String, dynamic> criticalEvent = {};
     for (var valueItem in _criticalFormData.selectedEvents) {
-      criticalEvent["event_date"] = formattedDate;
-      criticalEvent["event_id"] = valueItem.value;
+      Map<String, dynamic> criticalEvent = {
+        "event_date": formattedDate,
+        "event_id": valueItem.value,
+      };
       criticalEvents.add(criticalEvent);
-      eventData = criticalEvents;
-      print(criticalEvents);
     }
+    eventData = criticalEvents;
+    print(criticalEvents);
   }
 
-// <<<<<<<<<<<<<Submit Services >>>>>>>>>>>>>>>>>>>>>>>
   void submitServicesData() {
-    List<Map<String, String>> data = [];
+    List<Map<String, dynamic>> service_of_domains = [];
     for (var valueItem in _serviceFormData.selectedDomain) {
       String domainId = valueItem.value ?? '';
       for (var serviceItem in _serviceFormData.selectedService) {
         String serviceId = serviceItem.value ?? '';
-        Map<String, String> item = {
-          'domain_id': domainId,
-          'service_id': serviceId,
+        Map<String, dynamic> item = {
+          'domainId': domainId,
+          'serviceId': serviceId,
         };
-        data.add(item);
-        print(data);
-        serviceData = data;
+        service_of_domains.add(item);
+        print(service_of_domains);
+        services = service_of_domains;
       }
     }
   }
 
   List<Map<String, dynamic>> eventData = [];
-  List<Map<String, String>> serviceData = [];
+  List<Map<String, dynamic>> services = [];
 
-  void submitCriticalServices() {
+  void submitCriticalServices(cpimsId) {
     String dateOfEvent =
-    DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
-    Map<String, dynamic> payload = {};
-    payload.addAll({
-      'ovc_cpims_id': 12344,
-      'date_of_event': dateOfEvent,
-      'services': serviceData,
-      'critical_events': eventData,
-    });
-    String form1A = jsonEncode(payload);
-    print(form1A);
+        DateFormat('yyyy-MM-dd').format(_criticalFormData.selectedDate);
+    List<Form1ServicesModel> servicesList = [];
+    List<Form1CriticalEventsModel> eventsList = [];
 
-    // After submission reset the form
-    setSelectedEvents([]);
-    setSelectedDomain([]);
-    setSelectedSubDomain([]);
-    setEventSelectedDate(DateTime.now());
-    setServiceSelectedDate(DateTime.now());
+    for (var event in eventData ?? []) {
+      if (event != null &&
+          event['event_id'] != null &&
+          event['event_date'] != null) {
+        Form1CriticalEventsModel entry = Form1CriticalEventsModel(
+          event_id: event['event_id'],
+          event_date: dateOfEvent,
+        );
+        eventsList.add(entry);
+      }
+    }
 
+    for (var service in services) {
+      Form1ServicesModel entry1 = Form1ServicesModel(
+        domainId: service['domainId'],
+        serviceId: service['serviceId'],
+      );
+      servicesList.add(entry1);
+    }
+
+    Form1DataModel toDbData = Form1DataModel(
+      ovcCpimsId: cpimsId,
+      date_of_event: dateOfEvent,
+      services: servicesList,
+      criticalEvents: eventsList,
+    );
+
+    Form1Service.saveFormLocal("form1a", toDbData);
+
+    _criticalFormData.selectedEvents.clear();
+    _serviceFormData.selectedDomain.clear();
+    _serviceFormData.selectedService.clear();
+    _serviceFormData.selectedEventDate = DateTime.now();
+    _criticalFormData.selectedDate = DateTime.now();
+    notifyListeners();
+  }
+
+  // CaseLoad
+
+  late CaseLoadModel _caseLoadModel;
+
+  set caseLoadModel(CaseLoadModel value) {
+    _caseLoadModel = value;
+    notifyListeners();
+  }
+
+  void updateCaseLoadModel(CaseLoadModel caseLoadModel) {
+    _caseLoadModel = caseLoadModel;
     notifyListeners();
   }
 }
