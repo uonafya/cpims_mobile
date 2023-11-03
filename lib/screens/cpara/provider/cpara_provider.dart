@@ -63,8 +63,10 @@ class CparaProvider extends ChangeNotifier {
         healthModel?.question4 == "Yes" &&
         (healthModel?.question5 == "Yes" || healthModel?.question5 == "N/A")) {
       benchmark1 = 1;
+      print("Benchmark 1: $benchmark1");
     } else {
       benchmark1 = 0;
+      print("Benchmark 1 1: $benchmark1");
     }
 
 // Health BenchMark 2 result
@@ -80,23 +82,21 @@ class CparaProvider extends ChangeNotifier {
             healthModel?.question13 == "N/A") &&
         healthModel?.question14 == "Yes") {
       benchmark2 = 1;
+      print("Benchmark 2: $benchmark2");
     } else {
       benchmark2 = 0;
+      print("Benchmark 2 2: $benchmark2");
     }
 
 // Health BenchMark 3 result
-    if (overallChildrenBenchmark(childrenOptions: firstListOfQuestions)
-                .toLowerCase() ==
-            "yes" &&
-        overallChildrenBenchmark(childrenOptions: secondListOfQuestions)
-                .toLowerCase() ==
-            "yes" &&
-        overallChildrenBenchmark(childrenOptions: thirdListOfQuestions)
-                .toLowerCase() ==
-            "yes") {
+    if (overallChildrenBenchmark(childrenOptions: firstListOfQuestions).toLowerCase() == "yes" &&
+        overallChildrenBenchmark(childrenOptions: secondListOfQuestions).toLowerCase() == "yes" &&
+        overallChildrenBenchmark(childrenOptions: thirdListOfQuestions).toLowerCase() == "yes") {
       benchmark3 = 1;
+      print("Benchmark 3: $benchmark3");
     } else {
       benchmark3 = 0;
+      print("Benchmark 3 3: $benchmark3");
     }
 
     // Health BenchMark 1 result
@@ -106,8 +106,10 @@ class CparaProvider extends ChangeNotifier {
             healthModel?.question17 == "Yes") &&
         healthModel?.question18 == "Yes") {
       benchmark4 = 1;
+      print("Benchmark 4: $benchmark4");
     } else {
       benchmark4 = 0;
+      print("Benchmark 4 4: $benchmark4");
     }
 
     finalScore = benchmark1 + benchmark2 + benchmark3 + benchmark4;

@@ -129,9 +129,7 @@ class AuthProvider with ChangeNotifier {
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-
       String? refreshToken = prefs.getString('refresh');
-
       int? authTokenTimestamp = prefs.getInt('authTokenTimestamp');
 
       if (refreshToken != null && authTokenTimestamp != null) {

@@ -147,26 +147,8 @@ class _CheckboxFormState extends State<CheckboxForm> {
           : null;
       await localDb.insertOvcSubpopulationData(uuid,
           widget.caseLoadModel.cpimsId!, dateOfAssessment!, selectedQuestions);
-      if (currentContext.mounted) {
-        showDialog(
-          context: currentContext, // Use the local context
-          builder: (context) => AlertDialog(
-            title: const Text('Success'),
-            content: const Text('OVC Sub-Population data saved successfully.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Get.back(); // Close the dialog
-                  Get.back(); // Go back to the previous screen
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-      }
+      Navigator.pop(context);
     } catch (error) {
-      // Show error dialog if the context is still mounted
       if (currentContext.mounted) {
         showDialog(
           context: currentContext, // Use the local context

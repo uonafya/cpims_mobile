@@ -47,11 +47,11 @@ class _HomepageState extends State<Homepage> {
   late int cptCount = 0;
 
   // late int
-  int updatedCountA = 0;
-  int updatedCountB = 0;
-  int updatedCountCpara = 0;
-  int updatedCountOvcSubpopulation = 0;
-  int updatedCptCount = 0;
+  int? updatedCountA = 0;
+  int? updatedCountB = 0;
+  int? updatedCountCpara = 0;
+  int? updatedCountOvcSubpopulation = 0;
+  int? updatedCptCount = 0;
 
   @override
   void initState() {
@@ -179,11 +179,11 @@ class _HomepageState extends State<Homepage> {
     updatedCountOvcSubpopulation = await Form1Service.ovcSubCount();
     updatedCptCount = await CasePlanService.getCaseplanUnsyncedCount();
     setState(() {
-      formOneACount = updatedCountA;
-      formOneBCount = updatedCountB;
-      cparaCount = updatedCountCpara;
-      ovcSubpopulatoiCount = updatedCountOvcSubpopulation;
-      cptCount = updatedCptCount;
+      formOneACount = updatedCountA!;
+      formOneBCount = updatedCountB!;
+      cparaCount = updatedCountCpara!;
+      ovcSubpopulatoiCount = updatedCountOvcSubpopulation!;
+      cptCount = updatedCptCount!;
     });
   }
 
