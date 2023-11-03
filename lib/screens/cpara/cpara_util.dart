@@ -136,19 +136,34 @@ int scoreConversion({required String text}){
   }
 }
 
-String overallChildrenBenchmark({required List<String> childrenOptions}){
-  String selectedOption = "yes";
+// String overallChildrenBenchmark({required List<String> childrenOptions}){
+//   String selectedOption = "yes";
+//
+//   if(childrenOptions.isEmpty){
+//     return "no";
+//   }
+//
+//   for(String option in childrenOptions){
+//     print("list : ${option}");
+//     if(option.toLowerCase() == "no" || option == "null"){
+//       return "no";
+//     }
+//   }
+//
+//   return selectedOption;
+// }
 
-  if(childrenOptions.isEmpty){
-    return "no";
+String overallChildrenBenchmark({required List<String> childrenOptions}) {
+  if (childrenOptions.isEmpty) {
+    return "yes";
   }
 
-  for(String option in childrenOptions){
-    print("list : ${option}");
-    if(option.toLowerCase() == "no" || option == "null"){
+  for (String option in childrenOptions) {
+    print("list : $option");
+    if (option.toLowerCase() == "no" || option == "null") {
       return "no";
     }
   }
 
-  return selectedOption;
+  return "yes";
 }
