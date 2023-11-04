@@ -5,7 +5,9 @@ import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/cpara_schooled_widget.dart';
 import 'package:flutter/foundation.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 
 import '../../../Models/case_load_model.dart';
 
@@ -19,6 +21,261 @@ class CparaProvider extends ChangeNotifier {
   OvcSubPopulationModel? ovcSubPopulationModel;
   CaseLoadModel? caseLoadModel;
   List<CaseLoadModel> children = [];
+
+  // Function to update health model depending on the question being updated
+  void updateHealthModelQuestion(
+      String questionCode, RadioButtonOptions? value) {
+    switch (questionCode) {
+      case "q1_1":
+        healthModel!.question1 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q1_2":
+        healthModel!.question2 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q1_3":
+        healthModel!.question3 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q1_4":
+        healthModel!.question4 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q1_5":
+        healthModel!.question5 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q2_1":
+        healthModel!.question6 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q2_2":
+        healthModel!.question7 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q2_3":
+        healthModel!.question8 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q2_4":
+        healthModel!.question9 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q2_5":
+        healthModel!.question10 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q2_6":
+        healthModel!.question11 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q2_7":
+        healthModel!.question12 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q2_8":
+        healthModel!.question13 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q2_9":
+        healthModel!.question14 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q4_1":
+        healthModel!.question15 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q4_2":
+        healthModel!.question16 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q4_3":
+        healthModel!.question17 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "q4_4":
+        healthModel!.question18 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      // case "initial_3":
+      //   setState(() {
+      //     goal3InitialAnswer = value;
+      //   });
+      //   HealthModel healthmodel =
+      //       Provider.of<CparaProvider>(context, listen: false).healthModel ??
+      //           HealthModel();
+      //   String overallQuestion5 = convertingRadioButtonOptionsToString(value);
+      //   Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
+      //       healthmodel.copyWith(overallQuestion5: overallQuestion5));
+      //   break;
+      // case "initial_4":
+      //   setState(() {
+      //     goal4Initial = value;
+      //   });
+
+      //   if (value == RadioButtonOptions.no) {
+      //     updateQuestion("q4_1", RadioButtonOptions.yes);
+      //     updateQuestion("q4_2", RadioButtonOptions.yes);
+      //     updateQuestion("q4_3", RadioButtonOptions.yes);
+      //     updateQuestion("q4_4", RadioButtonOptions.yes);
+      //     setState(() {
+      //       childLessThan2Initial = RadioButtonOptions.yes;
+      //     });
+      //   }
+      //   if (value == RadioButtonOptions.yes) {
+      //     updateQuestion("q4_1", null);
+      //     updateQuestion("q4_2", null);
+      //     updateQuestion("q4_3", null);
+      //     updateQuestion("q4_4", null);
+      //     setState(() {
+      //       childLessThan2Initial = null;
+      //     });
+      //   }
+
+      //   HealthModel healthmodel =
+      //       Provider.of<CparaProvider>(context, listen: false).healthModel ??
+      //           HealthModel();
+      //   String overallQuestion6 = convertingRadioButtonOptionsToString(value);
+      //   Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
+      //       healthmodel.copyWith(overallQuestion6: overallQuestion6));
+
+      //   break;
+      // case "initial_2":
+      //   setState(() {
+      //     goal2InitialAnswer = value;
+      //   });
+      //   if (value == RadioButtonOptions.yes) {
+      //     updateQuestion("q2_1", null);
+      //     updateQuestion("q2_2", null);
+      //     updateQuestion("q2_3", null);
+      //     updateQuestion("q2_4", null);
+      //     updateQuestion("q2_5", null);
+      //     updateQuestion("q2_6", null);
+      //     updateQuestion("q2_7", null);
+      //     updateQuestion("q2_8", null);
+      //     updateQuestion("q2_9", null);
+      //     setState(() {
+      //       suppresedPast12Initial = null;
+      //       documentedChildrenSuppressedInitial = null;
+      //       noDocumentCaregiverAppointmentInitial = null;
+      //     });
+      //   }
+
+      //   if (value == RadioButtonOptions.no) {
+      //     updateQuestion("q2_1", RadioButtonOptions.yes);
+      //     updateQuestion("q2_2", RadioButtonOptions.yes);
+      //     updateQuestion("q2_3", RadioButtonOptions.yes);
+      //     updateQuestion("q2_4", RadioButtonOptions.yes);
+      //     updateQuestion("q2_5", RadioButtonOptions.yes);
+      //     updateQuestion("q2_6", RadioButtonOptions.yes);
+      //     updateQuestion("q2_7", RadioButtonOptions.yes);
+      //     updateQuestion("q2_8", RadioButtonOptions.yes);
+      //     updateQuestion("q2_9", RadioButtonOptions.yes);
+      //     setState(() {
+      //       suppresedPast12Initial = RadioButtonOptions.yes;
+      //       documentedChildrenSuppressedInitial = RadioButtonOptions.yes;
+      //       noDocumentCaregiverAppointmentInitial = RadioButtonOptions.yes;
+      //     });
+      //   }
+      //   HealthModel healthmodel =
+      //       Provider.of<CparaProvider>(context, listen: false).healthModel ??
+      //           HealthModel();
+      //   String overallQuestion1 = convertingRadioButtonOptionsToString(value);
+      //   Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
+      //       healthmodel.copyWith(overallQuestion1: overallQuestion1));
+      //   break;
+      // case "initial2_1":
+      //   setState(() {
+      //     suppresedPast12Initial = value;
+      //   });
+      //   if (value == RadioButtonOptions.yes) {
+      //     updateQuestion("q2_1", null);
+      //     updateQuestion("q2_2", null);
+      //     updateQuestion("q2_3", null);
+      //   }
+
+      //   if (value == RadioButtonOptions.no) {
+      //     updateQuestion("q2_1", RadioButtonOptions.yes);
+      //     updateQuestion("q2_2", RadioButtonOptions.yes);
+      //     updateQuestion("q2_3", RadioButtonOptions.yes);
+      //   }
+      //   HealthModel healthmodel =
+      //       Provider.of<CparaProvider>(context, listen: false).healthModel ??
+      //           HealthModel();
+      //   String overallQuestion2 = convertingRadioButtonOptionsToString(value);
+      //   Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
+      //       healthmodel.copyWith(overallQuestion2: overallQuestion2));
+      //   break;
+      // case "initial2_4":
+      //   setState(() {
+      //     documentedChildrenSuppressedInitial = value;
+      //   });
+      //   if (value == RadioButtonOptions.yes) {
+      //     updateQuestion("q2_4", null);
+      //     updateQuestion("q2_5", null);
+      //     updateQuestion("q2_6", null);
+      //   }
+
+      //   if (value == RadioButtonOptions.no) {
+      //     updateQuestion("q2_4", RadioButtonOptions.yes);
+      //     updateQuestion("q2_5", RadioButtonOptions.yes);
+      //     updateQuestion("q2_6", RadioButtonOptions.yes);
+      //   }
+
+      //   HealthModel healthmodel =
+      //       Provider.of<CparaProvider>(context, listen: false).healthModel ??
+      //           HealthModel();
+      //   String overallQuestion3 = convertingRadioButtonOptionsToString(value);
+      //   Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
+      //       healthmodel.copyWith(overallQuestion3: overallQuestion3));
+      //   break;
+      // case "initial2_7":
+      //   setState(() {
+      //     noDocumentCaregiverAppointmentInitial = value;
+      //   });
+      //   if (value == RadioButtonOptions.yes) {
+      //     updateQuestion("q2_7", null);
+      //     updateQuestion("q2_8", null);
+      //     updateQuestion("q2_9", null);
+      //   }
+
+      //   if (value == RadioButtonOptions.no) {
+      //     updateQuestion("q2_7", RadioButtonOptions.yes);
+      //     updateQuestion("q2_8", RadioButtonOptions.yes);
+      //     updateQuestion("q2_9", RadioButtonOptions.yes);
+      //   }
+
+      //   HealthModel healthmodel =
+      //       Provider.of<CparaProvider>(context, listen: false).healthModel ??
+      //           HealthModel();
+      //   String overallQuestion4 = convertingRadioButtonOptionsToString(value);
+      //   Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
+      //       healthmodel.copyWith(overallQuestion4: overallQuestion4));
+
+      //   break;
+      // case "initial4_4":
+      //   setState(() {
+      //     childLessThan2Initial = value;
+      //   });
+
+      //   if (value == RadioButtonOptions.no) {
+      //     updateQuestion("q4_4", RadioButtonOptions.yes);
+      //   }
+      //   if (value == RadioButtonOptions.yes) {
+      //     updateQuestion("q4_4", null);
+      //   }
+      //   HealthModel healthmodel =
+      //       Provider.of<CparaProvider>(context, listen: false).healthModel ??
+      //           HealthModel();
+      //   String overallQuestion7 = convertingRadioButtonOptionsToString(value);
+      //   Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
+      //       healthmodel.copyWith(overallQuestion7: overallQuestion7));
+      //   break;
+      default:
+        break;
+    }
+  }
 
   // Calculate schooled benchmark
   int schooledBenchmark() {
@@ -89,9 +346,15 @@ class CparaProvider extends ChangeNotifier {
     }
 
 // Health BenchMark 3 result
-    if (overallChildrenBenchmark(childrenOptions: firstListOfQuestions).toLowerCase() == "yes" &&
-        overallChildrenBenchmark(childrenOptions: secondListOfQuestions).toLowerCase() == "yes" &&
-        overallChildrenBenchmark(childrenOptions: thirdListOfQuestions).toLowerCase() == "yes") {
+    if (overallChildrenBenchmark(childrenOptions: firstListOfQuestions)
+                .toLowerCase() ==
+            "yes" &&
+        overallChildrenBenchmark(childrenOptions: secondListOfQuestions)
+                .toLowerCase() ==
+            "yes" &&
+        overallChildrenBenchmark(childrenOptions: thirdListOfQuestions)
+                .toLowerCase() ==
+            "yes") {
       benchmark3 = 1;
       print("Benchmark 3: $benchmark3");
     } else {
