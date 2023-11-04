@@ -132,7 +132,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                     context
                                         .read<CparaProvider>()
                                         .clearCparaProvider();
-
                                   }
                                   _scrollController.animateTo(
                                     0,
@@ -258,7 +257,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                         context
                                             .read<StatsProvider>()
                                             .updateCparaFormStats();
-                                       //navigate back
+                                        //navigate back
                                         Get.snackbar(
                                           'Success',
                                           'Successfully saved CPARA form',

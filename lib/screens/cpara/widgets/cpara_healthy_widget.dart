@@ -524,9 +524,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   // Provider.of<CparaProvider>(context, listen: false)
                   //     .updateHealthModel(
                   //         healthmodel.copyWith(childrenQuestions: newChildren));
-                  model.updateHealthModel(
-                    model.healthModel!.copyWith(childrenQuestions: newChildren)
-                  );
+                  model.updateHealthModel(model.healthModel!
+                      .copyWith(childrenQuestions: newChildren));
 
                   setState(() {
                     children = newChildren;
@@ -554,9 +553,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   // Provider.of<CparaProvider>(context, listen: false)
                   //     .updateHealthModel(
                   //         healthmodel.copyWith(childrenQuestions: newChildren));
-                  model.updateHealthModel(
-                    model.healthModel!.copyWith(childrenQuestions: newChildren)
-                  );
+                  model.updateHealthModel(model.healthModel!
+                      .copyWith(childrenQuestions: newChildren));
 
                   setState(() {
                     children = newChildren;
@@ -687,9 +685,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                             // Provider.of<CparaProvider>(context, listen: false)
                             //     .updateHealthModel(healthmodel.copyWith(
                             //         childrenQuestions: newChildren));
-                            model.updateHealthModel(
-                              model.healthModel!.copyWith(childrenQuestions: newChildren)
-                            );
+                            model.updateHealthModel(model.healthModel!
+                                .copyWith(childrenQuestions: newChildren));
 
                             setState(() {
                               children = newChildren;
@@ -721,9 +718,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                             // Provider.of<CparaProvider>(context, listen: false)
                             //     .updateHealthModel(healthmodel.copyWith(
                             //         childrenQuestions: newChildren));
-                            model.updateHealthModel(
-                              model.healthModel!.copyWith(childrenQuestions: newChildren)
-                            );
+                            model.updateHealthModel(model.healthModel!
+                                .copyWith(childrenQuestions: newChildren));
 
                             setState(() {
                               children = newChildren;
@@ -755,9 +751,8 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                             // Provider.of<CparaProvider>(context, listen: false)
                             //     .updateHealthModel(healthmodel.copyWith(
                             //         childrenQuestions: newChildren));
-                            model.updateHealthModel(
-                              model.healthModel!.copyWith(childrenQuestions: newChildren)
-                            );
+                            model.updateHealthModel(model.healthModel!
+                                .copyWith(childrenQuestions: newChildren));
 
                             setState(() {
                               children = newChildren;
@@ -851,7 +846,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                       childLessThan2Initial == RadioButtonOptions.no,
                   doesSectionDependOnInitialAnswer: true,
                   updateInitialQuestion: (RadioButtonOptions? value) {},
-                      // updateQuestion("initial4_4", value),
+                  // updateQuestion("initial4_4", value),
                   initalQuestion:
                       "Is there child < 2 years in the household ? ",
                   isNAInIntial: false,

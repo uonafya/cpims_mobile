@@ -14,7 +14,7 @@ import '../../../Models/case_load_model.dart';
 class CparaProvider extends ChangeNotifier {
   CparaModel? cparaModel;
   DetailModel? detailModel;
-  HealthModel? healthModel;
+  HealthModel? _healthModel;
   StableModel? stableModel;
   SafeModel? safeModel;
   SchooledModel? schooledModel;
@@ -22,80 +22,90 @@ class CparaProvider extends ChangeNotifier {
   CaseLoadModel? caseLoadModel;
   List<CaseLoadModel> children = [];
 
+  // A getter for health model that will handle if _healthModel is null
+  HealthModel get healthModel {
+    if (_healthModel == null) {
+      _healthModel = HealthModel();
+      notifyListeners();
+    }
+    return _healthModel!;
+  }
+
   // Function to update health model depending on the question being updated
   void updateHealthModelQuestion(
       String questionCode, RadioButtonOptions? value) {
+    _healthModel ??= HealthModel();
     switch (questionCode) {
       case "q1_1":
-        healthModel!.question1 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question1 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q1_2":
-        healthModel!.question2 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question2 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q1_3":
-        healthModel!.question3 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question3 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q1_4":
-        healthModel!.question4 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question4 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q1_5":
-        healthModel!.question5 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question5 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q2_1":
-        healthModel!.question6 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question6 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q2_2":
-        healthModel!.question7 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question7 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q2_3":
-        healthModel!.question8 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question8 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q2_4":
-        healthModel!.question9 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question9 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q2_5":
-        healthModel!.question10 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question10 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q2_6":
-        healthModel!.question11 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question11 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q2_7":
-        healthModel!.question12 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question12 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q2_8":
-        healthModel!.question13 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question13 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q2_9":
-        healthModel!.question14 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question14 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q4_1":
-        healthModel!.question15 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question15 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q4_2":
-        healthModel!.question16 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question16 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q4_3":
-        healthModel!.question17 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question17 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       case "q4_4":
-        healthModel!.question18 = convertingRadioButtonOptionsToString(value);
+        _healthModel!.question18 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
       // case "initial_3":
@@ -306,7 +316,7 @@ class CparaProvider extends ChangeNotifier {
     List<String> thirdListOfQuestions = [];
 
     // enos implementation to avoid early initialization
-    for (HealthChild child in healthModel?.childrenQuestions ?? []) {
+    for (HealthChild child in _healthModel?.childrenQuestions ?? []) {
       // childQuestions.add(child.question1 ?? "No");
       firstListOfQuestions.add(child.question1);
       secondListOfQuestions.add(child.question2);
@@ -314,11 +324,14 @@ class CparaProvider extends ChangeNotifier {
     }
 
 // Health BenchMark 1 result
-    if (healthModel?.question1 == "Yes" &&
-        (healthModel?.question2 == "Yes" || healthModel?.question2 == "N/A") &&
-        (healthModel?.question3 == "Yes" || healthModel?.question3 == "N/A") &&
-        healthModel?.question4 == "Yes" &&
-        (healthModel?.question5 == "Yes" || healthModel?.question5 == "N/A")) {
+    if (_healthModel?.question1 == "Yes" &&
+        (_healthModel?.question2 == "Yes" ||
+            _healthModel?.question2 == "N/A") &&
+        (_healthModel?.question3 == "Yes" ||
+            _healthModel?.question3 == "N/A") &&
+        _healthModel?.question4 == "Yes" &&
+        (_healthModel?.question5 == "Yes" ||
+            _healthModel?.question5 == "N/A")) {
       benchmark1 = 1;
       print("Benchmark 1: $benchmark1");
     } else {
@@ -327,17 +340,18 @@ class CparaProvider extends ChangeNotifier {
     }
 
 // Health BenchMark 2 result
-    if (healthModel?.question6 == "Yes" &&
-        (healthModel?.question7 == "Yes" || healthModel?.question7 == "N/A") &&
-        healthModel?.question8 == "Yes" &&
-        healthModel?.question9 == "Yes" &&
-        (healthModel?.question10 == "Yes" ||
-            healthModel?.question10 == "N/A") &&
-        healthModel?.question11 == "Yes" &&
-        healthModel?.question12 == "Yes" &&
-        (healthModel?.question13 == "Yes" ||
-            healthModel?.question13 == "N/A") &&
-        healthModel?.question14 == "Yes") {
+    if (_healthModel?.question6 == "Yes" &&
+        (_healthModel?.question7 == "Yes" ||
+            _healthModel?.question7 == "N/A") &&
+        _healthModel?.question8 == "Yes" &&
+        _healthModel?.question9 == "Yes" &&
+        (_healthModel?.question10 == "Yes" ||
+            _healthModel?.question10 == "N/A") &&
+        _healthModel?.question11 == "Yes" &&
+        _healthModel?.question12 == "Yes" &&
+        (_healthModel?.question13 == "Yes" ||
+            _healthModel?.question13 == "N/A") &&
+        _healthModel?.question14 == "Yes") {
       benchmark2 = 1;
       print("Benchmark 2: $benchmark2");
     } else {
@@ -363,11 +377,11 @@ class CparaProvider extends ChangeNotifier {
     }
 
     // Health BenchMark 1 result
-    if (healthModel?.question15 == "Yes" &&
-        healthModel?.question16 == "Yes" &&
-        (healthModel?.question17 == "N/A" ||
-            healthModel?.question17 == "Yes") &&
-        healthModel?.question18 == "Yes") {
+    if (_healthModel?.question15 == "Yes" &&
+        _healthModel?.question16 == "Yes" &&
+        (_healthModel?.question17 == "N/A" ||
+            _healthModel?.question17 == "Yes") &&
+        _healthModel?.question18 == "Yes") {
       benchmark4 = 1;
       print("Benchmark 4: $benchmark4");
     } else {
@@ -483,7 +497,7 @@ class CparaProvider extends ChangeNotifier {
 
   // update health model
   void updateHealthModel(HealthModel healthModel) {
-    this.healthModel = healthModel;
+    _healthModel = healthModel;
     notifyListeners();
   }
 
@@ -527,7 +541,7 @@ class CparaProvider extends ChangeNotifier {
   void clearCparaProvider() {
     cparaModel = null;
     detailModel = null;
-    healthModel = null;
+    _healthModel = null;
     stableModel = null;
     safeModel = null;
     schooledModel = null;
