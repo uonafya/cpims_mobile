@@ -506,12 +506,10 @@ class _HomepageState extends State<Homepage> {
     });
 
     if (noFormsToSync) {
-      Get.snackbar(
-        'Info',
-        'No Form1A and Form1B forms to sync',
-        backgroundColor: Colors.orange,
-        colorText: Colors.black,
-      );
+      Get.snackbar('Info', 'No Form1A and Form1B forms to sync',
+          backgroundColor: Colors.orange,
+          colorText: Colors.black,
+          snackPosition: SnackPosition.BOTTOM);
     }
     if (mounted) {
       ScaffoldMessenger.of(context)

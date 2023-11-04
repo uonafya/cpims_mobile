@@ -12,6 +12,7 @@ import 'package:cpims_mobile/screens/homepage/provider/stats_provider.dart';
 import 'package:cpims_mobile/screens/initial_loader.dart';
 import 'package:cpims_mobile/screens/splash_screen.dart';
 import 'package:cpims_mobile/theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
@@ -66,10 +67,9 @@ class _CPIMSState extends State<CPIMS> {
       builder: (context, child) {
         return GetMaterialApp(
           title: 'CPIMS',
-          debugShowCheckedModeBanner: false,
+          debugShowCheckedModeBanner: kDebugMode,
           theme: appTheme(),
-          home:
-          Builder(
+          home: Builder(
             builder: (context) {
               return FutureBuilder(
                 future: intialSetup(context),
