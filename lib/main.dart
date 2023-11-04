@@ -1,6 +1,7 @@
 import 'package:cpims_mobile/providers/case_plan_provider.dart';
 import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/providers/form1b_provider.dart';
+import 'package:cpims_mobile/providers/hiv_management_form_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
@@ -42,6 +43,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => StatsProvider()),
         ChangeNotifierProvider(create: (_) => Form1AProviderNew()),
         ChangeNotifierProvider(create: (_) => HIVAssessmentProvider()),
+        ChangeNotifierProvider(create: (_) => HIVManagementFormProvider()),
       ],
       child: const CPIMS(),
     ),

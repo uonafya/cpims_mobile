@@ -57,7 +57,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   @override
   void initState() {
     super.initState();
-    List<CaseLoadModel> models = context.read<CparaProvider>().children ?? [];
+    List<CaseLoadModel> models = context.read<CparaProvider>().children;
     // Get instance of model from provider
     HealthModel healthModel =
         context.read<CparaProvider>().healthModel ?? HealthModel();

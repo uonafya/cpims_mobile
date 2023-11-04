@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
@@ -19,7 +20,6 @@ import '../screens/forms/form1b/utils/MasterServicesForm1bModel.dart';
 import '../screens/forms/form1b/utils/SafeForm1bModel.dart';
 import '../screens/forms/form1b/utils/StableForm1bModel.dart';
 import 'connection_provider.dart';
-import 'db_provider.dart';
 
 class Form1bProvider extends ChangeNotifier {
   final HealthFormData _formData = HealthFormData(
@@ -129,7 +129,7 @@ class Form1bProvider extends ChangeNotifier {
     List<Form1ServicesModel> servicesList = [];
 
     for (MasterServicesFormData masterFormData
-        in finalServicesFormData.services ?? []) {
+        in finalServicesFormData.services) {
       Form1ServicesModel entry = Form1ServicesModel(
           domainId: masterFormData.domainId,
           serviceId: masterFormData.selectedServiceId);
@@ -145,14 +145,18 @@ class Form1bProvider extends ChangeNotifier {
     }
 
     Form1DataModel toDbData = Form1DataModel(
-        ovcCpimsId: finalServicesFormData.ovc_cpims_id,
-        date_of_event: finalServicesFormData.date_of_event,
-        services: servicesList,
-        criticalEvents: criticalEventsList,
+      ovcCpimsId: finalServicesFormData.ovc_cpims_id,
+      date_of_event: finalServicesFormData.date_of_event,
+      services: servicesList,
+      criticalEvents: criticalEventsList,
     );
     String data = jsonEncode(toDbData);
-    print("The json data for form 1 b is $data");
-    print("form1b payload:==========>$criticalEventsList");
+    if (kDebugMode) {
+      print("The json data for form 1 b is $data");
+    }
+    if (kDebugMode) {
+      print("form1b payload:==========>$criticalEventsList");
+    }
 
     bool isFormSaved = await Form1Service.saveFormLocal("form1b", toDbData);
     if (isFormSaved == true) {
@@ -232,10 +236,14 @@ class Form1bProvider extends ChangeNotifier {
 
       form1bFetchedData = updatedForm1Rows;
 
-      print(form1bFetchedData);
+      if (kDebugMode) {
+        print(form1bFetchedData);
+      }
       notifyListeners();
     } catch (e) {
-      print("Error fetching form1b data: $e");
+      if (kDebugMode) {
+        print("Error fetching form1b data: $e");
+      }
     }
   }
 
@@ -263,7 +271,6 @@ class Form1bProvider extends ChangeNotifier {
 
   Future<void> handleSubmitToServer(
       String data, Form1DataModel formOneBdata) async {
-    final localDb = LocalDb.instance;
     var prefs = await SharedPreferences.getInstance();
     var accessToken = prefs.getString('access');
     String bearerAuth = "Bearer $accessToken";
@@ -284,7 +291,9 @@ class Form1bProvider extends ChangeNotifier {
         final formOneApiResponse =
             await dio.post(apiEndpoint, data: data, options: options);
         if (formOneApiResponse.statusCode == 200) {
-          print("Data posted  successfully to server is $data");
+          if (kDebugMode) {
+            print("Data posted  successfully to server is $data");
+          }
           Get.snackbar(
             'Success',
             'Form 1B submitted to the server successfully',
@@ -322,7 +331,9 @@ class Form1bProvider extends ChangeNotifier {
         }
       }
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 }

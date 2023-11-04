@@ -4,6 +4,7 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/screens/cpara/cpara_util.dart';
 import 'package:cpims_mobile/screens/cpara/model/db_model.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,7 +26,6 @@ Future<List<CPARADatabase>> getUnsyncedForms(Database db) async {
     return forms;
   } catch (err) {
     throw ("Could Not Get Unsynced Forms ${err.toString()}");
-    print(err.toString());
   }
 }
 
@@ -57,17 +57,23 @@ Future<CPARADatabase> getFormFromDB(int formID, Database? db) async {
     form.cpara_form_id = formID;
     var ovcpmisID = fetchResult1[0]['houseHoldID'];
     form.ovc_cpims_id = ovcpmisID;
-    print("OVCPMIS ID from many: $ovcpmisID");
+    if (kDebugMode) {
+      print("OVCPMIS ID from many: $ovcpmisID");
+    }
     var dateOfEvent2 = fetchResult1[0]['date'];
     form.date_of_event = dateOfEvent2;
-    print("Date of event from many: $dateOfEvent2");
+    if (kDebugMode) {
+      print("Date of event from many: $dateOfEvent2");
+    }
     List<CPARADatabaseQuestions> questions = [];
     for (var i in fetchResult1) {
       questions.add(CPARADatabaseQuestions(
           question_code: i['questionID'], answer_id: i['answer'] ?? ""));
     }
     form.questions = questions;
-    print("Questions from many: $questions");
+    if (kDebugMode) {
+      print("Questions from many: $questions");
+    }
 
     // Get children questions
     List<Map<String, dynamic>> fetchResult2 = await db.rawQuery(
@@ -96,7 +102,11 @@ Future<void> purgeForm(int formID, Database db) async {
 
     // Form
     await db.rawDelete("DELETE FROM Form WHERE id = ?", [formID]);
-  } catch (err) {}
+  } catch (err) {
+    if (kDebugMode) {
+      print(err);
+    }
+  }
 }
 
 //update form date time for sync
@@ -248,7 +258,9 @@ Future<void> singleCparaFormSubmission(
   }
   debugPrint("${response.statusCode}");
   debugPrint(response.data.toString());
-  print("Data sent to server was $cparaMapData");
+  if (kDebugMode) {
+    print("Data sent to server was $cparaMapData");
+  }
 }
 
 void fetchAndPostToServerOvcSubpopulationData() async {

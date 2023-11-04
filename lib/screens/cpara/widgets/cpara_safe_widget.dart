@@ -649,8 +649,10 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 // Benchmak 6 results
         BenchMarkQuestion(
             groupValue: allShouldBeOnlyYes([
-              convertingStringToRadioButtonOptions(context.read<CparaProvider>().safeModel?.question3 ?? ""),
-              convertingStringToRadioButtonOptions(context.read<CparaProvider>().safeModel?.question4 ?? ""),
+              convertingStringToRadioButtonOptions(
+                  context.read<CparaProvider>().safeModel?.question3 ?? ""),
+              convertingStringToRadioButtonOptions(
+                  context.read<CparaProvider>().safeModel?.question4 ?? ""),
             ], "message"),
             benchmark_question: "Has the household achieved this benchmarks?",
             selectedOption: (value) {}),

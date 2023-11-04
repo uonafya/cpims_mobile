@@ -9,6 +9,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
@@ -50,7 +51,7 @@ class CheckboxForm extends StatefulWidget {
   const CheckboxForm({Key? key, required this.caseLoadModel}) : super(key: key);
 
   @override
-  _CheckboxFormState createState() => _CheckboxFormState();
+  State<CheckboxForm> createState() => _CheckboxFormState();
 }
 
 class _CheckboxFormState extends State<CheckboxForm> {
@@ -118,7 +119,9 @@ class _CheckboxFormState extends State<CheckboxForm> {
               //   label: 'Date of Assessment',
               //   enabled: true,
               //   onDateSelected: (date) {
-              //     print('Date selected: $date');
+                  // if (kDebugMode) {
+                //     print('Date selected: $date');
+                  // }
               //     setState(() {
               //       selectedDate = date;
               //     });
@@ -162,7 +165,9 @@ class _CheckboxFormState extends State<CheckboxForm> {
       await localDb.insertOvcSubpopulationData(uuid,
           widget.caseLoadModel.cpimsId!, dateOfAssessment!, selectedQuestions);
       if (mounted) {
+        if (context.mounted) {
         Navigator.pop(context);
+      }
       }
     } catch (error) {
       if (currentContext.mounted) {

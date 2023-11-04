@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:cpims_mobile/widgets/custom_date_picker.dart';
@@ -30,7 +31,12 @@ class ARTTherapyInfoWidget extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        const CustomDatePicker(),
+        DateTextField(
+          label: 'Date confirmed positive',
+          enabled: true,
+          onDateSelected: (date) {},
+          identifier: DateTextFieldIdentifier.dateOfAssessment,
+        ),
         const SizedBox(
           height: 20,
         ),

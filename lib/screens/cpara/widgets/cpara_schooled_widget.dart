@@ -514,25 +514,25 @@ class _FinalBenchMarkState extends State<FinalBenchMark> {
         columns: const [
           DataColumn(
               label: Expanded(
-                child: FittedBox(
-                  child: Text('Domain',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                ),
-              )),
+            child: FittedBox(
+              child: Text('Domain',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            ),
+          )),
           DataColumn(
               label: Expanded(
-                child: FittedBox(
-                  child: Text('Max Score',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                ),
-              )),
+            child: FittedBox(
+              child: Text('Max Score',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            ),
+          )),
           DataColumn(
               label: Expanded(
-                child: FittedBox(
-                  child: Text('HH Score',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                ),
-              )),
+            child: FittedBox(
+              child: Text('HH Score',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            ),
+          )),
         ],
         rows: [
           DataRow(cells: [
@@ -630,7 +630,7 @@ class _FinalBenchMarkState extends State<FinalBenchMark> {
             ],
           ),
           DataRow(
-           color: MaterialStateProperty.resolveWith<Color?>(
+            color: MaterialStateProperty.resolveWith<Color?>(
               (Set<MaterialState> states) {
                 if (states.contains(MaterialState.selected)) {
                   // Return the color for selected state.
