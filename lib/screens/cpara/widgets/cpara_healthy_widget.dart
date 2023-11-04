@@ -119,61 +119,6 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
     childLessThan2Initial = healthModel.overallQuestion7 == null
         ? childLessThan2Initial
         : convertingStringToRadioButtonOptions(healthModel.overallQuestion7!);
-    //specific questions
-    q1_1ChildrenHivTested = healthModel.question1 == null
-        ? q1_1ChildrenHivTested
-        : convertingStringToRadioButtonOptions(healthModel.question1!);
-    q1_2childrenUnknownStatus = healthModel.question2 == null
-        ? q1_2childrenUnknownStatus
-        : convertingStringToRadioButtonOptions(healthModel.question2!);
-    q1_3InfantExposedHIV = healthModel.question3 == null
-        ? q1_3InfantExposedHIV
-        : convertingStringToRadioButtonOptions(healthModel.question3!);
-    q1_4HivCaregiverUnknown = healthModel.question4 == null
-        ? q1_4HivCaregiverUnknown
-        : convertingStringToRadioButtonOptions(healthModel.question4!);
-    q1_5CaregiverSceened = healthModel.question5 == null
-        ? q1_5CaregiverSceened
-        : convertingStringToRadioButtonOptions(healthModel.question5!);
-    q2_1SuppresedPast12 = healthModel.question6 == null
-        ? q2_1SuppresedPast12
-        : convertingStringToRadioButtonOptions(healthModel.question6!);
-    q2_2ChildrenRegularAttendTreatment = healthModel.question7 == null
-        ? q2_2ChildrenRegularAttendTreatment
-        : convertingStringToRadioButtonOptions(healthModel.question7!);
-    q2_3ChildrenNotMissDose = healthModel.question8 == null
-        ? q2_3ChildrenNotMissDose
-        : convertingStringToRadioButtonOptions(healthModel.question8!);
-    q2_4DocumentedChildrenSuppressed = healthModel.question9 == null
-        ? q2_4DocumentedChildrenSuppressed
-        : convertingStringToRadioButtonOptions(healthModel.question9!);
-    q2_5NoDocumentAttendTreatment = healthModel.question10 == null
-        ? q2_5NoDocumentAttendTreatment
-        : convertingStringToRadioButtonOptions(healthModel.question10!);
-    q2_6AdolocentRegularMedicate = healthModel.question11 == null
-        ? q2_6AdolocentRegularMedicate
-        : convertingStringToRadioButtonOptions(healthModel.question11!);
-    q2_7HIVCaregiverSuppress = healthModel.question12 == null
-        ? q2_7HIVCaregiverSuppress
-        : convertingStringToRadioButtonOptions(healthModel.question12!);
-    q2_8NoDocumentCaregiverAppointment = healthModel.question13 == null
-        ? q2_8NoDocumentCaregiverAppointment
-        : convertingStringToRadioButtonOptions(healthModel.question13!);
-    q2_9CaregiverRegularlyMedicate = healthModel.question14 == null
-        ? q2_9CaregiverRegularlyMedicate
-        : convertingStringToRadioButtonOptions(healthModel.question14!);
-    q4_1BelowAge5MUAC = healthModel.question15 == null
-        ? q4_1BelowAge5MUAC
-        : convertingStringToRadioButtonOptions(healthModel.question15!);
-    q4_2Below5BipedalEdema = healthModel.question16 == null
-        ? q4_2Below5BipedalEdema
-        : convertingStringToRadioButtonOptions(healthModel.question16!);
-    q4_3MalnourishedTreated = healthModel.question17 == null
-        ? q4_3MalnourishedTreated
-        : convertingStringToRadioButtonOptions(healthModel.question17!);
-    q4_4Under2Immunized = healthModel.question18 == null
-        ? q4_4Under2Immunized
-        : convertingStringToRadioButtonOptions(healthModel.question18!);
   }
 
   void noChangeToRadio(RadioButtonOptions? val) {}
@@ -233,7 +178,710 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   Widget build(BuildContext context) {
     return Consumer<CparaProvider>(
       builder: (context, model, _) {
-        return Text("All is good!");
+        return StepsWrapper(
+          title: 'CPARA healthy widget',
+          children: [
+            // Healthy Goal 1
+            HealthyGoalBlock(
+              doesSectionDependOnInitialAnswer: false,
+              updateFinalFormRadio: noChangeToRadio,
+              showNAInFinalResult: false,
+              finalBlockQuestion: "Has the household achieved this benchmark?",
+              finalResult: allShouldBeYes([
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question1 ?? ""),
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question2 ?? ""),
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question3 ?? ""),
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question4 ?? ""),
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question5 ?? ""),
+              ], "Goal 1"),
+              // final result is yes if the values of question 1 to 4 is yes
+              descriptionHeading:
+                  "Healthy: Goal 1: Increase diagnosis of HIV infection",
+              descriptionText:
+                  "Benchmark 1: All children, adolescents, and caregivers in the household have known HIV status or a test is not required based on risk assessment",
+              descriptionSubText:
+                  "Caseworker is advised to refer to job aid about discussing sensitive topics for this section, if needed.",
+              sections: [
+                // Section 1.1 and 1.2
+                QuestionsSection(
+                  doesSectionDependOnInitialAnswer: false,
+                  isTopDividerThere: false,
+                  title: "HIV diagnosis for children",
+                  questions: [
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question1 ?? ""),
+                      isOptional: false,
+                      question:
+                          "1.1 Have all your children been tested for HIV and their HIV status known (HIV negative, positive) ?",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? val) =>
+                          model.updateHealthModelQuestion('q1_1', val),
+                    ),
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      isOptional: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question2 ?? ""),
+                      question:
+                          "1.2 For those with unknown HIV status, have they been screened for HIV risk and results showed test not required ?",
+                      isNAAvailable: true,
+                      updateRadioButton: (RadioButtonOptions? val) =>
+                          model.updateHealthModelQuestion('q1_2', val),
+                    ),
+                  ],
+                ),
+
+                // Section 1.3
+                QuestionsSection(
+                  doesSectionDependOnInitialAnswer: false,
+                  isTopDividerThere: false,
+                  title: "Early Infant Diagnosis",
+                  questions: [
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      isOptional: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question3 ?? ""),
+                      question:
+                          "1.3 If there is an infant Exposed to HIV (HEI), has the final HIV status been confirmed at 18 months or one week after cessation of breastfeeding, whichever comes later?",
+                      isNAAvailable: true,
+                      updateRadioButton: (RadioButtonOptions? val) =>
+                          model.updateHealthModelQuestion('q1_3', val),
+                    ),
+                  ],
+                ),
+                // Question 1.4 and 1.5
+                QuestionsSection(
+                  doesSectionDependOnInitialAnswer: false,
+                  isTopDividerThere: false,
+                  title: "HIV diagnosis for caregiver",
+                  questions: [
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      isOptional: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question4 ?? ""),
+                      question:
+                          "1.4 Is the HIV status of the caregiver known (positive, negative)?",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? val) =>
+                          model.updateHealthModelQuestion('q1_4', val),
+                    ),
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question5 ?? ""),
+                      isOptional: false,
+                      question:
+                          "1.5 For caregiver with unknown HIV status have they been screened for HIV risk and the results showing test not required?",
+                      isNAAvailable: true,
+                      updateRadioButton: (RadioButtonOptions? val) =>
+                          model.updateHealthModelQuestion('q1_5', val),
+                    ),
+                  ],
+                ),
+              ],
+              instructions:
+                  """(Adolescent must have tested HIV negative or screened for HIV risk and HIV test was not required in the last six months)""",
+            ),
+
+            // Healthy Goal 2
+            HealthyGoalBlock(
+              doesSectionDependOnInitialAnswer: true,
+              initalQuestion:
+                  "Is there anyone who is HIV positive in the Household ?",
+              isNAInIntial: false,
+              initalQuestionValue: goal2InitialAnswer,
+              updateInitialQuestion: (RadioButtonOptions? val) {
+                // updateQuestion(
+                //     "initial_2", val); // update the state of the question
+              },
+              finalBlockQuestion: "Has the household achieved this benchmark?",
+              showNAInFinalResult: false,
+              finalResult: allShouldBeYesOrNA([
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question6 ?? ""),
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question7 ?? ""),
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question8 ?? ""),
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question9 ?? ""),
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question10 ?? ""),
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question11 ?? ""),
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question12 ?? ""),
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question13 ?? ""),
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question14 ?? ""),
+              ], "Goal 2"),
+              // The final value is yes if all the answers are yes for questions 2.1 to 2.9
+              updateFinalFormRadio: noChangeToRadio,
+              descriptionHeading:
+                  "Healthy: Goal 2: Increase HIV treatment adherence, continuity of treatment and viral suppression",
+              descriptionText:
+                  "Benchmark 2: All HIV+ children, adolescents, and caregivers in the household with a viral load result documented in the medical record and/or laboratory information systems (LIS) have been virally suppressed for the last 12 months. All HIV+ children, adolescents, and caregivers in the household have adhered to treatment for 12 months after initiation of antiretroviral therapy",
+              descriptionSubText:
+                  "Note: The questions below apply to HHs with child/adolescent living with HIV and HIV positive caregivers (If the child/caregiver has not sustained viral load suppression for the past 12 months the benchmark is achieved if they are adhering to treatment for the last 12 months)",
+              sections: [
+                // Section 2.1 - 2.3
+                QuestionsSection(
+                  skipSection: goal2InitialAnswer == RadioButtonOptions.no ||
+                      suppresedPast12Initial == RadioButtonOptions.no,
+                  // skip questions when the answer to is anyone HIV postivie no
+                  doesSectionDependOnInitialAnswer: true,
+                  initalQuestion:
+                      "Is there a child 0 - 12 years who is HIV positive ?",
+                  initalQuestionValue: suppresedPast12Initial,
+                  updateInitialQuestion: (RadioButtonOptions? val) {},
+                  // updateQuestion("initial2_1", val),
+                  isNAInIntial: false,
+                  isTopDividerThere: false,
+                  title: "Children 0-12",
+                  skipSectionButShowInitial:
+                      suppresedPast12Initial == RadioButtonOptions.no &&
+                          goal2InitialAnswer == RadioButtonOptions.yes,
+                  questions: [
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question6 ?? ""),
+                      isOptional: false,
+                      question:
+                          "2.1 Have all HIV positive children on treatment with documented viral load results been suppressed in the past 12 months? ",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? val) =>
+                          model.updateHealthModelQuestion('q2_1', val),
+                    ),
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      isOptional: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question7 ?? ""),
+                      question:
+                          "2.2 For those with no documented viral load results; Have all the children living with HIV been attending their appointments regularly for the past 12 months (check CCC card to confirm adherence to treatment)",
+                      isNAAvailable: true,
+                      updateRadioButton: (RadioButtonOptions? val) =>
+                          model.updateHealthModelQuestion('q2_2', val),
+                    ),
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      isOptional: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question8 ?? ""),
+                      question:
+                          "2.3 Have all HIV+ children been regularly taking medication without missing doses for the past 12 months (reported by caregiver for the 0-12 years)?",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? val) =>
+                          model.updateHealthModelQuestion('q2_3', val),
+                    ),
+                  ],
+                ),
+
+                // Section 2.4 - 2.6
+                QuestionsSection(
+                  skipSection: goal2InitialAnswer == RadioButtonOptions.no ||
+                      documentedChildrenSuppressedInitial ==
+                          RadioButtonOptions.no,
+                  // skip questions when the answer to is anyone HIV postivie no
+                  doesSectionDependOnInitialAnswer: true,
+                  updateInitialQuestion: (RadioButtonOptions? value) {},
+                  // updateQuestion("initial2_4", value),
+                  isNAInIntial: false,
+                  initalQuestion:
+                      "Is there an adolescents or a child above 12 years who is HIV positive ? ",
+                  initalQuestionValue: documentedChildrenSuppressedInitial,
+                  isTopDividerThere: false,
+                  title: "Adolescents and children above 12 years",
+                  skipSectionButShowInitial:
+                      documentedChildrenSuppressedInitial ==
+                              RadioButtonOptions.no &&
+                          goal2InitialAnswer == RadioButtonOptions.yes,
+                  questions: [
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      isOptional: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question9 ?? ""),
+                      question:
+                          "2.4 Have all HIV positive children and adolescents (12years and above) on treatment with documented viral load results been suppressed in the past 12 months?",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? val) =>
+                          model.updateHealthModelQuestion('q2_4', val),
+                    ),
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      isOptional: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question10 ?? ""),
+                      question:
+                          "2.5 For those with no documented viral load results; Have all the children and adolescents (12years and above) living with HIV been attending their appointments regularly for the past 12 months (check CCC card to confirm adherence to treatment)",
+                      isNAAvailable: true,
+                      updateRadioButton: (RadioButtonOptions? val) =>
+                          model.updateHealthModelQuestion('q2_5', val),
+                    ),
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      isOptional: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question11 ?? ""),
+                      question:
+                          "2.6 Have all HIV+ adolescent been regularly taking medication without missing doses for the past 12 months? (Adolescents self-reported).",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? val) =>
+                          model.updateHealthModelQuestion('q2_6', val),
+                    ),
+                  ],
+                ),
+
+                // Question 2.7 to 2.9
+                QuestionsSection(
+                  skipSection: goal2InitialAnswer == RadioButtonOptions.no ||
+                      noDocumentCaregiverAppointmentInitial ==
+                          RadioButtonOptions.no,
+                  // skip questions when the answer to is anyone HIV postivie no
+                  doesSectionDependOnInitialAnswer: true,
+                  initalQuestion: "Is the caregiver HIV positive ? ",
+                  initalQuestionValue: noDocumentCaregiverAppointmentInitial,
+                  updateInitialQuestion: (RadioButtonOptions? value) {},
+                  // updateQuestion("initial2_7", value),
+                  isNAInIntial: false,
+                  isTopDividerThere: false,
+                  title: "Caregiver",
+                  skipSectionButShowInitial:
+                      noDocumentCaregiverAppointmentInitial ==
+                              RadioButtonOptions.no &&
+                          goal2InitialAnswer == RadioButtonOptions.yes,
+                  questions: [
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      isOptional: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question12 ?? ""),
+                      question:
+                          "2.7 Have all HIV positive caregivers on treatment with documented viral load results been suppressed in the past 12 months?",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? val) =>
+                          model.updateHealthModelQuestion('q2_7', val),
+                    ),
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question13 ?? ""),
+                      isOptional: false,
+                      question:
+                          "2.8 For those with no documented viral load results; Have the caregiver living with HIV been attending their appointments regularly for the past 12 months (check CCC card to confirm adherence to treatment)",
+                      isNAAvailable: true,
+                      updateRadioButton: (RadioButtonOptions? val) =>
+                          model.updateHealthModelQuestion('q2_8', val),
+                    ),
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question14 ?? ""),
+                      isOptional: false,
+                      question:
+                          "2.9 Have all HIV+ caregivers been regularly taking medication without missing doses for the past 12 months? (Caregiver self-reported).",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? val) =>
+                          model.updateHealthModelQuestion('q2_9', val),
+                    ),
+                  ],
+                ),
+              ],
+              instructions: "",
+            ),
+
+            // Healthy Block 3
+            HealthyGoalBlock(
+              doesSectionDependOnInitialAnswer: true,
+              initalQuestionValue: goal3InitialAnswer,
+              updateInitialQuestion: (RadioButtonOptions? val) {
+                // updateQuestion("initial_3", val);
+                // if val is yes set everything to null
+                if (val == RadioButtonOptions.yes) {
+                  List<HealthChild> newChildren = List.from(children);
+                  for (var i in newChildren) {
+                    i.question1 = convertingRadioButtonOptionsToString(null);
+                    i.question2 = convertingRadioButtonOptionsToString(null);
+                    i.question3 = convertingRadioButtonOptionsToString(null);
+                  }
+
+                  // HealthModel healthmodel =
+                  //     Provider.of<CparaProvider>(context, listen: false)
+                  //             .healthModel ??
+                  //         HealthModel();
+                  // Provider.of<CparaProvider>(context, listen: false)
+                  //     .updateHealthModel(
+                  //         healthmodel.copyWith(childrenQuestions: newChildren));
+                  model.updateHealthModel(
+                    model.healthModel!.copyWith(childrenQuestions: newChildren)
+                  );
+
+                  setState(() {
+                    children = newChildren;
+                    set3_1final = null;
+                    set3_2final = null;
+                    set3_3final = null;
+                  });
+                }
+                // if val is no set all children to yes
+                if (val == RadioButtonOptions.no) {
+                  List<HealthChild> newChildren = List.from(children);
+                  for (var i in newChildren) {
+                    i.question1 = convertingRadioButtonOptionsToString(
+                        RadioButtonOptions.yes);
+                    i.question2 = convertingRadioButtonOptionsToString(
+                        RadioButtonOptions.yes);
+                    i.question3 = convertingRadioButtonOptionsToString(
+                        RadioButtonOptions.yes);
+                  }
+
+                  // HealthModel healthmodel =
+                  //     Provider.of<CparaProvider>(context, listen: false)
+                  //             .healthModel ??
+                  //         HealthModel();
+                  // Provider.of<CparaProvider>(context, listen: false)
+                  //     .updateHealthModel(
+                  //         healthmodel.copyWith(childrenQuestions: newChildren));
+                  model.updateHealthModel(
+                    model.healthModel!.copyWith(childrenQuestions: newChildren)
+                  );
+
+                  setState(() {
+                    children = newChildren;
+                    set3_1final = RadioButtonOptions.na;
+                    set3_2final = RadioButtonOptions.na;
+                    set3_3final = RadioButtonOptions.na;
+                  });
+                }
+              },
+              isNAInIntial: false,
+              initalQuestion:
+                  "Does the household have adolescent girls and boys ?",
+              finalBlockQuestion: "Has the household achieved this benchmarks?",
+              showNAInFinalResult: false,
+              finalResult: allShouldBeYes(
+                  children
+                      .map((e) =>
+                          convertingStringToRadioButtonOptions(e.question1) ==
+                                      RadioButtonOptions.yes &&
+                                  convertingStringToRadioButtonOptions(
+                                          e.question2) ==
+                                      RadioButtonOptions.yes &&
+                                  convertingStringToRadioButtonOptions(
+                                          e.question3) ==
+                                      RadioButtonOptions.yes
+                              ? RadioButtonOptions.yes
+                              : RadioButtonOptions.no)
+                      .toList(),
+                  // for every child hivRisk, prevent and protect should be yes
+                  "Children Table"),
+              updateFinalFormRadio: noChangeToRadio,
+              sections: const [],
+              descriptionHeading:
+                  "Healthy: Goal 3: Reduce Risk of HIV Infection",
+              descriptionText:
+                  "Benchmark3: All adolescents 10-17 years of age in the household have key knowledge about preventing HIV infection Adolescents aged 10-17 can describe at least two HIV infection risks in their local community, can provide at least one example of how they can protect themselves against HIV risk, and can correctly describe the location of at least one place where HIV prevention support is available.",
+              descriptionSubText:
+                  "Note: For HHs with no adolescent girls and boys, skip questions below and select “N/A” for “Achievement of this benchmark.”",
+              table: HealthTable(
+                finalTableRow: FinalTableRow(
+                  isTopDividerThere: false,
+                  question: "Tick Yes if YES for all children",
+                  questions: [
+                    QuestionBlock(
+                      groupValue: set3_1final == null
+                          ? null
+                          : allShouldBeYes(
+                              children
+                                  .map((e) =>
+                                      convertingStringToRadioButtonOptions(
+                                          e.question1))
+                                  .toList(),
+                              "Tick yes if all q1"),
+                      // All hivRiskGroupValues should be yes
+                      isTopDividerThere: false,
+                      isOptional: false,
+                      question:
+                          "Can you tell me two behaviors that increase risk of HIV infection?",
+                      isNAAvailable: false,
+                      tempFix: true,
+                      updateRadioButton: (RadioButtonOptions? val) {
+                        debugPrint("$val tick if all true q1 form");
+                      },
+                    ),
+                    QuestionBlock(
+                      groupValue: set3_2final == null
+                          ? null
+                          : allShouldBeYes(
+                              children
+                                  .map((e) =>
+                                      convertingStringToRadioButtonOptions(
+                                          e.question2))
+                                  .toList(),
+                              "Tick Yes if all q2"),
+                      isTopDividerThere: false,
+                      isOptional: false,
+                      question:
+                          "Can you tell me two ways you can protect yourself/ others against HIV?",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? val) {},
+                      tempFix: true,
+                    ),
+                    QuestionBlock(
+                      groupValue: set3_3final == null
+                          ? null
+                          : allShouldBeYes(
+                              children
+                                  .map((e) =>
+                                      convertingStringToRadioButtonOptions(
+                                          e.question3))
+                                  .toList(),
+                              "Tick yes if all q3"),
+                      isTopDividerThere: false,
+                      isOptional: false,
+                      question:
+                          "Can you name two places in the community where you can access HIV prevention services?",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? val) {},
+                      tempFix: true,
+                    ),
+                  ],
+                ),
+                healthCards: [
+                  for (var i = 0; i < children.length; i++)
+                    HealthCard(
+                      childName: children[i].name,
+                      questions: [
+                        QuestionBlock(
+                          groupValue: convertingStringToRadioButtonOptions(
+                              children[i].question1),
+                          isTopDividerThere: false,
+                          isOptional: true,
+                          tempFix: true,
+                          question:
+                              "3.1 Can you tell me two behaviors that increase risk of HIV infection?",
+                          isNAAvailable: false,
+                          updateRadioButton: (RadioButtonOptions? val) {
+                            List<HealthChild> newChildren = List.from(children);
+
+                            newChildren[i].question1 =
+                                convertingRadioButtonOptionsToString(val);
+
+                            // HealthModel healthmodel =
+                            //     Provider.of<CparaProvider>(context,
+                            //                 listen: false)
+                            //             .healthModel ??
+                            //         HealthModel();
+                            // Provider.of<CparaProvider>(context, listen: false)
+                            //     .updateHealthModel(healthmodel.copyWith(
+                            //         childrenQuestions: newChildren));
+                            model.updateHealthModel(
+                              model.healthModel!.copyWith(childrenQuestions: newChildren)
+                            );
+
+                            setState(() {
+                              children = newChildren;
+                              set3_1final = RadioButtonOptions
+                                  .na; // changing incase previously set to null
+                            });
+                          },
+                        ),
+                        QuestionBlock(
+                          groupValue: convertingStringToRadioButtonOptions(
+                              children[i].question2),
+                          isTopDividerThere: false,
+                          isOptional: true,
+                          tempFix: true,
+                          question:
+                              "3.2 Can you tell me two ways you can protect yourself/ others against HIV?",
+                          isNAAvailable: false,
+                          updateRadioButton: (RadioButtonOptions? val) {
+                            List<HealthChild> newChildren = List.from(children);
+
+                            newChildren[i].question2 =
+                                convertingRadioButtonOptionsToString(val);
+
+                            // HealthModel healthmodel =
+                            //     Provider.of<CparaProvider>(context,
+                            //                 listen: false)
+                            //             .healthModel ??
+                            //         HealthModel();
+                            // Provider.of<CparaProvider>(context, listen: false)
+                            //     .updateHealthModel(healthmodel.copyWith(
+                            //         childrenQuestions: newChildren));
+                            model.updateHealthModel(
+                              model.healthModel!.copyWith(childrenQuestions: newChildren)
+                            );
+
+                            setState(() {
+                              children = newChildren;
+                              set3_2final = RadioButtonOptions
+                                  .na; // changing incase previously set to null
+                            });
+                          },
+                        ),
+                        QuestionBlock(
+                          groupValue: convertingStringToRadioButtonOptions(
+                              children[i].question3),
+                          isTopDividerThere: false,
+                          isOptional: true,
+                          tempFix: true,
+                          question:
+                              "3.3 Can you name two places in the community where you can access HIV prevention services?",
+                          isNAAvailable: false,
+                          updateRadioButton: (RadioButtonOptions? val) {
+                            List<HealthChild> newChildren = List.from(children);
+
+                            newChildren[i].question3 =
+                                convertingRadioButtonOptionsToString(val);
+
+                            // HealthModel healthmodel =
+                            //     Provider.of<CparaProvider>(context,
+                            //                 listen: false)
+                            //             .healthModel ??
+                            //         HealthModel();
+                            // Provider.of<CparaProvider>(context, listen: false)
+                            //     .updateHealthModel(healthmodel.copyWith(
+                            //         childrenQuestions: newChildren));
+                            model.updateHealthModel(
+                              model.healthModel!.copyWith(childrenQuestions: newChildren)
+                            );
+
+                            setState(() {
+                              children = newChildren;
+                              set3_3final = RadioButtonOptions
+                                  .na; // changing incase previously set to null
+                            });
+                          },
+                        ),
+                      ],
+                      isTopDividerThere: false,
+                    ),
+                ],
+              ),
+            ),
+
+            // Healthy Block 4
+            HealthyGoalBlock(
+              doesSectionDependOnInitialAnswer: true,
+              initalQuestionValue: goal4Initial,
+              updateInitialQuestion: (RadioButtonOptions? value) {
+                // updateQuestion("initial_4", value);
+              },
+              isNAInIntial: false,
+              initalQuestion: "Is there child < 5 years in the household ?",
+              finalBlockQuestion: "Has the household achieved this benchmarks?",
+              showNAInFinalResult: true,
+              finalResult: allShouldBeYes([
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question15 ?? ""),
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question16 ?? ""),
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question17 ?? ""),
+                convertingStringToRadioButtonOptions(
+                    model.healthModel!.question18 ?? ""),
+              ], "Group 4"),
+              // final answer should be yes if all questions from 4.1 to 4.4 are yes
+              updateFinalFormRadio: noChangeToRadio,
+              sections: [
+                // Question 4.1 to 4.3
+                QuestionsSection(
+                  doesSectionDependOnInitialAnswer: false,
+                  isTopDividerThere: false,
+                  skipSection: goal4Initial == RadioButtonOptions.no,
+                  // skip the section when there are no children < 5 years
+                  title: "",
+                  questions: [
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      isOptional: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question15 ?? ""),
+                      question:
+                          "4.1 Have all children below the age of five been assessed using MUAC and scored green?",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? value) =>
+                          model.updateHealthModelQuestion('q4_1', value),
+                    ),
+                    QuestionBlock(
+                      isTopDividerThere: true,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question16 ?? ""),
+                      isOptional: false,
+                      question:
+                          "4.2 Have all the children below five years showed no signs of bipedal edema (e.g. Pressure applied on top of both feet for three seconds and did not leave a pit)?",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? value) =>
+                          model.updateHealthModelQuestion('q4_2', value),
+                    ),
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question17 ?? ""),
+                      warningText:
+                          "NB: Score YES if none in the HH has ever been previously malnourished NB-Score YES if none in the HH has ever been previously malnourished *",
+                      isOptional: false,
+                      question:
+                          "4.3 Have all the children previously identified as malnourished been treated and has a Z score of >-2? (Confirm with clinical as appropriate)",
+                      isNAAvailable: true,
+                      updateRadioButton: (RadioButtonOptions? value) =>
+                          model.updateHealthModelQuestion('q4_3', value),
+                    ),
+                  ],
+                ),
+
+                // Question 4.4
+                QuestionsSection(
+                  skipSection: goal4Initial == RadioButtonOptions.no ||
+                      childLessThan2Initial == RadioButtonOptions.no,
+                  skipSectionButShowInitial:
+                      childLessThan2Initial == RadioButtonOptions.no,
+                  doesSectionDependOnInitialAnswer: true,
+                  updateInitialQuestion: (RadioButtonOptions? value) {},
+                      // updateQuestion("initial4_4", value),
+                  initalQuestion:
+                      "Is there child < 2 years in the household ? ",
+                  isNAInIntial: false,
+                  initalQuestionValue: childLessThan2Initial,
+                  isTopDividerThere: false,
+                  title: "",
+                  questions: [
+                    QuestionBlock(
+                      isTopDividerThere: false,
+                      isOptional: false,
+                      groupValue: convertingStringToRadioButtonOptions(
+                          model.healthModel!.question18 ?? ""),
+                      question:
+                          "4.4 If there is a child under 2 years in the household, Is the infant’s immunization on schedule? (Check mother baby booklet pages 33-35) ",
+                      isNAAvailable: false,
+                      updateRadioButton: (RadioButtonOptions? value) =>
+                          model.updateHealthModelQuestion('q4_4', value),
+                    ),
+                  ],
+                ),
+              ],
+              descriptionHeading:
+                  "Healthy: Goal 4: Improve Development for Children <5 Years (Particularly HIV Exposed and Infected Infants/Young Children)",
+              descriptionText:
+                  "Benchmark 4: No children < 5 years in the household are undernourished",
+              descriptionSubText:
+                  "Note: If none of the children in the household is <5 years) select “N/A” and move to the stale domain",
+            ),
+          ],
+        );
       },
     );
   }
