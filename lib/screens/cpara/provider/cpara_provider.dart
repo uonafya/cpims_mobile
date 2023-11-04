@@ -151,50 +151,48 @@ class CparaProvider extends ChangeNotifier {
       //       healthmodel.copyWith(overallQuestion6: overallQuestion6));
 
       //   break;
-      // case "initial_2":
-      //   setState(() {
-      //     goal2InitialAnswer = value;
-      //   });
-      //   if (value == RadioButtonOptions.yes) {
-      //     updateQuestion("q2_1", null);
-      //     updateQuestion("q2_2", null);
-      //     updateQuestion("q2_3", null);
-      //     updateQuestion("q2_4", null);
-      //     updateQuestion("q2_5", null);
-      //     updateQuestion("q2_6", null);
-      //     updateQuestion("q2_7", null);
-      //     updateQuestion("q2_8", null);
-      //     updateQuestion("q2_9", null);
-      //     setState(() {
-      //       suppresedPast12Initial = null;
-      //       documentedChildrenSuppressedInitial = null;
-      //       noDocumentCaregiverAppointmentInitial = null;
-      //     });
-      //   }
+      case "initial_2":
+        debugPrint("Initial 2 is being updated");
+        if (value == RadioButtonOptions.yes) {
+          _healthModel!.question6 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question7 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question8 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question9 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question10 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question11 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question12 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question13 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question14 = convertingRadioButtonOptionsToString(null);
+        }
 
-      //   if (value == RadioButtonOptions.no) {
-      //     updateQuestion("q2_1", RadioButtonOptions.yes);
-      //     updateQuestion("q2_2", RadioButtonOptions.yes);
-      //     updateQuestion("q2_3", RadioButtonOptions.yes);
-      //     updateQuestion("q2_4", RadioButtonOptions.yes);
-      //     updateQuestion("q2_5", RadioButtonOptions.yes);
-      //     updateQuestion("q2_6", RadioButtonOptions.yes);
-      //     updateQuestion("q2_7", RadioButtonOptions.yes);
-      //     updateQuestion("q2_8", RadioButtonOptions.yes);
-      //     updateQuestion("q2_9", RadioButtonOptions.yes);
-      //     setState(() {
-      //       suppresedPast12Initial = RadioButtonOptions.yes;
-      //       documentedChildrenSuppressedInitial = RadioButtonOptions.yes;
-      //       noDocumentCaregiverAppointmentInitial = RadioButtonOptions.yes;
-      //     });
-      //   }
-      //   HealthModel healthmodel =
-      //       Provider.of<CparaProvider>(context, listen: false).healthModel ??
-      //           HealthModel();
-      //   String overallQuestion1 = convertingRadioButtonOptionsToString(value);
-      //   Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
-      //       healthmodel.copyWith(overallQuestion1: overallQuestion1));
-      //   break;
+        if (value == RadioButtonOptions.no) {
+          _healthModel!.question6 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question7 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question8 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question9 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question10 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question11 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question12 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question13 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question14 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+        }
+        notifyListeners();
+        // HealthModel healthmodel =
+        //     Provider.of<CparaProvider>(context, listen: false).healthModel ??
+        //         HealthModel();
+        // String overallQuestion1 = convertingRadioButtonOptionsToString(value);
+        // Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
+        //     healthmodel.copyWith(overallQuestion1: overallQuestion1));
+        break;
       // case "initial2_1":
       //   setState(() {
       //     suppresedPast12Initial = value;
