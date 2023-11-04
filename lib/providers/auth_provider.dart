@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/initial_loader.dart';
 import 'package:http/http.dart' as http;
 
@@ -59,6 +60,15 @@ class AuthProvider with ChangeNotifier {
         'password': password,
       },
     );
+
+    // TODO: Implement correct status codes
+    // if (response.statusCode == "given code") {
+    //   if (context.mounted) {
+    //     errorSnackBar(context, 'Not authorized to view this resource');
+    //     await LocalDb.instance.deleteDb();
+    //   }
+    //   return;
+    // }
 
     if (context.mounted) {
       httpReponseHandler(
