@@ -8,9 +8,6 @@ import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:dio/dio.dart';
 
-import '../../../providers/db_provider.dart';
-import '../provider/db_util.dart';
-import '../widgets/cpara_stable_widget.dart';
 import '../widgets/ovc_sub_population_form.dart';
 
 

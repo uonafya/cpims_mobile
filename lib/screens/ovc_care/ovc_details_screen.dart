@@ -6,6 +6,7 @@ import 'package:cpims_mobile/screens/cpara/cpara_forms.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/forms/form1b/form_1B.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/screens/hiv_management_form_screen.dart';
+import 'package:cpims_mobile/screens/forms/hiv_management/screens/hiv_management_form_screen.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_assessment.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/widgets/custom_card_grid_item.dart';
@@ -188,6 +189,12 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
               onClick: () {
                 Get.to(
                     () => CasePlanTemplateForm(caseLoad: widget.caseLoadModel));
+              },
+            ),
+            ChildDetailsWorkflowButton(
+              workflowName: "HIV Management Form",
+              onClick: () {
+                Get.to(() => HIVManagementForm(caseLoad: widget.caseLoadModel));
               },
             ),
             ChildDetailsWorkflowButton(
