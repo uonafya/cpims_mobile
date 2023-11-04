@@ -6,6 +6,7 @@ import 'package:cpims_mobile/screens/auth/login_screen.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/cpara/provider/hiv_assessment_provider.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/utils/form_one_a_provider.dart';
 import 'package:cpims_mobile/screens/homepage/provider/stats_provider.dart';
@@ -39,6 +40,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CptProvider()),
         ChangeNotifierProvider(create: (_) => StatsProvider()),
         ChangeNotifierProvider(create: (_) => Form1AProviderNew()),
+        ChangeNotifierProvider(create: (_) => HIVAssessmentProvider()),
       ],
       child: const CPIMS(),
     ),

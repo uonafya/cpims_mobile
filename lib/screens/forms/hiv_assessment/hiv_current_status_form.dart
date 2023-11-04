@@ -1,22 +1,24 @@
+import 'package:cpims_mobile/screens/cpara/provider/hiv_assessment_provider.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
-import 'package:cpims_mobile/widgets/custom_date_picker.dart';
-import 'package:cpims_mobile/widgets/custom_text_field.dart';
-import 'package:flutter/foundation.dart';
+import 'package:cpims_mobile/widgets/custom_dynamic_radio_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HIVCurrentStatusModel {
-  final String dateOfAssessment;
-  final String statusOfChild;
-  final String hivStatus;
-  final String hivTestDone;
-  final String hivTestDoneDate;
+  final DateTime? dateOfAssessment;
+  final String? statusOfChild;
+  final String? hivStatus;
+  final String? hivTestDone;
+  final String? hivTestDoneDate;
 
   HIVCurrentStatusModel({
-    required this.dateOfAssessment,
-    required this.statusOfChild,
-    required this.hivStatus,
-    required this.hivTestDone,
-    required this.hivTestDoneDate,
+    this.dateOfAssessment,
+    this.statusOfChild,
+    this.hivStatus,
+    this.hivTestDone,
+    this.hivTestDoneDate,
   });
 
   Map<String, dynamic> toJson() {
@@ -30,7 +32,7 @@ class HIVCurrentStatusModel {
   }
 
   HIVCurrentStatusModel copyWith({
-    String? dateOfAssessment,
+    DateTime? dateOfAssessment,
     String? statusOfChild,
     String? hivStatus,
     String? hivTestDone,
@@ -47,16 +49,37 @@ class HIVCurrentStatusModel {
 }
 
 class HIVCurrentStatusForm extends StatefulWidget {
-  const HIVCurrentStatusForm({super.key});
+  const HIVCurrentStatusForm({
+    super.key,
+  });
 
   @override
   State<HIVCurrentStatusForm> createState() => _HIVCurrentStatusFormState();
 }
 
 class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
-  HIVCurrentStatusModel? formData;
+  DateTime? dateOfAssessment;
+  String? statusOfChild;
+  String? hivStatus;
+  String? hivTestDone;
+  String? hivTestDoneDate;
+
+  void handleOnFormSaved() {
+    final val = HIVCurrentStatusModel(
+      dateOfAssessment: dateOfAssessment,
+      statusOfChild: statusOfChild,
+      hivStatus: hivStatus,
+      hivTestDone: hivTestDone,
+      hivTestDoneDate: hivTestDoneDate,
+    );
+    Provider.of<HIVAssessmentProvider>(context, listen: false)
+        .updateHIVCurrentStatusModel(val);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final hivAssessmentProvider =
+        Provider.of<HIVAssessmentProvider>(context).hivCurrentStatusModel;
     return Container(
       padding: const EdgeInsets.only(top: 20),
       child: Column(
@@ -76,12 +99,29 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
           const SizedBox(
             height: 10,
           ),
-          CustomDatePicker(initialDate: DateTime.now()),
+          DateTextField(
+            label: "Date of assessment",
+            enabled: true,
+            onDateSelected: (date) {
+              setState(() {
+                dateOfAssessment = date;
+                handleOnFormSaved();
+              });
+            },
+            identifier: DateTextFieldIdentifier.dateOfAssessment,
+          ),
           const SizedBox(height: 14),
           const Divider(),
           const Text(
               "1b) Does the caregiver know the status of the child? /Does the Adolescent and youth (>15) years know his/her status?"),
-          CustomRadioButton(isNaAvailable: false, optionSelected: (val) {}),
+          CustomRadioButton(
+              isNaAvailable: false,
+              optionSelected: (val) {
+                setState(() {
+                  statusOfChild = convertingRadioButtonOptionsToString(val);
+                  handleOnFormSaved();
+                });
+              }),
           const SizedBox(
             height: 4,
           ),
@@ -89,9 +129,18 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
           const SizedBox(
             height: 4,
           ),
-          CustomRadioButton(
+          CustomDynamicRadioButton(
             isNaAvailable: false,
-            optionSelected: (val) {},
+            optionSelected: (val) {
+              setState(() {
+                hivStatus = val;
+                handleOnFormSaved();
+              });
+            },
+            customOptions: const [
+              "HIV_Positive",
+              "HIV_Negative",
+            ],
           ),
           const SizedBox(
             height: 14,
@@ -99,7 +148,14 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
           const Divider(),
           const Text("1c) Was the HIV test done less than 6 months ago?	"),
           const SizedBox(height: 10),
-          CustomRadioButton(isNaAvailable: false, optionSelected: (val) {}),
+          CustomRadioButton(
+              isNaAvailable: false,
+              optionSelected: (val) {
+                setState(() {
+                  hivTestDone = convertingRadioButtonOptionsToString(val);
+                  handleOnFormSaved();
+                });
+              }),
         ],
       ),
     );
