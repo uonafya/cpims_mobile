@@ -130,9 +130,9 @@ class CparaProvider extends ChangeNotifier {
 // Calculate stable benchmark
   int stableBenchMark() {
     int stableBenchmark = 0;
-    if (stableModel?.question1 == "Yes" ||
-        stableModel?.question1 == "N/A" && stableModel?.question2 == "Yes" ||
-        stableModel?.question2 == "N/A" && stableModel?.question3 == "Yes") {
+    if ((stableModel?.question1 == "Yes" ||
+        stableModel?.question1 == "N/A") && (stableModel?.question2 == "Yes" ||
+        stableModel?.question2 == "N/A") && (stableModel?.question3 == "Yes")) {
       stableBenchmark = 1;
     } else {
       stableBenchmark = 0;
