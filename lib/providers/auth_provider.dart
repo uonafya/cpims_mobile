@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/initial_loader.dart';
+import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:cpims_mobile/Models/user_model.dart';
@@ -121,6 +122,8 @@ class AuthProvider with ChangeNotifier {
       await sharedPreferences.remove('refresh');
 
       clearUser();
+
+      CaseLoadService.saveCaseLoadLastSave(0);
 
       Get.off(
         () => const LoginScreen(),
