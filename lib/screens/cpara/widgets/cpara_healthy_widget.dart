@@ -18,20 +18,6 @@ class CparaHealthyWidget extends StatefulWidget {
 
 class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   // State of the questions
-  RadioButtonOptions? q1_1ChildrenHivTested;
-  RadioButtonOptions? q1_2childrenUnknownStatus;
-  RadioButtonOptions? q1_3InfantExposedHIV;
-  RadioButtonOptions? q1_4HivCaregiverUnknown;
-  RadioButtonOptions? q1_5CaregiverSceened;
-  RadioButtonOptions? q2_1SuppresedPast12;
-  RadioButtonOptions? q2_2ChildrenRegularAttendTreatment;
-  RadioButtonOptions? q2_3ChildrenNotMissDose;
-  RadioButtonOptions? q2_4DocumentedChildrenSuppressed;
-  RadioButtonOptions? q2_5NoDocumentAttendTreatment;
-  RadioButtonOptions? q2_6AdolocentRegularMedicate;
-  RadioButtonOptions? q2_7HIVCaregiverSuppress;
-  RadioButtonOptions? q2_8NoDocumentCaregiverAppointment;
-  RadioButtonOptions? q2_9CaregiverRegularlyMedicate;
   RadioButtonOptions? goal2Summary;
   RadioButtonOptions? goal3Summary;
   RadioButtonOptions? goal4Summary;
@@ -42,10 +28,6 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   RadioButtonOptions? documentedChildrenSuppressedInitial;
   RadioButtonOptions? noDocumentCaregiverAppointmentInitial;
   RadioButtonOptions? goal4Initial;
-  RadioButtonOptions? q4_1BelowAge5MUAC;
-  RadioButtonOptions? q4_2Below5BipedalEdema;
-  RadioButtonOptions? q4_3MalnourishedTreated;
-  RadioButtonOptions? q4_4Under2Immunized;
   RadioButtonOptions? set3_1final;
   RadioButtonOptions? set3_2final;
   RadioButtonOptions? set3_3final;
@@ -66,9 +48,9 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
     children = [];
 
     if (healthModel.childrenQuestions != null) {
-      set3_1final = RadioButtonOptions.na;
-      set3_2final = RadioButtonOptions.na;
-      set3_3final = RadioButtonOptions.na;
+      set3_1final = null;
+      set3_2final = null;
+      set3_3final = null;
       for (HealthChild child in healthModel.childrenQuestions!) {
         children.add(child);
       }
@@ -188,16 +170,26 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
               showNAInFinalResult: false,
               finalBlockQuestion: "Has the household achieved this benchmark?",
               finalResult: allShouldBeYes([
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question1 ?? ""),
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question2 ?? ""),
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question3 ?? ""),
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question4 ?? ""),
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question5 ?? ""),
+                model.healthModel.question1 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question1!),
+                model.healthModel.question2 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question2!),
+                model.healthModel.question3 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question3!),
+                model.healthModel.question4 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question4!),
+                model.healthModel.question5 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question5!),
               ], "Goal 1"),
               // final result is yes if the values of question 1 to 4 is yes
               descriptionHeading:
@@ -215,26 +207,34 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   questions: [
                     QuestionBlock(
                       isTopDividerThere: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question1 ?? ""),
+                      groupValue: model.healthModel.question1 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question1!),
                       isOptional: false,
                       question:
                           "1.1 Have all your children been tested for HIV and their HIV status known (HIV negative, positive) ?",
                       isNAAvailable: false,
-                      updateRadioButton: (RadioButtonOptions? val) =>
-                          model.updateHealthModelQuestion('q1_1', val),
+                      updateRadioButton: (RadioButtonOptions? val) {
+                        model.updateHealthModelQuestion('q1_1', val);
+                        debugPrint("HEALTH MODEL IS: ");
+                        debugPrint(model.healthModel.toString());
+                      },
                     ),
                     QuestionBlock(
-                      isTopDividerThere: false,
-                      isOptional: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question2 ?? ""),
-                      question:
-                          "1.2 For those with unknown HIV status, have they been screened for HIV risk and results showed test not required ?",
-                      isNAAvailable: true,
-                      updateRadioButton: (RadioButtonOptions? val) =>
-                          model.updateHealthModelQuestion('q1_2', val),
-                    ),
+                        isTopDividerThere: false,
+                        isOptional: false,
+                        groupValue: model.healthModel.question2 == null
+                            ? null
+                            : convertingStringToRadioButtonOptions(
+                                model.healthModel.question2!),
+                        question:
+                            "1.2 For those with unknown HIV status, have they been screened for HIV risk and results showed test not required ?",
+                        isNAAvailable: true,
+                        updateRadioButton: (RadioButtonOptions? val) {
+                          model.updateHealthModelQuestion('q1_2', val);
+                          debugPrint(model.healthModel.question2);
+                        }),
                   ],
                 ),
 
@@ -247,8 +247,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                     QuestionBlock(
                       isTopDividerThere: false,
                       isOptional: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question3 ?? ""),
+                      groupValue: model.healthModel.question3 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question3!),
                       question:
                           "1.3 If there is an infant Exposed to HIV (HEI), has the final HIV status been confirmed at 18 months or one week after cessation of breastfeeding, whichever comes later?",
                       isNAAvailable: true,
@@ -266,8 +268,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                     QuestionBlock(
                       isTopDividerThere: false,
                       isOptional: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question4 ?? ""),
+                      groupValue: model.healthModel.question4 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question4!),
                       question:
                           "1.4 Is the HIV status of the caregiver known (positive, negative)?",
                       isNAAvailable: false,
@@ -276,8 +280,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                     ),
                     QuestionBlock(
                       isTopDividerThere: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question5 ?? ""),
+                      groupValue: model.healthModel.question5 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question5!),
                       isOptional: false,
                       question:
                           "1.5 For caregiver with unknown HIV status have they been screened for HIV risk and the results showing test not required?",
@@ -300,30 +306,67 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
               isNAInIntial: false,
               initalQuestionValue: goal2InitialAnswer,
               updateInitialQuestion: (RadioButtonOptions? val) {
-                // updateQuestion(
-                //     "initial_2", val); // update the state of the question
+                setState(() {
+                  goal2InitialAnswer = val;
+                });
+
+                if (val == RadioButtonOptions.yes) {
+                  setState(() {
+                    suppresedPast12Initial = null;
+                    documentedChildrenSuppressedInitial = null;
+                    noDocumentCaregiverAppointmentInitial = null;
+                  });
+                } else if (val == RadioButtonOptions.no) {
+                  setState(() {
+                    suppresedPast12Initial = RadioButtonOptions.yes;
+                    documentedChildrenSuppressedInitial =
+                        RadioButtonOptions.yes;
+                    noDocumentCaregiverAppointmentInitial =
+                        RadioButtonOptions.yes;
+                  });
+                }
+                // update the state of the question
+                model.updateHealthModelQuestion('initial_2', val);
               },
               finalBlockQuestion: "Has the household achieved this benchmark?",
               showNAInFinalResult: false,
               finalResult: allShouldBeYesOrNA([
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question6 ?? ""),
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question7 ?? ""),
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question8 ?? ""),
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question9 ?? ""),
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question10 ?? ""),
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question11 ?? ""),
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question12 ?? ""),
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question13 ?? ""),
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question14 ?? ""),
+                model.healthModel.question6 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question6!),
+                model.healthModel.question7 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question7!),
+                model.healthModel.question8 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question8!),
+                model.healthModel.question9 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question9!),
+                model.healthModel.question10 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question10!),
+                model.healthModel.question11 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question11!),
+                model.healthModel.question12 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question12!),
+                model.healthModel.question13 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question13!),
+                model.healthModel.question14 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question14!),
               ], "Goal 2"),
               // The final value is yes if all the answers are yes for questions 2.1 to 2.9
               updateFinalFormRadio: noChangeToRadio,
@@ -343,8 +386,13 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   initalQuestion:
                       "Is there a child 0 - 12 years who is HIV positive ?",
                   initalQuestionValue: suppresedPast12Initial,
-                  updateInitialQuestion: (RadioButtonOptions? val) {},
-                  // updateQuestion("initial2_1", val),
+                  updateInitialQuestion: (RadioButtonOptions? val) {
+                    setState(() {
+                      suppresedPast12Initial = val;
+                    });
+
+                    model.updateHealthModelQuestion('initial2_1', val);
+                  },
                   isNAInIntial: false,
                   isTopDividerThere: false,
                   title: "Children 0-12",
@@ -354,8 +402,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   questions: [
                     QuestionBlock(
                       isTopDividerThere: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question6 ?? ""),
+                      groupValue: model.healthModel.question6 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question6!),
                       isOptional: false,
                       question:
                           "2.1 Have all HIV positive children on treatment with documented viral load results been suppressed in the past 12 months? ",
@@ -366,8 +416,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                     QuestionBlock(
                       isTopDividerThere: false,
                       isOptional: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question7 ?? ""),
+                      groupValue: model.healthModel.question7 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question7!),
                       question:
                           "2.2 For those with no documented viral load results; Have all the children living with HIV been attending their appointments regularly for the past 12 months (check CCC card to confirm adherence to treatment)",
                       isNAAvailable: true,
@@ -377,8 +429,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                     QuestionBlock(
                       isTopDividerThere: false,
                       isOptional: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question8 ?? ""),
+                      groupValue: model.healthModel.question8 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question8!),
                       question:
                           "2.3 Have all HIV+ children been regularly taking medication without missing doses for the past 12 months (reported by caregiver for the 0-12 years)?",
                       isNAAvailable: false,
@@ -395,8 +449,13 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                           RadioButtonOptions.no,
                   // skip questions when the answer to is anyone HIV postivie no
                   doesSectionDependOnInitialAnswer: true,
-                  updateInitialQuestion: (RadioButtonOptions? value) {},
-                  // updateQuestion("initial2_4", value),
+                  updateInitialQuestion: (RadioButtonOptions? value) {
+                    setState(() {
+                      documentedChildrenSuppressedInitial = value;
+                    });
+
+                    model.updateHealthModelQuestion('initial2_4', value);
+                  },
                   isNAInIntial: false,
                   initalQuestion:
                       "Is there an adolescents or a child above 12 years who is HIV positive ? ",
@@ -411,8 +470,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                     QuestionBlock(
                       isTopDividerThere: false,
                       isOptional: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question9 ?? ""),
+                      groupValue: model.healthModel.question9 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question9!),
                       question:
                           "2.4 Have all HIV positive children and adolescents (12years and above) on treatment with documented viral load results been suppressed in the past 12 months?",
                       isNAAvailable: false,
@@ -422,8 +483,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                     QuestionBlock(
                       isTopDividerThere: false,
                       isOptional: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question10 ?? ""),
+                      groupValue: model.healthModel.question10 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question10!),
                       question:
                           "2.5 For those with no documented viral load results; Have all the children and adolescents (12years and above) living with HIV been attending their appointments regularly for the past 12 months (check CCC card to confirm adherence to treatment)",
                       isNAAvailable: true,
@@ -433,8 +496,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                     QuestionBlock(
                       isTopDividerThere: false,
                       isOptional: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question11 ?? ""),
+                      groupValue: model.healthModel.question11 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question11!),
                       question:
                           "2.6 Have all HIV+ adolescent been regularly taking medication without missing doses for the past 12 months? (Adolescents self-reported).",
                       isNAAvailable: false,
@@ -453,8 +518,13 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   doesSectionDependOnInitialAnswer: true,
                   initalQuestion: "Is the caregiver HIV positive ? ",
                   initalQuestionValue: noDocumentCaregiverAppointmentInitial,
-                  updateInitialQuestion: (RadioButtonOptions? value) {},
-                  // updateQuestion("initial2_7", value),
+                  updateInitialQuestion: (RadioButtonOptions? value) {
+                    setState(() {
+                      noDocumentCaregiverAppointmentInitial = value;
+                    });
+
+                    model.updateHealthModelQuestion('initial2_7', value);
+                  },
                   isNAInIntial: false,
                   isTopDividerThere: false,
                   title: "Caregiver",
@@ -466,8 +536,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                     QuestionBlock(
                       isTopDividerThere: false,
                       isOptional: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question12 ?? ""),
+                      groupValue: model.healthModel.question12 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question12!),
                       question:
                           "2.7 Have all HIV positive caregivers on treatment with documented viral load results been suppressed in the past 12 months?",
                       isNAAvailable: false,
@@ -476,8 +548,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                     ),
                     QuestionBlock(
                       isTopDividerThere: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question13 ?? ""),
+                      groupValue: model.healthModel.question13 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question13!),
                       isOptional: false,
                       question:
                           "2.8 For those with no documented viral load results; Have the caregiver living with HIV been attending their appointments regularly for the past 12 months (check CCC card to confirm adherence to treatment)",
@@ -487,8 +561,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                     ),
                     QuestionBlock(
                       isTopDividerThere: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question14 ?? ""),
+                      groupValue: model.healthModel.question14 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question14!),
                       isOptional: false,
                       question:
                           "2.9 Have all HIV+ caregivers been regularly taking medication without missing doses for the past 12 months? (Caregiver self-reported).",
@@ -508,6 +584,12 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
               initalQuestionValue: goal3InitialAnswer,
               updateInitialQuestion: (RadioButtonOptions? val) {
                 // updateQuestion("initial_3", val);
+                setState(() {
+                  goal3InitialAnswer = val;
+                });
+
+                model.updateHealthModelQuestion("initial_3", val);
+
                 // if val is yes set everything to null
                 if (val == RadioButtonOptions.yes) {
                   List<HealthChild> newChildren = List.from(children);
@@ -524,7 +606,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   // Provider.of<CparaProvider>(context, listen: false)
                   //     .updateHealthModel(
                   //         healthmodel.copyWith(childrenQuestions: newChildren));
-                  model.updateHealthModel(model.healthModel!
+                  model.updateHealthModel(model.healthModel
                       .copyWith(childrenQuestions: newChildren));
 
                   setState(() {
@@ -751,7 +833,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                             // Provider.of<CparaProvider>(context, listen: false)
                             //     .updateHealthModel(healthmodel.copyWith(
                             //         childrenQuestions: newChildren));
-                            model.updateHealthModel(model.healthModel!
+                            model.updateHealthModel(model.healthModel
                                 .copyWith(childrenQuestions: newChildren));
 
                             setState(() {
@@ -774,20 +856,43 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
               initalQuestionValue: goal4Initial,
               updateInitialQuestion: (RadioButtonOptions? value) {
                 // updateQuestion("initial_4", value);
+                setState(() {
+                  goal4Initial = value;
+                });
+
+                if (value == RadioButtonOptions.no) {
+                  setState(() {
+                    childLessThan2Initial = RadioButtonOptions.yes;
+                  });
+                } else if (value == RadioButtonOptions.yes) {
+                  setState(() {
+                    childLessThan2Initial = null;
+                  });
+                }
+
+                model.updateHealthModelQuestion("initial_4", value);
               },
               isNAInIntial: false,
               initalQuestion: "Is there child < 5 years in the household ?",
               finalBlockQuestion: "Has the household achieved this benchmarks?",
               showNAInFinalResult: true,
               finalResult: allShouldBeYes([
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question15 ?? ""),
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question16 ?? ""),
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question17 ?? ""),
-                convertingStringToRadioButtonOptions(
-                    model.healthModel!.question18 ?? ""),
+                model.healthModel.question15 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question15!),
+                model.healthModel.question16 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question16!),
+                model.healthModel.question17 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question17!),
+                model.healthModel.question18 == null
+                    ? null
+                    : convertingStringToRadioButtonOptions(
+                        model.healthModel.question18!),
               ], "Group 4"),
               // final answer should be yes if all questions from 4.1 to 4.4 are yes
               updateFinalFormRadio: noChangeToRadio,
@@ -803,8 +908,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                     QuestionBlock(
                       isTopDividerThere: false,
                       isOptional: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question15 ?? ""),
+                      groupValue: model.healthModel.question15 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question15!),
                       question:
                           "4.1 Have all children below the age of five been assessed using MUAC and scored green?",
                       isNAAvailable: false,
@@ -813,8 +920,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                     ),
                     QuestionBlock(
                       isTopDividerThere: true,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question16 ?? ""),
+                      groupValue: model.healthModel.question16 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question16!),
                       isOptional: false,
                       question:
                           "4.2 Have all the children below five years showed no signs of bipedal edema (e.g. Pressure applied on top of both feet for three seconds and did not leave a pit)?",
@@ -824,8 +933,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                     ),
                     QuestionBlock(
                       isTopDividerThere: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question17 ?? ""),
+                      groupValue: model.healthModel.question17 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question17!),
                       warningText:
                           "NB: Score YES if none in the HH has ever been previously malnourished NB-Score YES if none in the HH has ever been previously malnourished *",
                       isOptional: false,
@@ -845,8 +956,13 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   skipSectionButShowInitial:
                       childLessThan2Initial == RadioButtonOptions.no,
                   doesSectionDependOnInitialAnswer: true,
-                  updateInitialQuestion: (RadioButtonOptions? value) {},
-                  // updateQuestion("initial4_4", value),
+                  updateInitialQuestion: (RadioButtonOptions? value) {
+                    setState(() {
+                      childLessThan2Initial = value;
+                    });
+
+                    model.updateHealthModelQuestion("initial4_4", value);
+                  },
                   initalQuestion:
                       "Is there child < 2 years in the household ? ",
                   isNAInIntial: false,
@@ -857,8 +973,10 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                     QuestionBlock(
                       isTopDividerThere: false,
                       isOptional: false,
-                      groupValue: convertingStringToRadioButtonOptions(
-                          model.healthModel!.question18 ?? ""),
+                      groupValue: model.healthModel.question18 == null
+                          ? null
+                          : convertingStringToRadioButtonOptions(
+                              model.healthModel.question18!),
                       question:
                           "4.4 If there is a child under 2 years in the household, Is the infant’s immunization on schedule? (Check mother baby booklet pages 33-35) ",
                       isNAAvailable: false,

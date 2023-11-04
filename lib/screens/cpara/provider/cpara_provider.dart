@@ -108,49 +108,29 @@ class CparaProvider extends ChangeNotifier {
         _healthModel!.question18 = convertingRadioButtonOptionsToString(value);
         notifyListeners();
         break;
-      // case "initial_3":
-      //   setState(() {
-      //     goal3InitialAnswer = value;
-      //   });
-      //   HealthModel healthmodel =
-      //       Provider.of<CparaProvider>(context, listen: false).healthModel ??
-      //           HealthModel();
-      //   String overallQuestion5 = convertingRadioButtonOptionsToString(value);
-      //   Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
-      //       healthmodel.copyWith(overallQuestion5: overallQuestion5));
-      //   break;
-      // case "initial_4":
-      //   setState(() {
-      //     goal4Initial = value;
-      //   });
-
-      //   if (value == RadioButtonOptions.no) {
-      //     updateQuestion("q4_1", RadioButtonOptions.yes);
-      //     updateQuestion("q4_2", RadioButtonOptions.yes);
-      //     updateQuestion("q4_3", RadioButtonOptions.yes);
-      //     updateQuestion("q4_4", RadioButtonOptions.yes);
-      //     setState(() {
-      //       childLessThan2Initial = RadioButtonOptions.yes;
-      //     });
-      //   }
-      //   if (value == RadioButtonOptions.yes) {
-      //     updateQuestion("q4_1", null);
-      //     updateQuestion("q4_2", null);
-      //     updateQuestion("q4_3", null);
-      //     updateQuestion("q4_4", null);
-      //     setState(() {
-      //       childLessThan2Initial = null;
-      //     });
-      //   }
-
-      //   HealthModel healthmodel =
-      //       Provider.of<CparaProvider>(context, listen: false).healthModel ??
-      //           HealthModel();
-      //   String overallQuestion6 = convertingRadioButtonOptionsToString(value);
-      //   Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
-      //       healthmodel.copyWith(overallQuestion6: overallQuestion6));
-
-      //   break;
+      case "initial_3":
+        // String overallQuestion5 = convertingRadioButtonOptionsToString(value);
+        break;
+      case "initial_4":
+        if (value == RadioButtonOptions.no) {
+          _healthModel!.question15 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question16 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question17 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question18 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+        }
+        if (value == RadioButtonOptions.yes) {
+          _healthModel!.question15 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question16 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question17 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question18 = convertingRadioButtonOptionsToString(null);
+        }
+        notifyListeners();
+        // String overallQuestion6 = convertingRadioButtonOptionsToString(value);
+        break;
       case "initial_2":
         debugPrint("Initial 2 is being updated");
         if (value == RadioButtonOptions.yes) {
@@ -193,93 +173,73 @@ class CparaProvider extends ChangeNotifier {
         // Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
         //     healthmodel.copyWith(overallQuestion1: overallQuestion1));
         break;
-      // case "initial2_1":
-      //   setState(() {
-      //     suppresedPast12Initial = value;
-      //   });
-      //   if (value == RadioButtonOptions.yes) {
-      //     updateQuestion("q2_1", null);
-      //     updateQuestion("q2_2", null);
-      //     updateQuestion("q2_3", null);
-      //   }
+      case "initial2_1":
+        if (value == RadioButtonOptions.yes) {
+          _healthModel!.question6 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question7 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question8 = convertingRadioButtonOptionsToString(null);
+        }
 
-      //   if (value == RadioButtonOptions.no) {
-      //     updateQuestion("q2_1", RadioButtonOptions.yes);
-      //     updateQuestion("q2_2", RadioButtonOptions.yes);
-      //     updateQuestion("q2_3", RadioButtonOptions.yes);
-      //   }
-      //   HealthModel healthmodel =
-      //       Provider.of<CparaProvider>(context, listen: false).healthModel ??
-      //           HealthModel();
-      //   String overallQuestion2 = convertingRadioButtonOptionsToString(value);
-      //   Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
-      //       healthmodel.copyWith(overallQuestion2: overallQuestion2));
-      //   break;
-      // case "initial2_4":
-      //   setState(() {
-      //     documentedChildrenSuppressedInitial = value;
-      //   });
-      //   if (value == RadioButtonOptions.yes) {
-      //     updateQuestion("q2_4", null);
-      //     updateQuestion("q2_5", null);
-      //     updateQuestion("q2_6", null);
-      //   }
+        if (value == RadioButtonOptions.no) {
+          _healthModel!.question6 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question7 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question8 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+        }
+        // String overallQuestion2 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "initial2_4":
+        if (value == RadioButtonOptions.yes) {
+          _healthModel!.question9 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question10 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question11 = convertingRadioButtonOptionsToString(null);
+        }
 
-      //   if (value == RadioButtonOptions.no) {
-      //     updateQuestion("q2_4", RadioButtonOptions.yes);
-      //     updateQuestion("q2_5", RadioButtonOptions.yes);
-      //     updateQuestion("q2_6", RadioButtonOptions.yes);
-      //   }
+        if (value == RadioButtonOptions.no) {
+          _healthModel!.question9 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question10 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question11 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+        }
 
-      //   HealthModel healthmodel =
-      //       Provider.of<CparaProvider>(context, listen: false).healthModel ??
-      //           HealthModel();
-      //   String overallQuestion3 = convertingRadioButtonOptionsToString(value);
-      //   Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
-      //       healthmodel.copyWith(overallQuestion3: overallQuestion3));
-      //   break;
-      // case "initial2_7":
-      //   setState(() {
-      //     noDocumentCaregiverAppointmentInitial = value;
-      //   });
-      //   if (value == RadioButtonOptions.yes) {
-      //     updateQuestion("q2_7", null);
-      //     updateQuestion("q2_8", null);
-      //     updateQuestion("q2_9", null);
-      //   }
+        // String overallQuestion3 = convertingRadioButtonOptionsToString(value);
+        notifyListeners();
+        break;
+      case "initial2_7":
+        if (value == RadioButtonOptions.yes) {
+          _healthModel!.question12 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question13 = convertingRadioButtonOptionsToString(null);
+          _healthModel!.question14 = convertingRadioButtonOptionsToString(null);
+        }
 
-      //   if (value == RadioButtonOptions.no) {
-      //     updateQuestion("q2_7", RadioButtonOptions.yes);
-      //     updateQuestion("q2_8", RadioButtonOptions.yes);
-      //     updateQuestion("q2_9", RadioButtonOptions.yes);
-      //   }
+        if (value == RadioButtonOptions.no) {
+          _healthModel!.question12 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question13 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+          _healthModel!.question14 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+        }
 
-      //   HealthModel healthmodel =
-      //       Provider.of<CparaProvider>(context, listen: false).healthModel ??
-      //           HealthModel();
-      //   String overallQuestion4 = convertingRadioButtonOptionsToString(value);
-      //   Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
-      //       healthmodel.copyWith(overallQuestion4: overallQuestion4));
-
-      //   break;
-      // case "initial4_4":
-      //   setState(() {
-      //     childLessThan2Initial = value;
-      //   });
-
-      //   if (value == RadioButtonOptions.no) {
-      //     updateQuestion("q4_4", RadioButtonOptions.yes);
-      //   }
-      //   if (value == RadioButtonOptions.yes) {
-      //     updateQuestion("q4_4", null);
-      //   }
-      //   HealthModel healthmodel =
-      //       Provider.of<CparaProvider>(context, listen: false).healthModel ??
-      //           HealthModel();
-      //   String overallQuestion7 = convertingRadioButtonOptionsToString(value);
-      //   Provider.of<CparaProvider>(context, listen: false).updateHealthModel(
-      //       healthmodel.copyWith(overallQuestion7: overallQuestion7));
-      //   break;
+        notifyListeners();
+        // String overallQuestion4 = convertingRadioButtonOptionsToString(value);
+        break;
+      case "initial4_4":
+        if (value == RadioButtonOptions.no) {
+          _healthModel!.question18 =
+              convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+        }
+        if (value == RadioButtonOptions.yes) {
+          _healthModel!.question18 = convertingRadioButtonOptionsToString(null);
+        }
+        notifyListeners();
+        // String overallQuestion7 = convertingRadioButtonOptionsToString(value);
+        break;
       default:
         break;
     }

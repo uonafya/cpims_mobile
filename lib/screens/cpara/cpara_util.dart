@@ -1,19 +1,19 @@
 import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
 
-String convertOptionStandardFormat({required String text}){
-  switch(text.toLowerCase()){
+String convertOptionStandardFormat({required String text}) {
+  switch (text.toLowerCase()) {
     case "n/a":
       return "ANNA";
     case "no":
       return "ANNO";
     case "yes":
-      default:
-        return "AYES";
+    default:
+      return "AYES";
   }
 }
 
-String convertQuestionIdsStandardFormat({required String text}){
-  switch(text.trim()){
+String convertQuestionIdsStandardFormat({required String text}) {
+  switch (text.trim()) {
     case CparaQuestionIds.stableQuestion1:
       return "CP22q";
     case CparaQuestionIds.stableQuestion2:
@@ -125,8 +125,8 @@ String convertQuestionIdsStandardFormat({required String text}){
   }
 }
 
-int scoreConversion({required String text}){
-  switch(text.toLowerCase()){
+int scoreConversion({required String text}) {
+  switch (text.toLowerCase()) {
     case "no":
       return 0;
     case "yes":
@@ -155,7 +155,7 @@ int scoreConversion({required String text}){
 
 String overallChildrenBenchmark({required List<String> childrenOptions}) {
   if (childrenOptions.isEmpty) {
-    return "yes";
+    return "no";
   }
 
   for (String option in childrenOptions) {
