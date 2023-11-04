@@ -4,6 +4,7 @@ import 'package:cpims_mobile/screens/initial_loader.dart';
 import 'package:cpims_mobile/screens/locked_screen.dart';
 import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:cpims_mobile/widgets/logout_dialog.dart';
+import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:cpims_mobile/Models/user_model.dart';
@@ -134,6 +135,8 @@ class AuthProvider with ChangeNotifier {
                 clearUser();
 
                 CaseLoadService.saveCaseLoadLastSave(0);
+
+      CaseLoadService.saveCaseLoadLastSave(0);
 
                 Get.off(
                   () => const LoginScreen(),
