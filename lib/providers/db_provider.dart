@@ -17,6 +17,7 @@ import '../Models/caseplan_form_model.dart';
 import '../screens/cpara/model/cpara_model.dart';
 
 class LocalDb {
+  static const String _databaseName = 'children_ovc4.db';
   static final LocalDb instance = LocalDb._init();
   static Database? _database;
 
@@ -27,11 +28,15 @@ class LocalDb {
     if (_database != null) return _database!;
 
     // If database don't exists, create one
-    _database = await _initDB('children_ovc4.db');
+    _database = await _initDB(_databaseName);
 
     return _database!;
   }
 
+  Future<void> deleteDb() async {
+    databaseFactory.deleteDatabase(_databaseName);
+    _database = null;
+  }
 //create database and child table
 
   Future<Database> _initDB(String filePath) async {
