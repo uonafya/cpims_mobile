@@ -98,8 +98,8 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
               Provider.of<UIProvider>(context, listen: false)
                   .setDashData(dashRep);
               // final deviceID = await getDeviceID();
-              const _androidIdPlugin = AndroidId();
-              final String? androidId = await _androidIdPlugin.getId();
+              const androidIdPlugin = AndroidId();
+              final String? androidId = await androidIdPlugin.getId();
               if (isMounted) {
                 await CaseLoadService().fetchCaseLoadData(
                   context: context,

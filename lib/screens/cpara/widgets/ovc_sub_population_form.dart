@@ -1,13 +1,9 @@
 import 'package:cpims_mobile/providers/db_provider.dart';
-import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
-import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
-import 'package:cpims_mobile/widgets/custom_date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +11,6 @@ import 'package:provider/provider.dart';
 import '../../../Models/case_load_model.dart';
 import '../../../providers/connection_provider.dart';
 import '../../../widgets/drawer.dart';
-import '../provider/db_util.dart';
 
 class CheckboxQuestion {
   final int? id;

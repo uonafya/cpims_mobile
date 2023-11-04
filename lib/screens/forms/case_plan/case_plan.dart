@@ -7,10 +7,8 @@ import 'package:cpims_mobile/widgets/custom_forms_date_picker.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/route_manager.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +33,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
   @override
   Widget build(BuildContext context) {
     CasePlanProvider casePlanProvider = Provider.of<CasePlanProvider>(context);
-    TextEditingController _textEditingController = TextEditingController();
+    TextEditingController textEditingController = TextEditingController();
 
     List<ValueItem> casePlanProviderDomainList =
         casePlanProvider.csAllDomains.map((domain) {
@@ -595,7 +593,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           const SizedBox(height: 10),
                           CustomTextField(
                             hintText: 'Please Write the Reasons',
-                            controller: _textEditingController,
+                            controller: textEditingController,
                           ),
                         ],
                       ),
@@ -608,7 +606,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           onTap: () async {
                             String ovcCpimsId = widget.caseLoadModel.cpimsId!;
                             reasonForNotAchievingCasePlan =
-                                _textEditingController.text;
+                                textEditingController.text;
                             casePlanProvider.setSelectedReason(
                                 reasonForNotAchievingCasePlan);
                             String dateOfCaseplan =
@@ -636,7 +634,7 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                                                   .toList(),
                                           // Filter out null values
                                           resultsId: selectedResult[0].value!,
-                                          reasonId: _textEditingController.text,
+                                          reasonId: textEditingController.text,
                                           completionDate: dateToBeCompleted,
                                         ))
                                     .toList();

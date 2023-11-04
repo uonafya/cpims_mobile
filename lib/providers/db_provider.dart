@@ -6,15 +6,12 @@ import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 // import '../Models/case_plan_form.dart';
 import '../Models/caseplan_form_model.dart';
-import '../screens/cpara/model/cpara_model.dart';
 
 class LocalDb {
   static final LocalDb instance = LocalDb._init();
@@ -131,9 +128,9 @@ class LocalDb {
           ${Form1.dateOfEvent} $textType,
           ${Form1.formType} $textType,
           ${Form1.formDateSynced} $textTypeNull,
-          ${Form1.collected_at} $defaultTime,
-          ${Form1.location_lat} $textTypeNull,
-          ${Form1.location_long} $textTypeNull
+          ${Form1.collectedAt} $defaultTime,
+          ${Form1.locationLat} $textTypeNull,
+          ${Form1.locationLong} $textTypeNull
         )
         ''');
 
@@ -154,7 +151,7 @@ class LocalDb {
         ${Form1CriticalEvents.id} $idType,
         ${Form1CriticalEvents.formId} $textType,
         ${Form1CriticalEvents.eventId} $textType,
-        ${Form1CriticalEvents.event_date} $textType,
+        ${Form1CriticalEvents.eventDate} $textType,
         FOREIGN KEY (${Form1CriticalEvents.formId}) REFERENCES $form1Table(${Form1.id})
         )
       ''');
@@ -317,17 +314,16 @@ class LocalDb {
   }
 
   Future<void> insertOvcSubpopulationData(String uuid, String cpimsId,
-      String date_of_assessment, List<CheckboxQuestion> questions) async {
+      String dateOfAssessment, List<CheckboxQuestion> questions) async {
     final db = await instance.database;
     for (var question in questions) {
-      int value = question.isChecked! ? 1 : 0;
       await db.insert(
           ovcsubpopulation,
           {
             'uuid': uuid,
             'cpims_id': cpimsId,
             'criteria': question.questionID,
-            'date_of_event': date_of_assessment,
+            'date_of_event': dateOfAssessment,
             'form_date_synced': null
           },
           conflictAlgorithm: ConflictAlgorithm.replace);
@@ -399,13 +395,14 @@ class LocalDb {
             'form_id': formId,
             'event_id': criticalEvent.event_id,
             'event_date': criticalEvent.event_date,
-
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
       }
     } catch (e) {
-      print('Error inserting form1 data: $e');
+      if (kDebugMode) {
+        print('Error inserting form1 data: $e');
+      }
     }
   }
 
@@ -451,7 +448,9 @@ class LocalDb {
 
       return updatedForm1Rows;
     } catch (e) {
-      print("Error querying form1 data: $e");
+      if (kDebugMode) {
+        print("Error querying form1 data: $e");
+      }
       return [];
     }
   }
@@ -470,7 +469,9 @@ class LocalDb {
         return 0; // Return 0 if no count is found.
       }
     } catch (e) {
-      print("Error querying form1 count: $e");
+      if (kDebugMode) {
+        print("Error querying form1 count: $e");
+      }
       return 0; // Return 0 if there is an error.
     }
   }
@@ -493,7 +494,9 @@ class LocalDb {
 
       controller.close(); // Close the stream when the operation is complete.
     } catch (e) {
-      print("Error querying form1 count: $e");
+      if (kDebugMode) {
+        print("Error querying form1 count: $e");
+      }
       controller.addError(e);
       controller.close();
     }
@@ -567,7 +570,7 @@ class LocalDb {
   Future<bool> insertCasePlanNew(CasePlanModel casePlan) async {
     try {
       final db = await instance.database;
-      final transaction = await db.transaction((txn) async {
+      await db.transaction((txn) async {
         final casePlanId = await txn.insert(
           casePlanTable,
           {
@@ -604,8 +607,12 @@ class LocalDb {
 
       return true;
     } catch (e, stackTrace) {
-      print('Error inserting case plan: $e');
-      print('Stack trace: $stackTrace');
+      if (kDebugMode) {
+        print('Error inserting case plan: $e');
+      }
+      if (kDebugMode) {
+        print('Stack trace: $stackTrace');
+      }
       return false;
     }
   }
@@ -659,7 +666,9 @@ class LocalDb {
 
       return null; // Return null if case plan not found
     } catch (e) {
-      print('Error retrieving case plan: $e');
+      if (kDebugMode) {
+        print('Error retrieving case plan: $e');
+      }
       return null;
     }
   }
@@ -711,7 +720,9 @@ class LocalDb {
 
       return casePlans;
     } catch (e) {
-      print('Error retrieving case plans: $e');
+      if (kDebugMode) {
+        print('Error retrieving case plans: $e');
+      }
       return [];
     }
   }
@@ -770,7 +781,9 @@ class LocalDb {
 
       return false; // Return false if case plan was not found
     } catch (e) {
-      print('Error deleting case plan: $e');
+      if (kDebugMode) {
+        print('Error deleting case plan: $e');
+      }
       return false;
     }
   }
@@ -954,8 +967,8 @@ class Form1 {
     formType,
     ovcCpimsId,
     dateOfEvent,
-    location_lat,
-    location_long
+    locationLat,
+    locationLong
   ];
 
   static const String id = "_id";
@@ -963,9 +976,9 @@ class Form1 {
   static const String ovcCpimsId = "ovc_cpims_id";
   static const String dateOfEvent = 'date_of_event';
   static const String formDateSynced = 'form_date_synced';
-  static const String collected_at = 'collected_at';
-  static const String location_lat = 'location_lat';
-  static const String location_long = 'location_long';
+  static const String collectedAt = 'collected_at';
+  static const String locationLat = 'location_lat';
+  static const String locationLong = 'location_long';
 }
 
 class Form1Services {
@@ -987,11 +1000,11 @@ class Form1CriticalEvents {
     id,
     formId,
     eventId,
-    event_date,
+    eventDate,
   ];
 
   static const String id = "_id";
   static const String formId = "form_id";
   static const String eventId = "event_id";
-  static const String event_date = "event_date";
+  static const String eventDate = "event_date";
 }

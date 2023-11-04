@@ -1,6 +1,4 @@
-import 'dart:convert';
 
-import 'package:android_id/android_id.dart';
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
@@ -8,11 +6,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../providers/auth_provider.dart';
 
 class CaseLoadService {
   Future<void> fetchCaseLoadData({
@@ -29,7 +24,7 @@ class CaseLoadService {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return Center(
+        return const Center(
           child: CircularProgressIndicator(),
         );
       },

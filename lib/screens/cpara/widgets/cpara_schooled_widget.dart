@@ -308,7 +308,7 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
           ),
 
           // CparaResultBenchmarks(),
-          FinalBenchMark(),
+          const FinalBenchMark(),
         ],
       ),
     );

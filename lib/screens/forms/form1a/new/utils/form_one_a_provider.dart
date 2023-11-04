@@ -1,11 +1,8 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import 'package:provider/provider.dart';
@@ -104,8 +101,8 @@ class Form1AProviderNew extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setFinalFormDataOvcId(String ovc_cpims_id) {
-    _finalServicesFormData.ovc_cpims_id = ovc_cpims_id;
+  void setFinalFormDataOvcId(String ovcCpimsId) {
+    _finalServicesFormData.ovc_cpims_id = ovcCpimsId;
     notifyListeners();
   }
 
