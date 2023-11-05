@@ -71,11 +71,14 @@ class _CustomStepperWidgetState extends State<CustomStepperWidget> {
           title,
           style: TextStyle(color: isSelected ? Colors.white : null),
         ),
-        subtitle: Text(
-          subtitle,
-          style: TextStyle(
-              color: isSelected ? Colors.white60 : kTextGrey, fontSize: 12),
-        ),
+        subtitle: subtitle.isEmpty
+            ? null
+            : Text(
+                subtitle,
+                style: TextStyle(
+                    color: isSelected ? Colors.white60 : kTextGrey,
+                    fontSize: 12),
+              ),
       ),
     );
   }

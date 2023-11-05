@@ -81,7 +81,7 @@ class CptProvider extends ChangeNotifier {
   }
 
     void updateDateOfCasePlan(String? dateOfCasePlan) {
-    this.casePlanModel.dateOfEvent = dateOfCasePlan!;
+    casePlanModel.dateOfEvent = dateOfCasePlan!;
     notifyListeners();
   }
 

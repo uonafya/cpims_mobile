@@ -6,13 +6,9 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/safe_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/schooled_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/stable_cpt.dart';
 import 'package:cpims_mobile/services/form_service.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../Models/case_load_model.dart';
 import '../../../../Models/caseplan_form_model.dart';
@@ -234,9 +230,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
 
                                       List<Map<String, dynamic>> servicesList =
                                           [];
-                                      if (cptHealthFormData != null &&
-                                          cptHealthFormData.serviceIds !=
-                                              null &&
+                                      if (cptHealthFormData.serviceIds != null &&
                                           cptHealthFormData.goalId != null &&
                                           cptHealthFormData.gapId != null &&
                                           cptHealthFormData.priorityId !=
@@ -268,8 +262,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                         servicesList.add(healthService);
                                       }
 
-                                      if (cptSafeFormData != null &&
-                                          cptSafeFormData.serviceIds != null &&
+                                      if (cptSafeFormData.serviceIds != null &&
                                           cptSafeFormData.goalId != null &&
                                           cptSafeFormData.gapId != null &&
                                           cptSafeFormData.priorityId != null &&
@@ -300,9 +293,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                         servicesList.add(safeService);
                                       }
 
-                                      if (cptStableFormData != null &&
-                                          cptStableFormData.serviceIds !=
-                                              null &&
+                                      if (cptStableFormData.serviceIds != null &&
                                           cptStableFormData.goalId != null &&
                                           cptStableFormData.gapId != null &&
                                           cptStableFormData.priorityId !=
@@ -334,9 +325,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                         servicesList.add(stableService);
                                       }
 
-                                      if (cptschooledFormData != null &&
-                                          cptschooledFormData.serviceIds !=
-                                              null &&
+                                      if (cptschooledFormData.serviceIds != null &&
                                           cptschooledFormData.goalId != null &&
                                           cptschooledFormData.gapId != null &&
                                           cptschooledFormData.priorityId !=

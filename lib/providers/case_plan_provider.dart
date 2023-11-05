@@ -1,14 +1,10 @@
-import 'dart:convert';
 
 import 'package:cpims_mobile/Models/caseplan_form_model.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/models/case_plan_main_model.dart';
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:cpims_mobile/widgets/custom_toast.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/forms/case_plan/utils/case_plan_dummy_data.dart';
 
 class CasePlanProvider extends ChangeNotifier {
@@ -146,7 +142,7 @@ class CasePlanProvider extends ChangeNotifier {
     String goalId = "";
     String gapId = "";
     String resultsId = "";
-    String reason_is = "";
+    String reasonIs = "";
     String completionDate = "";
     String dateOfCasePlan = "";
     if (_casePlanModelData.selectedPriorityAction.isNotEmpty) {
@@ -165,15 +161,11 @@ class CasePlanProvider extends ChangeNotifier {
       resultsId = _casePlanModelData.selectedResult[0].value!;
     }
     if (_casePlanModelData.selectedReason.isNotEmpty) {
-      reason_is = _casePlanModelData.selectedReason;
+      reasonIs = _casePlanModelData.selectedReason;
     }
-    if(_casePlanModelData.selectedDate != null){
-      dateOfCasePlan = _casePlanModelData.selectedDate.toString();
-    }
-    if(_casePlanModelData.selectedDateToBeCompleted != null){
+    dateOfCasePlan = _casePlanModelData.selectedDate.toString();
       completionDate = _casePlanModelData.selectedDateToBeCompleted.toString();
-    }
-
+  
     // print("goal --->${cpFormData.selectedGoal[0].value}");
     print("priority ---> ${_casePlanModelData.selectedPriorityAction}");
     print("goal ---> ${_casePlanModelData.selectedGoal}");
@@ -183,7 +175,7 @@ class CasePlanProvider extends ChangeNotifier {
     print("gap ---> $gapId");
     print("responsible ---> $responsibleId");
     print("results   ----> $resultsId");
-    print("reason   ----> $reason_is");
+    print("reason   ----> $reasonIs");
     print("completion date   ----> $completionDate");
     print("ovc cpims id   ----> $ovcCpimsId");
 
@@ -199,7 +191,7 @@ class CasePlanProvider extends ChangeNotifier {
           'priority_id': priorityId,
           'responsible_id': responsibleId,
           'results_id': resultsId,
-          'reason_id': reason_is,
+          'reason_id': reasonIs,
           'completion_date': completionDate
         }
       ]

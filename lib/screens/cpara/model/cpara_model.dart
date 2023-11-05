@@ -1,20 +1,13 @@
 
-import 'dart:convert';
 
-import 'package:cpims_mobile/screens/cpara/model/db_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
-import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 
-import '../../../providers/db_provider.dart';
-import '../provider/db_util.dart';
-import '../widgets/cpara_stable_widget.dart';
 
 final dio = Dio();
 
@@ -61,7 +54,7 @@ class CparaModel {
       Database? db, List<List<Map<String, dynamic>>> data, int formID) async {
     try {
       // Create a batch
-      var batch = await db!.batch();
+      var batch = db!.batch();
 
       // Loop through all children
       for (var i in data) {
@@ -231,7 +224,7 @@ class CparaModel {
       print("Local Db Data start");
       // Insert database
       // Create a batch
-      var batch = db!.batch();
+      var batch = db.batch();
       json.forEach((key, value) {
         batch.insert(
           "HouseholdAnswer",

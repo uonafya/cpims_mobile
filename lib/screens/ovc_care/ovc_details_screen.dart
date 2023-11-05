@@ -3,8 +3,9 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/screens/cpara/cpara_forms.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
-import 'package:cpims_mobile/screens/forms/case_plan/case_plan.dart';
 import 'package:cpims_mobile/screens/forms/form1b/form_1B.dart';
+import 'package:cpims_mobile/screens/forms/hiv_management/screens/hiv_management_form_screen.dart';
+import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_assessment.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/widgets/custom_card_grid_item.dart';
 import 'package:cpims_mobile/screens/unsynched_workflows/widgets/child_details_workflow_button.dart';
@@ -43,7 +44,6 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final detailProvider = Provider.of<CparaProvider>(context, listen: true);
     return Scaffold(
         appBar: customAppBar(),
         drawer: const Drawer(
@@ -175,6 +175,22 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
               onClick: () {
                 Get.to(
                     () => CasePlanTemplateForm(caseLoad: widget.caseLoadModel));
+              },
+            ),
+            ChildDetailsWorkflowButton(
+              workflowName: "HIV Management Form",
+              onClick: () {
+                Get.to(
+                  () => HIVManagementForm(caseLoad: widget.caseLoadModel),
+                );
+              },
+            ),
+            ChildDetailsWorkflowButton(
+              workflowName: "HIV Assessment form",
+              onClick: () {
+                Get.to(() => HIVAssessmentScreen(
+                      caseLoadModel: widget.caseLoadModel,
+                    ));
               },
             ),
             const SizedBox(

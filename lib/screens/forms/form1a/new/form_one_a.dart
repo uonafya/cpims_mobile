@@ -4,24 +4,17 @@ import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_safe.dar
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_stable.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/form_one_a_healthy.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/form_one_a_schooled.dart';
-import 'package:cpims_mobile/screens/forms/location_util.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Models/case_load_model.dart';
 import '../../../../constants.dart';
-import '../../../../providers/form1a_provider.dart';
-import '../../../../providers/form1b_provider.dart';
 import '../../../../widgets/app_bar.dart';
 import '../../../../widgets/custom_button.dart';
 import '../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../widgets/custom_stepper.dart';
-import '../../../../widgets/custom_toast.dart';
 import '../../../../widgets/drawer.dart';
 import '../../../../widgets/footer.dart';
 import '../../../homepage/provider/stats_provider.dart';
