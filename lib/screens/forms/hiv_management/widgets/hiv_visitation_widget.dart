@@ -30,7 +30,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   String? arvDrugsDuration;
   String? adherenceCounseling;
   String? treatmentSupporter;
-  String? treatmentSupporterOthers;
   String? treatmentSupporterSex;
   String? treatmentSupporterAge;
   String? treatmentSupporterHIVStatus;
@@ -52,8 +51,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   TextEditingController durationOnARTsController = TextEditingController();
   TextEditingController heightController = TextEditingController();
   TextEditingController arvDrugsDurationController = TextEditingController();
-  TextEditingController treatmentSupportOthersController =
-      TextEditingController();
   TextEditingController treatmentSupportAgeController = TextEditingController();
   TextEditingController viralLoadResultsController = TextEditingController();
   TextEditingController zScoreController = TextEditingController();
@@ -78,7 +75,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
       arvDrugsDuration: arvDrugsDuration,
       adherenceCounseling: adherenceCounseling,
       treatmentSupporter: treatmentSupporter,
-      treatmentSupporterOthers: treatmentSupporterOthers,
       treatmentSupporterSex: treatmentSupporterSex,
       treatmentSupporterAge: treatmentSupporterAge,
       treatmentSupporterHIVStatus: treatmentSupporterHIVStatus,
@@ -280,28 +276,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                 'Other Relatives',
                 'Others'
               ],
-            ),
-          ],
-        ),
-        FormSection(
-          children: [
-            const Text(
-              'Q9) Treatment supporter-Others',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            CustomTextField(
-              hintText: 'Others',
-              controller: treatmentSupportOthersController,
-              onChanged: (val) {
-                setState(() {
-                  treatmentSupporterOthers =
-                      treatmentSupportOthersController.text;
-                  handleOnSave();
-                });
-              },
             ),
           ],
         ),

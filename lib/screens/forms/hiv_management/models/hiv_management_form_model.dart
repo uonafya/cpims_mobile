@@ -17,7 +17,6 @@ class HIVManagementFormModel {
   final String? arvDrugsDuration;
   final String? adherenceCounseling;
   final String? treatmentSupporter;
-  final String? treatmentSupporterOthers;
   final String? treatmentSupporterSex;
   final String? treatmentSupporterAge;
   final String? treatmentSupporterHIVStatus;
@@ -55,7 +54,6 @@ class HIVManagementFormModel {
     this.arvDrugsDuration,
     this.adherenceCounseling,
     this.treatmentSupporter,
-    this.treatmentSupporterOthers,
     this.treatmentSupporterSex,
     this.treatmentSupporterAge,
     this.treatmentSupporterHIVStatus,
@@ -97,7 +95,6 @@ class HIVManagementFormModel {
       'arvDrugsDuration': arvDrugsDuration,
       'adherenceCounseling': adherenceCounseling,
       'treatmentSupporter': treatmentSupporter,
-      'treatmentSupporterOthers': treatmentSupporterOthers,
       'treatmentSupporterSex': treatmentSupporterSex,
       'treatmentSupporterAge': treatmentSupporterAge,
       'treatmentSupporterHIVStatus': treatmentSupporterHIVStatus,
@@ -142,7 +139,6 @@ class HIVManagementFormModel {
       arvDrugsDuration: json['arvDrugsDuration'],
       adherenceCounseling: json['adherenceCounseling'],
       treatmentSupporter: json['treatmentSupporter'],
-      treatmentSupporterOthers: json['treatmentSupporterOthers'],
       treatmentSupporterSex: json['treatmentSupporterSex'],
       treatmentSupporterAge: json['treatmentSupporterAge'],
       treatmentSupporterHIVStatus: json['treatmentSupporterHIVStatus'],
