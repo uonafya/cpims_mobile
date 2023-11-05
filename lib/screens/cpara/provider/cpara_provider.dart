@@ -89,9 +89,15 @@ class CparaProvider extends ChangeNotifier {
     }
 
 // Health BenchMark 3 result
-    if (overallChildrenBenchmark(childrenOptions: firstListOfQuestions).toLowerCase() == "yes" &&
-        overallChildrenBenchmark(childrenOptions: secondListOfQuestions).toLowerCase() == "yes" &&
-        overallChildrenBenchmark(childrenOptions: thirdListOfQuestions).toLowerCase() == "yes") {
+    if (overallChildrenBenchmark(childrenOptions: firstListOfQuestions)
+                .toLowerCase() ==
+            "yes" &&
+        overallChildrenBenchmark(childrenOptions: secondListOfQuestions)
+                .toLowerCase() ==
+            "yes" &&
+        overallChildrenBenchmark(childrenOptions: thirdListOfQuestions)
+                .toLowerCase() ==
+            "yes") {
       benchmark3 = 1;
       print("Benchmark 3: $benchmark3");
     } else {
@@ -130,9 +136,9 @@ class CparaProvider extends ChangeNotifier {
 // Calculate stable benchmark
   int stableBenchMark() {
     int stableBenchmark = 0;
-    if ((stableModel?.question1 == "Yes" ||
-        stableModel?.question1 == "N/A") && (stableModel?.question2 == "Yes" ||
-        stableModel?.question2 == "N/A") && (stableModel?.question3 == "Yes")) {
+    if ((stableModel?.question1 == "Yes" || stableModel?.question1 == "N/A") &&
+        (stableModel?.question2 == "Yes" || stableModel?.question2 == "N/A") &&
+        (stableModel?.question3 == "Yes")) {
       stableBenchmark = 1;
     } else {
       stableBenchmark = 0;
@@ -155,24 +161,38 @@ class CparaProvider extends ChangeNotifier {
 
     // bool isAllChildrenYes = overallChildrenBenchmark(childrenOptions: childQuestions).toLowerCase() == "yes";
 
-    if (safeModel?.overallQuestion1 == "No" ||
-        safeModel?.question1 == "Yes" &&
-            safeModel?.question2 == "Yes" &&
-            // safeModel?.question3 == "Yes" &&
-            safeModel?.question4 == "Yes" &&
-            safeModel?.question5 == "Yes" &&
-            overallChildrenBenchmark(childrenOptions: childQuestions)
-                    .toLowerCase() ==
-                "yes") {
+    // if (safeModel?.overallQuestion1 == "No" ||
+    //     safeModel?.question1 == "Yes" &&
+    //         safeModel?.question2 == "Yes" &&
+    //         // safeModel?.question3 == "Yes" &&
+    //         safeModel?.question4 == "Yes" &&
+    //         safeModel?.question5 == "Yes" &&
+    //         overallChildrenBenchmark(childrenOptions: childQuestions)
+    //                 .toLowerCase() ==
+    //             "yes") {
+    //   benchmark1 = 1;
+    // } else {
+    //   benchmark1 = 0;
+    // }
+
+    // Benchmark 1: 1 if 6.4 and 6.5 are yes
+    if (safeModel?.question3 == "Yes" && safeModel?.question4 == "Yes") {
+      debugPrint("Safe model question 3 is ${safeModel?.question3}");
+      debugPrint("Safe has a benchmark of 1");
+      debugPrint(safeModel.toString());
       benchmark1 = 1;
     } else {
+      debugPrint(safeModel.toString());
+      debugPrint("Safe has a benchmark of 0");
       benchmark1 = 0;
     }
 
 // Safe Benchmark 2 result
-    if (safeModel?.question6 == "Yes" && safeModel?.question7 == "Yes") {
+    if (safeModel?.question5 == "Yes" && safeModel?.question6 == "Yes") {
+      debugPrint("Safe benchmark 2 is 1");
       benchmark2 = 1;
     } else {
+      debugPrint("Safe benchmark 2 is 0");
       benchmark2 = 0;
     }
 
