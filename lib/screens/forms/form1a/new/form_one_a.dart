@@ -63,6 +63,15 @@ class _FomOneAState extends State<FomOneA> {
         Provider.of<Form1AProviderNew>(context, listen: false);
     bool isLastStep = selectedStep == steps.length - 1;
 
+    bool isFormInvalid() {
+      return (form1AProvider.formData.selectedDate == null)
+          || ( form1AProvider.formData.selectedServices.isBlank!
+          && form1AProvider.safeFormData.selectedServices.isBlank!
+          && form1AProvider.stableFormData.selectedServices.isBlank!
+          && form1AProvider.schooledFormData.selectedServices.isBlank!
+          && form1AProvider.criticalEventDataForm1b.selectedEvents.isBlank!);
+    }
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -177,12 +186,7 @@ class _FomOneAState extends State<FomOneA> {
                               text: isLastStep ? 'Submit Form1A' : 'Next',
                               onTap: () async {
                                 if (isLastStep) {
-                                  if (form1AProvider.formData.selectedDate == null
-                                      || form1AProvider.formData.selectedServices.isBlank!
-                                      || form1AProvider.safeFormData.selectedServices.isBlank!
-                                      || form1AProvider.stableFormData.selectedServices.isBlank!
-                                      || form1AProvider.schooledFormData.selectedServices.isBlank!
-                                      || form1AProvider.criticalEventDataForm1b.selectedEvents.isBlank!) {
+                                  if (isFormInvalid()) {
                                     Get.snackbar(
                                       'Error',
                                       'Please fill all the information',
