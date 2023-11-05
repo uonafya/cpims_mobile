@@ -3,6 +3,7 @@ import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/widgets/custom_dynamic_radio_button.dart';
+import 'package:cpims_mobile/widgets/form_section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -95,67 +96,80 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
           const SizedBox(
             height: 10,
           ),
-          const Text("1a) Date of assessment"),
-          const SizedBox(
-            height: 10,
-          ),
-          DateTextField(
-            label: "Date of assessment",
-            enabled: true,
-            onDateSelected: (date) {
-              setState(() {
-                dateOfAssessment = date;
-                handleOnFormSaved();
-              });
-            },
-            identifier: DateTextFieldIdentifier.dateOfAssessment,
-          ),
-          const SizedBox(height: 14),
-          const Divider(),
-          const Text(
-              "1b) Does the caregiver know the status of the child? /Does the Adolescent and youth (>15) years know his/her status?"),
-          CustomRadioButton(
-              isNaAvailable: false,
-              optionSelected: (val) {
-                setState(() {
-                  statusOfChild = convertingRadioButtonOptionsToString(val);
-                  handleOnFormSaved();
-                });
-              }),
-          const SizedBox(
-            height: 4,
-          ),
-          const Text("What is the HIV Status"),
-          const SizedBox(
-            height: 4,
-          ),
-          CustomDynamicRadioButton(
-            isNaAvailable: false,
-            optionSelected: (val) {
-              setState(() {
-                hivStatus = val;
-                handleOnFormSaved();
-              });
-            },
-            customOptions: const [
-              "HIV_Positive",
-              "HIV_Negative",
+          FormSection(
+            children: [
+              const Text("1a) Date of assessment"),
+              const SizedBox(
+                height: 10,
+              ),
+              DateTextField(
+                label: "Date of assessment",
+                enabled: true,
+                onDateSelected: (date) {
+                  setState(() {
+                    dateOfAssessment = date;
+                    handleOnFormSaved();
+                  });
+                },
+                identifier: DateTextFieldIdentifier.dateOfAssessment,
+              ),
+              const SizedBox(height: 14),
             ],
           ),
-          const SizedBox(
-            height: 14,
+          const Divider(),
+          FormSection(children: [
+            const Text(
+                "1b) Does the caregiver know the status of the child? /Does the Adolescent and youth (>15) years know his/her status?"),
+            CustomRadioButton(
+                isNaAvailable: false,
+                optionSelected: (val) {
+                  setState(() {
+                    statusOfChild = convertingRadioButtonOptionsToString(val);
+                    handleOnFormSaved();
+                  });
+                }),
+          ]),
+          FormSection(
+            isDisabled: statusOfChild == "No",
+            children: [
+              const Text("What is the HIV Status"),
+              const SizedBox(
+                height: 4,
+              ),
+              CustomDynamicRadioButton(
+                isNaAvailable: false,
+                optionSelected: (val) {
+                  setState(() {
+                    hivStatus = val;
+                    handleOnFormSaved();
+                  });
+                },
+                customOptions: const [
+                  "HIV_Positive",
+                  "HIV_Negative",
+                ],
+              ),
+              const SizedBox(
+                height: 14,
+              ),
+            ],
           ),
           const Divider(),
-          const Text("1c) Was the HIV test done less than 6 months ago?	"),
-          const SizedBox(height: 10),
-          CustomRadioButton(
-              isNaAvailable: false,
-              optionSelected: (val) {
-                setState(() {
-                  hivTestDone = convertingRadioButtonOptionsToString(val);
-                  handleOnFormSaved();
-                });
-              }),
+          FormSection(
+            isDisabled: statusOfChild == "No",
+            children: [
+              const Text("1c) Was the HIV test done less than 6 months ago?	"),
+              const SizedBox(height: 10),
+              CustomRadioButton(
+                  isNaAvailable: false,
+                  optionSelected: (val) {
+                    setState(() {
+                      hivTestDone = convertingRadioButtonOptionsToString(val);
+                      handleOnFormSaved();
+                    });
+                  }),
+            ],
+          ),
         ],
       ),
     );
