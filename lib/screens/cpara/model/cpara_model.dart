@@ -15,6 +15,7 @@ import 'package:dio/dio.dart';
 import '../../../providers/db_provider.dart';
 import '../provider/db_util.dart';
 import '../widgets/cpara_stable_widget.dart';
+import '../widgets/ovc_sub_population_form.dart';
 
 final dio = Dio();
 
@@ -24,7 +25,7 @@ class CparaModel {
   final StableModel stable;
   final SchooledModel schooled;
   final HealthModel health;
-  // final OvcSubPopulationModel? ovcSubPopulationModel;
+  final List<Map<String, List<CheckboxQuestion>>>? ovcSubPopulations;
 
   CparaModel({
     required this.detail,
@@ -32,6 +33,7 @@ class CparaModel {
     required this.stable,
     required this.schooled,
     required this.health,
+    this.ovcSubPopulations
     // required this.ovcSubPopulationModel
   });
 
@@ -43,6 +45,7 @@ class CparaModel {
         '  stable: $stable,\n'
         '  schooled: $schooled,\n'
         '  health: $health,\n'
+    ' subpopulation: $ovcSubPopulations,\n'
         '}';
   }
 
@@ -53,6 +56,7 @@ class CparaModel {
       stable: StableModel.fromJson(json['stable']),
       schooled: SchooledModel.fromJson(json['schooled']),
       health: HealthModel.fromJson(json['health']),
+      ovcSubPopulations: json['ovc_subpopulation']
       // ovcSubPopulationModel: OvcSubPopulationModel.fromJson(json['ovcSubPopulationModel'])
     );
   }
