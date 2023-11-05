@@ -5,13 +5,15 @@ import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
+import '../../../providers/db_provider.dart';
+import '../../../widgets/custom_button.dart';
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
 
 class CparaDetailsWidget extends StatefulWidget {
@@ -193,6 +195,23 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             },
             isNaAvailable: false),
         const SizedBox(height: 20),
+        const QuestionForCard(
+          text: "OVC Sub Population",
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        // for(var child in children)
+        //   OvcForm(caseLoadModel: child),
+        const OvcOverallForm(),
+        // const SizedBox(height: 15),
+        // CustomButton(
+        //   text: "Submit",
+        //   onTap: () {
+        //     List<Map<CaseLoadModel, List<CheckboxQuestion>>> ovcSubPopulations = context.read<CparaProvider>().ovcSubPopulations ?? [];
+        //     debugPrint("${ovcSubPopulations.length}");
+        //   },
+        // ),
       ],
     );
   }
