@@ -273,9 +273,6 @@ class _OvcOverallFormState extends State<OvcOverallForm> {
                         childrenQuestions[i] = children[i].copyWith(answer4: value, question4: "FSW");
                         context.read<CparaProvider>().updateCparaOvcModel(ovcSub
                             .copyWith(childrenQuestions: childrenQuestions));
-                        setState(() {
-
-                        });
                       }),
                       OvcRowQuestion(question: "Children of People Living with HIV/AIDS (PLHIV)?", answer: children[i].answer5, onValueChange: (value) {
                         CparaOvcSubPopulation ovcSub =
@@ -284,9 +281,6 @@ class _OvcOverallFormState extends State<OvcOverallForm> {
                         childrenQuestions[i] = children[i].copyWith(answer5: value, question5: "PLHIV");
                         context.read<CparaProvider>().updateCparaOvcModel(ovcSub
                             .copyWith(childrenQuestions: childrenQuestions));
-                        setState(() {
-
-                        });
                       }),
                       OvcRowQuestion(question: "Children living with HIV/AIDS (CLHIV)?", answer: children[i].answer6, onValueChange: (value) {
                         CparaOvcSubPopulation ovcSub =
@@ -295,9 +289,6 @@ class _OvcOverallFormState extends State<OvcOverallForm> {
                         childrenQuestions[i] = children[i].copyWith(answer6: value, question6: "CLHIV");
                         context.read<CparaProvider>().updateCparaOvcModel(ovcSub
                             .copyWith(childrenQuestions: childrenQuestions));
-                        setState(() {
-
-                        });
                       }),
                       OvcRowQuestion(question: "Sexual violence against children (SVAC)?", answer: children[i].answer7, onValueChange: (value) {
                         CparaOvcSubPopulation ovcSub =
@@ -306,9 +297,6 @@ class _OvcOverallFormState extends State<OvcOverallForm> {
                         childrenQuestions[i] = children[i].copyWith(answer7: value, question7: "SVAC");
                         context.read<CparaProvider>().updateCparaOvcModel(ovcSub
                             .copyWith(childrenQuestions: childrenQuestions));
-                        setState(() {
-
-                        });
                       }),
                       OvcRowQuestion(question: "Household affected by HIV ?", answer: children[i].answer8, onValueChange: (value) {
                         CparaOvcSubPopulation ovcSub =

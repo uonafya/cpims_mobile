@@ -31,9 +31,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
   RadioButtonOptions? hasHivExposedInfant;
   RadioButtonOptions? hasPregnantOrBreastfeedingWoman;
 
-
-  List<CaseLoadModel> children = [
-  ];
+  List<CaseLoadModel> children = [];
 
   @override
   void initState() {
@@ -51,8 +49,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             detailModel.hasHivExposedInfant!);
     // dateOfAssessment = detailModel.dateOfAssessment == null ? dateOfAssessment : DateTime.parse(detailModel.dateOfAssessment!);
     // dateOfLastAssessment = detailModel.dateOfLastAssessment == null ? dateOfLastAssessment : DateTime.parse(detailModel.dateOfLastAssessment!);
-    List<CaseLoadModel> models =
-        context.read<CparaProvider>().children ?? [];
+    List<CaseLoadModel> models = context.read<CparaProvider>().children ?? [];
     children = models;
 
     super.initState();
@@ -97,7 +94,8 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             print('Date selected: $date');
             DetailModel detailModel =
                 context.read<CparaProvider>().detailModel ?? DetailModel();
-            context.read<CparaProvider>().updateDetailModel(detailModel.copyWith(dateOfAssessment: date.toString()));
+            context.read<CparaProvider>().updateDetailModel(
+                detailModel.copyWith(dateOfAssessment: date.toString()));
           },
         ),
         const Divider(
@@ -146,9 +144,12 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
           physics: const NeverScrollableScrollPhysics(),
           itemCount: children.length,
           itemBuilder: (context, index) {
-            return ExpansionTile(title: Text('${children[index].ovcFirstName!} ${children[index].ovcSurname!}'), children: [
-              ChildCard(childDetails: children[index]),
-            ]);
+            return ExpansionTile(
+                title: Text(
+                    '${children[index].ovcFirstName!} ${children[index].ovcSurname!}'),
+                children: [
+                  ChildCard(childDetails: children[index]),
+                ]);
           },
         ),
         QuestionWidget(
@@ -195,19 +196,23 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             },
             isNaAvailable: false),
         const SizedBox(height: 20),
-        const QuestionForCard(text: "OVC Sub Population",),
-        const SizedBox(height: 10.0,),
+        const QuestionForCard(
+          text: "OVC Sub Population",
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
         // for(var child in children)
         //   OvcForm(caseLoadModel: child),
         const OvcOverallForm(),
-        const SizedBox(height: 15),
-        CustomButton(
-          text: "Submit",
-          onTap: () {
-            List<Map<CaseLoadModel, List<CheckboxQuestion>>> ovcSubPopulations = context.read<CparaProvider>().ovcSubPopulations ?? [];
-            debugPrint("${ovcSubPopulations.length}");
-          },
-        ),
+        // const SizedBox(height: 15),
+        // CustomButton(
+        //   text: "Submit",
+        //   onTap: () {
+        //     List<Map<CaseLoadModel, List<CheckboxQuestion>>> ovcSubPopulations = context.read<CparaProvider>().ovcSubPopulations ?? [];
+        //     debugPrint("${ovcSubPopulations.length}");
+        //   },
+        // ),
       ],
     );
   }
@@ -295,14 +300,12 @@ class _TextViewsColumnState extends State<TextViewsColumn> {
 
     caseLoadModel =
         context.read<CparaProvider>().caseLoadModel ?? CaseLoadModel();
-
   }
 
   @override
   Widget build(BuildContext context) {
     final SummaryDataModel dashData =
-    context.select((UIProvider provider) => provider.getDashData);
-
+        context.select((UIProvider provider) => provider.getDashData);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -395,7 +398,8 @@ class ChildCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('${childDetails.ovcFirstName!} ${childDetails.ovcSurname!}'),
+                Text(
+                    '${childDetails.ovcFirstName!} ${childDetails.ovcSurname!}'),
                 Text("${calculateAge(childDetails.dateOfBirth!)} years"),
               ],
             ),
