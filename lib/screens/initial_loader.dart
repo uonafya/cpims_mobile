@@ -2,12 +2,14 @@
 
 import 'package:android_id/android_id.dart';
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
 import 'package:cpims_mobile/screens/biometric_information_screen.dart';
 import 'package:cpims_mobile/screens/connectivity_screen.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
+import 'package:cpims_mobile/screens/locked_screen.dart';
 import 'package:cpims_mobile/services/dash_board_service.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:cpims_mobile/services/metadata_service.dart';
@@ -57,6 +59,12 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
         /// If the user is coming from the splash screen, we check for biometrics(Subsequent logins)
         try {
           // Your asynchronous operations here...
+          final lockApp =  await AuthProvider.getAppLock();
+          if (lockApp) {
+            Get.off(() =>
+            const LockedScreen());
+            return;
+          }
 
           final hasConnection =
               await Provider.of<ConnectivityProvider>(context, listen: false)

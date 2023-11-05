@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/initial_loader.dart';
 import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:http/http.dart' as http;
@@ -13,6 +12,9 @@ import 'package:get/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
+
+  static const String _lockAppPrefKey = '_lockAppPrefKey';
+
   UserModel _user = UserModel(
     username: '',
     accessToken: '',
@@ -43,6 +45,17 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  static Future<void> setAppLock(bool lockApp) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_lockAppPrefKey, lockApp);
+  }
+
+  static Future<bool> getAppLock() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_lockAppPrefKey) ?? false;
+  }
+
+
   Future<void> login({
     required BuildContext context,
     required String password,
@@ -67,6 +80,7 @@ class AuthProvider with ChangeNotifier {
     //   if (context.mounted) {
     //     errorSnackBar(context, 'Not authorized to view this resource');
     //     await LocalDb.instance.deleteDb();
+    //     AuthProvider.setAppLock(true);
     //   }
     //   return;
     // }
