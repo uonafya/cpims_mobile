@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/initial_loader.dart';
 import 'package:cpims_mobile/services/caseload_service.dart';
+import 'package:cpims_mobile/widgets/logout_dialog.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:cpims_mobile/Models/user_model.dart';
@@ -128,27 +130,30 @@ class AuthProvider with ChangeNotifier {
 
   // logout
   Future<void> logOut(BuildContext context) async {
-    try {
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
+    showDialog(
+        context: context,
+        builder: (context) => LogOutDialog(
+              onLogout: () async {
+                SharedPreferences sharedPreferences =
+                    await SharedPreferences.getInstance();
 
-      await sharedPreferences.remove('access');
-      await sharedPreferences.remove('refresh');
+                await sharedPreferences.remove('access');
+                await sharedPreferences.remove('refresh');
 
-      clearUser();
+                clearUser();
 
-      CaseLoadService.saveCaseLoadLastSave(0);
+                CaseLoadService.saveCaseLoadLastSave(0);
 
-      Get.off(
-        () => const LoginScreen(),
-        transition: Transition.fadeIn,
-        duration: const Duration(microseconds: 300),
-      );
-    } catch (e) {
-      if (context.mounted) {
-        errorSnackBar(context, e.toString());
-      }
-    }
+                Get.off(
+                  () => const LoginScreen(),
+                  transition: Transition.fadeIn,
+                  duration: const Duration(microseconds: 300),
+                );
+              },
+              onDeleteDb: () async {
+                await LocalDb.instance.deleteDb();
+              },
+            ));
   }
 
   Future<bool> verifyToken({
