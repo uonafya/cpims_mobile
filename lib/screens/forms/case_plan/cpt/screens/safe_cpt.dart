@@ -431,7 +431,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
               context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
           context.read<CptProvider>().updateCptSafeFormData(cptSafeFormData
               .copyWith(completionDate: completionDate.toIso8601String()));
-          print("The selected date was $completionDate");
         },
       ),
       const SizedBox(height: 10),

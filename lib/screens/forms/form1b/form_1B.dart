@@ -130,6 +130,7 @@ class _Form1BScreen extends State<Form1BScreen> {
                                 ),
                                 const SizedBox(height: 10),
                                 CustomFormsDatePicker(
+                                  allowFutureDates: false,
                                     hintText: 'Select the date',
                                     selectedDateTime:
                                         form1bProvider.formData.selectedDate,
