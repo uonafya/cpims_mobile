@@ -155,12 +155,12 @@ int scoreConversion({required String text}){
 
 String overallChildrenBenchmark({required List<String> childrenOptions}) {
   if (childrenOptions.isEmpty) {
-    return "no";
+    return "yes";
   }
 
   for (String option in childrenOptions) {
     print("list : $option");
-    if (option.toLowerCase() == "no" || option == "null") {
+    if (option.toLowerCase() != "yes") {
       return "no";
     }
   }

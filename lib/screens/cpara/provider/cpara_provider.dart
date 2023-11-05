@@ -12,7 +12,7 @@ import '../../../Models/case_load_model.dart';
 class CparaProvider extends ChangeNotifier {
   CparaModel? cparaModel;
   DetailModel? detailModel;
-  HealthModel? healthModel;
+  HealthModel? healthModel = HealthModel();
   StableModel? stableModel;
   SafeModel? safeModel;
   SchooledModel? schooledModel;
@@ -89,19 +89,45 @@ class CparaProvider extends ChangeNotifier {
     }
 
 // Health BenchMark 3 result
-    if (overallChildrenBenchmark(childrenOptions: firstListOfQuestions)
-                .toLowerCase() ==
-            "yes" &&
-        overallChildrenBenchmark(childrenOptions: secondListOfQuestions)
-                .toLowerCase() ==
-            "yes" &&
-        overallChildrenBenchmark(childrenOptions: thirdListOfQuestions)
-                .toLowerCase() ==
-            "yes") {
+    debugPrint("#######################################");
+    debugPrint("HEALTHY BENCHMARK 3:");
+    debugPrint("#######################################");
+    // If there are children
+    if (healthModel?.childrenQuestions != null &&
+        healthModel!.childrenQuestions!.isNotEmpty) {
+      debugPrint("The list of children is not empty");
+      debugPrint(healthModel!.childrenQuestions.toString());
+      // Are the answers of all children yes
+      if (overallChildrenBenchmark(childrenOptions: firstListOfQuestions)
+                  .toLowerCase() ==
+              "yes" &&
+          overallChildrenBenchmark(childrenOptions: secondListOfQuestions)
+                  .toLowerCase() ==
+              "yes" &&
+          overallChildrenBenchmark(childrenOptions: thirdListOfQuestions)
+                  .toLowerCase() ==
+              "yes") {
+        // Benchmark is 1
+        benchmark3 = 1;
+        print("Benchmark 3: $benchmark3");
+      }
+      // Else benchmark is 0
+      else {
+        debugPrint("The list of children is not empty and some are not yes");
+        debugPrint(healthModel!.childrenQuestions.toString());
+        benchmark3 = 0;
+        print("Benchmark 3 3: $benchmark3");
+      }
+    }
+    // Else if there are no children
+    else {
+      if (healthModel?.childrenQuestions == null) {
+        debugPrint("The list is null");
+      } else {
+        debugPrint("The list of children is empty");
+      }
+      // Benchmark value is one
       benchmark3 = 1;
-      print("Benchmark 3: $benchmark3");
-    } else {
-      benchmark3 = 0;
       print("Benchmark 3 3: $benchmark3");
     }
 
@@ -279,6 +305,23 @@ class CparaProvider extends ChangeNotifier {
             element.caregiverNames == caseLoadModel?.caregiverNames)
         .toList();
     notifyListeners();
+
+    // Initialize health children in here
+    healthModel!.childrenQuestions = [];
+
+    for (CaseLoadModel model in children) {
+        DateTime birthDate = DateTime.parse(model.dateOfBirth!);
+        DateTime currentDate = DateTime.now();
+        int age = currentDate.year - birthDate.year;
+        if (age >= 10 && age <= 17) {
+          healthModel!.childrenQuestions!.add(HealthChild(
+              id: "${model.cpimsId}",
+              question1: "",
+              question2: "",
+              question3: "",
+              name: "${model.ovcFirstName} ${model.ovcSurname}"));
+        }
+      }
   }
 
   void clearCparaProvider() {
