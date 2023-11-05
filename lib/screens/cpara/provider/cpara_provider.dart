@@ -277,8 +277,8 @@ class CparaProvider extends ChangeNotifier {
   }
 
   // update safe model
-  void updateSafeModel(SafeModel safeModel) {
-    this.safeModel = safeModel;
+  void updateSafeModel(SafeModel safe) {
+    safeModel = safe;
     notifyListeners();
   }
 

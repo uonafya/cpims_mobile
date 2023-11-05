@@ -77,6 +77,8 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             setState(() {
               children = newChildren;
             });
+
+            // Save state of overall question 1
           }
           if (value == RadioButtonOptions.yes) {
             // Set values of radio buttons for questions 6.1 and 6.5 to null
@@ -90,8 +92,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
             // Set all children to null
             var newChildren = children.map((e) {
-              e.question1 =
-                  null;
+              e.question1 = null;
               return e;
             }).toList();
 
@@ -342,26 +343,45 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             card_question:
                 "Are there children, adolescents, and caregivers in the household who have experienced violence (including physical violence, emotional violence, sexual violence, gender-based violence, and neglect) in the last six months ?",
             selectedOption: (value) {
+              debugPrint("Overall Question 1 Safe");
               overallQuestion1Option = value;
               SafeModel safeModel =
                   context.read<CparaProvider>().safeModel ?? SafeModel();
               String selectedOption =
                   convertingRadioButtonOptionsToString(value);
-              context.read<CparaProvider>().updateSafeModel(
-                  safeModel.copyWith(overallQuestion1: selectedOption));
+
+              var updatedSafeModel =
+                  safeModel.copyWith(overallQuestion1: selectedOption);
 
               // Update the state of the question
               updateQuestion("_children_adolecent_caregiver", value);
               if (value == RadioButtonOptions.no) {
                 _adolescents_older_than_12 = RadioButtonOptions.no;
-              }
-              if (value == RadioButtonOptions.no) {
                 _exposed_to_violence = RadioButtonOptions.yes;
+
+                // Set 6.4 and 6.5 to yes
+                // context.read<CparaProvider>().updateSafeModel(
+                //     safeModel.copyWith(question3: selectedOption));
+                // context.read<CparaProvider>().updateSafeModel(
+                //     safeModel.copyWith(question4: selectedOption));
+                updatedSafeModel =
+                    updatedSafeModel.copyWith(question3: convertingRadioButtonOptionsToString(RadioButtonOptions.yes));
+                updatedSafeModel =
+                    updatedSafeModel.copyWith(question4: convertingRadioButtonOptionsToString(RadioButtonOptions.yes));
+              } else if (value == RadioButtonOptions.yes) {
+                // Set 6.4 and 6.5 to null
+                // context
+                //     .read<CparaProvider>()
+                //     .updateSafeModel(safeModel.copyWith(question3: null));
+                // context
+                //     .read<CparaProvider>()
+                //     .updateSafeModel(safeModel.copyWith(question4: null));
+                updatedSafeModel = updatedSafeModel.copyWith(question3: null);
+                updatedSafeModel = updatedSafeModel.copyWith(question4: null);
               }
-              if (value == RadioButtonOptions.no) {
-                _tick_Yes = RadioButtonOptions.yes;
-              }
-              if (value == RadioButtonOptions.yes) _tick_Yes = null;
+
+              debugPrint("Updating Old Safe Model with $updatedSafeModel");
+              context.read<CparaProvider>().updateSafeModel(updatedSafeModel);
             }),
 
 // Question 6.1
