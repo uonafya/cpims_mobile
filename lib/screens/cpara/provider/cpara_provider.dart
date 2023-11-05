@@ -310,10 +310,10 @@ class CparaProvider extends ChangeNotifier {
         ),
       );
     }
-    CparaOvcSubPopulation current = CparaOvcSubPopulation(childrenQuestions: cparaOvcChildren);
+    CparaOvcSubPopulation current =
+        CparaOvcSubPopulation(childrenQuestions: cparaOvcChildren);
     cparaOvcSubPopulation = current;
-      notifyListeners();
-
+    notifyListeners();
   }
 
   // update schooled model
@@ -342,25 +342,30 @@ class CparaProvider extends ChangeNotifier {
     notifyListeners();
 
     // Initialize health children in here
+    if (healthModel == null) {
+      healthModel = HealthModel();
+    }
     healthModel!.childrenQuestions = [];
 
     for (CaseLoadModel model in children) {
-        DateTime birthDate = DateTime.parse(model.dateOfBirth!);
-        DateTime currentDate = DateTime.now();
-        int age = currentDate.year - birthDate.year;
-        if (age >= 10 && age <= 17) {
-          healthModel!.childrenQuestions!.add(HealthChild(
-              id: "${model.cpimsId}",
-              question1: "",
-              question2: "",
-              question3: "",
-              name: "${model.ovcFirstName} ${model.ovcSurname}"));
-        }
+      DateTime birthDate = DateTime.parse(model.dateOfBirth!);
+      DateTime currentDate = DateTime.now();
+      int age = currentDate.year - birthDate.year;
+      if (age >= 10 && age <= 17) {
+        healthModel!.childrenQuestions!.add(HealthChild(
+            id: "${model.cpimsId}",
+            question1: "",
+            question2: "",
+            question3: "",
+            name: "${model.ovcFirstName} ${model.ovcSurname}"));
       }
+    }
+    notifyListeners();
   }
 
   // update ovc subpopulation
-  void updateOvcSubpopulation(List<Map<CaseLoadModel, List<CheckboxQuestion>>> ovcSubPopulations) {
+  void updateOvcSubpopulation(
+      List<Map<CaseLoadModel, List<CheckboxQuestion>>> ovcSubPopulations) {
     this.ovcSubPopulations = ovcSubPopulations;
     notifyListeners();
   }
@@ -372,13 +377,16 @@ class CparaProvider extends ChangeNotifier {
   }
 
   // update ovc subpopulation
-  void updateOvcSubpopulationQuestions({required String childId, required String questionId, required bool questionAnswer}) {
-    List<Map<CaseLoadModel, List<CheckboxQuestion>>> empty  = [];
+  void updateOvcSubpopulationQuestions(
+      {required String childId,
+      required String questionId,
+      required bool questionAnswer}) {
+    List<Map<CaseLoadModel, List<CheckboxQuestion>>> empty = [];
     late CaseLoadModel currentChildModel;
     List<CheckboxQuestion> currentQuestions = [];
     //todo: get the child with that id from list of children
-    Map<CaseLoadModel, List<CheckboxQuestion>> child = (ovcSubPopulations ?? empty).where((element){
-
+    Map<CaseLoadModel, List<CheckboxQuestion>> child =
+        (ovcSubPopulations ?? empty).where((element) {
       return element.keys.first.cpimsId == childId;
     }).first;
     currentChildModel = child.keys.first;
@@ -387,11 +395,12 @@ class CparaProvider extends ChangeNotifier {
     CheckboxQuestion question = child.values.first.where((element) {
       return element.questionID == questionId;
     }).first;
-    CheckboxQuestion updatedQuestion = question.copyWith(isChecked: questionAnswer);
+    CheckboxQuestion updatedQuestion =
+        question.copyWith(isChecked: questionAnswer);
     int indexOfQuestion = currentQuestions.indexOf(question);
-   for(var p in ovcSubPopulations ?? []){
-     // if(p)
-   }
+    for (var p in ovcSubPopulations ?? []) {
+      // if(p)
+    }
     // currentQuestions[indexOfQuestion] = updatedQuestion;
     // currentQuestions.contains(updatedQuestion.questionID) ? currentQuestions[currentQuestions.indexWhere((v) => v == findString)] = replaceWith : currentQuestions;
     // List<CheckboxQuestion> updatedQuestions = currentQuestions.up;
@@ -404,22 +413,24 @@ class CparaProvider extends ChangeNotifier {
   }
 
   // n
-  void updateOvcSubpopulationQuestions1({required String childId, required String questionId, required bool questionAnswer}) {
+  void updateOvcSubpopulationQuestions1(
+      {required String childId,
+      required String questionId,
+      required bool questionAnswer}) {
     List<SubOvcModel> listOfOvc = childModules ?? [];
     List<SubOvcModel> newList = [];
-    for(var k in listOfOvc){
-      if(k.caseLoadModel.cpimsId == childId){
+    for (var k in listOfOvc) {
+      if (k.caseLoadModel.cpimsId == childId) {
         List<CheckboxQuestion> qs = k.childQuestions;
         int indexQ = 0;
-        for(var l in qs){
-          if(l.questionID == questionId){
+        for (var l in qs) {
+          if (l.questionID == questionId) {
             indexQ = qs.indexOf(l);
           }
         }
         qs[indexQ] = qs[indexQ].copyWith(isChecked: questionAnswer);
         listOfOvc[listOfOvc.indexOf(k)] = k.copyWith(childQuestions: qs);
-      }
-      else{
+      } else {
         newList.add(k);
       }
     }
@@ -445,10 +456,12 @@ class CparaProvider extends ChangeNotifier {
         }
         qs[indexQ] = qs[indexQ].copyWith(isChecked: questionAnswer);
         // Create a deep copy of the SubOvcModel with the updated questions
-        SubOvcModel updatedSubOvcModel = k.copyWith(childQuestions: List.from(qs));
+        SubOvcModel updatedSubOvcModel =
+            k.copyWith(childQuestions: List.from(qs));
         updatedList.add(updatedSubOvcModel);
       } else {
-        updatedList.add(k); // If it's not the targeted child, add the original SubOvcModel
+        updatedList.add(
+            k); // If it's not the targeted child, add the original SubOvcModel
       }
     }
 
@@ -458,16 +471,19 @@ class CparaProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
-  void upKisumu1({required String childId,}){
-    List<Map<CaseLoadModel, List<CheckboxQuestion>>> ovcSubPopulation = ovcSubPopulations ?? [];
+  void upKisumu1({
+    required String childId,
+  }) {
+    List<Map<CaseLoadModel, List<CheckboxQuestion>>> ovcSubPopulation =
+        ovcSubPopulations ?? [];
 
     // Update a CheckboxQuestion by its text
     String questionTextToFind = "HEI";
-    CheckboxQuestion updatedQuestion = CheckboxQuestion(question: "Updated Question 2", id: 3);
+    CheckboxQuestion updatedQuestion =
+        CheckboxQuestion(question: "Updated Question 2", id: 3);
 
     for (var map in ovcSubPopulation) {
-      if(map.keys.first.cpimsId == childId) {
+      if (map.keys.first.cpimsId == childId) {
         for (var entry in map.entries) {
           var questions = entry.value;
 
@@ -483,7 +499,6 @@ class CparaProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
-
 
   void clearCparaProvider() {
     cparaModel = null;
