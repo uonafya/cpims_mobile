@@ -268,10 +268,10 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           ovcId: ovcpmisid,
                                           careProviderId: ovcpmisid);
                                       //todo: call ovc
-                                      if(context.mounted){
-                                        DateTime? date = DateTime.tryParse(detailModel.dateOfAssessment ?? "");
-                                        handleSubmit(context: context, selectedDate: date ?? DateTime.now());
-                                      }
+                                      // if(context.mounted){
+                                      //   DateTime? date = DateTime.tryParse(detailModel.dateOfAssessment ?? "");
+                                      //   handleSubmit(context: context, selectedDate: date ?? DateTime.now());
+                                      // }
 
                                       if (context.mounted) {
                                         context
@@ -331,10 +331,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
         context.read<CparaProvider>().cparaOvcSubPopulation ?? CparaOvcSubPopulation();
     final localDb = LocalDb.instance;
     List<CparaOvcChild> listOfOvcChild = ovcSub.childrenQuestions ?? [];
-    // final hasConnection = await Provider.of<ConnectivityProvider>(
-    //   context,
-    //   listen: false,
-    // ).checkInternetConnection();
 
     final currentContext = context; // Store the context in a local variable
 
