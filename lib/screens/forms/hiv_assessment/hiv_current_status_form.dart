@@ -147,6 +147,9 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                   setState(() {
                     hivStatus = val;
                     handleOnFormSaved();
+                    if (hivStatus == "HIV_Positive")
+                      Provider.of<HIVAssessmentProvider>(context, listen: false)
+                          .clearForms();
                   });
                 },
                 option: hivAssessmentProvider != null &&
@@ -180,6 +183,10 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                     setState(() {
                       hivTestDone = convertingRadioButtonOptionsToString(val);
                       handleOnFormSaved();
+                      if (hivTestDone == "Yes")
+                        Provider.of<HIVAssessmentProvider>(context,
+                                listen: false)
+                            .clearForms();
                     });
                   }),
             ],

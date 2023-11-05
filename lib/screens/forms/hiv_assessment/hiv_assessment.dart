@@ -7,6 +7,7 @@ import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
+import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -51,8 +52,31 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
     const ProgressMonitoringForm(),
   ];
 
-  void handleNext() {
-    final formIndex = Provider.of<HIVAssessmentProvider>(context).formIndex;
+  void handleNext(BuildContext context) {
+    final formIndex =
+        Provider.of<HIVAssessmentProvider>(context, listen: false).formIndex;
+
+    if (formIndex == 0 &&
+        Provider.of<HIVAssessmentProvider>(context, listen: false)
+                .hivCurrentStatusModel ==
+            null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Please fill in the required fields"),
+        backgroundColor: Colors.red,
+      ));
+      return;
+    }
+
+    if (formIndex == 1 &&
+        Provider.of<HIVAssessmentProvider>(context, listen: false)
+                .hivRiskAssessmentModel ==
+            null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Please fill in the required fields"),
+        backgroundColor: Colors.red,
+      ));
+      return;
+    }
 
     if (formIndex == hivAssessmentTitles.length - 1) {
       return;
@@ -62,8 +86,9 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         .updateFormIndex(formIndex + 1);
   }
 
-  void handleBack() {
-    final formIndex = Provider.of<HIVAssessmentProvider>(context).formIndex;
+  void handleBack(BuildContext context) {
+    final formIndex =
+        Provider.of<HIVAssessmentProvider>(context, listen: false).formIndex;
 
     if (formIndex == 0) {
       return;
@@ -78,6 +103,9 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
 
     return Scaffold(
       appBar: customAppBar(),
+      drawer: const Drawer(
+        child: CustomDrawer(),
+      ),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 14),
         children: [
@@ -90,8 +118,8 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
               CustomStepperWidget(
                   data: hivAssessmentTitles,
                   onTap: (index) {
-                     Provider.of<HIVAssessmentProvider>(context, listen: false)
-        .updateFormIndex(index);
+                    Provider.of<HIVAssessmentProvider>(context, listen: false)
+                        .updateFormIndex(index);
                   },
                   selectedIndex: selectedIndex),
               const SizedBox(
@@ -106,18 +134,15 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
                     child: CustomButton(
                   text: "Back",
                   color: Colors.grey,
-                  onTap: handleBack,
+                  onTap: () => handleBack(context),
                 )),
                 const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: CustomButton(
-                  text: disableSubsquentHIVAssessmentFieldsAndSubmit(context) ||
-                          selectedIndex == 2
-                      ? "Submit"
-                      : "Next",
-                  onTap: handleNext,
+                  text: selectedIndex == 2 ? "Submit" : "Next",
+                  onTap: () => handleNext(context),
                 )),
               ]),
               const SizedBox(

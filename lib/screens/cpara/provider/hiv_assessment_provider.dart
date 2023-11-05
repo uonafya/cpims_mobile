@@ -21,6 +21,9 @@ class HIVAssessmentProvider with ChangeNotifier {
 
   void updateHIVCurrentStatusModel(HIVCurrentStatusModel model) {
     _hivCurrentStatusModel = model;
+    if (_hivCurrentStatusModel!.hivStatus == "HIV_Positive") {
+      updateFormIndex(2);
+    }
     print(hivCurrentStatusModel!.toJson());
     notifyListeners();
   }
@@ -34,6 +37,12 @@ class HIVAssessmentProvider with ChangeNotifier {
   void updateProgressMonitoringModel(ProgressMonitoringModel model) {
     _progressMonitoringModel = model;
     print(progressMonitoringModel!.toJson());
+    notifyListeners();
+  }
+
+  void clearForms() {
+    _hivRiskAssessmentModel = null;
+    _progressMonitoringModel = null;
     notifyListeners();
   }
 }
