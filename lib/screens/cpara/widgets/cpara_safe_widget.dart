@@ -66,6 +66,17 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             // _no_siblings_over_10 = RadioButtonOptions.yes;
             _referred_for_services = RadioButtonOptions.yes;
             _received_services = RadioButtonOptions.yes;
+
+            // Set all children to yes
+            var newChildren = children.map((e) {
+              e.question1 =
+                  convertingRadioButtonOptionsToString(RadioButtonOptions.yes);
+              return e;
+            }).toList();
+
+            setState(() {
+              children = newChildren;
+            });
           }
           if (value == RadioButtonOptions.yes) {
             // Set values of radio buttons for questions 6.1 and 6.5 to null
@@ -76,6 +87,17 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             // _no_siblings_over_10 = null;
             _referred_for_services = null;
             _received_services = null;
+
+            // Set all children to null
+            var newChildren = children.map((e) {
+              e.question1 =
+                  null;
+              return e;
+            }).toList();
+
+            setState(() {
+              children = newChildren;
+            });
           }
         });
         break;
@@ -543,9 +565,11 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
         OtherQuestions(
           other_question: "Tick Yes if YES for all children",
           selectedOption: (value) {},
-          groupValue: allShouldBeOnlyYes(children.map((e) {
-            return convertingStringToRadioButtonOptions(e.question1 ?? "");
-          }).toList(), "All Safe Children Are Yes"), // should be yes if all children are yes
+          groupValue: allShouldBeOnlyYes(
+              children.map((e) {
+                return convertingStringToRadioButtonOptions(e.question1 ?? "");
+              }).toList(),
+              "All Safe Children Are Yes"), // should be yes if all children are yes
         ),
 
 // Label for question 6.4 to 6.5
@@ -1041,8 +1065,7 @@ RadioButtonOptions allShouldBeOnlyYes(
   // If all the values are yes return RadioButtonOptions.yes, if not return RadioButtonOptions.no
   if (members.isEmpty) {
     return RadioButtonOptions.no;
-  } else if (members
-      .any((element) => element != RadioButtonOptions.yes)) {
+  } else if (members.any((element) => element != RadioButtonOptions.yes)) {
     return RadioButtonOptions.no;
   } else {
     return RadioButtonOptions.yes;
