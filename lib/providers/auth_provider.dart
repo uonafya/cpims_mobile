@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/initial_loader.dart';
 import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:cpims_mobile/widgets/logout_dialog.dart';
@@ -133,7 +134,6 @@ class AuthProvider with ChangeNotifier {
         context: context,
         builder: (context) => LogOutDialog(
               onLogout: () async {
-                print("LogOutDialog");
                 SharedPreferences sharedPreferences =
                     await SharedPreferences.getInstance();
 
