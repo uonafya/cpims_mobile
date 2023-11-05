@@ -177,11 +177,15 @@ class _FomOneAState extends State<FomOneA> {
                               text: isLastStep ? 'Submit Form1A' : 'Next',
                               onTap: () async {
                                 if (isLastStep) {
-                                  if (form1AProvider.formData.selectedDate ==
-                                      null) {
+                                  if (form1AProvider.formData.selectedDate == null
+                                      || form1AProvider.formData.selectedServices.isBlank!
+                                      || form1AProvider.safeFormData.selectedServices.isBlank!
+                                      || form1AProvider.stableFormData.selectedServices.isBlank!
+                                      || form1AProvider.schooledFormData.selectedServices.isBlank!
+                                      || form1AProvider.criticalEventDataForm1b.selectedEvents.isBlank!) {
                                     Get.snackbar(
                                       'Error',
-                                      'Please select the date of event',
+                                      'Please fill all the information',
                                       duration: const Duration(seconds: 2),
                                       snackPosition: SnackPosition.TOP,
                                       backgroundColor: Colors.red,
