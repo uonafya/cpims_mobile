@@ -26,7 +26,7 @@ class HealthModel {
   final String? question16;
   final String? question17;
   final String? question18;
-  final List<HealthChild>? childrenQuestions;
+  List<HealthChild>? childrenQuestions;
 
   HealthModel({
     this.overallQuestion1,

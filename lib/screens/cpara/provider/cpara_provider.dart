@@ -12,7 +12,7 @@ import '../../../Models/case_load_model.dart';
 class CparaProvider extends ChangeNotifier {
   CparaModel? cparaModel;
   DetailModel? detailModel;
-  HealthModel? healthModel;
+  HealthModel? healthModel = HealthModel();
   StableModel? stableModel;
   SafeModel? safeModel;
   SchooledModel? schooledModel;
@@ -89,13 +89,45 @@ class CparaProvider extends ChangeNotifier {
     }
 
 // Health BenchMark 3 result
-    if (overallChildrenBenchmark(childrenOptions: firstListOfQuestions).toLowerCase() == "yes" &&
-        overallChildrenBenchmark(childrenOptions: secondListOfQuestions).toLowerCase() == "yes" &&
-        overallChildrenBenchmark(childrenOptions: thirdListOfQuestions).toLowerCase() == "yes") {
+    debugPrint("#######################################");
+    debugPrint("HEALTHY BENCHMARK 3:");
+    debugPrint("#######################################");
+    // If there are children
+    if (healthModel?.childrenQuestions != null &&
+        healthModel!.childrenQuestions!.isNotEmpty) {
+      debugPrint("The list of children is not empty");
+      debugPrint(healthModel!.childrenQuestions.toString());
+      // Are the answers of all children yes
+      if (overallChildrenBenchmark(childrenOptions: firstListOfQuestions)
+                  .toLowerCase() ==
+              "yes" &&
+          overallChildrenBenchmark(childrenOptions: secondListOfQuestions)
+                  .toLowerCase() ==
+              "yes" &&
+          overallChildrenBenchmark(childrenOptions: thirdListOfQuestions)
+                  .toLowerCase() ==
+              "yes") {
+        // Benchmark is 1
+        benchmark3 = 1;
+        print("Benchmark 3: $benchmark3");
+      }
+      // Else benchmark is 0
+      else {
+        debugPrint("The list of children is not empty and some are not yes");
+        debugPrint(healthModel!.childrenQuestions.toString());
+        benchmark3 = 0;
+        print("Benchmark 3 3: $benchmark3");
+      }
+    }
+    // Else if there are no children
+    else {
+      if (healthModel?.childrenQuestions == null) {
+        debugPrint("The list is null");
+      } else {
+        debugPrint("The list of children is empty");
+      }
+      // Benchmark value is one
       benchmark3 = 1;
-      print("Benchmark 3: $benchmark3");
-    } else {
-      benchmark3 = 0;
       print("Benchmark 3 3: $benchmark3");
     }
 
@@ -130,9 +162,9 @@ class CparaProvider extends ChangeNotifier {
 // Calculate stable benchmark
   int stableBenchMark() {
     int stableBenchmark = 0;
-    if (stableModel?.question1 == "Yes" ||
-        stableModel?.question1 == "N/A" && stableModel?.question2 == "Yes" ||
-        stableModel?.question2 == "N/A" && stableModel?.question3 == "Yes") {
+    if ((stableModel?.question1 == "Yes" || stableModel?.question1 == "N/A") &&
+        (stableModel?.question2 == "Yes" || stableModel?.question2 == "N/A") &&
+        (stableModel?.question3 == "Yes")) {
       stableBenchmark = 1;
     } else {
       stableBenchmark = 0;
@@ -155,24 +187,38 @@ class CparaProvider extends ChangeNotifier {
 
     // bool isAllChildrenYes = overallChildrenBenchmark(childrenOptions: childQuestions).toLowerCase() == "yes";
 
-    if (safeModel?.overallQuestion1 == "No" ||
-        safeModel?.question1 == "Yes" &&
-            safeModel?.question2 == "Yes" &&
-            // safeModel?.question3 == "Yes" &&
-            safeModel?.question4 == "Yes" &&
-            safeModel?.question5 == "Yes" &&
-            overallChildrenBenchmark(childrenOptions: childQuestions)
-                    .toLowerCase() ==
-                "yes") {
+    // if (safeModel?.overallQuestion1 == "No" ||
+    //     safeModel?.question1 == "Yes" &&
+    //         safeModel?.question2 == "Yes" &&
+    //         // safeModel?.question3 == "Yes" &&
+    //         safeModel?.question4 == "Yes" &&
+    //         safeModel?.question5 == "Yes" &&
+    //         overallChildrenBenchmark(childrenOptions: childQuestions)
+    //                 .toLowerCase() ==
+    //             "yes") {
+    //   benchmark1 = 1;
+    // } else {
+    //   benchmark1 = 0;
+    // }
+
+    // Benchmark 1: 1 if 6.4 and 6.5 are yes
+    if (safeModel?.question3 == "Yes" && safeModel?.question4 == "Yes") {
+      debugPrint("Safe model question 3 is ${safeModel?.question3}");
+      debugPrint("Safe has a benchmark of 1");
+      debugPrint(safeModel.toString());
       benchmark1 = 1;
     } else {
+      debugPrint(safeModel.toString());
+      debugPrint("Safe has a benchmark of 0");
       benchmark1 = 0;
     }
 
 // Safe Benchmark 2 result
-    if (safeModel?.question6 == "Yes" && safeModel?.question7 == "Yes") {
+    if (safeModel?.question5 == "Yes" && safeModel?.question6 == "Yes") {
+      debugPrint("Safe benchmark 2 is 1");
       benchmark2 = 1;
     } else {
+      debugPrint("Safe benchmark 2 is 0");
       benchmark2 = 0;
     }
 
@@ -231,8 +277,8 @@ class CparaProvider extends ChangeNotifier {
   }
 
   // update safe model
-  void updateSafeModel(SafeModel safeModel) {
-    this.safeModel = safeModel;
+  void updateSafeModel(SafeModel safe) {
+    safeModel = safe;
     notifyListeners();
   }
 
@@ -259,6 +305,23 @@ class CparaProvider extends ChangeNotifier {
             element.caregiverNames == caseLoadModel?.caregiverNames)
         .toList();
     notifyListeners();
+
+    // Initialize health children in here
+    healthModel!.childrenQuestions = [];
+
+    for (CaseLoadModel model in children) {
+        DateTime birthDate = DateTime.parse(model.dateOfBirth!);
+        DateTime currentDate = DateTime.now();
+        int age = currentDate.year - birthDate.year;
+        if (age >= 10 && age <= 17) {
+          healthModel!.childrenQuestions!.add(HealthChild(
+              id: "${model.cpimsId}",
+              question1: "",
+              question2: "",
+              question3: "",
+              name: "${model.ovcFirstName} ${model.ovcSurname}"));
+        }
+      }
   }
 
   void clearCparaProvider() {

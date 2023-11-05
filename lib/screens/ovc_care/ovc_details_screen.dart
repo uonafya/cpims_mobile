@@ -157,7 +157,11 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                     .read<CparaProvider>()
                     .updateCaseLoadModel(widget.caseLoadModel);
                 Get.to(() =>
-                    CparaFormsScreen(caseLoadModel: widget.caseLoadModel));
+                        CparaFormsScreen(caseLoadModel: widget.caseLoadModel))!
+                    .then((value) {
+                  // Clear CPARA data
+                  context.read<CparaProvider>().clearCparaProvider();
+                });
               },
             ),
             ChildDetailsWorkflowButton(

@@ -56,6 +56,19 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
           if (value == RadioButtonOptions.yes) {
             q9_1_Children_enrooled_in_school = null;
             q9_2_Children_attending_school_regularly = null;
+
+            SchooledModel schooledModel =
+                context.read<CparaProvider>().schooledModel ?? SchooledModel();
+
+            String selectedOption = convertingRadioButtonOptionsToString(
+                q9_2_Children_attending_school_regularly);
+            context.read<CparaProvider>().updateSchooledModel(
+                schooledModel.copyWith(question2: selectedOption));
+
+            selectedOption = convertingRadioButtonOptionsToString(
+                q9_1_Children_enrooled_in_school);
+            context.read<CparaProvider>().updateSchooledModel(
+                schooledModel.copyWith(question1: selectedOption));
           }
 
           SchooledModel schooledModel =
@@ -308,7 +321,7 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
           ),
 
           // CparaResultBenchmarks(),
-          FinalBenchMark(),
+          const FinalBenchMark(),
         ],
       ),
     );

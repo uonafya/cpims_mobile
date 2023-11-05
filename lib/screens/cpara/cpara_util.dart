@@ -160,7 +160,7 @@ String overallChildrenBenchmark({required List<String> childrenOptions}) {
 
   for (String option in childrenOptions) {
     print("list : $option");
-    if (option.toLowerCase() == "no" || option == "null") {
+    if (option.toLowerCase() != "yes") {
       return "no";
     }
   }

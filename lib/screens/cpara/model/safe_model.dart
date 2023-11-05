@@ -110,7 +110,7 @@ class SafeModel {
 class SafeChild {
   final String  ovcId;
   final String name;
-  final String? question1;
+  String? question1;
 
 
   SafeChild({
