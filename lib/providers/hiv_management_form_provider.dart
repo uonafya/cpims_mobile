@@ -2,9 +2,13 @@ import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_
 import 'package:flutter/cupertino.dart';
 
 class HIVManagementFormProvider extends ChangeNotifier {
-  final HIVManagementFormModel hivManagementFormModel =
-      HIVManagementFormModel();
+  HIVManagementFormModel? _hivManagementFormModel;
 
-  HIVManagementFormModel get formData => hivManagementFormModel;
-  
+  HIVManagementFormModel? get hIVManagementFormModel => _hivManagementFormModel;
+
+  void updateHIVManagementModel(HIVManagementFormModel formModel) {
+    _hivManagementFormModel = formModel;
+    notifyListeners();
+    print(_hivManagementFormModel!.toJson());
+  }
 }

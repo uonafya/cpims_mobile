@@ -3,11 +3,11 @@ class HIVManagementFormModel {
   final DateTime? dateTreatmentInitiated;
   final String? baselineHEILoad;
   final DateTime? dateStartedFirstLine;
-  final bool? arvsSubWithFirstLine;
+  final String? arvsSubWithFirstLine;
   final DateTime? arvsSubWithFirstLineDate;
-  final bool? switchToSecondLine;
+  final String? switchToSecondLine;
   final DateTime? switchToSecondLineDate;
-  final bool? switchToThirdLine;
+  final String? switchToThirdLine;
   final DateTime? switchToThirdLineDate;
   final DateTime? visitDate;
   final String? durationOnARTs;
@@ -27,9 +27,9 @@ class HIVManagementFormModel {
   final String? disclosure;
   final String? mUACScore;
   final String? zScore;
-  final String? nutritionalSupport;
+  final Set<String>? nutritionalSupport;
   final String? supportGroupStatus;
-  final bool? nhifEnrollment;
+  final String? nhifEnrollment;
   final String? nhifEnrollmentStatus;
   final String? referralServices;
   final DateTime? nextAppointmentDate;
@@ -76,6 +76,8 @@ class HIVManagementFormModel {
   });
 
   Map<String, dynamic> toJson() {
+    List<dynamic>? nutritionalSupportList = nutritionalSupport?.toList();
+
     return {
       'dateHIVConfirmedPositive': dateHIVConfirmedPositive,
       'dateTreatmentInitiated': dateTreatmentInitiated,
@@ -105,7 +107,7 @@ class HIVManagementFormModel {
       'disclosure': disclosure,
       'mUACScore': mUACScore,
       'zScore': zScore,
-      'nutritionalSupport': nutritionalSupport,
+      'nutritionalSupport': nutritionalSupportList,
       'supportGroupStatus': supportGroupStatus,
       'nhifEnrollment': nhifEnrollment,
       'nhifEnrollmentStatus': nhifEnrollmentStatus,
@@ -117,6 +119,10 @@ class HIVManagementFormModel {
   }
 
   factory HIVManagementFormModel.fromJson(Map<String, dynamic> json) {
+    Set<String>? nutritionalSupport =
+        (json['nutritionalSupport'] as List<dynamic>?)
+            ?.map((e) => e.toString())
+            .toSet();
     return HIVManagementFormModel(
       dateHIVConfirmedPositive: json['dateHIVConfirmedPositive'],
       dateTreatmentInitiated: json['dateTreatmentInitiated'],
@@ -147,7 +153,7 @@ class HIVManagementFormModel {
       disclosure: json['disclosure'],
       mUACScore: json['mUACScore'],
       zScore: json['zScore'],
-      nutritionalSupport: json['nutritionalSupport'],
+      nutritionalSupport: nutritionalSupport,
       supportGroupStatus: json['supportGroupStatus'],
       nhifEnrollment: json['nhifEnrollment'],
       nhifEnrollmentStatus: json['nhifEnrollmentStatus'],
