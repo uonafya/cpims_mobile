@@ -137,6 +137,7 @@ class _FomOneAState extends State<FomOneA> {
                                   hintText: 'Select the date',
                                   selectedDateTime:
                                       form1AProvider.formData.selectedDate,
+                                  allowFutureDates: false,
                                   onDateSelected: (selectedDate) {
                                     form1AProvider
                                         .setSelectedDate(selectedDate);
