@@ -154,7 +154,16 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             ChildDetailsWorkflowButton(
               workflowName: "CPARA",
               onClick: () {
+                // Get instance of current CPARA provider
+                var old_cpims_id =
+                    context.read<CparaProvider>().caseLoadModel?.cpimsId ??
+                        null;
+
                 // Add check here
+                if (widget.caseLoadModel.cpimsId != old_cpims_id) {
+                  // Clear previous CPARA data
+                  context.read<CparaProvider>().clearCparaProvider();
+                }
                 context
                     .read<CparaProvider>()
                     .updateCaseLoadModel(widget.caseLoadModel);
