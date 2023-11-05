@@ -2,12 +2,14 @@ import 'package:cpims_mobile/screens/cpara/cpara_util.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
+import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:flutter/foundation.dart';
-
+import 'package:get/get.dart';
 import '../../../Models/case_load_model.dart';
+import '../widgets/ovc_sub_population_form.dart';
 
 class CparaProvider extends ChangeNotifier {
   CparaModel? cparaModel;
@@ -19,6 +21,9 @@ class CparaProvider extends ChangeNotifier {
   OvcSubPopulationModel? ovcSubPopulationModel;
   CaseLoadModel? caseLoadModel;
   List<CaseLoadModel> children = [];
+  List<Map<CaseLoadModel, List<CheckboxQuestion>>>? ovcSubPopulations;
+  List<SubOvcModel>? childModules;
+  CparaOvcSubPopulation? cparaOvcSubPopulation;
 
   // Calculate schooled benchmark
   int schooledBenchmark() {
@@ -236,6 +241,35 @@ class CparaProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // update safe model
+  void updateCparaOvcModel(CparaOvcSubPopulation cparaOvcSubPopulation) {
+    this.cparaOvcSubPopulation = cparaOvcSubPopulation;
+    notifyListeners();
+  }
+
+  // initialize cpara ovc questions
+  void updateCparaOvcQuestions() {
+    List<CparaOvcChild> cparaOvcChildren = [];
+    // List<CaseLoadModel> models = context.read<CparaProvider>().children ?? [];
+    // List<CaseLoadModel> models = children;
+    for (CaseLoadModel model in children) {
+      cparaOvcChildren.add(
+        CparaOvcChild(
+          ovcId: model.cpimsId ?? "",
+          question1: "Orphans (double or Child headed)",
+          question2: "At Risk Adolescent Girls andYoung Women (AGYW)?",
+          answer1: false,
+          answer2: false,
+          name: "${model.ovcFirstName} ${model.ovcSurname}",
+        ),
+      );
+    }
+    CparaOvcSubPopulation current = CparaOvcSubPopulation(childrenQuestions: cparaOvcChildren);
+    cparaOvcSubPopulation = current;
+      notifyListeners();
+
+  }
+
   // update schooled model
   void updateSchooledModel(SchooledModel schooledModel) {
     this.schooledModel = schooledModel;
@@ -250,6 +284,7 @@ class CparaProvider extends ChangeNotifier {
 
   void updateCaseLoadModel(CaseLoadModel caseLoadModel) {
     this.caseLoadModel = caseLoadModel;
+    // updateChildren(allChildren);
     notifyListeners();
   }
 
@@ -260,6 +295,132 @@ class CparaProvider extends ChangeNotifier {
         .toList();
     notifyListeners();
   }
+
+  // update ovc subpopulation
+  void updateOvcSubpopulation(List<Map<CaseLoadModel, List<CheckboxQuestion>>> ovcSubPopulations) {
+    this.ovcSubPopulations = ovcSubPopulations;
+    notifyListeners();
+  }
+
+  // update ovc subpopulation
+  void updateOvcSubpopulation1(List<SubOvcModel> ovcSubPopulations) {
+    childModules = ovcSubPopulations;
+    notifyListeners();
+  }
+
+  // update ovc subpopulation
+  void updateOvcSubpopulationQuestions({required String childId, required String questionId, required bool questionAnswer}) {
+    List<Map<CaseLoadModel, List<CheckboxQuestion>>> empty  = [];
+    late CaseLoadModel currentChildModel;
+    List<CheckboxQuestion> currentQuestions = [];
+    //todo: get the child with that id from list of children
+    Map<CaseLoadModel, List<CheckboxQuestion>> child = (ovcSubPopulations ?? empty).where((element){
+
+      return element.keys.first.cpimsId == childId;
+    }).first;
+    currentChildModel = child.keys.first;
+    currentQuestions = child.values.first;
+    // todo: retrieve the question with that question  id
+    CheckboxQuestion question = child.values.first.where((element) {
+      return element.questionID == questionId;
+    }).first;
+    CheckboxQuestion updatedQuestion = question.copyWith(isChecked: questionAnswer);
+    int indexOfQuestion = currentQuestions.indexOf(question);
+   for(var p in ovcSubPopulations ?? []){
+     // if(p)
+   }
+    // currentQuestions[indexOfQuestion] = updatedQuestion;
+    // currentQuestions.contains(updatedQuestion.questionID) ? currentQuestions[currentQuestions.indexWhere((v) => v == findString)] = replaceWith : currentQuestions;
+    // List<CheckboxQuestion> updatedQuestions = currentQuestions.up;
+    //todo:  update the questions with the passed answer then update the subpopulation
+    // child.update(currentChildModel, (value) => currentQuestions);
+    // int indexOfChild = (ovcSubPopulations ?? empty).indexOf(child);
+    // List<Map<CaseLoadModel, List<CheckboxQuestion>>> updateChildQuestion  = [];
+    // (ovcSubPopulations ?? empty)[indexOfChild] = child;
+    notifyListeners();
+  }
+
+  // n
+  void updateOvcSubpopulationQuestions1({required String childId, required String questionId, required bool questionAnswer}) {
+    List<SubOvcModel> listOfOvc = childModules ?? [];
+    List<SubOvcModel> newList = [];
+    for(var k in listOfOvc){
+      if(k.caseLoadModel.cpimsId == childId){
+        List<CheckboxQuestion> qs = k.childQuestions;
+        int indexQ = 0;
+        for(var l in qs){
+          if(l.questionID == questionId){
+            indexQ = qs.indexOf(l);
+          }
+        }
+        qs[indexQ] = qs[indexQ].copyWith(isChecked: questionAnswer);
+        listOfOvc[listOfOvc.indexOf(k)] = k.copyWith(childQuestions: qs);
+      }
+      else{
+        newList.add(k);
+      }
+    }
+    notifyListeners();
+  }
+
+  void updateOvcSubpopulationQuestions2({
+    required String childId,
+    required String questionId,
+    required bool questionAnswer,
+  }) {
+    List<SubOvcModel> listOfOvc = childModules ?? [];
+    List<SubOvcModel> updatedList = []; // Create a new list for updates
+
+    for (var k in listOfOvc) {
+      if (k.caseLoadModel.cpimsId == childId) {
+        List<CheckboxQuestion> qs = k.childQuestions;
+        int indexQ = 0;
+        for (var l in qs) {
+          if (l.questionID == questionId) {
+            indexQ = qs.indexOf(l);
+          }
+        }
+        qs[indexQ] = qs[indexQ].copyWith(isChecked: questionAnswer);
+        // Create a deep copy of the SubOvcModel with the updated questions
+        SubOvcModel updatedSubOvcModel = k.copyWith(childQuestions: List.from(qs));
+        updatedList.add(updatedSubOvcModel);
+      } else {
+        updatedList.add(k); // If it's not the targeted child, add the original SubOvcModel
+      }
+    }
+
+    // Replace the original list with the updated list
+    childModules = List.from(updatedList);
+
+    notifyListeners();
+  }
+
+
+  void upKisumu1({required String childId,}){
+    List<Map<CaseLoadModel, List<CheckboxQuestion>>> ovcSubPopulation = ovcSubPopulations ?? [];
+
+    // Update a CheckboxQuestion by its text
+    String questionTextToFind = "HEI";
+    CheckboxQuestion updatedQuestion = CheckboxQuestion(question: "Updated Question 2", id: 3);
+
+    for (var map in ovcSubPopulation) {
+      if(map.keys.first.cpimsId == childId) {
+        for (var entry in map.entries) {
+          var questions = entry.value;
+
+          for (int i = 0; i < questions.length; i++) {
+            var question = questions[i];
+            if (question.question == questionTextToFind) {
+              questions[i] = updatedQuestion; // Update the question
+              print("Updated question: ${updatedQuestion.question}");
+            }
+          }
+        }
+      }
+    }
+    notifyListeners();
+  }
+
 
   void clearCparaProvider() {
     cparaModel = null;

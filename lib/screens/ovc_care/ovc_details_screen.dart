@@ -1,6 +1,7 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/form1a_provider.dart';
+import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/cpara/cpara_forms.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/case_plan.dart';
@@ -156,6 +157,8 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                 context
                     .read<CparaProvider>()
                     .updateCaseLoadModel(widget.caseLoadModel);
+                final caseLoadData = Provider.of<UIProvider>(context, listen: false).caseLoadData;
+                context.read<CparaProvider>().updateChildren(caseLoadData ?? []);
                 Get.to(() =>
                     CparaFormsScreen(caseLoadModel: widget.caseLoadModel));
               },

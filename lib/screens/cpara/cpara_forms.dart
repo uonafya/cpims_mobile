@@ -13,6 +13,7 @@ import 'package:cpims_mobile/screens/cpara/widgets/cpara_healthy_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_safe_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_schooled_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
 import 'package:cpims_mobile/screens/homepage/provider/stats_provider.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
@@ -22,10 +23,14 @@ import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../Models/case_load_model.dart';
+import '../../providers/connection_provider.dart';
+import 'model/ovc_model.dart';
 
 class CparaFormsScreen extends StatefulWidget {
   final CaseLoadModel caseLoadModel;
@@ -54,10 +59,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
   @override
   void initState() {
     super.initState();
-    final caseLoadData =
-        Provider.of<UIProvider>(context, listen: false).caseLoadData;
+    // final caseLoadData = Provider.of<UIProvider>(context, listen: false).caseLoadData;
     // todo: update case load data in Cpara provider
-    fetchChildren(caseLoadData);
+    // fetchChildren(caseLoadData);
   }
 
   Future<void> initializeDbInstance() async {
@@ -70,6 +74,18 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
       context.read<CparaProvider>().updateChildren(caseList);
     });
   }
+
+  List<CheckboxQuestion> questions = [
+    CheckboxQuestion(id: 1, question: 'Orphan', questionID: "double"),
+    CheckboxQuestion(id: 2, question: 'AGYW', questionID: "AGYW"),
+    CheckboxQuestion(id: 3, question: 'HEI', questionID: "HEI"),
+    CheckboxQuestion(id: 4, question: 'Child of FSW', questionID: "FSW"),
+    CheckboxQuestion(id: 5, question: 'Child of PLHIV', questionID: "PLHIV"),
+    CheckboxQuestion(id: 6, question: 'CLHIV', questionID: "CLHIV"),
+    CheckboxQuestion(id: 7, question: 'SVAC', questionID: "SVAC"),
+    CheckboxQuestion(
+        id: 8, question: 'Household Affected by HIV', questionID: "AHIV"),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -251,6 +267,12 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           cparaModelDB: cparaModelDB,
                                           ovcId: ovcpmisid,
                                           careProviderId: ovcpmisid);
+                                      //todo: call ovc
+                                      if(context.mounted){
+                                        DateTime? date = DateTime.tryParse(detailModel.dateOfAssessment ?? "");
+                                        handleSubmit(context: context, selectedDate: date ?? DateTime.now());
+                                      }
+
                                       if (context.mounted) {
                                         context
                                             .read<CparaProvider>()
@@ -302,5 +324,60 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
         ],
       ),
     );
+  }
+
+  void handleSubmit({required BuildContext context, required DateTime? selectedDate}) async {
+    CparaOvcSubPopulation ovcSub =
+        context.read<CparaProvider>().cparaOvcSubPopulation ?? CparaOvcSubPopulation();
+    final localDb = LocalDb.instance;
+    List<CparaOvcChild> listOfOvcChild = ovcSub.childrenQuestions ?? [];
+    // final hasConnection = await Provider.of<ConnectivityProvider>(
+    //   context,
+    //   listen: false,
+    // ).checkInternetConnection();
+
+    final currentContext = context; // Store the context in a local variable
+
+    try {
+      for(var child in listOfOvcChild){
+        List<CheckboxQuestion> selectedQuestions = [];
+            selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question1 ?? "double", isChecked: child.answer1 ?? false));
+        selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question2 ?? "AGYW", isChecked: child.answer2 ?? false));
+        selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question3 ?? "HEI", isChecked: child.answer3 ?? false));
+        selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question4 ?? "FSW", isChecked: child.answer4 ?? false));
+        selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question5 ?? "PLHIV", isChecked: child.answer5 ?? false));
+        selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question6 ?? "CLHIV", isChecked: child.answer6 ?? false));
+        selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question7 ?? "SVAC", isChecked: child.answer7 ?? false));
+        selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question8 ?? "AHIV", isChecked: child.answer8 ?? false));
+
+        String uuid = const Uuid().v4();
+        String? dateOfAssessment = selectedDate != null
+            ? DateFormat('yyyy-MM-dd').format(selectedDate)
+            : null;
+        await localDb.insertOvcSubpopulationData(uuid,
+            widget.caseLoadModel.cpimsId!, dateOfAssessment!, selectedQuestions);
+      }
+      // if(mounted) {
+      //   Navigator.pop(context);
+      // }
+    } catch (error) {
+      if (currentContext.mounted) {
+        showDialog(
+          context: currentContext, // Use the local context
+          builder: (context) => AlertDialog(
+            title: const Text('Error'),
+            content: Text('An error occurred: $error'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Get.back(); // Close the dialog
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    }
   }
 }
