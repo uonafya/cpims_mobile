@@ -141,8 +141,8 @@ List drawerOptions(BuildContext context) {
       'onTap': () async {
         Get.back();
         try {
-          const _androidIdPlugin = AndroidId();
-          final String? androidId = await _androidIdPlugin.getId();
+          const androidIdPlugin = AndroidId();
+          final String? androidId = await androidIdPlugin.getId();
           CaseLoadService()
               .updateCaseLoadData(context: context, deviceID: androidId!);
           // syncWorkflows();
@@ -164,7 +164,7 @@ List drawerOptions(BuildContext context) {
           );
 
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          Future.delayed(Duration(seconds: 4));
+          Future.delayed(const Duration(seconds: 4));
 
           snackBar = SnackBar(
             content: const Text(
@@ -187,7 +187,7 @@ List drawerOptions(BuildContext context) {
           snackBar = SnackBar(
             content: Text(
               'An error occured $e ...',
-              style: TextStyle(color: Colors.red),
+              style: const TextStyle(color: Colors.red),
             ),
             duration:
                 const Duration(seconds: 2), // Duration to display the Snackbar
@@ -226,8 +226,8 @@ List drawerOptions(BuildContext context) {
 
 //function to return device id
 Future<String> getDeviceId() async {
-  const _androidIdPlugin = AndroidId();
-  final String? androidId = await _androidIdPlugin.getId();
+  const androidIdPlugin = AndroidId();
+  final String? androidId = await androidIdPlugin.getId();
   return androidId!;
 }
 

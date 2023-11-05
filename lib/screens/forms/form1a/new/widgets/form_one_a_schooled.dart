@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:multi_dropdown/models/value_item.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +32,7 @@ class _FormOneASchooledState extends State<FormOneASchooled> {
     String domainId = domainsList[0]['item_id'];
 
     return StepsWrapper(
-      title: '',
+      title: 'Schooled',
       children: [
         const Text(
           'Service(s)',
@@ -46,7 +44,7 @@ class _FormOneASchooledState extends State<FormOneASchooled> {
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             selectedSchooledServices = selectedServices;
-            form1aProvider.setSelectedSafeFormDataServices(
+            form1aProvider.setSelectedSchooledFormDataServices(
                 selectedSchooledServices, domainId);
             debugPrint('selectedSchooledServices: $selectedSchooledServices');
           },

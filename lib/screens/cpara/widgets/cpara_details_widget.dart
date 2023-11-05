@@ -12,7 +12,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import '../../../providers/db_provider.dart';
 import '../../../widgets/custom_button.dart';
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
@@ -261,7 +260,7 @@ class _DateTextFieldState extends State<DateTextField> {
             context: context,
             initialDate: DateTime.now(),
             firstDate: DateTime(2000),
-            lastDate: DateTime(2101),
+            lastDate: DateTime.now(),
           ).then((pickedDate) {
             if (pickedDate != null && mounted) {
               setState(() {

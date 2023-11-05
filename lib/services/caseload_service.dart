@@ -1,6 +1,4 @@
-import 'dart:convert';
 
-import 'package:android_id/android_id.dart';
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
@@ -8,20 +6,30 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../providers/auth_provider.dart';
 
 class CaseLoadService {
+
+  static const String _caseLoadLastSavePrefKey = 'caseload_last_save';
+
+  static Future<void> saveCaseLoadLastSave(int timestamp) async {
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setInt(_caseLoadLastSavePrefKey, timestamp);
+  }
+
+  static Future<int> getCaseLoadLastSave() async {
+    final preferences = await SharedPreferences.getInstance();
+    return preferences.getInt(_caseLoadLastSavePrefKey) ?? 0;
+  }
+
   Future<void> fetchCaseLoadData({
     required BuildContext context,
     required bool isForceSync,
     required String deviceID,
   }) async {
     final preferences = await SharedPreferences.getInstance();
-    final int caseloadLastSave = preferences.getInt('caseload_last_save') ?? 0;
+    final int caseloadLastSave = await CaseLoadService.getCaseLoadLastSave();
     final int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
     final int diff = currentTimestamp - caseloadLastSave;
 
@@ -29,7 +37,7 @@ class CaseLoadService {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return Center(
+        return const Center(
           child: CircularProgressIndicator(),
         );
       },
@@ -65,12 +73,12 @@ class CaseLoadService {
         if (kDebugMode) {
           print("CaseLoadService count: ${caseLoadModelList.length}");
         }
-
+        await LocalDb.instance.deleteAllCaseLoad();
         // Insert the list of CaseLoadModel instances in a single batch
         await LocalDb.instance.insertMultipleCaseLoad(caseLoadModelList);
 
         final int timestamp = DateTime.now().millisecondsSinceEpoch;
-        await preferences.setInt('caseload_last_save', timestamp);
+        await CaseLoadService.saveCaseLoadLastSave(timestamp);
         await preferences.setBool("hasUserSetup", true);
       } else if (response.statusCode == 254) {
         if (context.mounted) {

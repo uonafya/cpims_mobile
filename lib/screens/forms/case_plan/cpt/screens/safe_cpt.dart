@@ -1,17 +1,10 @@
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/safe_cpt_model.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/route_manager.dart';
-import 'package:multi_dropdown/models/value_item.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../Models/case_load_model.dart';
-import '../../../../../Models/caseplan_form_model.dart';
-import '../../../../../providers/case_plan_provider.dart';
-import '../../../../../services/form_service.dart';
-import '../../../../../widgets/custom_button.dart';
 import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
@@ -20,7 +13,7 @@ import '../new_cpt_provider.dart';
 class SafeCasePlan extends StatefulWidget {
   final CaseLoadModel? caseLoadModel;
 
-  SafeCasePlan({Key? key, this.caseLoadModel}) : super(key: key);
+  const SafeCasePlan({Key? key, this.caseLoadModel}) : super(key: key);
 
   @override
   State<SafeCasePlan> createState() => _SafeCasePlanState();
@@ -52,7 +45,7 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
   @override
   Widget build(BuildContext context) {
     CptProvider cptProvider = Provider.of<CptProvider>(context);
-    TextEditingController _textEditingController = TextEditingController();
+    TextEditingController textEditingController = TextEditingController();
 
     //safe
     List<ValueItem> casePlanGoalSafeList =
@@ -431,7 +424,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
               context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
           context.read<CptProvider>().updateCptSafeFormData(cptSafeFormData
               .copyWith(completionDate: completionDate.toIso8601String()));
-          print("The selected date was $completionDate");
         },
       ),
       const SizedBox(height: 10),

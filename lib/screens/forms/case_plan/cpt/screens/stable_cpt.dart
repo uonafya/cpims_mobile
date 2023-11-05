@@ -1,24 +1,13 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
-import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
-import 'package:cpims_mobile/screens/forms/case_plan/utils/case_plan_dummy_data.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/snackbar/snackbar.dart';
-import 'package:multi_dropdown/models/value_item.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../Models/caseplan_form_model.dart';
-import '../../../../../providers/case_plan_provider.dart';
-import '../../../../../services/form_service.dart';
 import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
-import '../models/safe_cpt_model.dart';
 import '../models/stable_cpt_model.dart';
 
 class StableCasePlan extends StatefulWidget {

@@ -1,11 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:multi_dropdown/models/value_item.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../providers/form1a_provider.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
 import '../../../form1b/utils/form1bConstants.dart';
 import '../../utils/form_1a_options.dart';

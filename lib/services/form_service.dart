@@ -8,7 +8,6 @@ import 'package:cpims_mobile/services/api_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_interceptor/models/interceptor_contract.dart';
 
 import '../constants.dart';
 
@@ -198,7 +197,7 @@ class Form1Service {
   // send form to server
   static Future<Response> postFormRemote(
       formData, String formType, String authToken) async {
-    String formEndpointMobile = "${cpimsApiUrl}mobile/form/${formType}/";
+    String formEndpointMobile = "${cpimsApiUrl}mobile/form/$formType/";
     return _postForm(formData, formEndpointMobile, authToken);
   }
 }

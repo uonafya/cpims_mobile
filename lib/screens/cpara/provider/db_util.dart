@@ -4,7 +4,6 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/screens/cpara/cpara_util.dart';
 import 'package:cpims_mobile/screens/cpara/model/db_model.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -71,7 +70,7 @@ Future<CPARADatabase> getFormFromDB(int formID, Database? db) async {
     print("Questions from many: $questions");
 
     // Get children questions
-    List<Map<String, dynamic>> fetchResult2 = await db!.rawQuery(
+    List<Map<String, dynamic>> fetchResult2 = await db.rawQuery(
         "SELECT questionid, answer, childid FROM ChildAnswer WHERE formid = ?",
         [formID]);
     List<CPARAChildQuestions> childQuestions = [];
@@ -311,12 +310,12 @@ void fetchAndPostToServerOvcSubpopulationData() async {
 }
 
 Future<List<Map<String, dynamic>>> fetchQuestionsForOvc(
-    String ovc_cpims_id, String date_of_event) async {
+    String ovcCpimsId, String dateOfEvent) async {
   final db = await LocalDb.instance.database;
   const sql =
       "SELECT * FROM ovcsubpopulation WHERE cpims_id = ? AND date_of_event = ? AND form_date_synced IS NULL";
   List<Map<String, dynamic>> result =
-      await db.rawQuery(sql, [ovc_cpims_id, date_of_event]);
+      await db.rawQuery(sql, [ovcCpimsId, dateOfEvent]);
   return result;
 }
 
@@ -330,22 +329,22 @@ void fetchAndPostToServerOvcSubpopulationDataNew() async {
   int successfullySubmittedForms = 0;
 
   for (var row in result) {
-    var ovc_cpims_id = row['cpims_id'];
-    var date_of_event = row['date_of_event'];
+    var ovcCpimsId = row['cpims_id'];
+    var dateOfEvent = row['date_of_event'];
 
     List<Map<String, dynamic>> questions =
-        await fetchQuestionsForOvc(ovc_cpims_id, date_of_event);
+        await fetchQuestionsForOvc(ovcCpimsId, dateOfEvent);
 
     Map<String, dynamic> ovcSubPopulation = {
-      'ovc_cpims_id': ovc_cpims_id,
-      'date_of_event': date_of_event,
+      'ovc_cpims_id': ovcCpimsId,
+      'date_of_event': dateOfEvent,
       'sub_population': questions,
     };
 
     final response =
         await ovcSubPopulationPostOvcToServer(ovcSubPopulation, bearerAuth);
     if (response.statusCode == 201) {
-      await updateOvcSubpopulationDateSynced(ovc_cpims_id, database);
+      await updateOvcSubpopulationDateSynced(ovcCpimsId, database);
       successfullySubmittedForms++; // Increment the counter.
       if (successfullySubmittedForms == totalForms) {
         Get.snackbar(
@@ -392,14 +391,14 @@ Future<List<Map<String, dynamic>>> fetchOvcSubPopulationData() async {
 // }
 
 Future<void> updateOvcSubpopulationDateSynced(
-    String? ovc_id, Database db) async {
-  if (ovc_id != null) {
+    String? ovcId, Database db) async {
+  if (ovcId != null) {
     try {
       // Get the current date and time
       DateTime now = DateTime.now();
       await db.rawUpdate(
           "UPDATE ovcsubpopulation SET form_date_synced = ? WHERE cpims_id = ?",
-          [now.toUtc().toIso8601String(), ovc_id]);
+          [now.toUtc().toIso8601String(), ovcId]);
     } catch (err) {
       debugPrint("Error updating date_synced: $err");
     }
