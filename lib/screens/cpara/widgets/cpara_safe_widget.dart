@@ -543,7 +543,9 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
         OtherQuestions(
           other_question: "Tick Yes if YES for all children",
           selectedOption: (value) {},
-          groupValue: _tick_Yes,
+          groupValue: allShouldBeOnlyYes(children.map((e) {
+            return convertingStringToRadioButtonOptions(e.question1 ?? "");
+          }).toList(), "All Safe Children Are Yes"), // should be yes if all children are yes
         ),
 
 // Label for question 6.4 to 6.5
@@ -1026,6 +1028,21 @@ RadioButtonOptions allShouldBeYes(
     return RadioButtonOptions.no;
   } else if (members
       .any((element) => element == RadioButtonOptions.no || element == null)) {
+    return RadioButtonOptions.no;
+  } else {
+    return RadioButtonOptions.yes;
+  }
+}
+
+// Function returns yes if all the members are just yes
+RadioButtonOptions allShouldBeOnlyYes(
+    List<RadioButtonOptions?> members, String message) {
+  debugPrint(members.toString() + message);
+  // If all the values are yes return RadioButtonOptions.yes, if not return RadioButtonOptions.no
+  if (members.isEmpty) {
+    return RadioButtonOptions.no;
+  } else if (members
+      .any((element) => element != RadioButtonOptions.yes)) {
     return RadioButtonOptions.no;
   } else {
     return RadioButtonOptions.yes;
