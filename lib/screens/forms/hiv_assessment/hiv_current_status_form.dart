@@ -122,6 +122,11 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                 "1b) Does the caregiver know the status of the child? /Does the Adolescent and youth (>15) years know his/her status?"),
             CustomRadioButton(
                 isNaAvailable: false,
+                option: hivAssessmentProvider != null &&
+                        hivAssessmentProvider.statusOfChild != null
+                    ? convertingStringToRadioButtonOptions(
+                        hivAssessmentProvider.statusOfChild!)
+                    : null,
                 optionSelected: (val) {
                   setState(() {
                     statusOfChild = convertingRadioButtonOptionsToString(val);
@@ -144,6 +149,10 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                     handleOnFormSaved();
                   });
                 },
+                option: hivAssessmentProvider != null &&
+                        hivAssessmentProvider.hivStatus != null
+                    ? hivAssessmentProvider.hivStatus!
+                    : null,
                 customOptions: const [
                   "HIV_Positive",
                   "HIV_Negative",
@@ -156,12 +165,17 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
           ),
           const Divider(),
           FormSection(
-            isDisabled: statusOfChild == "No",
+            isDisabled: statusOfChild == "No" || hivStatus == "HIV_Positive",
             children: [
               const Text("1c) Was the HIV test done less than 6 months ago?	"),
               const SizedBox(height: 10),
               CustomRadioButton(
                   isNaAvailable: false,
+                  option: hivAssessmentProvider != null &&
+                          hivAssessmentProvider.hivTestDone != null
+                      ? convertingStringToRadioButtonOptions(
+                          hivAssessmentProvider.hivTestDone!)
+                      : null,
                   optionSelected: (val) {
                     setState(() {
                       hivTestDone = convertingRadioButtonOptionsToString(val);

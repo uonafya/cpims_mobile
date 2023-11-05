@@ -10,6 +10,15 @@ import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+bool disableSubsquentHIVAssessmentFieldsAndSubmit(BuildContext context) {
+  final currentStatus =
+      Provider.of<HIVAssessmentProvider>(context).hivCurrentStatusModel;
+  return currentStatus != null &&
+      (currentStatus.statusOfChild == "No" ||
+          currentStatus.hivStatus == "HIV_Positive" ||
+          currentStatus.hivTestDone == "Yes");
+}
+
 class HIVAssessmentScreen extends StatefulWidget {
   const HIVAssessmentScreen({super.key, required this.caseLoadModel});
   final CaseLoadModel caseLoadModel;
@@ -42,28 +51,31 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
     const ProgressMonitoringForm(),
   ];
 
-  int selectedIndex = 0;
-
   void handleNext() {
-    if (selectedIndex == hivAssessmentTitles.length - 1) {
+    final formIndex = Provider.of<HIVAssessmentProvider>(context).formIndex;
+
+    if (formIndex == hivAssessmentTitles.length - 1) {
       return;
     }
-    setState(() {
-      selectedIndex++;
-    });
+
+    Provider.of<HIVAssessmentProvider>(context, listen: false)
+        .updateFormIndex(formIndex + 1);
   }
 
   void handleBack() {
-    if (selectedIndex == 0) {
+    final formIndex = Provider.of<HIVAssessmentProvider>(context).formIndex;
+
+    if (formIndex == 0) {
       return;
     }
-    setState(() {
-      selectedIndex--;
-    });
+    Provider.of<HIVAssessmentProvider>(context, listen: false)
+        .updateFormIndex(formIndex - 1);
   }
 
   @override
   Widget build(BuildContext context) {
+    final selectedIndex = Provider.of<HIVAssessmentProvider>(context).formIndex;
+
     return Scaffold(
       appBar: customAppBar(),
       body: ListView(
@@ -78,9 +90,8 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
               CustomStepperWidget(
                   data: hivAssessmentTitles,
                   onTap: (index) {
-                    setState(() {
-                      selectedIndex = index;
-                    });
+                     Provider.of<HIVAssessmentProvider>(context, listen: false)
+        .updateFormIndex(index);
                   },
                   selectedIndex: selectedIndex),
               const SizedBox(
@@ -102,7 +113,10 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
                 ),
                 Expanded(
                     child: CustomButton(
-                  text: "Next",
+                  text: disableSubsquentHIVAssessmentFieldsAndSubmit(context) ||
+                          selectedIndex == 2
+                      ? "Submit"
+                      : "Next",
                   onTap: handleNext,
                 )),
               ]),

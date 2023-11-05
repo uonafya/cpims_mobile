@@ -12,6 +12,13 @@ class HIVAssessmentProvider with ChangeNotifier {
   ProgressMonitoringModel? get progressMonitoringModel =>
       _progressMonitoringModel;
 
+  int formIndex = 0;
+
+  void updateFormIndex(int index) {
+    formIndex = index;
+    notifyListeners();
+  }
+
   void updateHIVCurrentStatusModel(HIVCurrentStatusModel model) {
     _hivCurrentStatusModel = model;
     print(hivCurrentStatusModel!.toJson());
