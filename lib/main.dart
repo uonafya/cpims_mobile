@@ -6,13 +6,14 @@ import 'package:cpims_mobile/screens/auth/login_screen.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/cpara/provider/hiv_assessment_provider.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/utils/form_one_a_provider.dart';
-import 'package:cpims_mobile/screens/forms/form1b/form_1B.dart';
 import 'package:cpims_mobile/screens/homepage/provider/stats_provider.dart';
 import 'package:cpims_mobile/screens/initial_loader.dart';
 import 'package:cpims_mobile/screens/splash_screen.dart';
 import 'package:cpims_mobile/theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
@@ -39,6 +40,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CptProvider()),
         ChangeNotifierProvider(create: (_) => StatsProvider()),
         ChangeNotifierProvider(create: (_) => Form1AProviderNew()),
+        ChangeNotifierProvider(create: (_) => HIVAssessmentProvider()),
       ],
       child: const CPIMS(),
     ),
@@ -67,10 +69,9 @@ class _CPIMSState extends State<CPIMS> {
       builder: (context, child) {
         return GetMaterialApp(
           title: 'CPIMS',
-          debugShowCheckedModeBanner: false,
+          debugShowCheckedModeBanner: kDebugMode,
           theme: appTheme(),
-          home:
-          Builder(
+          home: Builder(
             builder: (context) {
               return FutureBuilder(
                 future: intialSetup(context),

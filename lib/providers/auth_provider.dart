@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/initial_loader.dart';
+import 'package:cpims_mobile/services/caseload_service.dart';
+import 'package:cpims_mobile/widgets/logout_dialog.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:cpims_mobile/Models/user_model.dart';
@@ -11,6 +14,9 @@ import 'package:get/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
+
+  static const String _lockAppPrefKey = '_lockAppPrefKey';
+
   UserModel _user = UserModel(
     username: '',
     accessToken: '',
@@ -41,6 +47,17 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  static Future<void> setAppLock(bool lockApp) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_lockAppPrefKey, lockApp);
+  }
+
+  static Future<bool> getAppLock() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_lockAppPrefKey) ?? false;
+  }
+
+
   Future<void> login({
     required BuildContext context,
     required String password,
@@ -59,6 +76,16 @@ class AuthProvider with ChangeNotifier {
         'password': password,
       },
     );
+
+    // TODO: Implement correct status codes
+    // if (response.statusCode == "given code") {
+    //   if (context.mounted) {
+    //     errorSnackBar(context, 'Not authorized to view this resource');
+    //     await LocalDb.instance.deleteDb();
+    //     AuthProvider.setAppLock(true);
+    //   }
+    //   return;
+    // }
 
     if (context.mounted) {
       httpReponseHandler(
@@ -103,25 +130,30 @@ class AuthProvider with ChangeNotifier {
 
   // logout
   Future<void> logOut(BuildContext context) async {
-    try {
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
+    showDialog(
+        context: context,
+        builder: (context) => LogOutDialog(
+              onLogout: () async {
+                SharedPreferences sharedPreferences =
+                    await SharedPreferences.getInstance();
 
-      await sharedPreferences.remove('access');
-      await sharedPreferences.remove('refresh');
+                await sharedPreferences.remove('access');
+                await sharedPreferences.remove('refresh');
 
-      clearUser();
+                clearUser();
 
-      Get.off(
-        () => const LoginScreen(),
-        transition: Transition.fadeIn,
-        duration: const Duration(microseconds: 300),
-      );
-    } catch (e) {
-      if (context.mounted) {
-        errorSnackBar(context, e.toString());
-      }
-    }
+                CaseLoadService.saveCaseLoadLastSave(0);
+
+                Get.off(
+                  () => const LoginScreen(),
+                  transition: Transition.fadeIn,
+                  duration: const Duration(microseconds: 300),
+                );
+              },
+              onDeleteDb: () async {
+                await LocalDb.instance.deleteDb();
+              },
+            ));
   }
 
   Future<bool> verifyToken({

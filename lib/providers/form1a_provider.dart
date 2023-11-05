@@ -1,19 +1,11 @@
-import 'dart:convert';
 
-import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/services/form_service.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Models/case_load_model.dart';
 import '../Models/form_1_model.dart';
-import 'connection_provider.dart';
-import 'db_provider.dart';
 
 class CriticalFormData {
   late List<ValueItem> selectedEvents;
@@ -91,7 +83,7 @@ class Form1AProvider extends ChangeNotifier {
   }
 
   void submitServicesData() {
-    List<Map<String, dynamic>> service_of_domains = [];
+    List<Map<String, dynamic>> serviceOfDomains = [];
     for (var valueItem in _serviceFormData.selectedDomain) {
       String domainId = valueItem.value ?? '';
       for (var serviceItem in _serviceFormData.selectedService) {
@@ -100,9 +92,9 @@ class Form1AProvider extends ChangeNotifier {
           'domainId': domainId,
           'serviceId': serviceId,
         };
-        service_of_domains.add(item);
-        print(service_of_domains);
-        services = service_of_domains;
+        serviceOfDomains.add(item);
+        print(serviceOfDomains);
+        services = serviceOfDomains;
       }
     }
   }

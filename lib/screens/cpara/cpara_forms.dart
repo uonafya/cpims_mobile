@@ -251,8 +251,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           .caseLoadModel
                                           ?.cpimsId;
 
-                                      if (ovsId == null)
+                                      if (ovsId == null) {
                                         throw ("No CPMSID found");
+                                      }
                                       String ovcpmisid = ovsId;
                                       // Insert to db
                                       CparaModel cparaModelDB = CparaModel(

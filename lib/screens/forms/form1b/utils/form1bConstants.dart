@@ -72,7 +72,7 @@ List<Map<String, dynamic>> caseplanStepperTitles = [
   },
 ];
 
-List<Map<String, dynamic>> ServiceDomains = [
+List<Map<String, dynamic>> serviceDomains = [
   {
     'title': 'Healthy',
     'id': 'c3434',

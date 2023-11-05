@@ -13,14 +13,12 @@ import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/form1b_provider.dart';
 import '../../../widgets/custom_forms_date_picker.dart';
 import '../../../widgets/custom_toast.dart';
 import '../../homepage/provider/stats_provider.dart';
-import '../form1a/form1A_history.dart';
 
 class Form1BScreen extends StatefulWidget {
   const Form1BScreen({super.key, required this.caseLoad});
@@ -130,6 +128,7 @@ class _Form1BScreen extends State<Form1BScreen> {
                                 ),
                                 const SizedBox(height: 10),
                                 CustomFormsDatePicker(
+                                  allowFutureDates: false,
                                     hintText: 'Select the date',
                                     selectedDateTime:
                                         form1bProvider.formData.selectedDate,
