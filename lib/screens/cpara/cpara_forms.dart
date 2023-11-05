@@ -174,33 +174,37 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                     : 'Next',
                                 onTap: () async {
                                   if (selectedStep == steps.length - 1) {
+                                    CparaProvider cparaProvider = context
+                                        .read<CparaProvider>();
                                     // display collected data
-                                    DetailModel detailModel = context
-                                            .read<CparaProvider>()
+                                    DetailModel detailModel = cparaProvider
                                             .detailModel ??
                                         DetailModel();
-                                    HealthModel healthModel = context
-                                            .read<CparaProvider>()
+                                    HealthModel healthModel = cparaProvider
                                             .healthModel ??
                                         HealthModel();
-                                    // context.read<CparaProvider>().updateHealthModel((healthModel ?? HealthModel()
-                                    //     ));
-                                    StableModel stableModel = context
-                                            .read<CparaProvider>()
+
+                                    StableModel stableModel = cparaProvider
                                             .stableModel ??
                                         StableModel();
-                                    SafeModel safeModel = context
-                                            .read<CparaProvider>()
+                                    SafeModel safeModel = cparaProvider
                                             .safeModel ??
                                         SafeModel();
-                                    SchooledModel schooledModel = context
-                                            .read<CparaProvider>()
+                                    SchooledModel schooledModel = cparaProvider
                                             .schooledModel ??
                                         SchooledModel();
-
+cparaFormValidation(context: context,
+    detailModel: detailModel,
+    ovcSubPopulation: cparaProvider.cparaOvcSubPopulation ?? CparaOvcSubPopulation(),
+    health: healthModel,
+    stable: stableModel,
+    safe: safeModel,
+    schooled: schooledModel
+);
+                                    return;
                                     // number of children
                                     List<CaseLoadModel> children =
-                                        context.read<CparaProvider>().children;
+                                        cparaProvider.children;
 
                                     if (safeModel.childrenQuestions == null) {
                                       List<SafeChild> childrenQuestions = [];
@@ -216,8 +220,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
 
                                       safeModel = safeModel.copyWith(
                                           childrenQuestions: childrenQuestions);
-                                      context
-                                          .read<CparaProvider>()
+                                      cparaProvider
                                           .updateSafeModel(safeModel);
                                     }
 
@@ -236,18 +239,12 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                       }
                                       healthModel = healthModel.copyWith(
                                           childrenQuestions: childrenQuestions);
-                                      context
-                                          .read<CparaProvider>()
+                                      cparaProvider
                                           .updateHealthModel(healthModel);
                                     }
 
-                                    CparaModel? cparaModel = context
-                                        .read<CparaProvider>()
-                                        .cparaModel;
-
                                     try {
-                                      String? ovsId = context
-                                          .read<CparaProvider>()
+                                      String? ovsId = cparaProvider
                                           .caseLoadModel
                                           ?.cpimsId;
 
@@ -275,8 +272,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                       // }
 
                                       if (context.mounted) {
-                                        context
-                                            .read<CparaProvider>()
+                                        cparaProvider
                                             .clearCparaProvider();
                                         context
                                             .read<StatsProvider>()
@@ -376,5 +372,50 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
         );
       }
     }
+  }
+
+  void cparaFormValidation({required  BuildContext context, required DetailModel detailModel, required CparaOvcSubPopulation ovcSubPopulation,
+  required HealthModel health, required StableModel stable, required SafeModel safe, required SchooledModel schooled}){
+//todo: 1. validate the details part using details model
+  if(detailModel.isFirstAssessment == null){
+    // throw an error
+    Get.snackbar(
+      'Error',
+      'Please fill all mandatory fields.',
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  }
+  else if(detailModel.isFirstAssessment?.toLowerCase() == "yes" &&
+      detailModel.isChildHeaded != null ||
+      detailModel.hasHivExposedInfant == null ||
+      detailModel.hasPregnantOrBreastfeedingWoman == null ||
+      detailModel.dateOfAssessment == null ||
+      detailModel.dateOfLastAssessment == null){
+    Get.snackbar(
+      'Error',
+      'Please fill all mandatory fields.',
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  }
+  else if(
+      detailModel.isChildHeaded != null ||
+      detailModel.hasHivExposedInfant == null ||
+      detailModel.hasPregnantOrBreastfeedingWoman == null ||
+      detailModel.dateOfAssessment == null
+      ){
+    Get.snackbar(
+      'Error',
+      'Please fill all mandatory fields.',
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  }
+  // todo: 2. validate the ovc subpopulation using CparaOvcSubpopulation
+    // todo: 3. validate health details using health model
+    // todo: 4. validate stable details using stable model
+    // todo: 5. validate safe details using safe model
+    // todo: 6. validate schooled details using schooled model
   }
 }
