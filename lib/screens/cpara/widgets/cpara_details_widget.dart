@@ -59,13 +59,13 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
       case 'assesment':
         DetailModel detailModel =
             context.read<CparaProvider>().detailModel ?? DetailModel();
-        var newDetailModel = detailModel.copyWith(dateOfAssessment: newDate);
+        var newDetailModel = detailModel.copyWith(dateOfAssessment: newDate ?? "");
         context.read<CparaProvider>().updateDetailModel(newDetailModel);
       case 'previous':
         DetailModel detailModel =
             context.read<CparaProvider>().detailModel ?? DetailModel();
         var newDetailModel =
-            detailModel.copyWith(dateOfLastAssessment: newDate);
+            detailModel.copyWith(dateOfLastAssessment: newDate ?? "");
         context.read<CparaProvider>().updateDetailModel(newDetailModel);
       default:
         break;
