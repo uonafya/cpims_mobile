@@ -56,6 +56,14 @@ class _Form1BScreen extends State<Form1BScreen> {
     Form1bProvider form1bProvider =
         Provider.of<Form1bProvider>(context, listen: false);
 
+    bool isFormInvalid() {
+      return ((form1bProvider.formData.selectedDate == null) ||
+          (form1bProvider.formData.selectedServices.isBlank! &&
+              form1bProvider.safeFormData.selectedServices.isBlank! &&
+              form1bProvider.stableFormData.selectedServices.isBlank! &&
+              form1bProvider.criticalEventDataForm1b.selectedEvents.isBlank!));
+    }
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -128,7 +136,7 @@ class _Form1BScreen extends State<Form1BScreen> {
                                 ),
                                 const SizedBox(height: 10),
                                 CustomFormsDatePicker(
-                                  allowFutureDates: false,
+                                    allowFutureDates: false,
                                     hintText: 'Select the date',
                                     selectedDateTime:
                                         form1bProvider.formData.selectedDate,
@@ -177,36 +185,50 @@ class _Form1BScreen extends State<Form1BScreen> {
                                           "Please select date of event");
                                       return;
                                     } else {
-                                      bool isFormSaved =
-                                          await form1bProvider.saveForm1bData(
-                                        form1bProvider.formData,
-                                      );
-                                      context
-                                          .read<StatsProvider>()
-                                          .updateCparaFormStats();
-                                      setState(() {
-                                        if (isFormSaved == true) {
-                                          if (context.mounted) {
-                                            context
-                                                .read<StatsProvider>()
-                                                .updateFormOneBStats();
+                                      if (isFormInvalid()) {
+                                        Get.snackbar(
+                                          'Error',
+                                          'Please fill all the information',
+                                          duration: const Duration(seconds: 2),
+                                          snackPosition: SnackPosition.TOP,
+                                          backgroundColor: Colors.red,
+                                          colorText: Colors.white,
+                                          margin: const EdgeInsets.all(16),
+                                          borderRadius: 8,
+                                        );
+                                        return;
+                                      } else {
+                                        bool isFormSaved =
+                                            await form1bProvider.saveForm1bData(
+                                          form1bProvider.formData,
+                                        );
+                                        context
+                                            .read<StatsProvider>()
+                                            .updateCparaFormStats();
+                                        setState(() {
+                                          if (isFormSaved == true) {
+                                            if (context.mounted) {
+                                              context
+                                                  .read<StatsProvider>()
+                                                  .updateFormOneBStats();
+                                            }
+                                            Get.snackbar(
+                                              'Success',
+                                              'Form1B data saved successfully.',
+                                              duration:
+                                                  const Duration(seconds: 2),
+                                              snackPosition: SnackPosition.TOP,
+                                              // Display at the top of the screen
+                                              backgroundColor: Colors.green,
+                                              colorText: Colors.white,
+                                              margin: const EdgeInsets.all(16),
+                                              borderRadius: 8,
+                                            );
+                                            Navigator.pop(context);
+                                            selectedStep = 0;
                                           }
-                                          Get.snackbar(
-                                            'Success',
-                                            'Form1B data saved successfully.',
-                                            duration:
-                                                const Duration(seconds: 2),
-                                            snackPosition: SnackPosition.TOP,
-                                            // Display at the top of the screen
-                                            backgroundColor: Colors.green,
-                                            colorText: Colors.white,
-                                            margin: const EdgeInsets.all(16),
-                                            borderRadius: 8,
-                                          );
-                                          Navigator.pop(context);
-                                          selectedStep = 0;
-                                        }
-                                      });
+                                        });
+                                      }
                                     }
                                   } else {
                                     setState(() {

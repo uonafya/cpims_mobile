@@ -342,9 +342,7 @@ class CparaProvider extends ChangeNotifier {
     notifyListeners();
 
     // Initialize health children in here
-    if (healthModel == null) {
-      healthModel = HealthModel();
-    }
+    healthModel ??= HealthModel();
     healthModel!.childrenQuestions = [];
 
     for (CaseLoadModel model in children) {
