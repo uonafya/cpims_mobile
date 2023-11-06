@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HIVCurrentStatusModel {
+  final String? ovcCPIMSID;
   final DateTime? dateOfAssessment;
   final String? statusOfChild;
   final String? hivStatus;
@@ -15,6 +16,7 @@ class HIVCurrentStatusModel {
   final String? hivTestDoneDate;
 
   HIVCurrentStatusModel({
+    this.ovcCPIMSID,
     this.dateOfAssessment,
     this.statusOfChild,
     this.hivStatus,
@@ -24,6 +26,7 @@ class HIVCurrentStatusModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'ovcCPIMSID': ovcCPIMSID,
       'dateOfAssessment': dateOfAssessment,
       'statusOfChild': statusOfChild,
       'hivStatus': hivStatus,
@@ -33,6 +36,7 @@ class HIVCurrentStatusModel {
   }
 
   HIVCurrentStatusModel copyWith({
+    String? ovcCPIMSID,
     DateTime? dateOfAssessment,
     String? statusOfChild,
     String? hivStatus,
@@ -40,6 +44,7 @@ class HIVCurrentStatusModel {
     String? hivTestDoneDate,
   }) {
     return HIVCurrentStatusModel(
+      ovcCPIMSID: ovcCPIMSID ?? this.ovcCPIMSID,
       dateOfAssessment: dateOfAssessment ?? this.dateOfAssessment,
       statusOfChild: statusOfChild ?? this.statusOfChild,
       hivStatus: hivStatus ?? this.hivStatus,
@@ -147,9 +152,10 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                   setState(() {
                     hivStatus = val;
                     handleOnFormSaved();
-                    if (hivStatus == "HIV_Positive")
+                    if (hivStatus == "HIV_Positive") {
                       Provider.of<HIVAssessmentProvider>(context, listen: false)
                           .clearForms();
+                    }
                   });
                 },
                 option: hivAssessmentProvider != null &&
@@ -183,10 +189,11 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                     setState(() {
                       hivTestDone = convertingRadioButtonOptionsToString(val);
                       handleOnFormSaved();
-                      if (hivTestDone == "Yes")
+                      if (hivTestDone == "Yes") {
                         Provider.of<HIVAssessmentProvider>(context,
                                 listen: false)
                             .clearForms();
+                      }
                     });
                   }),
             ],
