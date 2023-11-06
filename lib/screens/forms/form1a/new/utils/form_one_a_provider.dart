@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../../Models/form_1_model.dart';
 import '../../../../../providers/connection_provider.dart';
@@ -126,7 +128,7 @@ class Form1AProviderNew extends ChangeNotifier {
   }
 
   Future<bool> saveForm1AData(
-      HealthFormData healthFormData, String latitude, String longitude) async {
+      HealthFormData healthFormData,String startInterviewTime) async {
     List<MasterServicesFormData> masterServicesList =
         convertToMasterServicesFormData();
     setFinalFormDataServices(masterServicesList);
@@ -153,19 +155,26 @@ class Form1AProviderNew extends ChangeNotifier {
       criticalEventsList.add(entry);
     }
 
+    String formUUID = Uuid().v4();
+
+    AppFormMetaData appFormMetaData = AppFormMetaData(
+      formId: formUUID,
+      startOfInterview: startInterviewTime,
+      formType: "form1a",
+    );
+
     Form1DataModel toDbData = Form1DataModel(
       ovcCpimsId: finalServicesFormData.ovc_cpims_id,
       date_of_event: finalServicesFormData.date_of_event,
       services: servicesList,
       criticalEvents: criticalEventsList,
-      location_lat: latitude,
-      location_long: longitude,
+      uuid: formUUID,
     );
     String data = jsonEncode(toDbData);
     print("The json data for form 1 a is $data");
     print("form1b payload:==========>$criticalEventsList");
 
-    bool isFormSaved = await Form1Service.saveFormLocal("form1a", toDbData);
+    bool isFormSaved = await Form1Service.saveFormLocal("form1a", toDbData,appFormMetaData,formUUID);
     if (isFormSaved == true) {
       resetFormData();
       notifyListeners();
@@ -238,20 +247,6 @@ class Form1AProviderNew extends ChangeNotifier {
 
   List<Map<String, dynamic>> form1bFetchedData = [];
 
-  Future<void> fetchSavedDataFromDb() async {
-    try {
-      List<Map<String, dynamic>> updatedForm1Rows =
-          await Form1Service.getAllForms("form1b");
-
-      form1bFetchedData = updatedForm1Rows;
-
-      print(form1bFetchedData);
-      notifyListeners();
-    } catch (e) {
-      print("Error fetching form1b data: $e");
-    }
-  }
-
   void resetFormData() {
     _formData.selectedServices.clear();
     _formData.selectedDate = DateTime.now();
@@ -274,68 +269,4 @@ class Form1AProviderNew extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> handleSubmitToServer(
-      String data, Form1DataModel formOneAData) async {
-    final localDb = LocalDb.instance;
-    var prefs = await SharedPreferences.getInstance();
-    var accessToken = prefs.getString('access');
-    String bearerAuth = "Bearer $accessToken";
-
-    final dio = Dio();
-    const apiEndpoint = "https://dev.cpims.net/api/form/F1B/";
-
-    final options = Options(
-      headers: {"Authorization": bearerAuth},
-    );
-
-    final hasConnection = await Provider.of<ConnectivityProvider>(
-      Get.context!,
-      listen: false,
-    ).checkInternetConnection();
-    try {
-      if (hasConnection) {
-        final formOneApiResponse =
-            await dio.post(apiEndpoint, data: data, options: options);
-        if (formOneApiResponse.statusCode == 200) {
-          print("Data posted  successfully to server is $data");
-          Get.snackbar(
-            'Success',
-            'Form 1A submitted to the server successfully',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.green,
-            colorText: Colors.white,
-          );
-        } else {
-          Get.snackbar(
-            'Failed',
-            'No Internet Connection.Try again',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
-        }
-      } else {
-        try {
-          Form1Service.saveFormLocal("form1a", formOneAData);
-          Get.snackbar(
-            'Success',
-            'Saved data locally.Ensure to sync on internet connection',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.yellow,
-            colorText: Colors.white,
-          );
-        } catch (e) {
-          Get.snackbar(
-            'Failed',
-            'Failed to save locally',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
-        }
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
 }

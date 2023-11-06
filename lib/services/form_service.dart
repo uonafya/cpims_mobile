@@ -16,11 +16,11 @@ class Form1Service {
   Stream<int> get formCountStream => _formCountController.stream;
 
   // save form to local storage
-  static _saveValues(String formType, formData) async {
+  static _saveValues(String formType, formData,metadata,uuid) async {
 //save the form data that is in the form of a map to  a local database
     final db = LocalDb.instance;
     try {
-      await db.insertForm1Data(formType, formData);
+      await db.insertForm1Data(formType, formData,metadata,uuid);
       return true;
     } catch (e) {
       print(e);
@@ -159,8 +159,8 @@ class Form1Service {
     }
   }
 
-  static Future<dynamic> saveFormLocal(String formType, formData) {
-    return _saveValues(formType, formData);
+  static Future<dynamic> saveFormLocal(String formType, formData,metadata,uuid) {
+    return _saveValues(formType, formData,metadata,uuid);
   }
 
   static Future<bool> deleteFormLocal(String formType, int id) {

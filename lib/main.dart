@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/providers/case_plan_provider.dart';
 import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/providers/form1b_provider.dart';
@@ -41,6 +42,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => StatsProvider()),
         ChangeNotifierProvider(create: (_) => Form1AProviderNew()),
         ChangeNotifierProvider(create: (_) => HIVAssessmentProvider()),
+        ChangeNotifierProvider(create: (_) => AppMetaDataProvider()),
       ],
       child: const CPIMS(),
     ),

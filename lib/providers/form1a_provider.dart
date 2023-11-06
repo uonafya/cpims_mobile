@@ -128,21 +128,21 @@ class Form1AProvider extends ChangeNotifier {
       servicesList.add(entry1);
     }
 
-    Form1DataModel toDbData = Form1DataModel(
-      ovcCpimsId: cpimsId,
-      date_of_event: dateOfEvent,
-      services: servicesList,
-      criticalEvents: eventsList,
-    );
-
-    Form1Service.saveFormLocal("form1a", toDbData);
-
-    _criticalFormData.selectedEvents.clear();
-    _serviceFormData.selectedDomain.clear();
-    _serviceFormData.selectedService.clear();
-    _serviceFormData.selectedEventDate = DateTime.now();
-    _criticalFormData.selectedDate = DateTime.now();
-    notifyListeners();
+    // Form1DataModel toDbData = Form1DataModel(
+    //   ovcCpimsId: cpimsId,
+    //   date_of_event: dateOfEvent,
+    //   services: servicesList,
+    //   criticalEvents: eventsList,
+    // );
+    //
+    // Form1Service.saveFormLocal("form1a", toDbData);
+    //
+    // _criticalFormData.selectedEvents.clear();
+    // _serviceFormData.selectedDomain.clear();
+    // _serviceFormData.selectedService.clear();
+    // _serviceFormData.selectedEventDate = DateTime.now();
+    // _criticalFormData.selectedDate = DateTime.now();
+    // notifyListeners();
   }
 
   // CaseLoad

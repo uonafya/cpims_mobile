@@ -37,6 +37,7 @@ class FormSyncUtil{
         accessToken!,
       );
       if (response.statusCode == 200) {
+        debugPrint("Data of form one b posted to server is $formData");
         if (context.mounted) {
           showSyncSnackbar(context, "Success syncing");
         }
