@@ -180,9 +180,13 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                 final caseLoadData =
                     Provider.of<UIProvider>(context, listen: false)
                         .caseLoadData;
+
+                // Set start time to form meta data
+                String startDateTime = DateTime.now().toString();
                 context
-                    .read<CparaProvider>()
-                    .updateChildren(caseLoadData ?? []);
+                    .read<AppMetaDataProvider>()
+                    .updateStartTimeInterview(startDateTime);
+
                 Get.to(() =>
                     CparaFormsScreen(caseLoadModel: widget.caseLoadModel));
               },
