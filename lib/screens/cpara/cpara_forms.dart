@@ -22,6 +22,7 @@ import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -87,6 +88,11 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
         id: 8, question: 'Household Affected by HIV', questionID: "AHIV"),
   ];
 
+  void clearCparaContent() {
+    Navigator.pop(context);
+    context.read<CparaProvider>().clearCparaProvider();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,7 +154,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                     context
                                         .read<CparaProvider>()
                                         .clearCparaProvider();
-
                                   }
                                   _scrollController.animateTo(
                                     0,
@@ -174,126 +179,139 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                     : 'Next',
                                 onTap: () async {
                                   if (selectedStep == steps.length - 1) {
+                                    CparaProvider cparaProvider =
+                                        context.read<CparaProvider>();
                                     // display collected data
-                                    DetailModel detailModel = context
-                                            .read<CparaProvider>()
-                                            .detailModel ??
-                                        DetailModel();
-                                    HealthModel healthModel = context
-                                            .read<CparaProvider>()
-                                            .healthModel ??
-                                        HealthModel();
-                                    // context.read<CparaProvider>().updateHealthModel((healthModel ?? HealthModel()
-                                    //     ));
-                                    StableModel stableModel = context
-                                            .read<CparaProvider>()
-                                            .stableModel ??
-                                        StableModel();
-                                    SafeModel safeModel = context
-                                            .read<CparaProvider>()
-                                            .safeModel ??
-                                        SafeModel();
-                                    SchooledModel schooledModel = context
-                                            .read<CparaProvider>()
-                                            .schooledModel ??
-                                        SchooledModel();
+                                    DetailModel detailModel =
+                                        cparaProvider.detailModel ??
+                                            DetailModel();
+                                    HealthModel healthModel =
+                                        cparaProvider.healthModel ??
+                                            HealthModel();
 
-                                    // number of children
-                                    List<CaseLoadModel> children =
-                                        context.read<CparaProvider>().children;
-
-                                    if (safeModel.childrenQuestions == null) {
-                                      List<SafeChild> childrenQuestions = [];
-                                      for (int i = 0;
-                                          i < children.length;
-                                          i++) {
-                                        childrenQuestions.add(SafeChild(
-                                            question1: null,
-                                            ovcId: "${children[i].cpimsId}",
-                                            name:
-                                                "${children[i].ovcFirstName} ${children[i].ovcSurname}"));
-                                      }
-
-                                      safeModel = safeModel.copyWith(
-                                          childrenQuestions: childrenQuestions);
-                                      context
-                                          .read<CparaProvider>()
-                                          .updateSafeModel(safeModel);
-                                    }
-
-                                    if (healthModel.childrenQuestions == null) {
-                                      List<HealthChild> childrenQuestions = [];
-                                      for (int i = 0;
-                                          i < children.length;
-                                          i++) {
-                                        childrenQuestions.add(HealthChild(
-                                            question1: "",
-                                            question2: '',
-                                            question3: '',
-                                            id: "${children[i].cpimsId}",
-                                            name:
-                                                "${children[i].ovcFirstName} ${children[i].ovcSurname}"));
-                                      }
-                                      healthModel = healthModel.copyWith(
-                                          childrenQuestions: childrenQuestions);
-                                      context
-                                          .read<CparaProvider>()
-                                          .updateHealthModel(healthModel);
-                                    }
-
-                                    CparaModel? cparaModel = context
-                                        .read<CparaProvider>()
-                                        .cparaModel;
-
+                                    StableModel stableModel =
+                                        cparaProvider.stableModel ??
+                                            StableModel();
+                                    SafeModel safeModel =
+                                        cparaProvider.safeModel ?? SafeModel();
+                                    SchooledModel schooledModel =
+                                        cparaProvider.schooledModel ??
+                                            SchooledModel();
                                     try {
-                                      String? ovsId = context
-                                          .read<CparaProvider>()
-                                          .caseLoadModel
-                                          ?.cpimsId;
+                                      cparaFormValidation(
+                                          context: context,
+                                          detailModel: detailModel,
+                                          ovcSubPopulation: cparaProvider
+                                                  .cparaOvcSubPopulation ??
+                                              CparaOvcSubPopulation(),
+                                          health: healthModel,
+                                          stable: stableModel,
+                                          safe: safeModel,
+                                          schooled: schooledModel);
+                                      // number of children
+                                      List<CaseLoadModel> children =
+                                          cparaProvider.children;
 
-                                      if (ovsId == null) {
-                                        throw ("No CPMSID found");
+                                      if (safeModel.childrenQuestions == null) {
+                                        List<SafeChild> childrenQuestions = [];
+                                        for (int i = 0;
+                                            i < children.length;
+                                            i++) {
+                                          childrenQuestions.add(SafeChild(
+                                              question1: null,
+                                              ovcId: "${children[i].cpimsId}",
+                                              name:
+                                                  "${children[i].ovcFirstName} ${children[i].ovcSurname}"));
+                                        }
+
+                                        safeModel = safeModel.copyWith(
+                                            childrenQuestions:
+                                                childrenQuestions);
+                                        cparaProvider
+                                            .updateSafeModel(safeModel);
                                       }
-                                      String ovcpmisid = ovsId;
-                                      // Insert to db
-                                      CparaModel cparaModelDB = CparaModel(
-                                        detail: detailModel,
-                                        safe: safeModel,
-                                        stable: stableModel,
-                                        schooled: schooledModel,
-                                        health: (healthModel),
-                                      );
-                                      // Create form
-                                      await LocalDb.instance.insertCparaData(
-                                          cparaModelDB: cparaModelDB,
-                                          ovcId: ovcpmisid,
-                                          careProviderId: ovcpmisid);
-                                      //todo: call ovc
-                                      // if(context.mounted){
-                                      //   DateTime? date = DateTime.tryParse(detailModel.dateOfAssessment ?? "");
-                                      //   handleSubmit(context: context, selectedDate: date ?? DateTime.now());
-                                      // }
 
-                                      if (context.mounted) {
-                                        context
-                                            .read<CparaProvider>()
-                                            .clearCparaProvider();
-                                        context
-                                            .read<StatsProvider>()
-                                            .updateCparaFormStats();
-                                       //navigate back
+                                      if (healthModel.childrenQuestions ==
+                                          null) {
+                                        List<HealthChild> childrenQuestions =
+                                            [];
+                                        for (int i = 0;
+                                            i < children.length;
+                                            i++) {
+                                          childrenQuestions.add(HealthChild(
+                                              question1: "",
+                                              question2: '',
+                                              question3: '',
+                                              id: "${children[i].cpimsId}",
+                                              name:
+                                                  "${children[i].ovcFirstName} ${children[i].ovcSurname}"));
+                                        }
+                                        healthModel = healthModel.copyWith(
+                                            childrenQuestions:
+                                                childrenQuestions);
+                                        cparaProvider
+                                            .updateHealthModel(healthModel);
+                                      }
+
+                                      try {
+                                        String? ovsId = cparaProvider
+                                            .caseLoadModel?.cpimsId;
+
+                                        if (ovsId == null) {
+                                          throw ("No CPMSID found");
+                                        }
+                                        String ovcpmisid = ovsId;
+                                        // Insert to db
+                                        CparaModel cparaModelDB = CparaModel(
+                                          detail: detailModel,
+                                          safe: safeModel,
+                                          stable: stableModel,
+                                          schooled: schooledModel,
+                                          health: (healthModel),
+                                        );
+                                        // Create form
+                                        await LocalDb.instance.insertCparaData(
+                                            cparaModelDB: cparaModelDB,
+                                            ovcId: ovcpmisid,
+                                            careProviderId: ovcpmisid);
+                                        //todo: call ovc
+                                        if (context.mounted) {
+                                          DateTime? date = DateTime.tryParse(
+                                              detailModel.dateOfAssessment ??
+                                                  "");
+                                          handleSubmit(
+                                              context: context,
+                                              selectedDate:
+                                                  date ?? DateTime.now());
+                                        }
+
+                                        if (context.mounted) {
+                                          cparaProvider.clearCparaProvider();
+                                          context
+                                              .read<StatsProvider>()
+                                              .updateCparaFormStats();
+                                          //navigate back
+                                          Get.snackbar(
+                                            'Success',
+                                            'Successfully saved CPARA form',
+                                            backgroundColor: Colors.green,
+                                            colorText: Colors.white,
+                                          );
+                                          Navigator.pop(context);
+                                        }
+                                      } catch (err) {
                                         Get.snackbar(
                                           'Success',
                                           'Successfully saved CPARA form',
-                                          backgroundColor: Colors.green,
+                                          backgroundColor: Colors.red,
                                           colorText: Colors.white,
                                         );
-                                        Navigator.pop(context);
                                       }
-                                    } catch (err) {
+                                    } catch (e) {
+                                      // showErrorSnackbar();
                                       Get.snackbar(
-                                        'Success',
-                                        'Successfully saved CPARA form',
+                                        'Error',
+                                        e.toString(),
                                         backgroundColor: Colors.red,
                                         colorText: Colors.white,
                                       );
@@ -315,6 +333,57 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                             )
                           ],
                         ),
+
+                        // Cancel Button
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: TextButton(
+                                onPressed: () {
+                                  showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          content: const Text(
+                                              "Are you sure you want to clear the form?"),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                  clearCparaContent();
+                                                },
+                                                child: Text(
+                                                  "Yes",
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize: 14.sp,
+                                                  ),
+                                                )),
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text(
+                                                  "No",
+                                                  style: TextStyle(
+                                                    fontSize: 14.sp,
+                                                  ),
+                                                ))
+                                          ],
+                                        );
+                                      });
+                                },
+                                child: Text(
+                                  "Clear Form",
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 14.sp,
+                                  ),
+                                )),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -327,32 +396,92 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
     );
   }
 
-  void handleSubmit({required BuildContext context, required DateTime? selectedDate}) async {
+  void handleSubmit(
+      {required BuildContext context, required DateTime? selectedDate}) async {
     CparaOvcSubPopulation ovcSub =
-        context.read<CparaProvider>().cparaOvcSubPopulation ?? CparaOvcSubPopulation();
+        context.read<CparaProvider>().cparaOvcSubPopulation ??
+            CparaOvcSubPopulation();
     final localDb = LocalDb.instance;
     List<CparaOvcChild> listOfOvcChild = ovcSub.childrenQuestions ?? [];
 
     final currentContext = context; // Store the context in a local variable
 
     try {
-      for(var child in listOfOvcChild){
+      for (var child in listOfOvcChild) {
         List<CheckboxQuestion> selectedQuestions = [];
-            selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question1 ?? "double", isChecked: child.answer1 ?? false));
-        selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question2 ?? "AGYW", isChecked: child.answer2 ?? false));
-        selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question3 ?? "HEI", isChecked: child.answer3 ?? false));
-        selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question4 ?? "FSW", isChecked: child.answer4 ?? false));
-        selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question5 ?? "PLHIV", isChecked: child.answer5 ?? false));
-        selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question6 ?? "CLHIV", isChecked: child.answer6 ?? false));
-        selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question7 ?? "SVAC", isChecked: child.answer7 ?? false));
-        selectedQuestions.add(CheckboxQuestion(question: "question", id: 0, questionID: child.question8 ?? "AHIV", isChecked: child.answer8 ?? false));
+        if (child.answer1 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question1 ?? "double",
+              isChecked: child.answer1 ?? false));
+        }
+
+        if (child.answer2 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question2 ?? "AGYW",
+              isChecked: child.answer2 ?? false));
+        }
+
+        if (child.answer3 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question3 ?? "HEI",
+              isChecked: child.answer3 ?? false));
+        }
+
+        if (child.answer4 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question4 ?? "FSW",
+              isChecked: child.answer4 ?? false));
+        }
+
+        if (child.answer5 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question5 ?? "PLHIV",
+              isChecked: child.answer5 ?? false));
+        }
+
+        if (child.answer6 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question6 ?? "CLHIV",
+              isChecked: child.answer6 ?? false));
+        }
+
+        if (child.answer7 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question7 ?? "SVAC",
+              isChecked: child.answer7 ?? false));
+        }
+
+        if (child.answer8 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question8 ?? "AHIV",
+              isChecked: child.answer8 ?? false));
+        }
 
         String uuid = const Uuid().v4();
         String? dateOfAssessment = selectedDate != null
             ? DateFormat('yyyy-MM-dd').format(selectedDate)
             : null;
-        await localDb.insertOvcSubpopulationData(uuid,
-            widget.caseLoadModel.cpimsId!, dateOfAssessment!, selectedQuestions);
+        await localDb.insertOvcSubpopulationData(
+            uuid,
+            widget.caseLoadModel.cpimsId!,
+            dateOfAssessment!,
+            selectedQuestions);
       }
       // if(mounted) {
       //   Navigator.pop(context);
@@ -376,5 +505,130 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
         );
       }
     }
+  }
+
+  void cparaFormValidation(
+      {required BuildContext context,
+      required DetailModel detailModel,
+      required CparaOvcSubPopulation ovcSubPopulation,
+      required HealthModel health,
+      required StableModel stable,
+      required SafeModel safe,
+      required SchooledModel schooled}) {
+//todo: 1. validate the details part using details model
+    if (detailModel.isFirstAssessment == null) {
+      throw ("Please fill all mandatory fields in Details section.");
+    } else if ((detailModel.isFirstAssessment?.toLowerCase() == "no" &&
+            detailModel.dateOfLastAssessment == null) ||
+        detailModel.isChildHeaded == null ||
+        detailModel.hasHivExposedInfant == null ||
+        detailModel.hasPregnantOrBreastfeedingWoman == null ||
+        detailModel.dateOfAssessment == null) {
+      throw ("Please fill all mandatory fields in Details section.");
+    }
+    else if ((detailModel.isFirstAssessment?.toLowerCase() == "no" &&
+        detailModel.dateOfLastAssessment != null &&
+        DateTime.parse(detailModel.dateOfLastAssessment!).isAfter(DateTime.parse(detailModel.dateOfAssessment!))
+    )) {
+      throw ("The last assessment date cannot be ahead of the date of this assessment.");
+    }
+    // else if (detailModel.isChildHeaded == null ||
+    //     detailModel.hasHivExposedInfant == null ||
+    //     detailModel.hasPregnantOrBreastfeedingWoman == null ||
+    //     detailModel.dateOfAssessment == null) {
+    //   throw ("Please fill all mandatory fields in Details section.");
+    // }
+    // todo: 2. validate the ovc subpopulation using CparaOvcSubpopulation
+    // todo: 3. validate health details using health model
+    else if (health.question1 == null ||
+            health.question2 == null ||
+            health.question3 == null ||
+            health.question4 == null ||
+            health.question5 == null ||
+            health.question6 == null ||
+            health.question7 == null ||
+            health.question8 == null ||
+            health.question9 == null ||
+            health.question10 == null ||
+            health.question11 == null ||
+            health.question12 == null ||
+            health.question13 == null ||
+            health.question14 == null ||
+            health.question15 == null ||
+            health.question16 == null ||
+            health.question17 == null ||
+            health.question18 == null ||
+            (health.childrenQuestions ?? []).isNotEmpty &&
+                validateHealthChildren(
+                    childrenQuestions: health.childrenQuestions)
+        //     || health.overallQuestion1 == null || health.overallQuestion2 == null || health.overallQuestion3 == null
+        // || health.overallQuestion4 == null || health.overallQuestion5 == null || health.overallQuestion6 == null || health.overallQuestion7 == null
+        ) {
+      throw ("Please fill all mandatory fields in Health section.");
+    }
+    // todo: 4. validate stable details using stable model
+    else if (stable.question1 == null ||
+        stable.question2 == null ||
+        stable.question3 == null) {
+      throw ("Please fill all mandatory fields in Stable section.");
+    }
+    // todo: 5. validate safe details using safe model
+    else if (
+    // safe.question1 == null ||
+    //     safe.question2 == null ||
+        safe.question3 == null ||
+        safe.question4 == null
+    ||
+        safe.question5 == null ||
+        safe.question6 == null ||
+        safe.question7 == null
+        // safe.childrenQuestions == null
+        // // || safe.overallQuestion1 == null || safe.overallQuestion2 == null
+        // ||
+        // (safe.childrenQuestions ?? []).isNotEmpty &&
+        //     validateSafeChildren(childrenQuestions: safe.childrenQuestions)
+        ) {
+      throw ("Please fill all mandatory fields in Safe section.");
+    }
+    // todo: 6. validate schooled details using schooled model
+    else if (schooled.question1 == null ||
+            schooled.question2 == null ||
+            schooled.question3 == null ||
+            schooled.question4 == null
+        //     ||
+        // schooled.mainquestion1 == null || schooled.mainquestion2 == null
+        ) {
+      throw ("Please fill all mandatory fields in Schooled section.");
+    } else {}
+  }
+
+  bool validateHealthChildren({required List<HealthChild>? childrenQuestions}) {
+    for (HealthChild child in childrenQuestions ?? []) {
+      if (child.question1 == "" ||
+          child.question2 == "" ||
+          child.question3 == "") {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool validateSafeChildren({required List<SafeChild>? childrenQuestions}) {
+    for (SafeChild child in childrenQuestions ?? []) {
+      if (child.question1 == "" || child.question1 == null) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void showErrorSnackbar() {
+    Get.snackbar(
+      'Error',
+      'Please fill all mandatory fields.',
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+    return;
   }
 }

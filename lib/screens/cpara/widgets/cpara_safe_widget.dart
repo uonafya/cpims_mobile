@@ -343,7 +343,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             card_question:
                 "Are there children, adolescents, and caregivers in the household who have experienced violence (including physical violence, emotional violence, sexual violence, gender-based violence, and neglect) in the last six months ?",
             selectedOption: (value) {
-              debugPrint("Overall Question 1 Safe");
+              debugPrint("Overall Question 1 Safe, value is $value");
               overallQuestion1Option = value;
               SafeModel safeModel =
                   context.read<CparaProvider>().safeModel ?? SafeModel();
@@ -356,6 +356,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
               // Update the state of the question
               updateQuestion("_children_adolecent_caregiver", value);
               if (value == RadioButtonOptions.no) {
+                debugPrint("Safe Branch 1 entered");
                 _adolescents_older_than_12 = RadioButtonOptions.no;
                 _exposed_to_violence = RadioButtonOptions.yes;
 
@@ -364,10 +365,14 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                 //     safeModel.copyWith(question3: selectedOption));
                 // context.read<CparaProvider>().updateSafeModel(
                 //     safeModel.copyWith(question4: selectedOption));
-                updatedSafeModel =
-                    updatedSafeModel.copyWith(question3: convertingRadioButtonOptionsToString(RadioButtonOptions.yes));
-                updatedSafeModel =
-                    updatedSafeModel.copyWith(question4: convertingRadioButtonOptionsToString(RadioButtonOptions.yes));
+                updatedSafeModel = updatedSafeModel.copyWith(
+                    question3: convertingRadioButtonOptionsToString(
+                        RadioButtonOptions.yes));
+                updatedSafeModel = updatedSafeModel.copyWith(
+                    question4: convertingRadioButtonOptionsToString(
+                        RadioButtonOptions.yes));
+                debugPrint("Updating Old Safe Model with $updatedSafeModel");
+                context.read<CparaProvider>().updateSafeModel(updatedSafeModel);
               } else if (value == RadioButtonOptions.yes) {
                 // Set 6.4 and 6.5 to null
                 // context
@@ -376,12 +381,12 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                 // context
                 //     .read<CparaProvider>()
                 //     .updateSafeModel(safeModel.copyWith(question4: null));
-                updatedSafeModel = updatedSafeModel.copyWith(question3: null);
-                updatedSafeModel = updatedSafeModel.copyWith(question4: null);
+                debugPrint("Safe Branch 2 entered");
+                updatedSafeModel = updatedSafeModel.copyWith(question3: "");
+                updatedSafeModel = updatedSafeModel.copyWith(question4: "");
+                debugPrint("Updating Old Safe Model with $updatedSafeModel");
+                context.read<CparaProvider>().updateSafeModel(updatedSafeModel);
               }
-
-              debugPrint("Updating Old Safe Model with $updatedSafeModel");
-              context.read<CparaProvider>().updateSafeModel(updatedSafeModel);
             }),
 
 // Question 6.1
@@ -643,9 +648,9 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
 // Benchmak 6 results
         BenchMarkQuestion(
-            groupValue: allShouldBeYes([
-              _referred_for_services,
-              _received_services,
+            groupValue: allShouldBeOnlyYes([
+              convertingStringToRadioButtonOptions(context.read<CparaProvider>().safeModel?.question3 ?? ""),
+              convertingStringToRadioButtonOptions(context.read<CparaProvider>().safeModel?.question4 ?? ""),
             ], "message"),
             benchmark_question: "Has the household achieved this benchmarks?",
             selectedOption: (value) {}),
