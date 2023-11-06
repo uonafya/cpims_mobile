@@ -1,4 +1,3 @@
-
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
@@ -282,6 +281,7 @@ class _HomepageState extends State<Homepage> {
                     //     Get.to(() => const UnapprovedRecordsScreens());
                     //   },
                     // ),
+
                     CustomGridView(
                       crossAxisCount: 2,
                       childrenHeight: 180,
@@ -512,8 +512,7 @@ class _HomepageState extends State<Homepage> {
           snackPosition: SnackPosition.BOTTOM);
     }
     if (mounted) {
-      ScaffoldMessenger.of(context)
-          .removeCurrentSnackBar(); // Remove the indefinite snackbar
+      Get.closeCurrentSnackbar();
     }
   }
 }

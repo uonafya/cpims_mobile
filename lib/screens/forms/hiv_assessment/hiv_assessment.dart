@@ -67,17 +67,6 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
       return;
     }
 
-    if (formIndex == 1 &&
-        Provider.of<HIVAssessmentProvider>(context, listen: false)
-                .hivRiskAssessmentModel ==
-            null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Please fill in the required fields"),
-        backgroundColor: Colors.red,
-      ));
-      return;
-    }
-
     if (formIndex == hivAssessmentTitles.length - 1) {
       return;
     }
