@@ -22,6 +22,7 @@ import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -86,6 +87,11 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
     CheckboxQuestion(
         id: 8, question: 'Household Affected by HIV', questionID: "AHIV"),
   ];
+
+  void clearCparaContent() {
+    Navigator.pop(context);
+    context.read<CparaProvider>().clearCparaProvider();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -269,9 +275,14 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                             ovcId: ovcpmisid,
                                             careProviderId: ovcpmisid);
                                         //todo: call ovc
-                                        if(context.mounted){
-                                          DateTime? date = DateTime.tryParse(detailModel.dateOfAssessment ?? "");
-                                          handleSubmit(context: context, selectedDate: date ?? DateTime.now());
+                                        if (context.mounted) {
+                                          DateTime? date = DateTime.tryParse(
+                                              detailModel.dateOfAssessment ??
+                                                  "");
+                                          handleSubmit(
+                                              context: context,
+                                              selectedDate:
+                                                  date ?? DateTime.now());
                                         }
 
                                         if (context.mounted) {
@@ -322,6 +333,57 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                             )
                           ],
                         ),
+
+                        // Cancel Button
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: TextButton(
+                                onPressed: () {
+                                  showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          content: const Text(
+                                              "Are you sure you want to clear the form?"),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                  clearCparaContent();
+                                                },
+                                                child: Text(
+                                                  "Yes",
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize: 14.sp,
+                                                  ),
+                                                )),
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text(
+                                                  "No",
+                                                  style: TextStyle(
+                                                    fontSize: 14.sp,
+                                                  ),
+                                                ))
+                                          ],
+                                        );
+                                      });
+                                },
+                                child: Text(
+                                  "Clear Form",
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 14.sp,
+                                  ),
+                                )),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -347,7 +409,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
     try {
       for (var child in listOfOvcChild) {
         List<CheckboxQuestion> selectedQuestions = [];
-        if(child.answer1 ?? false){
+        if (child.answer1 ?? false) {
           selectedQuestions.add(CheckboxQuestion(
               question: "question",
               id: 0,
@@ -355,7 +417,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
               isChecked: child.answer1 ?? false));
         }
 
-        if(child.answer2 ?? false){
+        if (child.answer2 ?? false) {
           selectedQuestions.add(CheckboxQuestion(
               question: "question",
               id: 0,
@@ -363,7 +425,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
               isChecked: child.answer2 ?? false));
         }
 
-        if(child.answer3 ?? false){
+        if (child.answer3 ?? false) {
           selectedQuestions.add(CheckboxQuestion(
               question: "question",
               id: 0,
@@ -371,7 +433,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
               isChecked: child.answer3 ?? false));
         }
 
-        if(child.answer4 ?? false){
+        if (child.answer4 ?? false) {
           selectedQuestions.add(CheckboxQuestion(
               question: "question",
               id: 0,
@@ -379,7 +441,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
               isChecked: child.answer4 ?? false));
         }
 
-        if(child.answer5 ?? false){
+        if (child.answer5 ?? false) {
           selectedQuestions.add(CheckboxQuestion(
               question: "question",
               id: 0,
@@ -387,7 +449,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
               isChecked: child.answer5 ?? false));
         }
 
-        if(child.answer6 ?? false){
+        if (child.answer6 ?? false) {
           selectedQuestions.add(CheckboxQuestion(
               question: "question",
               id: 0,
@@ -395,7 +457,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
               isChecked: child.answer6 ?? false));
         }
 
-        if(child.answer7 ?? false){
+        if (child.answer7 ?? false) {
           selectedQuestions.add(CheckboxQuestion(
               question: "question",
               id: 0,
@@ -403,14 +465,13 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
               isChecked: child.answer7 ?? false));
         }
 
-        if(child.answer8 ?? false){
+        if (child.answer8 ?? false) {
           selectedQuestions.add(CheckboxQuestion(
               question: "question",
               id: 0,
               questionID: child.question8 ?? "AHIV",
               isChecked: child.answer8 ?? false));
         }
-
 
         String uuid = const Uuid().v4();
         String? dateOfAssessment = selectedDate != null
@@ -526,7 +587,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
         // ||
         // (safe.childrenQuestions ?? []).isNotEmpty &&
         //     validateSafeChildren(childrenQuestions: safe.childrenQuestions)
-    ) {
+        ) {
       throw ("Please fill all mandatory fields in Safe section.");
     }
     // todo: 6. validate schooled details using schooled model
