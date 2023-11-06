@@ -177,12 +177,12 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                     CparaFormsScreen(caseLoadModel: widget.caseLoadModel));
               },
             ),
-            ChildDetailsWorkflowButton(
-              workflowName: "OVC Sub Population",
-              onClick: () {
-                Get.to(() => CheckboxForm(caseLoadModel: widget.caseLoadModel));
-              },
-            ),
+            // ChildDetailsWorkflowButton(
+            //   workflowName: "OVC Sub Population",
+            //   onClick: () {
+            //     Get.to(() => CheckboxForm(caseLoadModel: widget.caseLoadModel));
+            //   },
+            // ),
             ChildDetailsWorkflowButton(
               workflowName: "Case Plan Template",
               onClick: () {
