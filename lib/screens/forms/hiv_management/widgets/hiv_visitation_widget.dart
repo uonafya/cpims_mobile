@@ -4,12 +4,12 @@ import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_form_model.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
-import 'package:cpims_mobile/widgets/custom_date_picker.dart';
 import 'package:cpims_mobile/widgets/custom_dynamic_checkbox_widget.dart';
 import 'package:cpims_mobile/widgets/custom_dynamic_radio_button.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/form_section.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class HIVVisitationWidget extends StatefulWidget {
@@ -22,10 +22,10 @@ class HIVVisitationWidget extends StatefulWidget {
 class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   Set<String> selectedOptions = <String>{};
 
-  DateTime? visitDate;
+  String? visitDate;
   String? durationOnARTs;
   String? height;
-  DateTime? mUAC;
+  String? mUAC;
   String? arvDrugsAdherence;
   String? arvDrugsDuration;
   String? adherenceCounseling;
@@ -34,7 +34,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   String? treatmentSupporterAge;
   String? treatmentSupporterHIVStatus;
   String? viralLoadResults;
-  DateTime? labInvestigationsDate;
+  String? labInvestigationsDate;
   String? detectableViralLoadInterventions;
   String? disclosure;
   String? mUACScore;
@@ -44,7 +44,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   String? nhifEnrollment;
   String? nhifEnrollmentStatus;
   String? referralServices;
-  DateTime? nextAppointmentDate;
+  String? nextAppointmentDate;
   String? peerEducatorName;
   String? peerEducatorContact;
 
@@ -116,7 +116,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               enabled: true,
               onDateSelected: (date) {
                 setState(() {
-                  visitDate = date;
+                  visitDate = DateFormat.yMd(date).toString();
                   handleOnSave();
                 });
               },
@@ -178,7 +178,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               enabled: true,
               onDateSelected: (date) {
                 setState(() {
-                  mUAC = date;
+                  mUAC = DateFormat.yMd(date).toString();
                   handleOnSave();
                 });
               },
@@ -382,7 +382,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               enabled: true,
               onDateSelected: (date) {
                 setState(() {
-                  labInvestigationsDate = date;
+                  labInvestigationsDate = DateFormat.yMd(date).toString();
                   handleOnSave();
                 });
               },
@@ -623,7 +623,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               identifier: DateTextFieldIdentifier.dateOfAssessment,
               onDateSelected: (DateTime? date) {
                 setState(() {
-                  nextAppointmentDate = date;
+                  nextAppointmentDate = DateFormat.yMd(date).toString();
                   handleOnSave();
                 });
               },

@@ -1,18 +1,19 @@
 class HIVManagementFormModel {
-  final DateTime? dateHIVConfirmedPositive;
-  final DateTime? dateTreatmentInitiated;
+  final String? dateOfEvent;
+  final String? dateHIVConfirmedPositive;
+  final String? dateTreatmentInitiated;
   final String? baselineHEILoad;
-  final DateTime? dateStartedFirstLine;
+  final String? dateStartedFirstLine;
   final String? arvsSubWithFirstLine;
-  final DateTime? arvsSubWithFirstLineDate;
+  final String? arvsSubWithFirstLineDate;
   final String? switchToSecondLine;
-  final DateTime? switchToSecondLineDate;
+  final String? switchToSecondLineDate;
   final String? switchToThirdLine;
-  final DateTime? switchToThirdLineDate;
-  final DateTime? visitDate;
+  final String? switchToThirdLineDate;
+  final String? visitDate;
   final String? durationOnARTs;
   final String? height;
-  final DateTime? mUAC;
+  final String? mUAC;
   final String? arvDrugsAdherence;
   final String? arvDrugsDuration;
   final String? adherenceCounseling;
@@ -21,7 +22,7 @@ class HIVManagementFormModel {
   final String? treatmentSupporterAge;
   final String? treatmentSupporterHIVStatus;
   final String? viralLoadResults;
-  final DateTime? labInvestigationsDate;
+  final String? labInvestigationsDate;
   final String? detectableViralLoadInterventions;
   final String? disclosure;
   final String? mUACScore;
@@ -31,11 +32,12 @@ class HIVManagementFormModel {
   final String? nhifEnrollment;
   final String? nhifEnrollmentStatus;
   final String? referralServices;
-  final DateTime? nextAppointmentDate;
+  final String? nextAppointmentDate;
   final String? peerEducatorName;
   final String? peerEducatorContact;
 
   HIVManagementFormModel({
+    this.dateOfEvent,
     this.dateHIVConfirmedPositive,
     this.dateTreatmentInitiated,
     this.baselineHEILoad,

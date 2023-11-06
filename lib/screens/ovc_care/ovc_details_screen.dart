@@ -197,14 +197,16 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                 Get.to(() => HIVManagementForm(caseLoad: widget.caseLoadModel));
               },
             ),
-            ChildDetailsWorkflowButton(
-              workflowName: "HIV Management Form",
-              onClick: () {
-                Get.to(
-                  () => HIVManagementForm(caseLoad: widget.caseLoadModel),
-                );
-              },
-            ),
+            widget.caseLoadModel.ovchivstatus == "Positive"
+                ? ChildDetailsWorkflowButton(
+                    workflowName: "HIV Management Form",
+                    onClick: () {
+                      Get.to(
+                        () => HIVManagementForm(caseLoad: widget.caseLoadModel),
+                      );
+                    },
+                  )
+                : const SizedBox.shrink(),
             ChildDetailsWorkflowButton(
               workflowName: "HIV Assessment form",
               onClick: () {

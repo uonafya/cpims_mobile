@@ -1,11 +1,10 @@
 import 'package:cpims_mobile/providers/hiv_management_form_provider.dart';
-import 'package:cpims_mobile/screens/cpara/provider/hiv_assessment_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_form_model.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
-import 'package:cpims_mobile/widgets/custom_date_picker.dart';
+import 'package:cpims_mobile/utils.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/form_section.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,21 +18,23 @@ class ARTTherapyInfoWidget extends StatefulWidget {
 }
 
 class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
-  DateTime? dateHIVConfirmedPositive;
-  DateTime? dateTreatmentInitiated;
+  String? dateOfEvent;
+  String? dateHIVConfirmedPositive;
+  String? dateTreatmentInitiated;
   String? baselineHEILoad;
-  DateTime? dateStartedFirstLine;
+  String? dateStartedFirstLine;
   String? arvsSubWithFirstLine;
-  DateTime? arvsSubWithFirstLineDate;
+  String? arvsSubWithFirstLineDate;
   String? switchToSecondLine;
-  DateTime? switchToSecondLineDate;
+  String? switchToSecondLineDate;
   String? switchToThirdLine;
-  DateTime? switchToThirdLineDate;
+  String? switchToThirdLineDate;
 
   TextEditingController baselineHEILoadController = TextEditingController();
 
   void handleOnSave() {
     final formData = HIVManagementFormModel(
+      dateOfEvent: dateOfEvent,
       dateHIVConfirmedPositive: dateHIVConfirmedPositive,
       dateTreatmentInitiated: dateTreatmentInitiated,
       baselineHEILoad: baselineHEILoad,
@@ -57,6 +58,28 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
         FormSection(
           children: [
             const Text(
+              'Date',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            DateTextField(
+              label: 'Date of record',
+              enabled: true,
+              onDateSelected: (date) {
+                setState(() {
+                  dateOfEvent = formattedDate(date!);
+                  handleOnSave();
+                });
+              },
+              identifier: DateTextFieldIdentifier.dateOfAssessment,
+            ),
+          ],
+        ),
+        FormSection(
+          children: [
+            const Text(
               '1) Date Confirmed HIV Positive',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
@@ -68,7 +91,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               enabled: true,
               onDateSelected: (date) {
                 setState(() {
-                  dateHIVConfirmedPositive = date;
+                  dateHIVConfirmedPositive = formattedDate(date!);
                   handleOnSave();
                 });
               },
@@ -90,7 +113,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               enabled: true,
               onDateSelected: (date) {
                 setState(() {
-                  dateTreatmentInitiated = date;
+                  dateTreatmentInitiated = formattedDate(date!);
                   handleOnSave();
                 });
               },
@@ -132,7 +155,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               enabled: true,
               onDateSelected: (date) {
                 setState(() {
-                  dateStartedFirstLine = date;
+                  dateStartedFirstLine = formattedDate(date!);
                   handleOnSave();
                 });
               },
@@ -164,7 +187,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               enabled: arvsSubWithFirstLine == "Yes",
               onDateSelected: (date) {
                 setState(() {
-                  arvsSubWithFirstLineDate = date;
+                  arvsSubWithFirstLineDate = formattedDate(date!);
                   handleOnSave();
                 });
               },
@@ -196,7 +219,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               enabled: switchToSecondLine == "Yes",
               onDateSelected: (date) {
                 setState(() {
-                  switchToSecondLineDate = date;
+                  switchToSecondLineDate = formattedDate(date!);
                   handleOnSave();
                 });
               },
@@ -228,7 +251,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               enabled: switchToThirdLine == "Yes",
               onDateSelected: (date) {
                 setState(() {
-                  switchToThirdLineDate = date;
+                  switchToThirdLineDate = formattedDate(date!);
                 });
               },
               identifier: DateTextFieldIdentifier.dateOfAssessment,
