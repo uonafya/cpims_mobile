@@ -296,23 +296,25 @@ class CparaProvider extends ChangeNotifier {
   // initialize cpara ovc questions
   void updateCparaOvcQuestions() {
     List<CparaOvcChild> cparaOvcChildren = [];
-    // List<CaseLoadModel> models = context.read<CparaProvider>().children ?? [];
+    List<CparaOvcChild> cparaOvcChildrenExisting = cparaOvcSubPopulation?.childrenQuestions ?? [];
     // List<CaseLoadModel> models = children;
-    for (CaseLoadModel model in children) {
-      cparaOvcChildren.add(
-        CparaOvcChild(
-          ovcId: model.cpimsId ?? "",
-          question1: "Orphans (double or Child headed)",
-          question2: "At Risk Adolescent Girls andYoung Women (AGYW)?",
-          answer1: false,
-          answer2: false,
-          name: "${model.ovcFirstName} ${model.ovcSurname}",
-        ),
-      );
+    if(cparaOvcChildrenExisting.isEmpty){
+      for (CaseLoadModel model in children) {
+        cparaOvcChildren.add(
+          CparaOvcChild(
+            ovcId: model.cpimsId ?? "",
+            question1: "Orphans (double or Child headed)",
+            question2: "At Risk Adolescent Girls andYoung Women (AGYW)?",
+            answer1: false,
+            answer2: false,
+            name: "${model.ovcFirstName} ${model.ovcSurname}",
+          ),
+        );
+      }
+      CparaOvcSubPopulation current =
+      CparaOvcSubPopulation(childrenQuestions: cparaOvcChildren);
+      cparaOvcSubPopulation = current;
     }
-    CparaOvcSubPopulation current =
-        CparaOvcSubPopulation(childrenQuestions: cparaOvcChildren);
-    cparaOvcSubPopulation = current;
     notifyListeners();
   }
 

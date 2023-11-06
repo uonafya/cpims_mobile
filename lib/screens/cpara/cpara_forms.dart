@@ -464,12 +464,19 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
         detailModel.hasPregnantOrBreastfeedingWoman == null ||
         detailModel.dateOfAssessment == null) {
       throw ("Please fill all mandatory fields in Details section.");
-    } else if (detailModel.isChildHeaded == null ||
-        detailModel.hasHivExposedInfant == null ||
-        detailModel.hasPregnantOrBreastfeedingWoman == null ||
-        detailModel.dateOfAssessment == null) {
-      throw ("Please fill all mandatory fields in Details section.");
     }
+    else if ((detailModel.isFirstAssessment?.toLowerCase() == "no" &&
+        detailModel.dateOfLastAssessment != null &&
+        DateTime.parse(detailModel.dateOfLastAssessment!).isAfter(DateTime.parse(detailModel.dateOfAssessment!))
+    )) {
+      throw ("The last assessment date cannot be ahead of the date of this assessment.");
+    }
+    // else if (detailModel.isChildHeaded == null ||
+    //     detailModel.hasHivExposedInfant == null ||
+    //     detailModel.hasPregnantOrBreastfeedingWoman == null ||
+    //     detailModel.dateOfAssessment == null) {
+    //   throw ("Please fill all mandatory fields in Details section.");
+    // }
     // todo: 2. validate the ovc subpopulation using CparaOvcSubpopulation
     // todo: 3. validate health details using health model
     else if (health.question1 == null ||
@@ -510,10 +517,10 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
     //     safe.question2 == null ||
         safe.question3 == null ||
         safe.question4 == null
-    // ||
-        // safe.question5 == null ||
-        // safe.question6 == null ||
-        // safe.question7 == null ||
+    ||
+        safe.question5 == null ||
+        safe.question6 == null ||
+        safe.question7 == null
         // safe.childrenQuestions == null
         // // || safe.overallQuestion1 == null || safe.overallQuestion2 == null
         // ||
