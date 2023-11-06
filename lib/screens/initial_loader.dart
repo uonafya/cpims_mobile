@@ -19,7 +19,9 @@ import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../providers/auth_provider.dart';
 import '../services/caseload_service.dart';
+import 'locked_screen.dart';
 
 class InitialLoadingScreen extends StatefulWidget {
   const InitialLoadingScreen(
@@ -106,6 +108,12 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
                   isForceSync: false,
                   deviceID: androidId!,
                 );
+              }
+              final lockApp = await AuthProvider.getAppLock();
+
+              if (lockApp) {
+                Get.off(() => const LockedScreen());
+                return;
               }
 
               await Provider.of<UIProvider>(context, listen: false)
