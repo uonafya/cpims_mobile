@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import '../../../providers/app_meta_data_provider.dart';
 import '../../../providers/form1b_provider.dart';
 import '../../../widgets/custom_forms_date_picker.dart';
 import '../../../widgets/custom_toast.dart';
@@ -198,19 +199,28 @@ class _Form1BScreen extends State<Form1BScreen> {
                                         );
                                         return;
                                       } else {
+                                        String startInterviewTime = '';
+                                        if (context.mounted) {
+                                          startInterviewTime = context
+                                                  .read<AppMetaDataProvider>()
+                                                  .startTimeInterview ??
+                                              '';
+                                        }
                                         bool isFormSaved =
                                             await form1bProvider.saveForm1bData(
                                           form1bProvider.formData,
+                                          startInterviewTime,
                                         );
-                                        context
-                                            .read<StatsProvider>()
-                                            .updateCparaFormStats();
+
                                         setState(() {
                                           if (isFormSaved == true) {
                                             if (context.mounted) {
                                               context
                                                   .read<StatsProvider>()
                                                   .updateFormOneBStats();
+                                              context
+                                                  .read<AppMetaDataProvider>()
+                                                  .clearFormMetaData();
                                             }
                                             Get.snackbar(
                                               'Success',

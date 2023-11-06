@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/utils/form_one_a_provider.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_critical.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_safe.dart';
@@ -45,7 +46,7 @@ class _FomOneAState extends State<FomOneA> {
     super.initState();
     Future.delayed(Duration.zero, () {
       Form1AProviderNew form1AProvider =
-          Provider.of<Form1AProviderNew>(context, listen: false);
+      Provider.of<Form1AProviderNew>(context, listen: false);
       form1AProvider.setFinalFormDataOvcId(widget.caseLoadModel.cpimsId!);
     });
   }
@@ -53,16 +54,16 @@ class _FomOneAState extends State<FomOneA> {
   @override
   Widget build(BuildContext context) {
     Form1AProviderNew form1AProvider =
-        Provider.of<Form1AProviderNew>(context, listen: false);
+    Provider.of<Form1AProviderNew>(context, listen: false);
     bool isLastStep = selectedStep == steps.length - 1;
 
     bool isFormInvalid() {
-      return (form1AProvider.formData.selectedDate == null)
-          || ( form1AProvider.formData.selectedServices.isBlank!
-          && form1AProvider.safeFormData.selectedServices.isBlank!
-          && form1AProvider.stableFormData.selectedServices.isBlank!
-          && form1AProvider.schooledFormData.selectedServices.isBlank!
-          && form1AProvider.criticalEventDataForm1b.selectedEvents.isBlank!);
+      return (form1AProvider.formData.selectedDate == null) ||
+          (form1AProvider.formData.selectedServices.isBlank! &&
+              form1AProvider.safeFormData.selectedServices.isBlank! &&
+              form1AProvider.stableFormData.selectedServices.isBlank! &&
+              form1AProvider.schooledFormData.selectedServices.isBlank! &&
+              form1AProvider.criticalEventDataForm1b.selectedEvents.isBlank!);
     }
 
     return Scaffold(
@@ -100,7 +101,9 @@ class _FomOneAState extends State<FomOneA> {
                   width: double.infinity,
                   color: Colors.black,
                   child: Text(
-                    ' FORM 1A DETAILS \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n CPIMS ID: ${widget.caseLoadModel.cpimsId}',
+                    ' FORM 1A DETAILS \n CARE GIVER: ${widget.caseLoadModel
+                        .caregiverNames} \n CPIMS ID: ${widget.caseLoadModel
+                        .cpimsId}',
                     style: const TextStyle(color: Colors.white),
                   ),
                 ),
@@ -138,7 +141,7 @@ class _FomOneAState extends State<FomOneA> {
                               CustomFormsDatePicker(
                                   hintText: 'Select the date',
                                   selectedDateTime:
-                                      form1AProvider.formData.selectedDate,
+                                  form1AProvider.formData.selectedDate,
                                   allowFutureDates: false,
                                   onDateSelected: (selectedDate) {
                                     form1AProvider
@@ -194,30 +197,35 @@ class _FomOneAState extends State<FomOneA> {
                                     return;
                                   } else {
                                     try {
-                                      Position userLocation =
-                                          await _getUserLocation(); // Await the location here
-                                      String lat =
-                                          userLocation.latitude.toString();
-                                      String longitude =
-                                          userLocation.longitude.toString();
-
+                                      String startInterviewTime = '';
+                                      String endTimeInterview = '';
+                                      if (context.mounted) {
+                                        startInterviewTime = context
+                                            .read<AppMetaDataProvider>()
+                                            .startTimeInterview ??
+                                            '';
+                                        endTimeInterview =
+                                            DateTime.now().toIso8601String();
+                                      }
                                       bool isFormSaved =
-                                          await form1AProvider.saveForm1AData(
-                                              form1AProvider.formData,
-                                              lat,
-                                              longitude);
+                                      await form1AProvider.saveForm1AData(
+                                          form1AProvider.formData,
+                                          startInterviewTime);
                                       setState(() {
                                         if (isFormSaved == true) {
                                           if (context.mounted) {
                                             context
                                                 .read<StatsProvider>()
                                                 .updateFormOneAStats();
+                                            context
+                                                .read<AppMetaDataProvider>()
+                                                .clearFormMetaData();
                                           }
                                           Get.snackbar(
                                             'Success',
                                             'Form1A data saved successfully.',
                                             duration:
-                                                const Duration(seconds: 2),
+                                            const Duration(seconds: 2),
                                             snackPosition: SnackPosition.TOP,
                                             backgroundColor: Colors.green,
                                             colorText: Colors.white,
@@ -259,23 +267,23 @@ class _FomOneAState extends State<FomOneA> {
       ),
     );
   }
-
-  Future<Position> _getUserLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw Exception('Location services are disabled.');
-    }
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error("Location permissions denied");
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location denied again.Please turn on location');
-    }
-    return await Geolocator.getCurrentPosition();
-  }
 }
+Future<Position> getUserLocation() async {
+  bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    throw Exception('Location services are disabled.');
+  }
+  LocationPermission permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      return Future.error("Location permissions denied");
+    }
+  }
+
+  if (permission == LocationPermission.deniedForever) {
+    return Future.error('Location denied again.Please turn on location');
+  }
+  return await Geolocator.getCurrentPosition();
+}
+
