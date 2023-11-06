@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/initial_loader.dart';
+import 'package:cpims_mobile/screens/locked_screen.dart';
 import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:cpims_mobile/widgets/logout_dialog.dart';
 import 'package:http/http.dart' as http;
@@ -77,15 +78,16 @@ class AuthProvider with ChangeNotifier {
       },
     );
 
-    // TODO: Implement correct status codes
-    // if (response.statusCode == "given code") {
-    //   if (context.mounted) {
-    //     errorSnackBar(context, 'Not authorized to view this resource');
-    //     await LocalDb.instance.deleteDb();
-    //     AuthProvider.setAppLock(true);
-    //   }
-    //   return;
-    // }
+    if (response.statusCode >= 250 && response.statusCode <= 260) {
+      if (context.mounted) {
+        errorSnackBar(context, 'Not authorized to view this resource');
+        await LocalDb.instance.deleteDb();
+        AuthProvider.setAppLock(true);
+        Get.off(() =>
+        const LockedScreen());
+      }
+      return;
+    }
 
     if (context.mounted) {
       httpReponseHandler(

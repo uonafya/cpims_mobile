@@ -319,7 +319,7 @@ Future<List<Map<String, dynamic>>> fetchQuestionsForOvc(
   return result;
 }
 
-void fetchAndPostToServerOvcSubpopulationDataNew() async {
+Future<void> fetchAndPostToServerOvcSubpopulationDataNew() async {
   var prefs = await SharedPreferences.getInstance();
   var accessToken = prefs.getString('access');
   String bearerAuth = "Bearer $accessToken";

@@ -6,12 +6,15 @@ import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
+import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:flutter/foundation.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 // import '../Models/case_plan_form.dart';
 import '../Models/caseplan_form_model.dart';
+import '../screens/forms/form1a/new/form_one_a.dart';
 
 class LocalDb {
   static const String _databaseName = 'children_ovc4.db';
@@ -34,6 +37,7 @@ class LocalDb {
     databaseFactory.deleteDatabase(_databaseName);
     _database = null;
   }
+
 //create database and child table
 
   Future<Database> _initDB(String filePath) async {
@@ -129,13 +133,11 @@ class LocalDb {
     await db.execute('''
         CREATE TABLE $form1Table (
           ${Form1.id} $idType,
+          ${Form1.uuid} $textType,
           ${Form1.ovcCpimsId} $textType,
           ${Form1.dateOfEvent} $textType,
           ${Form1.formType} $textType,
-          ${Form1.formDateSynced} $textTypeNull,
-          ${Form1.collectedAt} $defaultTime,
-          ${Form1.locationLat} $textTypeNull,
-          ${Form1.locationLong} $textTypeNull
+          ${Form1.formDateSynced} $textTypeNull
         )
         ''');
 
@@ -163,6 +165,25 @@ class LocalDb {
 
     await creatingCparaTables(db, version);
     await createOvcSubPopulation(db, version);
+    await createAppMetaDataTable(db, version);
+  }
+
+  Future<void> createAppMetaDataTable(Database db, int version) async {
+    try {
+      await db.execute('''
+     CREATE TABLE app_form_metadata (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        form_id TEXT,
+        location_lat TEXT,
+        location_long TEXT,
+        start_of_interview TEXT,
+        end_of_interview TEXT,
+        form_type TEXT
+      )
+    ''');
+    } catch (err) {
+      debugPrint(err.toString());
+    }
   }
 
   Future<void> insertCaseLoad(CaseLoadModel caseLoadModel) async {
@@ -365,8 +386,28 @@ class LocalDb {
     return results;
   }
 
+  Future<void> insertAppFormMetaData(uuid, startOfInterview, formType) async {
+    final db = await instance.database;
+    Position userLocation = await getUserLocation(); // Await the location here
+    String lat = userLocation.latitude.toString();
+    String longitude = userLocation.longitude.toString();
+    await db.insert(
+      appFormMetaDataTable,
+      {
+        'form_id': uuid,
+        'location_lat': lat,
+        'location_long': longitude,
+        'start_of_interview': startOfInterview,
+        'end_of_interview': DateTime.now().toIso8601String(),
+        'form_type': formType,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
   // insert formData(either form1a or form1b)
-  Future<void> insertForm1Data(String formType, formData) async {
+  Future<void> insertForm1Data(
+      String formType, formData, metadata, uuid) async {
     try {
       final db = await instance.database;
       final formId = await db.insert(
@@ -376,11 +417,13 @@ class LocalDb {
           'date_of_event': formData.date_of_event,
           'form_type': formType,
           'form_date_synced': null,
-          'location_lat': formData.location_lat,
-          'location_long': formData.location_long,
+          'uuid': uuid,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
+      //insert app form metadata
+      await insertAppFormMetaData(uuid, metadata.startOfInterview, formType);
+
       // insert services
       for (var service in formData.services) {
         await db.insert(
@@ -438,14 +481,17 @@ class LocalDb {
           whereArgs: [formId],
         );
 
+        final AppFormMetaData appFormMetaData =
+            await getAppFormMetaData(form1row['uuid']);
+
         // Create a new map that includes existing form1row data, services, critical_events, and ID
         Map<String, dynamic> updatedForm1Row = {
           ...form1row,
           'services': services,
           'critical_events': criticalEvents,
           'id': formId,
+          'app_form_metadata': appFormMetaData.toJson(),
         };
-
         // Add the updated map to the list
         updatedForm1Rows.add(updatedForm1Row);
       }
@@ -821,6 +867,22 @@ class LocalDb {
       return 0;
     }
   }
+
+  Future<AppFormMetaData> getAppFormMetaData(String uuid) async {
+    final db = await instance.database;
+    final List<Map<String, dynamic>> metaDataList = await db.query(
+      appFormMetaDataTable,
+      where: 'form_id = ?',
+      whereArgs: [uuid],
+    );
+
+    if (metaDataList.isNotEmpty) {
+      return AppFormMetaData.fromJson(metaDataList.first);
+    } else {
+      // Handle the case where no metadata is found
+      return AppFormMetaData(); // You should replace this with an appropriate default value or error handling.
+    }
+  }
 }
 
 // table name and field names
@@ -830,6 +892,7 @@ const tableFormMetadata = 'form_metadata';
 const casePlanTable = 'case_plan';
 const casePlanServicesTable = 'case_plan_services';
 const form1Table = 'form1';
+const appFormMetaDataTable = 'app_form_metadata';
 const form1ServicesTable = 'form1_services';
 const form1CriticalEventsTable = 'form1_critical_events';
 const ovcsubpopulation = 'ovcsubpopulation';
@@ -969,21 +1032,18 @@ class CasePlanServices {
 class Form1 {
   static final List<String> values = [
     id,
+    uuid,
     formType,
     ovcCpimsId,
     dateOfEvent,
-    locationLat,
-    locationLong
   ];
 
   static const String id = "_id";
+  static const String uuid = "uuid";
   static const String formType = "form_type";
   static const String ovcCpimsId = "ovc_cpims_id";
   static const String dateOfEvent = 'date_of_event';
   static const String formDateSynced = 'form_date_synced';
-  static const String collectedAt = 'collected_at';
-  static const String locationLat = 'location_lat';
-  static const String locationLong = 'location_long';
 }
 
 class Form1Services {
