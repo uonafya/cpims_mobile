@@ -33,19 +33,14 @@ class CheckboxQuestion {
       required this.id,
       this.isChecked = false});
 
-  CheckboxQuestion copyWith({
-    int? id,
-   String? question,
-    String? questionID,
-    bool? isChecked
-}){
+  CheckboxQuestion copyWith(
+      {int? id, String? question, String? questionID, bool? isChecked}) {
     return CheckboxQuestion(
         question: question ?? this.question,
         id: id ?? this.id,
-    questionID: questionID ?? this.questionID,
-      isChecked: isChecked ?? this.isChecked
-    );
-}
+        questionID: questionID ?? this.questionID,
+        isChecked: isChecked ?? this.isChecked);
+  }
 }
 
 class CheckboxForm extends StatefulWidget {
@@ -61,6 +56,8 @@ class CheckboxForm extends StatefulWidget {
 
 class _CheckboxFormState extends State<CheckboxForm> {
   DateTime? selectedDate;
+
+  var dateOfAssesmentController = TextEditingController();
 
   @override
   void initState() {
@@ -118,17 +115,17 @@ class _CheckboxFormState extends State<CheckboxForm> {
                   ],
                 ),
               const SizedBox(height: 15),
-              DateTextField(
-                label: 'Date of Assessment',
-                enabled: true,
-                onDateSelected: (date) {
-                  print('Date selected: $date');
-                  setState(() {
-                    selectedDate = date;
-                  });
-                },
-                identifier: DateTextFieldIdentifier.dateOfAssessment,
-              ),
+              // DateTextField(
+              //   label: 'Date of Assessment',
+              //   enabled: true,
+              //   onDateSelected: (date) {
+              //     print('Date selected: $date');
+              //     setState(() {
+              //       selectedDate = date;
+              //     });
+              //   },
+              //   identifier: DateTextFieldIdentifier.dateOfAssessment,
+              // ),
               const SizedBox(height: 15),
               CustomButton(
                 text: "Submit",
@@ -165,7 +162,7 @@ class _CheckboxFormState extends State<CheckboxForm> {
           : null;
       await localDb.insertOvcSubpopulationData(uuid,
           widget.caseLoadModel.cpimsId!, dateOfAssessment!, selectedQuestions);
-      if(mounted) {
+      if (mounted) {
         Navigator.pop(context);
       }
     } catch (error) {
@@ -207,7 +204,7 @@ class _OvcOverallFormState extends State<OvcOverallForm> {
     initializeCparaOvcQuestions();
   }
 
-  void initializeCparaOvcQuestions(){
+  void initializeCparaOvcQuestions() {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<CparaProvider>().updateCparaOvcQuestions();
     });
@@ -215,107 +212,167 @@ class _OvcOverallFormState extends State<OvcOverallForm> {
 
   @override
   Widget build(BuildContext context) {
-
-    return Consumer<CparaProvider>(
-      builder: (context, model, _) {
-        children = model.cparaOvcSubPopulation?.childrenQuestions ?? [];
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            for (int i = 0; i < children.length; i++)
-              DottedBorder(
-                color: Colors.grey,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 10.0, right: 10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(children[i].name ?? "", style: const TextStyle(
-                          color: Colors.blue, fontSize: 18.0, fontWeight: FontWeight.bold
-                      ),),
-                      const Text('Child Name', style: TextStyle(fontSize: 10.0, ),),
-                      const SizedBox(height: 10),
-                      OvcRowQuestion(question: "Orphans (double or Child headed)?", answer: children[i].answer1, onValueChange: (value) {
-                        CparaOvcSubPopulation ovcSub =
-                            context.read<CparaProvider>().cparaOvcSubPopulation ?? CparaOvcSubPopulation();
-                        List<CparaOvcChild> childrenQuestions = children;
-                        childrenQuestions[i] = children[i].copyWith(answer1: value, question1: "double");
-                        context.read<CparaProvider>().updateCparaOvcModel(ovcSub
-                            .copyWith(childrenQuestions: childrenQuestions));
-                      }),
-                      OvcRowQuestion(question: "At Risk Adolescent Girls andYoung Women (AGYW)?", answer: children[i].answer2, onValueChange: (value) {
-                        CparaOvcSubPopulation ovcSub =
-                            context.read<CparaProvider>().cparaOvcSubPopulation ?? CparaOvcSubPopulation();
-                        List<CparaOvcChild> childrenQuestions = children;
-                        childrenQuestions[i] = children[i].copyWith(answer2: value, question2: "AGYW");
-                        context.read<CparaProvider>().updateCparaOvcModel(ovcSub
-                            .copyWith(childrenQuestions: childrenQuestions));
-                        setState(() {
-
-                        });
-                      }),
-                      OvcRowQuestion(question: "HEI?", answer: children[i].answer3, onValueChange: (value) {
-                        CparaOvcSubPopulation ovcSub =
-                            context.read<CparaProvider>().cparaOvcSubPopulation ?? CparaOvcSubPopulation();
-                        List<CparaOvcChild> childrenQuestions = children;
-                        childrenQuestions[i] = children[i].copyWith(answer3: value, question3: "HEI");
-                        context.read<CparaProvider>().updateCparaOvcModel(ovcSub
-                            .copyWith(childrenQuestions: childrenQuestions));
-                        setState(() {
-
-                        });
-                      }),
-                      OvcRowQuestion(question: "Children of Female Sex Workers (FSW)?*", answer: children[i].answer4, onValueChange: (value) {
-                        CparaOvcSubPopulation ovcSub =
-                            context.read<CparaProvider>().cparaOvcSubPopulation ?? CparaOvcSubPopulation();
-                        List<CparaOvcChild> childrenQuestions = children;
-                        childrenQuestions[i] = children[i].copyWith(answer4: value, question4: "FSW");
-                        context.read<CparaProvider>().updateCparaOvcModel(ovcSub
-                            .copyWith(childrenQuestions: childrenQuestions));
-                      }),
-                      OvcRowQuestion(question: "Children of People Living with HIV/AIDS (PLHIV)?", answer: children[i].answer5, onValueChange: (value) {
-                        CparaOvcSubPopulation ovcSub =
-                            context.read<CparaProvider>().cparaOvcSubPopulation ?? CparaOvcSubPopulation();
-                        List<CparaOvcChild> childrenQuestions = children;
-                        childrenQuestions[i] = children[i].copyWith(answer5: value, question5: "PLHIV");
-                        context.read<CparaProvider>().updateCparaOvcModel(ovcSub
-                            .copyWith(childrenQuestions: childrenQuestions));
-                      }),
-                      OvcRowQuestion(question: "Children living with HIV/AIDS (CLHIV)?", answer: children[i].answer6, onValueChange: (value) {
-                        CparaOvcSubPopulation ovcSub =
-                            context.read<CparaProvider>().cparaOvcSubPopulation ?? CparaOvcSubPopulation();
-                        List<CparaOvcChild> childrenQuestions = children;
-                        childrenQuestions[i] = children[i].copyWith(answer6: value, question6: "CLHIV");
-                        context.read<CparaProvider>().updateCparaOvcModel(ovcSub
-                            .copyWith(childrenQuestions: childrenQuestions));
-                      }),
-                      OvcRowQuestion(question: "Sexual violence against children (SVAC)?", answer: children[i].answer7, onValueChange: (value) {
-                        CparaOvcSubPopulation ovcSub =
-                            context.read<CparaProvider>().cparaOvcSubPopulation ?? CparaOvcSubPopulation();
-                        List<CparaOvcChild> childrenQuestions = children;
-                        childrenQuestions[i] = children[i].copyWith(answer7: value, question7: "SVAC");
-                        context.read<CparaProvider>().updateCparaOvcModel(ovcSub
-                            .copyWith(childrenQuestions: childrenQuestions));
-                      }),
-                      OvcRowQuestion(question: "Household affected by HIV ?", answer: children[i].answer8, onValueChange: (value) {
-                        CparaOvcSubPopulation ovcSub =
-                            context.read<CparaProvider>().cparaOvcSubPopulation ?? CparaOvcSubPopulation();
-                        List<CparaOvcChild> childrenQuestions = children;
-                        childrenQuestions[i] = children[i].copyWith(answer8: value, question8: "AHIV");
-                        context.read<CparaProvider>().updateCparaOvcModel(ovcSub
-                            .copyWith(childrenQuestions: childrenQuestions));
-                      }),
-
-                    ],
-                  ),
+    return Consumer<CparaProvider>(builder: (context, model, _) {
+      children = model.cparaOvcSubPopulation?.childrenQuestions ?? [];
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          for (int i = 0; i < children.length; i++)
+            DottedBorder(
+              color: Colors.grey,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 10.0, bottom: 10.0, left: 10.0, right: 10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      children[i].name ?? "",
+                      style: const TextStyle(
+                          color: Colors.blue,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const Text(
+                      'Child Name',
+                      style: TextStyle(
+                        fontSize: 10.0,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    OvcRowQuestion(
+                        question: "Orphans (double or Child headed)?",
+                        answer: children[i].answer1,
+                        onValueChange: (value) {
+                          CparaOvcSubPopulation ovcSub = context
+                                  .read<CparaProvider>()
+                                  .cparaOvcSubPopulation ??
+                              CparaOvcSubPopulation();
+                          List<CparaOvcChild> childrenQuestions = children;
+                          childrenQuestions[i] = children[i]
+                              .copyWith(answer1: value, question1: "double");
+                          context.read<CparaProvider>().updateCparaOvcModel(
+                              ovcSub.copyWith(
+                                  childrenQuestions: childrenQuestions));
+                        }),
+                    OvcRowQuestion(
+                        question:
+                            "At Risk Adolescent Girls andYoung Women (AGYW)?",
+                        answer: children[i].answer2,
+                        onValueChange: (value) {
+                          CparaOvcSubPopulation ovcSub = context
+                                  .read<CparaProvider>()
+                                  .cparaOvcSubPopulation ??
+                              CparaOvcSubPopulation();
+                          List<CparaOvcChild> childrenQuestions = children;
+                          childrenQuestions[i] = children[i]
+                              .copyWith(answer2: value, question2: "AGYW");
+                          context.read<CparaProvider>().updateCparaOvcModel(
+                              ovcSub.copyWith(
+                                  childrenQuestions: childrenQuestions));
+                          setState(() {});
+                        }),
+                    OvcRowQuestion(
+                        question: "HEI?",
+                        answer: children[i].answer3,
+                        onValueChange: (value) {
+                          CparaOvcSubPopulation ovcSub = context
+                                  .read<CparaProvider>()
+                                  .cparaOvcSubPopulation ??
+                              CparaOvcSubPopulation();
+                          List<CparaOvcChild> childrenQuestions = children;
+                          childrenQuestions[i] = children[i]
+                              .copyWith(answer3: value, question3: "HEI");
+                          context.read<CparaProvider>().updateCparaOvcModel(
+                              ovcSub.copyWith(
+                                  childrenQuestions: childrenQuestions));
+                          setState(() {});
+                        }),
+                    OvcRowQuestion(
+                        question: "Children of Female Sex Workers (FSW)?*",
+                        answer: children[i].answer4,
+                        onValueChange: (value) {
+                          CparaOvcSubPopulation ovcSub = context
+                                  .read<CparaProvider>()
+                                  .cparaOvcSubPopulation ??
+                              CparaOvcSubPopulation();
+                          List<CparaOvcChild> childrenQuestions = children;
+                          childrenQuestions[i] = children[i]
+                              .copyWith(answer4: value, question4: "FSW");
+                          context.read<CparaProvider>().updateCparaOvcModel(
+                              ovcSub.copyWith(
+                                  childrenQuestions: childrenQuestions));
+                        }),
+                    OvcRowQuestion(
+                        question:
+                            "Children of People Living with HIV/AIDS (PLHIV)?",
+                        answer: children[i].answer5,
+                        onValueChange: (value) {
+                          CparaOvcSubPopulation ovcSub = context
+                                  .read<CparaProvider>()
+                                  .cparaOvcSubPopulation ??
+                              CparaOvcSubPopulation();
+                          List<CparaOvcChild> childrenQuestions = children;
+                          childrenQuestions[i] = children[i]
+                              .copyWith(answer5: value, question5: "PLHIV");
+                          context.read<CparaProvider>().updateCparaOvcModel(
+                              ovcSub.copyWith(
+                                  childrenQuestions: childrenQuestions));
+                        }),
+                    OvcRowQuestion(
+                        question: "Children living with HIV/AIDS (CLHIV)?",
+                        answer: children[i].answer6,
+                        onValueChange: (value) {
+                          CparaOvcSubPopulation ovcSub = context
+                                  .read<CparaProvider>()
+                                  .cparaOvcSubPopulation ??
+                              CparaOvcSubPopulation();
+                          List<CparaOvcChild> childrenQuestions = children;
+                          childrenQuestions[i] = children[i]
+                              .copyWith(answer6: value, question6: "CLHIV");
+                          context.read<CparaProvider>().updateCparaOvcModel(
+                              ovcSub.copyWith(
+                                  childrenQuestions: childrenQuestions));
+                        }),
+                    OvcRowQuestion(
+                        question: "Sexual violence against children (SVAC)?",
+                        answer: children[i].answer7,
+                        onValueChange: (value) {
+                          CparaOvcSubPopulation ovcSub = context
+                                  .read<CparaProvider>()
+                                  .cparaOvcSubPopulation ??
+                              CparaOvcSubPopulation();
+                          List<CparaOvcChild> childrenQuestions = children;
+                          childrenQuestions[i] = children[i]
+                              .copyWith(answer7: value, question7: "SVAC");
+                          context.read<CparaProvider>().updateCparaOvcModel(
+                              ovcSub.copyWith(
+                                  childrenQuestions: childrenQuestions));
+                        }),
+                    OvcRowQuestion(
+                        question: "Household affected by HIV ?",
+                        answer: children[i].answer8,
+                        onValueChange: (value) {
+                          CparaOvcSubPopulation ovcSub = context
+                                  .read<CparaProvider>()
+                                  .cparaOvcSubPopulation ??
+                              CparaOvcSubPopulation();
+                          List<CparaOvcChild> childrenQuestions = children;
+                          childrenQuestions[i] = children[i]
+                              .copyWith(answer8: value, question8: "AHIV");
+                          context.read<CparaProvider>().updateCparaOvcModel(
+                              ovcSub.copyWith(
+                                  childrenQuestions: childrenQuestions));
+                        }),
+                  ],
                 ),
               ),
-          ],
-        );
-      }
-    );
+            ),
+        ],
+      );
+    });
   }
 }
 
@@ -323,16 +380,15 @@ class OvcRowQuestion extends StatelessWidget {
   final bool? answer;
   final String question;
   final Function(bool?)? onValueChange;
-  const OvcRowQuestion({super.key, required this.question, this.answer, this.onValueChange});
+  const OvcRowQuestion(
+      {super.key, required this.question, this.answer, this.onValueChange});
 
   @override
   Widget build(BuildContext context) {
-    return  Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
-            child:
-            ReusableTitleText(title: question)),
+        Expanded(child: ReusableTitleText(title: question)),
         Checkbox(
           value: answer ?? false,
           onChanged: onValueChange,
@@ -342,5 +398,3 @@ class OvcRowQuestion extends StatelessWidget {
     );
   }
 }
-
-

@@ -54,6 +54,24 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
     super.initState();
   }
 
+  void updateDate(String whatDate, String? newDate) {
+    switch (whatDate) {
+      case 'assesment':
+        DetailModel detailModel =
+            context.read<CparaProvider>().detailModel ?? DetailModel();
+        var newDetailModel = detailModel.copyWith(dateOfAssessment: newDate);
+        context.read<CparaProvider>().updateDetailModel(newDetailModel);
+      case 'previous':
+        DetailModel detailModel =
+            context.read<CparaProvider>().detailModel ?? DetailModel();
+        var newDetailModel =
+            detailModel.copyWith(dateOfLastAssessment: newDate);
+        context.read<CparaProvider>().updateDetailModel(newDetailModel);
+      default:
+        break;
+    }
+  }
+
   void _getDataAndMoveToNext() {
     print('Is first assessment: $widget');
     print('Is child headed: $isChildHeaded');
@@ -79,140 +97,243 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
   final GlobalKey<_DateTextFieldState> _dateTextFieldKey = GlobalKey();
   final GlobalKey<_DateTextFieldState> _dateTextFieldPreviousKey = GlobalKey();
 
+  var dateOfAssesmentController = TextEditingController();
+  var previousAssesmentController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return StepsWrapper(
-      title: 'CPARA Details',
-      children: [
-        DateTextField(
-          key: _dateTextFieldKey,
-          label: 'Date of Assessment',
-          enabled: true,
-          identifier: DateTextFieldIdentifier.dateOfAssessment,
-          onDateSelected: (date) {
-            print('Date selected: $date');
-            DetailModel detailModel =
-                context.read<CparaProvider>().detailModel ?? DetailModel();
-            context.read<CparaProvider>().updateDetailModel(
-                detailModel.copyWith(dateOfAssessment: date.toString()));
-          },
-        ),
-        const Divider(
-          height: 20,
-          thickness: 2,
-        ),
-        const SizedBox(height: 20),
-        const TextViewsColumn(),
-        QuestionWidget(
-            question: 'Is this the first Case Plan Readiness Assessment?',
-            selectedOption: (value) {
-              setState(() {
-                isFirstAssessment = value;
-                if (isFirstAssessment == RadioButtonOptions.yes) {
-                  _dateTextFieldPreviousKey.currentState?.clearDate();
-                }
-                DetailModel detailModel =
-                    context.read<CparaProvider>().detailModel ?? DetailModel();
-                String selectedOption =
-                    convertingRadioButtonOptionsToString(value);
-                context.read<CparaProvider>().updateDetailModel(
-                    detailModel.copyWith(isFirstAssessment: selectedOption));
-              });
-            },
-            isNaAvailable: false),
-        const SizedBox(height: 20),
-        DateTextField(
-          key: _dateTextFieldPreviousKey,
-          label: 'If No, give date of Previous Case Plan Readiness Assessment',
-          enabled: isFirstAssessment == RadioButtonOptions.no,
-          identifier: DateTextFieldIdentifier.previousAssessment,
-          onDateSelected: (date) {
-            print('Date selected: $date');
-            DetailModel detailModel =
-                context.read<CparaProvider>().detailModel ?? DetailModel();
-            context.read<CparaProvider>().updateDetailModel(
-                detailModel.copyWith(dateOfLastAssessment: date.toString()));
-          },
-        ),
-        const SizedBox(height: 20),
-        const ReusableTitleText(
-            title:
-                'Details of all children below 18 years currently living in the household.'),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: children.length,
-          itemBuilder: (context, index) {
-            return ExpansionTile(
-                title: Text(
-                    '${children[index].ovcFirstName!} ${children[index].ovcSurname!}'),
-                children: [
-                  ChildCard(childDetails: children[index]),
-                ]);
-          },
-        ),
-        QuestionWidget(
-            question:
-                "Is this household child-headed (i.e. Household head age is less than 18 years)?",
-            selectedOption: (value) {
-              setState(() {
-                DetailModel detailModel =
-                    context.read<CparaProvider>().detailModel ?? DetailModel();
-                String selectedOption =
-                    convertingRadioButtonOptionsToString(value);
-                context.read<CparaProvider>().updateDetailModel(
-                    detailModel.copyWith(isChildHeaded: selectedOption));
-              });
-            },
-            isNaAvailable: false),
-        QuestionWidget(
-            question: 'Does this HH have HIV exposed infant?',
-            selectedOption: (value) {
-              setState(() {
-                hasHivExposedInfant = value;
-                DetailModel detailModel =
-                    context.read<CparaProvider>().detailModel ?? DetailModel();
-                String selectedOption =
-                    convertingRadioButtonOptionsToString(value);
-                context.read<CparaProvider>().updateDetailModel(
-                    detailModel.copyWith(hasHivExposedInfant: selectedOption));
-              });
-            },
-            isNaAvailable: false),
-        QuestionWidget(
-            question:
-                'Does this HH currently have a pregnant and/or breastfeeding woman/ adolescent?',
-            selectedOption: (value) {
-              setState(() {
-                hasPregnantOrBreastfeedingWoman = value;
-                DetailModel detailModel =
-                    context.read<CparaProvider>().detailModel ?? DetailModel();
-                String selectedOption =
-                    convertingRadioButtonOptionsToString(value);
-                context.read<CparaProvider>().updateDetailModel(detailModel
-                    .copyWith(hasPregnantOrBreastfeedingWoman: selectedOption));
-              });
-            },
-            isNaAvailable: false),
-        const SizedBox(height: 20),
-        const QuestionForCard(
-          text: "OVC Sub Population",
-        ),
-        const SizedBox(
-          height: 10.0,
-        ),
-        // for(var child in children)
-        //   OvcForm(caseLoadModel: child),
-        const OvcOverallForm(),
-        // const SizedBox(height: 15),
-        // CustomButton(
-        //   text: "Submit",
-        //   onTap: () {
-        //     List<Map<CaseLoadModel, List<CheckboxQuestion>>> ovcSubPopulations = context.read<CparaProvider>().ovcSubPopulations ?? [];
-        //     debugPrint("${ovcSubPopulations.length}");
-        //   },
-        // ),
-      ],
+    // Providing access to the provider
+    return Consumer<CparaProvider>(
+      builder: (context, model, _) {
+        return StepsWrapper(
+          title: 'CPARA Details',
+          children: [
+            // DateTextField(
+            //   key: _dateTextFieldKey,
+            //   label: 'Date of Assessment',
+            //   enabled: true,
+            //   identifier: DateTextFieldIdentifier.dateOfAssessment,
+            //   onDateSelected: (date) {
+            //     print('Date selected: $date');
+            //     DetailModel detailModel =
+            //         context.read<CparaProvider>().detailModel ?? DetailModel();
+            //     context.read<CparaProvider>().updateDetailModel(
+            //         detailModel.copyWith(dateOfAssessment: date.toString()));
+            //   },
+            // ),
+            DateTextField2(
+                label: 'Date of Assessment',
+                enabled: true,
+                controller: dateOfAssesmentController,
+                initialValue: model.detailModel?.dateOfAssessment ?? "",
+                updateDate: (String? newDate) {
+                  updateDate('assesment', newDate);
+                }),
+            const Divider(
+              height: 20,
+              thickness: 2,
+            ),
+            const SizedBox(height: 20),
+            const TextViewsColumn(),
+            QuestionWidget(
+              question: 'Is this the first Case Plan Readiness Assessment?',
+              selectedOption: (value) {
+                setState(() {
+                  isFirstAssessment = value;
+                  if (isFirstAssessment == RadioButtonOptions.yes) {
+                    _dateTextFieldPreviousKey.currentState?.clearDate();
+                  }
+                  DetailModel detailModel =
+                      context.read<CparaProvider>().detailModel ??
+                          DetailModel();
+                  String selectedOption =
+                      convertingRadioButtonOptionsToString(value);
+                  context.read<CparaProvider>().updateDetailModel(
+                      detailModel.copyWith(isFirstAssessment: selectedOption));
+                });
+              },
+              isNaAvailable: false,
+              option: convertingStringToRadioButtonOptions(
+                  model.detailModel?.isFirstAssessment ?? ""),
+            ),
+
+            const SizedBox(height: 20),
+            // DateTextField(
+            //   key: _dateTextFieldPreviousKey,
+            //   label:
+            //       'If No, give date of Previous Case Plan Readiness Assessment',
+            //   enabled: isFirstAssessment == RadioButtonOptions.no,
+            //   identifier: DateTextFieldIdentifier.previousAssessment,
+            //   onDateSelected: (date) {
+            //     print('Date selected: $date');
+            //     DetailModel detailModel =
+            //         context.read<CparaProvider>().detailModel ?? DetailModel();
+            //     context.read<CparaProvider>().updateDetailModel(detailModel
+            //         .copyWith(dateOfLastAssessment: date.toString()));
+            //   },
+            // ),
+            DateTextField2(
+                label:
+                    'If No, give date of Previous Case Plan Readiness Assessment',
+                enabled: isFirstAssessment == RadioButtonOptions.no,
+                controller: previousAssesmentController,
+                initialValue: model.detailModel?.dateOfLastAssessment ?? "",
+                updateDate: (String? newDate) {
+                  updateDate('previous', newDate);
+                }),
+            const SizedBox(height: 20),
+            const ReusableTitleText(
+                title:
+                    'Details of all children below 18 years currently living in the household.'),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: children.length,
+              itemBuilder: (context, index) {
+                return ExpansionTile(
+                    title: Text(
+                        '${children[index].ovcFirstName!} ${children[index].ovcSurname!}'),
+                    children: [
+                      ChildCard(childDetails: children[index]),
+                    ]);
+              },
+            ),
+            QuestionWidget(
+              question:
+                  "Is this household child-headed (i.e. Household head age is less than 18 years)?",
+              selectedOption: (value) {
+                setState(() {
+                  DetailModel detailModel =
+                      context.read<CparaProvider>().detailModel ??
+                          DetailModel();
+                  String selectedOption =
+                      convertingRadioButtonOptionsToString(value);
+                  context.read<CparaProvider>().updateDetailModel(
+                      detailModel.copyWith(isChildHeaded: selectedOption));
+                });
+              },
+              isNaAvailable: false,
+              option: convertingStringToRadioButtonOptions(
+                  model.detailModel?.isChildHeaded ?? ""),
+            ),
+            QuestionWidget(
+              question: 'Does this HH have HIV exposed infant?',
+              selectedOption: (value) {
+                setState(() {
+                  hasHivExposedInfant = value;
+                  DetailModel detailModel =
+                      context.read<CparaProvider>().detailModel ??
+                          DetailModel();
+                  String selectedOption =
+                      convertingRadioButtonOptionsToString(value);
+                  context.read<CparaProvider>().updateDetailModel(detailModel
+                      .copyWith(hasHivExposedInfant: selectedOption));
+                });
+              },
+              isNaAvailable: false,
+              option: convertingStringToRadioButtonOptions(
+                  model.detailModel?.hasHivExposedInfant ?? ""),
+            ),
+            QuestionWidget(
+              question:
+                  'Does this HH currently have a pregnant and/or breastfeeding woman/ adolescent?',
+              selectedOption: (value) {
+                setState(() {
+                  hasPregnantOrBreastfeedingWoman = value;
+                  DetailModel detailModel =
+                      context.read<CparaProvider>().detailModel ??
+                          DetailModel();
+                  String selectedOption =
+                      convertingRadioButtonOptionsToString(value);
+                  context.read<CparaProvider>().updateDetailModel(
+                      detailModel.copyWith(
+                          hasPregnantOrBreastfeedingWoman: selectedOption));
+                });
+              },
+              isNaAvailable: false,
+              option: convertingStringToRadioButtonOptions(
+                  model.detailModel?.hasPregnantOrBreastfeedingWoman ?? ""),
+            ),
+            const SizedBox(height: 20),
+            const QuestionForCard(
+              text: "OVC Sub Population",
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            // for(var child in children)
+            //   OvcForm(caseLoadModel: child),
+            const OvcOverallForm(),
+            // const SizedBox(height: 15),
+            // CustomButton(
+            //   text: "Submit",
+            //   onTap: () {
+            //     List<Map<CaseLoadModel, List<CheckboxQuestion>>> ovcSubPopulations = context.read<CparaProvider>().ovcSubPopulations ?? [];
+            //     debugPrint("${ovcSubPopulations.length}");
+            //   },
+            // ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+typedef UpdateDate = Function(String? newDate);
+
+class DateTextField2 extends StatelessWidget {
+  final String label;
+  final bool enabled;
+  final TextEditingController controller;
+  final String initialValue;
+  // final DateTextFieldIdentifier identifier;
+  // final Function(DateTime?) onDateSelected;
+  final UpdateDate updateDate;
+
+  const DateTextField2(
+      {required this.label,
+      required this.enabled,
+      required this.controller,
+      required this.initialValue,
+      required this.updateDate,
+      // required this.identifier,
+      super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var dateFormat = DateFormat('MMMM d, yyyy');
+    DateTime parsedDate;
+    String dateString;
+    try {
+      parsedDate = DateTime.parse(initialValue);
+      dateString = dateFormat.format(parsedDate);
+    } catch (err) {
+      debugPrint("$initialValue is an invalid date");
+      dateString = "";
+    }
+    controller.text = dateString;
+    return TextField(
+      onTap: () {
+        if (enabled) {
+          showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime.now(),
+          ).then((pickedDate) {
+            if (pickedDate != null) {
+              updateDate(pickedDate.toIso8601String());
+            }
+          });
+        }
+      },
+      readOnly: true,
+      enabled: enabled,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+      controller: controller,
     );
   }
 }
@@ -220,6 +341,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
 class DateTextField extends StatefulWidget {
   const DateTextField(
       {Key? key,
+      // required this.initialValue,
       required this.label,
       required this.enabled,
       required this.onDateSelected,
@@ -228,6 +350,7 @@ class DateTextField extends StatefulWidget {
 
   final String label;
   final bool enabled;
+  // final String initialValue;
   final DateTextFieldIdentifier identifier;
   final Function(DateTime?)? onDateSelected;
 
@@ -253,6 +376,7 @@ class _DateTextFieldState extends State<DateTextField> {
     String textFieldText = selectedDate != null
         ? DateFormat('MMMM d, yyyy').format(selectedDate!)
         : '';
+
     return TextField(
       onTap: () {
         if (widget.enabled) {
