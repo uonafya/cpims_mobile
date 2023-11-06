@@ -11,6 +11,7 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/utils/form_one_a_provider.dart';
 import 'package:cpims_mobile/screens/homepage/provider/stats_provider.dart';
 import 'package:cpims_mobile/screens/initial_loader.dart';
+import 'package:cpims_mobile/screens/locked_screen.dart';
 import 'package:cpims_mobile/screens/splash_screen.dart';
 import 'package:cpims_mobile/theme.dart';
 import 'package:flutter/foundation.dart';
@@ -80,6 +81,10 @@ class _CPIMSState extends State<CPIMS> {
                     return const SplashScreen();
                   }
 
+                  if (snapshot.data!['isAppLocked'] == true) {
+                    return const LockedScreen();
+                  }
+
                   return snapshot.data!['hasConnection'] == false ||
                           snapshot.data!['isAuthenticated']
                       ? const InitialLoadingScreen()
@@ -106,5 +111,7 @@ Future<Map<String, dynamic>> intialSetup(BuildContext context) async {
       await Provider.of<AuthProvider>(context, listen: false)
           .verifyToken(context: context);
 
-  return {'hasConnection': hasConnection, 'isAuthenticated': isAuthenticated};
+  final lockApp = await AuthProvider.getAppLock();
+
+  return {'hasConnection': hasConnection, 'isAuthenticated': isAuthenticated, 'isAppLocked' : lockApp};
 }
