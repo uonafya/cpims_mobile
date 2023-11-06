@@ -490,7 +490,7 @@ class LocalDb {
           'services': services,
           'critical_events': criticalEvents,
           'id': formId,
-          'app_form_metadata': appFormMetaData,
+          'app_form_metadata': appFormMetaData.toJson(),
         };
         // Add the updated map to the list
         updatedForm1Rows.add(updatedForm1Row);
