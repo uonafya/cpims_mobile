@@ -10,6 +10,7 @@ import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/provider/hiv_assessment_provider.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/utils/form_one_a_provider.dart';
+import 'package:cpims_mobile/screens/forms/hiv_management/utils/hiv_management_form_status_provider.dart';
 import 'package:cpims_mobile/screens/homepage/provider/stats_provider.dart';
 import 'package:cpims_mobile/screens/initial_loader.dart';
 import 'package:cpims_mobile/screens/locked_screen.dart';
@@ -44,6 +45,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => Form1AProviderNew()),
         ChangeNotifierProvider(create: (_) => HIVAssessmentProvider()),
         ChangeNotifierProvider(create: (_) => HIVManagementFormProvider()),
+        ChangeNotifierProvider(create: (_) => FormCompletionStatusProvider())
       ],
       child: const CPIMS(),
     ),

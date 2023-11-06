@@ -3,6 +3,7 @@ import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_form_model.dart';
+import 'package:cpims_mobile/screens/forms/hiv_management/utils/hiv_management_form_status_provider.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:cpims_mobile/utils.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
@@ -11,7 +12,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 class ARTTherapyInfoWidget extends StatefulWidget {
-  const ARTTherapyInfoWidget({super.key});
+  const ARTTherapyInfoWidget({
+    super.key,
+  });
 
   @override
   State<ARTTherapyInfoWidget> createState() => _ARTTherapyInfoWidgetState();
@@ -48,6 +51,29 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
     );
     Provider.of<HIVManagementFormProvider>(context, listen: false)
         .updateHIVManagementModel(formData);
+
+    final isComplete = areAllFieldsFilled();
+    if (isComplete) {
+      final formCompletionStatus = context.read<FormCompletionStatusProvider>();
+      formCompletionStatus.setArtTherapyFormCompleted(true);
+    }
+  }
+
+  bool areAllFieldsFilled() {
+    // Define a list of required fields to check if they are filled in
+    final requiredFields = [
+      dateOfEvent,
+      dateHIVConfirmedPositive,
+      dateTreatmentInitiated,
+      baselineHEILoad,
+      dateStartedFirstLine,
+      arvsSubWithFirstLine,
+      switchToSecondLine,
+      switchToThirdLine,
+    ];
+
+    // Check if any required field is null or empty
+    return requiredFields.every((field) => field != null && field.isNotEmpty);
   }
 
   @override
@@ -178,6 +204,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                 setState(() {
                   arvsSubWithFirstLine =
                       convertingRadioButtonOptionsToString(options);
+                  if (arvsSubWithFirstLine == 'No') {
+                    arvsSubWithFirstLineDate = null;
+                  }
                   handleOnSave();
                 });
               },
@@ -210,6 +239,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                 setState(() {
                   switchToSecondLine =
                       convertingRadioButtonOptionsToString(options);
+                  if (switchToSecondLine == 'No') {
+                    switchToSecondLineDate = null;
+                  }
                   handleOnSave();
                 });
               },
@@ -242,6 +274,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                 setState(() {
                   switchToThirdLine =
                       convertingRadioButtonOptionsToString(options);
+                  if (switchToThirdLine == 'No') {
+                    switchToThirdLineDate = null;
+                  }
                   handleOnSave();
                 });
               },
@@ -252,6 +287,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               onDateSelected: (date) {
                 setState(() {
                   switchToThirdLineDate = formattedDate(date!);
+                  handleOnSave();
                 });
               },
               identifier: DateTextFieldIdentifier.dateOfAssessment,

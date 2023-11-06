@@ -79,6 +79,7 @@ class HIVManagementFormModel {
     List<dynamic>? nutritionalSupportList = nutritionalSupport?.toList();
 
     return {
+      'dateOfEvent': dateOfEvent,
       'dateHIVConfirmedPositive': dateHIVConfirmedPositive,
       'dateTreatmentInitiated': dateTreatmentInitiated,
       'baselineHEILoad': baselineHEILoad,
@@ -123,6 +124,7 @@ class HIVManagementFormModel {
             ?.map((e) => e.toString())
             .toSet();
     return HIVManagementFormModel(
+      dateOfEvent: json['dateOfEvent'],
       dateHIVConfirmedPositive: json['dateHIVConfirmedPositive'],
       dateTreatmentInitiated: json['dateTreatmentInitiated'],
       baselineHEILoad: json['baselineHEILoad'],
