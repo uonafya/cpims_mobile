@@ -129,24 +129,7 @@ class CparaModel {
       var safeJSON = safe.toJSON();
       var schooledJSON = schooled.toJSON();
       var stableJSON = stable.toJSON();
-      // var ovcSubPopulationModelJSON=ovcSubPopulationModel?.toJSON();
 
-      // insert to database, for now debugPrint for testing
-      print("Detail");
-      print(detailJSON.toString());
-      print("Health");
-      print(healthJSON.toString());
-      print("Safe");
-      print(safeJSON.toString());
-      print("Schooled");
-      print(schooledJSON.toString());
-      print("Stable");
-      print(stableJSON.toString());
-      // print("OVC Sbpopulation");
-      // print(ovcSubPopulationModelJSON.toString());
-
-      // var h = healthJSON.remove('children');
-      // var s = safeJSON.remove('children');
       // Get children from safe and health
       // Health
       List<Map<String, dynamic>> healtChildren = healthJSON.remove('children');
@@ -189,16 +172,9 @@ class CparaModel {
         usableSafeChildren.add(tempList);
       }
 
-      // await addChildren(db, usableHealthChildren, formID);
-      // await addChildren(db, usableSafeChildren, formID);
+      
       await addChildren2(healtChildren, db!, formID);
       await addChildren2(safeChildren, db, formID);
-
-      print("\nUsable Health Children\n");
-      print(usableHealthChildren.toString());
-
-      print("\nUsable Safe Children\n");
-      print(usableSafeChildren.toString());
 
       // Merge all maps
       json.addAll(detailJSON);
@@ -206,8 +182,6 @@ class CparaModel {
       json.addAll(safeJSON);
       json.addAll(schooledJSON);
       json.addAll(stableJSON);
-      // json.addAll(ovcSubPopulationModelJSON!);
-      print(json);
 
       // Send request
       // Create questions to send
@@ -230,10 +204,6 @@ class CparaModel {
       jsonToSend['date_of_previous_event'] = dateOfPreviousEvent;
       jsonToSend['questions'] = questions;
 
-      print("The Data Sent To The Server");
-      print(jsonToSend.toString());
-      print("Sending Data");
-      print("Local Db Data start");
       // Insert database
       // Create a batch
       var batch = db.batch();
@@ -250,26 +220,6 @@ class CparaModel {
       });
 
       await batch.commit(noResult: true);
-
-      print(
-          "Local Db Data end KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
-
-      // // Insert database
-      // // Create a batch
-      // var batch = db!.batch();
-      // json.forEach((key, value) {
-      //   batch.insert(
-      //     "HouseholdAnswer",
-      //     {
-      //       "houseHoldID": houseHoldID,
-      //       "questionID": key,
-      //       "answer": value,
-      //       "formID": formID
-      //     },
-      //   );
-      // });
-      //
-      // await batch.commit(noResult: true);
     } catch (err) {
       print("Error adding household filled questions to db ${err.toString()}");
     }
@@ -303,108 +253,6 @@ class CparaModel {
       throw ("Error getting latest form date ${err.toString()}");
     }
   }
-
-//   // submit to upstream
-// Future<void> submitCparaToUpstream() async{
-//   var prefs = await SharedPreferences.getInstance();
-//   var accessToken = prefs.getString('access');
-//   var savedUsername = prefs.getString('username');
-//   var savedPassword = prefs.getString('password');
-//
-//   // Encode your username and password as Basic Auth credentials
-//   String username = savedUsername ?? "";
-//   String password = savedPassword ?? "";
-//   String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-//   String bearerAuth = "Bearer $accessToken";
-//
-//
-//   // local db initialization
-//   Database database = await LocalDb.instance.database;
-//   // cpara data from local db
-//   List<CPARADatabase> cparaFormsInDb = await getUnsynchedForms(database);
-//
-//   for(CPARADatabase cparaForm in cparaFormsInDb){
-//     try{
-//       // submission
-//       await singleCparaFormSubmission(cparaForm: cparaForm, authorization: basicAuth);
-//       // remove from local db
-//       // purgeForm(formID, database);
-//     }
-//         catch(e){
-//           debugPrint("Cpara form with ovs cpims id : ${cparaForm.ovc_cpims_id} failed submission to upstream");
-//       continue;
-//         }
-//   }
-//
-// }
-//
-// Future<void> singleCparaFormSubmission({required CPARADatabase cparaForm, required String authorization}) async {
-//   Map<String, List<CPARAChildQuestions>> separatedChildren = {};
-//
-//   for (var child in cparaForm.childQuestions) {
-//     if (!separatedChildren.containsKey(child.ovc_cpims_id)) {
-//       separatedChildren[child.ovc_cpims_id] = [];
-//     }
-//     separatedChildren[child.ovc_cpims_id]!.add(child);
-//   }
-//
-//   // Printing the separated children
-//   separatedChildren.forEach((id, childrenList) {
-//     print("Children with ID $id:");
-//     for (var child in childrenList) {
-//       print("  ${child.question_code} - ${child.answer_id}");
-//     }
-//   });
-//
-// // household questions
-//   for(int i = 0; i < cparaForm.questions.length; i++){
-//     debugPrint("Question ${cparaForm.questions[i].question_code} - ${cparaForm.questions[i].answer_id}");
-//   }
-//
-//   // child questions
-//   for(int i = 0; i < cparaForm.childQuestions.length; i++){
-//     debugPrint("Child ID ${cparaForm.childQuestions[i].ovc_cpims_id}: ${cparaForm.childQuestions[i].question_code} - ${cparaForm.childQuestions[i].answer_id}");
-//   }
-//
-//   // Child questions v2
-//   for(int i = 0; i < separatedChildren.length; i++){
-//     String childId = separatedChildren.keys.elementAt(i);
-//     List<CPARAChildQuestions> data = separatedChildren[childId]!;
-//     for(int i = 0; i < data.length; i++) {
-//       debugPrint("Child ID $childId: ${data[i].question_code} - ${data[i].answer_id}");
-//     }
-//   }
-//
-//   // scores value
-//   String b1 = benchMarkOneScoreFromDb(cparaDatabase: cparaForm);
-//   String b2 = benchMarkTwoScoreFromDb(cparaDatabase: cparaForm);
-//     String b3 = benchMarkThreeScoreFromDb(cparaDatabase: cparaForm);
-//   String b4 = benchMarkFourScoreFromDb(cparaDatabase: cparaForm);
-//   String b5 = benchMarkFiveScoreFromDb(cparaDatabase: cparaForm);
-//   String b6 = benchMarkSixScoreFromDb(cparaDatabase: cparaForm);
-//   String b7 = benchMarkSevenScoreFromDb(cparaDatabase: cparaForm);
-//   String b8 =  benchMarkEightScoreFromDb(cparaDatabase: cparaForm);
-//    String b9 = benchMarkNineScoreFromDb(cparaDatabase: cparaForm);
-//
-//     var cparaMapData = {};
-//     // var response = await dio.request("https://dev.cpims.net/api/form/CPR/",
-//     //     data: cparaMapData,
-//     //     options: Options(
-//     //         method: 'POST',
-//     //         contentType: 'application/json',
-//     //         headers: {"Authorization": "Bearer $accessToken"}));
-//       var response = await dio.post("https://dev.cpims.net/api/form/CPR/",
-//           data: cparaMapData,
-//           options: Options(
-//               contentType: 'application/json',
-//               headers: {"Authorization": authorization}));
-//
-//       if(response.statusCode != 200){
-//         throw ("Submission to upstream failed");
-//       }
-//       debugPrint("${response.statusCode}");
-//       debugPrint(response.data.toString());
-// }
 }
 
 class FormData {
