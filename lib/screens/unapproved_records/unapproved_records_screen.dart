@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
@@ -33,11 +34,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
   }
 
   void getRecords() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    final accessToken = prefs.getString('access');
-
-    await UnapprovedDataService.fetchUnnaprovedData(accessToken);
+    final List<UnapprovedForm1DataModel> records = await UnapprovedDataService.fetchLocalUnapprovedData();
   }
 
   String selectedRecord = 'Form 1A';
