@@ -154,6 +154,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
               const Text("2. Was a formal referral made for HIV testing?"),
               CustomRadioButton(
                 isNaAvailable: false,
+
                 option: formData.formalReferralMade.isNotEmpty
                     ? convertingStringToRadioButtonOptions(
                         formData.formalReferralMade)
@@ -212,7 +213,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
               const SizedBox(height: 10),
               CustomTextField(
                 hintText: "Response",
-                initialValue: formData?.reasonForNotMakingReferral,
+                initialValue: formData.reasonForNotMakingReferral,
                 onChanged: (val) {
                   reasonForNotMakingReferral = val;
                   handleOnFormSaved();
@@ -251,10 +252,11 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                   const SizedBox(height: 10),
                   CustomRadioButton(
                     isNaAvailable: false,
-                    option: formData.referredForArt.isNotEmpty
-                        ? convertingStringToRadioButtonOptions(
-                            formData.referredForArt)
-                        : null,
+                    option:
+                        formData.referredForArt.isNotEmpty
+                            ? convertingStringToRadioButtonOptions(
+                                formData.referredForArt)
+                            : null,
                     optionSelected: (val) {
                       referredForArt =
                           convertingRadioButtonOptionsToString(val);
@@ -321,7 +323,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                   const SizedBox(height: 10),
                   CustomTextField(
                       hintText: "Search for facility here",
-                      initialValue: formData?.facilityOfArtEnrollment,
+                      initialValue: formData.facilityOfArtEnrollment,
                       onChanged: (val) {
                         facilityOfArtEnrollment = val;
                         handleOnFormSaved();

@@ -118,7 +118,6 @@ class _HomepageState extends State<Homepage> {
           );
         }
       } catch (e) {
-        print("The error is $e");
         Get.snackbar(
           'Error',
           'An error occurred $e',
@@ -253,7 +252,7 @@ class _HomepageState extends State<Homepage> {
                     if (kDebugMode)
                       const InfoCard(
                         title: 'THIS IS A TEST APPLICATION',
-                        icon: FontAwesomeIcons.warning,
+                        icon: FontAwesomeIcons.triangleExclamation,
                         color: Color(0xffff0010),
                         secondaryColor: Color(0xff630122),
                       ),
@@ -268,7 +267,6 @@ class _HomepageState extends State<Homepage> {
                       cparaCount: formStats.cparaCount,
                       onClick: () {},
                     ),
-
                     StatisticsItem(
                       title: 'UNAPPROVED RECORDS',
                       icon: FontAwesomeIcons.fileCircleXmark,
@@ -457,7 +455,6 @@ class _HomepageState extends State<Homepage> {
         );
         if (response.statusCode == 201) {
           debugPrint("Data to sync is $formData");
-          print("Data to sync is $formData");
           await Form1Service.updateFormLocalDateSync(
             formType['formType']!,
             formData.id,

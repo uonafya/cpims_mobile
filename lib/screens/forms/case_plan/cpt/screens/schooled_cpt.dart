@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -217,7 +218,9 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
             context.read<CptProvider>().updateCptSchooledFormData(
                 cptschooledFormData.copyWith(goalId: selectedEvents[0].value));
             // Print the updated goalId
-            print("The selected goal was ${selectedEvents[0].value}");
+            if (kDebugMode) {
+              print("The selected goal was ${selectedEvents[0].value}");
+            }
           },
           selectedOptions: selectedGoalOptions,
           options: casePlanGoalSchooledList,
@@ -252,7 +255,9 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
             context.read<CptProvider>().updateCptSchooledFormData(
                 cptschooledFormData.copyWith(gapId: selectedEvents[0].value));
             // Print the updated goalId
-            print("The selected need was ${selectedEvents[0].value}");
+            if (kDebugMode) {
+              print("The selected need was ${selectedEvents[0].value}");
+            }
           },
           options: casePlanGapsSchooledList,
           selectedOptions: selectedNeedOptions,
@@ -287,7 +292,9 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
             context.read<CptProvider>().updateCptSchooledFormData(
                 cptschooledFormData.copyWith(
                     priorityId: selectedEvents[0].value));
-            print("The selected priority was ${selectedEvents[0].value}");
+            if (kDebugMode) {
+              print("The selected priority was ${selectedEvents[0].value}");
+            }
           },
           options: casePlanPrioritiesSchooledList,
           selectedOptions: selectedPriorityActionOptions,
@@ -327,7 +334,9 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
                 ));
             selectedServiceIds =
                 selectedEvents.map((item) => item.value).toList();
-            print("The selected service IDs are $selectedServiceIds");
+            if (kDebugMode) {
+              print("The selected service IDs are $selectedServiceIds");
+            }
           },
           selectedOptions: selectedServicesOptions,
           options: casePlanServicesSchooledList,
@@ -368,8 +377,11 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
                 ));
             selectedPersonResponsibleIds =
                 selectedEvents.map((item) => item.value).toList();
-            print(
-                "The selected responsible IDs are $selectedPersonResponsibleIds");
+            if (kDebugMode) {
+              print(
+                "The selected responsible IDs are $selectedPersonResponsibleIds",
+              );
+            }
           },
           selectedOptions: selectedPersonsResponsibleOptions,
           options: casePlanProviderPersonsResponsibleList,
@@ -405,7 +417,9 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
                 cptschooledFormData.copyWith(
                     resultsId: selectedEvents[0].value));
             // Print the updated goalId
-            print("The selected result was ${selectedEvents[0].value}");
+            if (kDebugMode) {
+              print("The selected result was ${selectedEvents[0].value}");
+            }
           },
           selectedOptions: selectedResultsOptions,
           options: casePlanProviderResultList,
@@ -441,7 +455,9 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
             context.read<CptProvider>().updateCptSchooledFormData(
                 cptschooledFormData.copyWith(
                     completionDate: completionDate.toIso8601String()));
-            print("The selected date was $completionDate");
+            if (kDebugMode) {
+              print("The selected date was $completionDate");
+            }
           },
         ),
         const SizedBox(height: 10),

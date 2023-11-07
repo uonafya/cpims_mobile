@@ -1,4 +1,3 @@
-import 'package:cpims_mobile/Models/form_1_model.dart';
 import 'package:cpims_mobile/screens/cpara/cpara_util.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
@@ -9,7 +8,6 @@ import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:flutter/foundation.dart';
 import '../../../Models/case_load_model.dart';
-import '../widgets/ovc_sub_population_form.dart';
 
 class CparaProvider extends ChangeNotifier {
   CparaModel? cparaModel;
@@ -21,7 +19,6 @@ class CparaProvider extends ChangeNotifier {
   CaseLoadModel? caseLoadModel;
   List<CaseLoadModel> children = [];
   CparaOvcSubPopulation? cparaOvcSubPopulation;
-
 
   // Calculate schooled benchmark
   int schooledBenchmark() {
@@ -66,10 +63,14 @@ class CparaProvider extends ChangeNotifier {
         healthModel?.question4 == "Yes" &&
         (healthModel?.question5 == "Yes" || healthModel?.question5 == "N/A")) {
       benchmark1 = 1;
-      print("Benchmark 1: $benchmark1");
+      if (kDebugMode) {
+        print("Benchmark 1: $benchmark1");
+      }
     } else {
       benchmark1 = 0;
-      print("Benchmark 1 1: $benchmark1");
+      if (kDebugMode) {
+        print("Benchmark 1 1: $benchmark1");
+      }
     }
 
 // Health BenchMark 2 result
@@ -85,10 +86,14 @@ class CparaProvider extends ChangeNotifier {
             healthModel?.question13 == "N/A") &&
         healthModel?.question14 == "Yes") {
       benchmark2 = 1;
-      print("Benchmark 2: $benchmark2");
+      if (kDebugMode) {
+        print("Benchmark 2: $benchmark2");
+      }
     } else {
       benchmark2 = 0;
-      print("Benchmark 2 2: $benchmark2");
+      if (kDebugMode) {
+        print("Benchmark 2 2: $benchmark2");
+      }
     }
 
 // Health BenchMark 3 result
@@ -112,14 +117,18 @@ class CparaProvider extends ChangeNotifier {
               "yes") {
         // Benchmark is 1
         benchmark3 = 1;
-        print("Benchmark 3: $benchmark3");
+        if (kDebugMode) {
+          print("Benchmark 3: $benchmark3");
+        }
       }
       // Else benchmark is 0
       else {
         debugPrint("The list of children is not empty and some are not yes");
         debugPrint(healthModel!.childrenQuestions.toString());
         benchmark3 = 0;
-        print("Benchmark 3 3: $benchmark3");
+        if (kDebugMode) {
+          print("Benchmark 3 3: $benchmark3");
+        }
       }
     }
     // Else if there are no children
@@ -131,7 +140,9 @@ class CparaProvider extends ChangeNotifier {
       }
       // Benchmark value is one
       benchmark3 = 1;
-      print("Benchmark 3 3: $benchmark3");
+      if (kDebugMode) {
+        print("Benchmark 3 3: $benchmark3");
+      }
     }
 
     // Health BenchMark 1 result
@@ -141,10 +152,14 @@ class CparaProvider extends ChangeNotifier {
             healthModel?.question17 == "Yes") &&
         healthModel?.question18 == "Yes") {
       benchmark4 = 1;
-      print("Benchmark 4: $benchmark4");
+      if (kDebugMode) {
+        print("Benchmark 4: $benchmark4");
+      }
     } else {
       benchmark4 = 0;
-      print("Benchmark 4 4: $benchmark4");
+      if (kDebugMode) {
+        print("Benchmark 4 4: $benchmark4");
+      }
     }
 
     finalScore = benchmark1 + benchmark2 + benchmark3 + benchmark4;

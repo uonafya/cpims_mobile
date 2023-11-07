@@ -21,7 +21,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 
-import '../cpara/widgets/ovc_sub_population_form.dart';
 import '../forms/case_plan/cpt/new_case_plan_template.dart';
 import '../forms/form1a/new/form_one_a.dart';
 
@@ -165,12 +164,11 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
               workflowName: "CPARA",
               onClick: () {
                 // Get instance of current CPARA provider
-                var old_cpims_id =
-                    context.read<CparaProvider>().caseLoadModel?.cpimsId ??
-                        null;
+                var oldCpimsId =
+                    context.read<CparaProvider>().caseLoadModel?.cpimsId;
 
                 // Add check here
-                if (widget.caseLoadModel.cpimsId != old_cpims_id) {
+                if (widget.caseLoadModel.cpimsId != oldCpimsId) {
                   // Clear previous CPARA data
                   context.read<CparaProvider>().clearCparaProvider();
                 }

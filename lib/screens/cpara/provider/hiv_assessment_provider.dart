@@ -90,9 +90,11 @@ class HIVAssessmentProvider with ChangeNotifier {
 
       final response =
           await apiServiceConstructor.postSecData(data, "mobile/hrs/");
-      // print(response);
+
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 

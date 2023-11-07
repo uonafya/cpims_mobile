@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -10,7 +11,6 @@ import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
 import '../models/healthy_cpt_model.dart';
-
 
 class HealthyCasePlan extends StatefulWidget {
   final CaseLoadModel? caseLoadModel;
@@ -49,75 +49,97 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
     super.initState();
     cptProvider = context.read<CptProvider>();
 
-    casePlanProviderDomainList =
-        cptProvider.csAllDomains.map((domain) {
-          return ValueItem(
-              label: "- ${domain['item_description']}", value: domain['item_id']);
-        }).toList();
+    casePlanProviderDomainList = cptProvider.csAllDomains.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
 
-    casePlanGoalHealthList =
-        cptProvider.cpGoalsHealth.map((domain) {
-          return ValueItem(
-              label: "- ${domain['item_description']}", value: domain['item_id']);
-        }).toList();
+    casePlanGoalHealthList = cptProvider.cpGoalsHealth.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
 
-    casePlanGapsHealthList =
-        cptProvider.cpGapsHealth.map((domain) {
-          return ValueItem(
-              label: "- ${domain['item_description']}", value: domain['item_id']);
-        }).toList();
+    casePlanGapsHealthList = cptProvider.cpGapsHealth.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
 
-    casePlanPrioritiesHealthList =
-        cptProvider.cpPrioritiesHealth.map((domain) {
-          return ValueItem(
-              label: "- ${domain['item_description']}", value: domain['item_id']);
-        }).toList();
+    casePlanPrioritiesHealthList = cptProvider.cpPrioritiesHealth.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
 
-    casePlanServicesHealthList =
-        cptProvider.cpServicesHealth.map((domain) {
-          return ValueItem(
-              label: "- ${domain['item_description']}", value: domain['item_id']);
-        }).toList();
+    casePlanServicesHealthList = cptProvider.cpServicesHealth.map((domain) {
+      return ValueItem(
+          label: "- ${domain['item_description']}", value: domain['item_id']);
+    }).toList();
 
     casePlanProviderPersonsResponsibleList =
         cptProvider.csPersonsResponsibleList.map((personResponsible) {
-          return ValueItem(
-              label: "- ${personResponsible['item_description']}",
-              value: personResponsible['item_id']);
-        }).toList();
+      return ValueItem(
+          label: "- ${personResponsible['item_description']}",
+          value: personResponsible['item_id']);
+    }).toList();
 
-    casePlanProviderResultList =
-        cptProvider.csResultsList.map((resultList) {
-          return ValueItem(
-              label: "- ${resultList['name']}", value: resultList['id']);
-        }).toList();
+    casePlanProviderResultList = cptProvider.csResultsList.map((resultList) {
+      return ValueItem(
+          label: "- ${resultList['name']}", value: resultList['id']);
+    }).toList();
 
     // fetching the data from the provider
-    CptHealthFormData cptHealthFormData = context.read<CptProvider>().cptHealthFormData ?? CptHealthFormData();
+    CptHealthFormData cptHealthFormData =
+        context.read<CptProvider>().cptHealthFormData ?? CptHealthFormData();
     // Update respective fields
-    if(cptHealthFormData.goalId != null){
-      selectedGoalOptions = casePlanGoalHealthList.where((element) => element.value?.trim().toLowerCase() == cptHealthFormData.goalId?.trim().toLowerCase()).toList();
+    if (cptHealthFormData.goalId != null) {
+      selectedGoalOptions = casePlanGoalHealthList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptHealthFormData.goalId?.trim().toLowerCase())
+          .toList();
     }
-    if(cptHealthFormData.gapId != null){
-      selectedNeedOptions = casePlanGapsHealthList.where((element) => element.value?.trim().toLowerCase() == cptHealthFormData.gapId?.trim().toLowerCase()).toList();
+    if (cptHealthFormData.gapId != null) {
+      selectedNeedOptions = casePlanGapsHealthList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptHealthFormData.gapId?.trim().toLowerCase())
+          .toList();
     }
-    if(cptHealthFormData.priorityId != null){
-      selectedPriorityActionOptions = casePlanPrioritiesHealthList.where((element) => element.value?.trim().toLowerCase() == cptHealthFormData.priorityId?.trim().toLowerCase()).toList();
+    if (cptHealthFormData.priorityId != null) {
+      selectedPriorityActionOptions = casePlanPrioritiesHealthList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptHealthFormData.priorityId?.trim().toLowerCase())
+          .toList();
     }
-    if(cptHealthFormData.serviceIds != null && cptHealthFormData.serviceIds!.isNotEmpty){
-      for(String? serviceId in cptHealthFormData.serviceIds!){
-        selectedServicesOptions.add(casePlanServicesHealthList.where((element) => element.value?.trim().toLowerCase() == serviceId?.trim().toLowerCase()).toList()[0]);
+    if (cptHealthFormData.serviceIds != null &&
+        cptHealthFormData.serviceIds!.isNotEmpty) {
+      for (String? serviceId in cptHealthFormData.serviceIds!) {
+        selectedServicesOptions.add(casePlanServicesHealthList
+            .where((element) =>
+                element.value?.trim().toLowerCase() ==
+                serviceId?.trim().toLowerCase())
+            .toList()[0]);
       }
     }
 
-    if(cptHealthFormData.responsibleIds != null && cptHealthFormData.responsibleIds!.isNotEmpty){
-      for(String? responsibleId in cptHealthFormData.responsibleIds!){
-        selectedPersonsResponsibleOptions.add(casePlanProviderPersonsResponsibleList.where((element) => element.value?.trim().toLowerCase() == responsibleId?.trim().toLowerCase()).toList()[0]);
+    if (cptHealthFormData.responsibleIds != null &&
+        cptHealthFormData.responsibleIds!.isNotEmpty) {
+      for (String? responsibleId in cptHealthFormData.responsibleIds!) {
+        selectedPersonsResponsibleOptions.add(
+            casePlanProviderPersonsResponsibleList
+                .where((element) =>
+                    element.value?.trim().toLowerCase() ==
+                    responsibleId?.trim().toLowerCase())
+                .toList()[0]);
       }
     }
 
-    if(cptHealthFormData.resultsId != null){
-      selectedResultsOptions = casePlanProviderResultList.where((element) => element.value?.trim().toLowerCase() == cptHealthFormData.resultsId?.trim().toLowerCase()).toList();
+    if (cptHealthFormData.resultsId != null) {
+      selectedResultsOptions = casePlanProviderResultList
+          .where((element) =>
+              element.value?.trim().toLowerCase() ==
+              cptHealthFormData.resultsId?.trim().toLowerCase())
+          .toList();
     }
 
     completionDate = cptHealthFormData.completionDate != null
@@ -129,7 +151,6 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
 
   @override
   Widget build(BuildContext context) {
-
     return StepsWrapper(
       title: 'Health Domain Case Plan',
       children: [
@@ -194,7 +215,9 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
             context.read<CptProvider>().updateCptFormData(
                 cptHealtFormData.copyWith(goalId: selectedEvents[0].value));
             // Print the updated goalId
-            print("The selected goal was ${selectedEvents[0].value}");
+            if (kDebugMode) {
+              print("The selected goal was ${selectedEvents[0].value}");
+            }
           },
           selectedOptions: selectedGoalOptions,
           options: casePlanGoalHealthList,
@@ -230,7 +253,9 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
             context.read<CptProvider>().updateCptFormData(
                 cptHealthFormData.copyWith(gapId: selectedEvents[0].value));
             // Print the updated goalId
-            print("The selected need was ${selectedEvents[0].value}");
+            if (kDebugMode) {
+              print("The selected need was ${selectedEvents[0].value}");
+            }
           },
           options: casePlanGapsHealthList,
           selectedOptions: selectedNeedOptions,
@@ -266,7 +291,9 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
             context.read<CptProvider>().updateCptFormData(
                 cptHealtFormData.copyWith(priorityId: selectedEvents[0].value));
             // Print the updated goalId
-            print("The selected prioity was ${selectedEvents[0].value}");
+            if (kDebugMode) {
+              print("The selected prioity was ${selectedEvents[0].value}");
+            }
           },
           options: casePlanPrioritiesHealthList,
           selectedOptions: selectedPriorityActionOptions,
@@ -302,11 +329,13 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
             context
                 .read<CptProvider>()
                 .updateCptFormData(cptHealtFormData.copyWith(
-              serviceIds: selectedEvents.map((item) => item.value).toList(),
-            ));
+                  serviceIds: selectedEvents.map((item) => item.value).toList(),
+                ));
             selectedServiceIds =
                 selectedEvents.map((item) => item.value).toList();
-            print("The selected service IDs are $selectedServiceIds");
+            if (kDebugMode) {
+              print("The selected service IDs are $selectedServiceIds");
+            }
           },
           selectedOptions: selectedServicesOptions,
           options: casePlanServicesHealthList,
@@ -342,13 +371,16 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
             context
                 .read<CptProvider>()
                 .updateCptFormData(cptHealtFormData.copyWith(
-              responsibleIds:
-              selectedEvents.map((item) => item.value).toList(),
-            ));
+                  responsibleIds:
+                      selectedEvents.map((item) => item.value).toList(),
+                ));
             selectedPersonResponsibleIds =
                 selectedEvents.map((item) => item.value).toList();
-            print(
-                "The selected responsible IDs are $selectedPersonResponsibleIds");
+            if (kDebugMode) {
+              print(
+                "The selected responsible IDs are $selectedPersonResponsibleIds",
+              );
+            }
           },
           selectedOptions: selectedPersonsResponsibleOptions,
           options: casePlanProviderPersonsResponsibleList,
@@ -383,7 +415,9 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
             context.read<CptProvider>().updateCptFormData(
                 cptHealtFormData.copyWith(resultsId: selectedEvents[0].value));
             // Print the updated goalId
-            print("The selected result was ${selectedEvents[0].value}");
+            if (kDebugMode) {
+              print("The selected result was ${selectedEvents[0].value}");
+            }
           },
           selectedOptions: selectedResultsOptions,
           options: casePlanProviderResultList,
@@ -419,7 +453,9 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
                     CptHealthFormData();
             context.read<CptProvider>().updateCptFormData(cptHealthFormData
                 .copyWith(completionDate: completionDate.toIso8601String()));
-            print("The selected date was $completionDate");
+            if (kDebugMode) {
+              print("The selected date was $completionDate");
+            }
           },
         ),
         const SizedBox(height: 10),
@@ -503,4 +539,3 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
     );
   }
 }
-
