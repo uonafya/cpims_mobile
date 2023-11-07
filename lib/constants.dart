@@ -228,7 +228,7 @@ List drawerOptions(BuildContext context) {
 Future<String> getDeviceId() async {
   const androidIdPlugin = AndroidId();
   final String? androidId = await androidIdPlugin.getId();
-  return androidId!;
+  return androidId ?? '';
 }
 
 List<String> graphTitles = [

@@ -17,6 +17,7 @@ import 'package:path/path.dart';
 
 // import '../Models/case_plan_form.dart';
 import '../Models/caseplan_form_model.dart';
+import '../constants.dart';
 import '../screens/forms/form1a/new/form_one_a.dart';
 
 class LocalDb {
@@ -293,7 +294,7 @@ class LocalDb {
   Future<void> insertCparaData(
       {required CparaModel cparaModelDB,
       required String ovcId,
-        required String startTime,
+      required String startTime,
       required String careProviderId}) async {
     final db = await instance.database;
     var idForm = 0;
@@ -313,7 +314,6 @@ class LocalDb {
               insertAppFormMetaData(formUUID, startTime, 'cpara').then((value) => handleSubmit(selectedDate: selectedDate,
                   formId: formID, ovcSub: cparaModelDB.ovcSubPopulations));
             });
-
       });
     });
     // await handleSubmit(selectedDate: "selectedDate");
@@ -617,6 +617,7 @@ class LocalDb {
           'critical_events': criticalEvents,
           'id': formId,
           'app_form_metadata': appFormMetaData.toJson(),
+          'device_id': await getDeviceId(),
         };
         // Add the updated map to the list
         updatedForm1Rows.add(updatedForm1Row);
