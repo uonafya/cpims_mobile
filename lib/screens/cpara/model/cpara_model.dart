@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
+import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
@@ -18,7 +19,7 @@ class CparaModel {
   final StableModel stable;
   final SchooledModel schooled;
   final HealthModel health;
-  final List<Map<String, List<CheckboxQuestion>>>? ovcSubPopulations;
+  final CparaOvcSubPopulation ovcSubPopulations;
   final String uuid;
   final AppFormMetaData appFormMetaData;
 
@@ -28,7 +29,7 @@ class CparaModel {
     required this.stable,
     required this.schooled,
     required this.health,
-    this.ovcSubPopulations,
+    required this.ovcSubPopulations,
     this.uuid = "",
     this.appFormMetaData = const AppFormMetaData(),
     // required this.ovcSubPopulationModel
@@ -301,12 +302,15 @@ class CparaModel {
   }
 
   // Create Form in database
-  Future<String> createForm(Database? db) async {
+  Future<String> createForm(Database? db, String assessmentDate) async {
     try {
       String formUUID = const Uuid().v4();
       // Insert entry to db
       db!.insert("Form",
-          {"date": DateTime.now().toString().split(' ')[0], "uuid": formUUID});
+          {"date": assessmentDate, "uuid": formUUID});
+      // db!.insert("Form",
+      //     {"date": DateTime.now().toString().split(' ')[0], "uuid": formUUID});
+
 
       return formUUID;
     } catch (err) {

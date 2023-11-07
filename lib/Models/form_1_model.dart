@@ -1,3 +1,5 @@
+import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 
 class Form1DataModel {
@@ -8,6 +10,7 @@ class Form1DataModel {
   final List<Form1ServicesModel> services;
   final List<Form1CriticalEventsModel> criticalEvents;
   final AppFormMetaData appFormMetaData;
+   String ? device_id ="";
 
   Form1DataModel({
     required this.uuid,
@@ -16,6 +19,7 @@ class Form1DataModel {
     required this.dateOfEvent,
     required this.services,
     required this.criticalEvents,
+    this.device_id,
     this.appFormMetaData = const AppFormMetaData(
       formType: "",
       formId: "",
@@ -47,6 +51,7 @@ class Form1DataModel {
       services: services,
       criticalEvents: criticalEvents,
       appFormMetaData: AppFormMetaData.fromJson(json['app_form_metadata']),
+      device_id: json['device_id'],
     );
   }
 
@@ -58,6 +63,7 @@ class Form1DataModel {
       'services': services.map((service) => service.toJson()).toList(),
       'critical_events': criticalEvents.map((event) => event.toJson()).toList(),
       'app_form_metadata': appFormMetaData.toJson(),
+      'device_id': device_id,
     };
   }
 
