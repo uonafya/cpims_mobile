@@ -29,6 +29,7 @@ class HIVAssessmentScreen extends StatefulWidget {
 }
 
 class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
+  bool isLoading = false;
   List<Map<String, dynamic>> hivAssessmentTitles = [
     {
       'title': 'HIV CURRENT STATUS',
@@ -55,11 +56,13 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
   void handleNext(BuildContext context) async {
     final formIndex =
         Provider.of<HIVAssessmentProvider>(context, listen: false).formIndex;
+    final hivCurrentStatusModel =
+        Provider.of<HIVAssessmentProvider>(context, listen: false)
+            .hivCurrentStatusModel;
 
     if (formIndex == 0 &&
-        Provider.of<HIVAssessmentProvider>(context, listen: false)
-                .hivCurrentStatusModel ==
-            null) {
+        (hivCurrentStatusModel.dateOfAssessment.isEmpty ||
+            hivCurrentStatusModel.statusOfChild.isEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Please fill in the required fields"),
         backgroundColor: Colors.red,
@@ -69,8 +72,14 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
 
     if (formIndex == hivAssessmentTitles.length - 1) {
       try {
+        setState(() {
+          isLoading = true;
+        });
         await Provider.of<HIVAssessmentProvider>(context, listen: false)
             .submitHIVAssessmentForm();
+        setState(() {
+          isLoading = false;
+        });
       } catch (e) {
         if (kDebugMode) {
           print(e);
@@ -99,6 +108,14 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
+      final previousCaseLoadModel =
+          Provider.of<HIVAssessmentProvider>(context, listen: false)
+              .caseLoadModel;
+      if (previousCaseLoadModel.cpimsId != widget.caseLoadModel.cpimsId) {
+        Provider.of<HIVAssessmentProvider>(context, listen: false)
+            .resetWholeForm();
+      }
+
       Provider.of<HIVAssessmentProvider>(context, listen: false)
           .updateCaseLoadModel(widget.caseLoadModel);
     });
@@ -148,6 +165,7 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
                 ),
                 Expanded(
                     child: CustomButton(
+                  isLoading: isLoading,
                   text: selectedIndex == 2 ? "Submit" : "Next",
                   onTap: () => handleNext(context),
                 )),
