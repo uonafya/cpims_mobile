@@ -16,10 +16,8 @@ class ProgressMonitoringModel {
   final String formalReferralMade;
   final String formalReferralMadeDate;
   final String formalReferralCompleted;
-  final String formalReferralCompletedDate;
   String reasonForNotMakingReferral;
   final String hivTestResult;
-  final String hivTestResultDate;
   final String referredForArt;
   final String referredForArtDate;
   final String artReferralCompleted;
@@ -32,10 +30,8 @@ class ProgressMonitoringModel {
     this.formalReferralMade = "",
     this.formalReferralMadeDate = "",
     this.formalReferralCompleted = "",
-    this.formalReferralCompletedDate = "",
     this.reasonForNotMakingReferral = "A",
     this.hivTestResult = "",
-    this.hivTestResultDate = "",
     this.referredForArt = "",
     this.referredForArtDate = "",
     this.artReferralCompleted = "",
@@ -45,20 +41,18 @@ class ProgressMonitoringModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'parentAcceptHivTesting': parentAcceptHivTesting,
-      'parentAcceptHivTestingDate': parentAcceptHivTestingDate,
-      'formalReferralMade': formalReferralMade,
-      'formalReferralMadeDate': formalReferralMadeDate,
-      'formalReferralCompleted': formalReferralCompleted,
-      'formalReferralCompletedDate': formalReferralCompletedDate,
-      'reasonForNotMakingReferral': reasonForNotMakingReferral,
-      'hivTestResult': hivTestResult,
-      'hivTestResultDate': hivTestResultDate,
-      'referredForArt': referredForArt,
-      'referredForArtDate': referredForArtDate,
-      'artReferralCompleted': artReferralCompleted,
-      'artReferralCompletedDate': artReferralCompletedDate,
-      'facilityOfArtEnrollment': facilityOfArtEnrollment,
+      'HIV_RS_14': parentAcceptHivTesting,
+      'HIV_RS_15': parentAcceptHivTestingDate,
+      'HIV_RS_16': formalReferralMade,
+      'HIV_RS_17': formalReferralMadeDate,
+      'HIV_RS_18': formalReferralCompleted,
+      'HIV_RS_18A': reasonForNotMakingReferral,
+      'HIV_RS_18B': hivTestResult,
+      'HIV_RS_21': referredForArt,
+      'HIV_RS_22': referredForArtDate,
+      'HIV_RS_23': artReferralCompleted,
+      'HIV_RS_24': artReferralCompletedDate,
+      'HIV_RA_3Q6': facilityOfArtEnrollment,
     };
   }
 }
@@ -79,7 +73,6 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
   String formalReferralCompletedDate = "";
   String reasonForNotMakingReferral = "A";
   String hivTestResult = "";
-  String hivTestResultDate = "";
   String referredForArt = "";
   String referredForArtDate = "";
   String artReferralCompleted = "";
@@ -93,11 +86,9 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
       formalReferralMade: formalReferralMade,
       formalReferralMadeDate: formalReferralMadeDate,
       formalReferralCompleted: formalReferralCompleted,
-      formalReferralCompletedDate: formalReferralCompletedDate,
       reasonForNotMakingReferral:
           reasonForNotMakingReferral.isEmpty ? "A" : reasonForNotMakingReferral,
       hivTestResult: hivTestResult,
-      hivTestResultDate: hivTestResultDate,
       referredForArt: referredForArt,
       referredForArtDate: referredForArtDate,
       artReferralCompleted: artReferralCompleted,
@@ -137,8 +128,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
               ),
               CustomRadioButton(
                 isNaAvailable: false,
-                option: formData != null &&
-                        formData.parentAcceptHivTesting.isNotEmpty
+                option: formData.parentAcceptHivTesting.isNotEmpty
                     ? convertingStringToRadioButtonOptions(
                         formData.parentAcceptHivTesting)
                     : null,
@@ -148,14 +138,14 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                   handleOnFormSaved();
                 },
               ),
-              if (formData != null && formData.parentAcceptHivTesting == "Yes")
+              if (formData.parentAcceptHivTesting == "Yes")
                 DateTextField(
                   label: "Report Date",
                   enabled: true,
                   identifier: DateTextFieldIdentifier.dateOfAssessment,
                   onDateSelected: (val) {
                     parentAcceptHivTestingDate =
-                        DateFormat("dd-MM-yyyy").format(val ?? DateTime.now());
+                        DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
                     handleOnFormSaved();
                   },
                 ),
@@ -164,25 +154,24 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
               const Text("2. Was a formal referral made for HIV testing?"),
               CustomRadioButton(
                 isNaAvailable: false,
-                option:
-                    formData != null && formData.formalReferralMade.isNotEmpty
-                        ? convertingStringToRadioButtonOptions(
-                            formData.formalReferralMade)
-                        : null,
+                option: formData.formalReferralMade.isNotEmpty
+                    ? convertingStringToRadioButtonOptions(
+                        formData.formalReferralMade)
+                    : null,
                 optionSelected: (val) {
                   formalReferralMade =
                       convertingRadioButtonOptionsToString(val);
                   handleOnFormSaved();
                 },
               ),
-              if (formData != null && formData.formalReferralMade == "Yes")
+              if (formData.formalReferralMade == "Yes")
                 DateTextField(
                   label: "Report Date",
                   enabled: true,
                   identifier: DateTextFieldIdentifier.dateOfAssessment,
                   onDateSelected: (val) {
                     formalReferralMadeDate =
-                        DateFormat("dd-MM-yyyy").format(val ?? DateTime.now());
+                        DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
                     handleOnFormSaved();
                   },
                 ),
@@ -195,8 +184,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
               ),
               CustomRadioButton(
                 isNaAvailable: false,
-                option: formData != null &&
-                        formData.formalReferralCompleted.isNotEmpty
+                option: formData.formalReferralCompleted.isNotEmpty
                     ? convertingStringToRadioButtonOptions(
                         formData.formalReferralCompleted)
                     : null,
@@ -206,14 +194,14 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                   handleOnFormSaved();
                 },
               ),
-              if (formData != null && formData.formalReferralCompleted == "Yes")
+              if (formData.formalReferralCompleted == "Yes")
                 DateTextField(
                   label: "Report Date",
                   enabled: true,
                   identifier: DateTextFieldIdentifier.dateOfAssessment,
                   onDateSelected: (val) {
                     formalReferralCompletedDate =
-                        DateFormat("dd-MM-yyyy").format(val ?? DateTime.now());
+                        DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
                     handleOnFormSaved();
                   },
                 ),
@@ -238,7 +226,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
               const SizedBox(height: 10),
               CustomDynamicRadioButton(
                 isNaAvailable: false,
-                option: formData != null && formData.hivTestResult.isNotEmpty
+                option: formData.hivTestResult.isNotEmpty
                     ? formData.hivTestResult
                     : null,
                 optionSelected: (val) {
@@ -263,24 +251,23 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                   const SizedBox(height: 10),
                   CustomRadioButton(
                     isNaAvailable: false,
-                    option:
-                        formData != null && formData.referredForArt.isNotEmpty
-                            ? convertingStringToRadioButtonOptions(
-                                formData.referredForArt)
-                            : null,
+                    option: formData.referredForArt.isNotEmpty
+                        ? convertingStringToRadioButtonOptions(
+                            formData.referredForArt)
+                        : null,
                     optionSelected: (val) {
                       referredForArt =
                           convertingRadioButtonOptionsToString(val);
                       handleOnFormSaved();
                     },
                   ),
-                  if (formData != null && formData.referredForArt == "Yes")
+                  if (formData.referredForArt == "Yes")
                     DateTextField(
                       label: "Report Date",
                       enabled: true,
                       identifier: DateTextFieldIdentifier.dateOfAssessment,
                       onDateSelected: (val) {
-                        referredForArtDate = DateFormat("dd-MM-yyyy")
+                        referredForArtDate = DateFormat("yyyy-MM-dd")
                             .format(val ?? DateTime.now());
                         handleOnFormSaved();
                       },
@@ -299,8 +286,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                   const SizedBox(height: 10),
                   CustomRadioButton(
                     isNaAvailable: false,
-                    option: formData != null &&
-                            formData.artReferralCompleted.isNotEmpty
+                    option: formData.artReferralCompleted.isNotEmpty
                         ? convertingStringToRadioButtonOptions(
                             formData.artReferralCompleted)
                         : null,
@@ -310,14 +296,13 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                       handleOnFormSaved();
                     },
                   ),
-                  if (formData != null &&
-                      formData.artReferralCompleted == "Yes")
+                  if (formData.artReferralCompleted == "Yes")
                     DateTextField(
                       label: "Report Date",
                       enabled: true,
                       identifier: DateTextFieldIdentifier.dateOfAssessment,
                       onDateSelected: (val) {
-                        artReferralCompletedDate = DateFormat("dd-MM-yyyy")
+                        artReferralCompletedDate = DateFormat("yyyy-MM-dd")
                             .format(val ?? DateTime.now());
                         handleOnFormSaved();
                       },

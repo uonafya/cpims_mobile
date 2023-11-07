@@ -13,23 +13,20 @@ class HIVCurrentStatusModel {
   final String statusOfChild;
   final String hivStatus;
   final String hivTestDone;
-  final String hivTestDoneDate;
 
   HIVCurrentStatusModel({
     this.dateOfAssessment = "",
     this.statusOfChild = "",
     this.hivStatus = "",
     this.hivTestDone = "",
-    this.hivTestDoneDate = "",
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'dateOfAssessment': dateOfAssessment,
-      'statusOfChild': statusOfChild,
-      'hivStatus': hivStatus,
-      'hivTestDone': hivTestDone,
-      'hivTestDoneDate': hivTestDoneDate,
+      'HIV_RA_1A': dateOfAssessment,
+      'HIV_RS_01': statusOfChild,
+      'HIV_RS_02': hivStatus,
+      'HIV_RS_03': hivTestDone,
     };
   }
 }
@@ -56,7 +53,6 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
       statusOfChild: statusOfChild,
       hivStatus: hivStatus,
       hivTestDone: hivTestDone,
-      hivTestDoneDate: hivTestDoneDate,
     );
     Provider.of<HIVAssessmentProvider>(context, listen: false)
         .updateHIVCurrentStatusModel(val);
@@ -83,7 +79,7 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
           ),
           FormSection(
             children: [
-              const Text("1a) Date of assessment"),
+              const Text("1a) Date of assessment *"),
               const SizedBox(
                 height: 10,
               ),
@@ -104,7 +100,7 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
           const Divider(),
           FormSection(children: [
             const Text(
-                "1b) Does the caregiver know the status of the child? /Does the Adolescent and youth (>15) years know his/her status?"),
+                "1b) Does the caregiver know the status of the child? /Does the Adolescent and youth (>15) years know his/her status? *"),
             CustomRadioButton(
                 isNaAvailable: false,
                 option: hivAssessmentProvider.statusOfChild.isNotEmpty
@@ -121,7 +117,7 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
           FormSection(
             isDisabled: statusOfChild == "No",
             children: [
-              const Text("What is the HIV Status"),
+              const Text("What is the HIV Status *"),
               const SizedBox(
                 height: 4,
               ),
@@ -154,7 +150,7 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
           FormSection(
             isDisabled: statusOfChild == "No" || hivStatus == "HIV_Positive",
             children: [
-              const Text("1c) Was the HIV test done less than 6 months ago?	"),
+              const Text("1c) Was the HIV test done less than 6 months ago?	*"),
               const SizedBox(height: 10),
               CustomRadioButton(
                   isNaAvailable: false,

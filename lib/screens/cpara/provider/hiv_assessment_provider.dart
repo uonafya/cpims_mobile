@@ -1,8 +1,10 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
+import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_form.dart';
 import 'package:cpims_mobile/services/api_service.dart';
+import 'package:cpims_mobile/utils/strings.dart';
 import 'package:flutter/foundation.dart';
 
 class HIVAssessmentProvider with ChangeNotifier {
@@ -30,22 +32,29 @@ class HIVAssessmentProvider with ChangeNotifier {
 
   void updateHIVCurrentStatusModel(HIVCurrentStatusModel model) {
     _hivCurrentStatusModel = model;
-    if (_hivCurrentStatusModel.hivStatus == "HIV_Positive") {
+    if (_hivCurrentStatusModel.hivStatus == "HIV_Positive" &&
+        _hivCurrentStatusModel.dateOfAssessment.isNotEmpty) {
       updateFormIndex(2);
     }
-    print(hivCurrentStatusModel.toJson());
+    if (kDebugMode) {
+      print(hivCurrentStatusModel.toJson());
+    }
     notifyListeners();
   }
 
   void updateHIVRiskAssessmentModel(HIVRiskAssessmentModel model) {
     _hivRiskAssessmentModel = model;
-    print(hivRiskAssessmentModel.toJson());
+    if (kDebugMode) {
+      print(hivRiskAssessmentModel.toJson());
+    }
     notifyListeners();
   }
 
   void updateProgressMonitoringModel(ProgressMonitoringModel model) {
     _progressMonitoringModel = model;
-    print(progressMonitoringModel.toJson());
+    if (kDebugMode) {
+      print(progressMonitoringModel.toJson());
+    }
     notifyListeners();
   }
 
@@ -59,16 +68,40 @@ class HIVAssessmentProvider with ChangeNotifier {
   Future<void> submitHIVAssessmentForm() async {
     try {
       final data = {
-        'ovcCPIMSID': caseLoadModel.cpimsId,
+        'ovc_cpims_id': caseLoadModel.cpimsId,
         ..._hivCurrentStatusModel.toJson(),
         ..._hivRiskAssessmentModel.toJson(),
         ..._progressMonitoringModel.toJson(),
       };
+
+      //Replace all Yes string with true and No string with false
+      data.forEach((key, value) {
+        if (value == "Yes") {
+          data[key] = convertBooleanStringToDBBoolen("Yes");
+        } else if (value == "No") {
+          data[key] = convertBooleanStringToDBBoolen("No");
+        }
+      });
+      await LocalDb.instance.insertHRSData(
+          caseLoadModel.cpimsId!,
+          _hivCurrentStatusModel,
+          _hivRiskAssessmentModel,
+          _progressMonitoringModel);
+
       final response =
           await apiServiceConstructor.postSecData(data, "mobile/hrs/");
-      print(response);
+      // print(response);
     } catch (e) {
       print(e);
     }
+  }
+
+  void resetWholeForm() {
+    _hivCurrentStatusModel = HIVCurrentStatusModel();
+    _hivRiskAssessmentModel = HIVRiskAssessmentModel();
+    _progressMonitoringModel = ProgressMonitoringModel();
+    formIndex = 0;
+
+    notifyListeners();
   }
 }
