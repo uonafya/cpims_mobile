@@ -1053,6 +1053,8 @@ class LocalDb {
       return AppFormMetaData(); // You should replace this with an appropriate default value or error handling.
     }
   }
+
+  
 }
 
 // table name and field names
