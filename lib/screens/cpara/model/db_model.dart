@@ -1,4 +1,5 @@
 // Models for interacting with db
+import 'package:cpims_mobile/screens/cpara/model/sub_ovc_child.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 
 class CPARAChildQuestions {
@@ -51,6 +52,7 @@ class CPARADatabase {
   List<CPARADatabaseQuestions> questions;
   List<CPARAChildQuestions> childQuestions;
   AppFormMetaData appFormMetaData;
+  List<SubOvcChild> listOfSubOvcs;
 
   CPARADatabase(
       {
@@ -59,6 +61,7 @@ class CPARADatabase {
         this.date_of_event = "",
         this.questions = const [],
         this.childQuestions = const [],
-      this.appFormMetaData = const AppFormMetaData()
+      this.appFormMetaData = const AppFormMetaData(),
+        this.listOfSubOvcs = const []
       });
 }
