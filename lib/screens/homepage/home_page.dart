@@ -7,6 +7,7 @@ import 'package:cpims_mobile/screens/homepage/provider/stats_provider.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
+import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
@@ -268,61 +269,61 @@ class _HomepageState extends State<Homepage> {
                       cparaCount: formStats.cparaCount,
                       onClick: () {},
                     ),
-                    // StatisticsItem(
-                    //   title: 'UNAPPROVED RECORDS',
-                    //   icon: FontAwesomeIcons.fileCircleXmark,
-                    //   color: const Color(0xff947901),
-                    //   secondaryColor: const Color(0xff524300),
-                    //   form1ACount: 4,
-                    //   form1BCount: 3,
-                    //   cpaCount: 2,
-                    //   cparaCount: 1,
-                    //   onClick: () {
-                    //     Get.to(() => const UnapprovedRecordsScreens());
-                    //   },
-                    // ),
 
+                    StatisticsItem(
+                      title: 'UNAPPROVED RECORDS',
+                      icon: FontAwesomeIcons.fileCircleXmark,
+                      color: const Color(0xff947901),
+                      secondaryColor: const Color(0xff524300),
+                      form1ACount: dashData.unapprovedF1A,
+                      form1BCount: dashData.unapprovedF1B,
+                      cpaCount: dashData.unapprovedCPR,
+                      cparaCount: dashData.unapprovedCPT,
+                      onClick: () {
+                        Get.to(() => const UnapprovedRecordsScreens());
+                      },
+                    ),
                     CustomGridView(
                       crossAxisCount: 2,
                       childrenHeight: 180,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       children: [
-                        // const StatisticsGridItem(
-                        //   title: 'FORM 1A',
-                        //   value: "10/20",
-                        //   icon: FontAwesomeIcons.fileLines,
-                        //   color: kPrimaryColor,
-                        //   secondaryColor: Color(0xff0E6668),
-                        // ),
-                        // const StatisticsGridItem(
-                        //   title: 'FORM 1B',
-                        //   value: "10/20",
-                        //   icon: FontAwesomeIcons.fileLines,
-                        //   color: Color(0xff348FE2),
-                        //   secondaryColor: Color(0xff1F5788),
-                        // ),
-                        // const StatisticsGridItem(
-                        //   title: 'CPARA',
-                        //   value: "10/20",
-                        //   icon: FontAwesomeIcons.fileLines,
-                        //   color: Color(0xff727DB6),
-                        //   secondaryColor: Color(0xff454A6D),
-                        // ),
-                        // const StatisticsGridItem(
-                        //   title: 'CPT',
-                        //   value: "10/20",
-                        //   icon: FontAwesomeIcons.fileLines,
-                        //   color: Color(0xff49B6D5),
-                        //   secondaryColor: Color(0xff2C6E80),
-                        // ),
-                        // const StatisticsGridItem(
-                        //   title: 'CLHIV',
-                        //   value: "10/20",
-                        //   icon: FontAwesomeIcons.heart,
-                        //   color: Color(0xff49B6D5),
-                        //   secondaryColor: Color(0xff2C6E80),
-                        // ),
+                        StatisticsGridItem(
+                          title: 'FORM 1A',
+                          value: "${dashData.unapprovedF1A}/${dashData.form1a}",
+                          icon: FontAwesomeIcons.fileLines,
+                          color: kPrimaryColor,
+                          secondaryColor: const Color(0xff0E6668),
+                        ),
+                        StatisticsGridItem(
+                          title: 'FORM 1B',
+                          value: "${dashData.unapprovedF1B}/${dashData.form1b}",
+                          icon: FontAwesomeIcons.fileLines,
+                          color: const Color(0xff348FE2),
+                          secondaryColor: const Color(0xff1F5788),
+                        ),
+                        StatisticsGridItem(
+                          title: 'CPARA',
+                          value: "${dashData.unapprovedCPR}/${dashData.cpara}",
+                          icon: FontAwesomeIcons.fileLines,
+                          color: const Color(0xff727DB6),
+                          secondaryColor: const Color(0xff454A6D),
+                        ),
+                        StatisticsGridItem(
+                          title: 'CPT',
+                          value: "${dashData.unapprovedCPT}/${dashData.cpt}",
+                          icon: FontAwesomeIcons.fileLines,
+                          color: const Color(0xff49B6D5),
+                          secondaryColor: const Color(0xff2C6E80),
+                        ),
+                        StatisticsGridItem(
+                          title: 'CLHIV',
+                          value: "${dashData.clhiv}",
+                          icon: FontAwesomeIcons.heart,
+                          color: const Color(0xff49B6D5),
+                          secondaryColor: const Color(0xff2C6E80),
+                        ),
                         StatisticsGridItem(
                           title: 'Org Unit Id',
                           value: dashData.orgUnitId.toString(),
