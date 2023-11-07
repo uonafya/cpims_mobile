@@ -5,6 +5,7 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/healthy_cpt.dar
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/safe_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/schooled_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/stable_cpt.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/domain_item.dart';
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -165,7 +166,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                         ),
                         TextButton(
                             onPressed: () {
-                              addToList();
+                              addToList(context);
                             },
                             child: Text("Add")),
                         Row(
@@ -205,12 +206,85 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                         const SizedBox(
                           height: 30,
                         ),
+                        ...List.generate(
+                            healthyCasePlans.length,
+                            (index) => DomainItem(
+                                  domain: CPTDomainModel(
+                                      domain: "Healthy",
+                                      serviceIds:
+                                          healthyCasePlans[index].serviceIds,
+                                      goalId: healthyCasePlans[index].goalId,
+                                      gapId: healthyCasePlans[index].gapId,
+                                      priorityId:
+                                          healthyCasePlans[index].priorityId,
+                                      responsibleIds: healthyCasePlans[index]
+                                          .responsibleIds,
+                                      resultsId:
+                                          healthyCasePlans[index].resultsId,
+                                      reasonId:
+                                          healthyCasePlans[index].reasonId),
+                                )),
+                        ...List.generate(
+                            safeCasePlans.length,
+                            (index) => DomainItem(
+                                  domain: CPTDomainModel(
+                                      domain: "Safe",
+                                      serviceIds:
+                                          safeCasePlans[index].serviceIds,
+                                      goalId: safeCasePlans[index].goalId,
+                                      gapId: safeCasePlans[index].gapId,
+                                      priorityId:
+                                          safeCasePlans[index].priorityId,
+                                      responsibleIds:
+                                          safeCasePlans[index].responsibleIds,
+                                      resultsId: safeCasePlans[index].resultsId,
+                                      reasonId: safeCasePlans[index].reasonId),
+                                )),
+                        ...List.generate(
+                            stableCasePlans.length,
+                            (index) => DomainItem(
+                                  domain: CPTDomainModel(
+                                      domain: "Stable",
+                                      serviceIds:
+                                          stableCasePlans[index].serviceIds,
+                                      goalId: stableCasePlans[index].goalId,
+                                      gapId: stableCasePlans[index].gapId,
+                                      priorityId:
+                                          stableCasePlans[index].priorityId,
+                                      responsibleIds:
+                                          stableCasePlans[index].responsibleIds,
+                                      resultsId:
+                                          stableCasePlans[index].resultsId,
+                                      reasonId:
+                                          stableCasePlans[index].reasonId),
+                                )),
+                        ...List.generate(
+                            schooledCasePlans.length,
+                            (index) => DomainItem(
+                                  domain: CPTDomainModel(
+                                      domain: "Stable",
+                                      serviceIds:
+                                          schooledCasePlans[index].serviceIds,
+                                      goalId: schooledCasePlans[index].goalId,
+                                      gapId: schooledCasePlans[index].gapId,
+                                      priorityId:
+                                          schooledCasePlans[index].priorityId,
+                                      responsibleIds: schooledCasePlans[index]
+                                          .responsibleIds,
+                                      resultsId:
+                                          schooledCasePlans[index].resultsId,
+                                      reasonId:
+                                          schooledCasePlans[index].reasonId),
+                                )),
                         const SizedBox(height: 20),
                         GestureDetector(
                           onTap: () {
                             // TODO Handle past assessments
                             // Get.to(() => HistoryForm1A(
                             //     caseLoadModel: widget.caseLoadModel));
+                            for (int i = 0; i < healthyCasePlans.length; i++) {
+                              print(healthyCasePlans[i].toJson());
+                            }
                           },
                           child: const Row(
                             children: [
@@ -426,7 +500,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
     }
   }
 
-  Future<void> addToList() async {
+  Future<void> addToList(BuildContext context) async {
+    final provider = Provider.of<CptProvider>(context, listen: false);
     CptHealthFormData? cptHealthFormData =
         context.read<CptProvider>().cptHealthFormData ?? CptHealthFormData();
     CptSafeFormData? cptSafeFormData =
@@ -437,21 +512,67 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
         context.read<CptProvider>().cptschooledFormData ??
             CptschooledFormData();
     if (selectedStep == 0) {
+//Check if any of the fields is empty
+      if (cptHealthFormData.serviceIds == null ||
+          cptHealthFormData.goalId == null ||
+          cptHealthFormData.gapId == null ||
+          cptHealthFormData.priorityId == null ||
+          cptHealthFormData.responsibleIds == null ||
+          cptHealthFormData.resultsId == null) {
+        return;
+      }
+
+      //Check if it exists in the list
+      if (healthyCasePlans.contains(cptHealthFormData)) {
+        healthyCasePlans.remove(cptHealthFormData);
+      }
       healthyCasePlans.add(cptHealthFormData);
     }
     if (selectedStep == 1) {
+      if (cptSafeFormData.serviceIds == null ||
+          cptSafeFormData.goalId == null ||
+          cptSafeFormData.gapId == null ||
+          cptSafeFormData.priorityId == null ||
+          cptSafeFormData.responsibleIds == null ||
+          cptSafeFormData.resultsId == null) {
+        return;
+      }
+      if (safeCasePlans.contains(cptSafeFormData)) {
+        safeCasePlans.remove(cptSafeFormData);
+      }
       safeCasePlans.add(cptSafeFormData);
     }
     if (selectedStep == 2) {
+      if (cptStableFormData.serviceIds == null ||
+          cptStableFormData.goalId == null ||
+          cptStableFormData.gapId == null ||
+          cptStableFormData.priorityId == null ||
+          cptStableFormData.responsibleIds == null ||
+          cptStableFormData.resultsId == null) {
+        return;
+      }
+      if (stableCasePlans.contains(cptStableFormData)) {
+        stableCasePlans.remove(cptStableFormData);
+      }
       stableCasePlans.add(cptStableFormData);
     }
 
     if (selectedStep == 3) {
+      if (cptschooledFormData.serviceIds == null ||
+          cptschooledFormData.goalId == null ||
+          cptschooledFormData.gapId == null ||
+          cptschooledFormData.priorityId == null ||
+          cptschooledFormData.responsibleIds == null ||
+          cptschooledFormData.resultsId == null) {
+        return;
+      }
+      if (schooledCasePlans.contains(cptschooledFormData)) {
+        schooledCasePlans.remove(cptschooledFormData);
+      }
       schooledCasePlans.add(cptschooledFormData);
     }
 
     context.read<CptProvider>().clearProviderData();
-
-    print(healthyCasePlans.length);
+    setState(() {});
   }
 }
