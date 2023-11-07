@@ -36,7 +36,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
 
   void getRecords() async {
     final List<UnapprovedForm1DataModel> records =
-    await UnapprovedDataService.fetchLocalUnapprovedData();
+    await UnapprovedDataService.fetchLocalUnapprovedForm1AData();
     setState(() {
       unapprovedForm1Data = records;
     });
