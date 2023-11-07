@@ -26,7 +26,10 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
   @override
   void initState() {
     super.initState();
-    getRecords();
+
+    Future.delayed(Duration.zero, () {
+      getRecords();
+    });
   }
 
   void getRecords() async {
