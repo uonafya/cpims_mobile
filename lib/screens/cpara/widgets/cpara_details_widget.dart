@@ -541,7 +541,7 @@ class ChildCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ReusableTitleText(title: 'Gender'),
-                ReusableTitleText(title: 'Unique Number'),
+                ReusableTitleText(title: 'CPIMS ID'),
               ],
             ),
             Row(
