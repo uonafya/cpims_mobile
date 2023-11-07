@@ -33,7 +33,7 @@ class UnapprovedForm1DataModel extends Form1DataModel {
     }
 
     return UnapprovedForm1DataModel(
-      id: json['id'] as int,
+      id: json['id'] as int?,
       uuid: json['uuid'] as String,
       ovcCpimsId: json['ovc_cpims_id'] as String,
       date_of_event: json['date_of_event'] as String,

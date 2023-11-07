@@ -21,6 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/auth_provider.dart';
 import '../services/caseload_service.dart';
+import '../services/unapproved_data_service.dart';
 import 'locked_screen.dart';
 
 class InitialLoadingScreen extends StatefulWidget {
@@ -115,6 +116,8 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
                 Get.off(() => const LockedScreen());
                 return;
               }
+
+              await UnapprovedDataService.fetchRemoteUnapprovedData(accessToken);
 
               await Provider.of<UIProvider>(context, listen: false)
                   .setCaseLoadData();
