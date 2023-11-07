@@ -226,7 +226,7 @@ Future<void> singleCparaFormSubmission(
     "individual_questions": individualQuestions,
     "scores": scoreList,
     "app_form_metadata": cparaForm.appFormMetaData.toJson(),
-    "sub_population": List<dynamic>.from(cparaForm.listOfSubOvcs.map((x) => x.toJson()))
+    "sub_population": List<dynamic>.from(cparaForm.listOfSubOvcs.map((x) => x.toJson())),
     "device_id": await getDeviceId(),
   };
   debugPrint(json.encode(cparaMapData));
