@@ -36,7 +36,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
 
   void getRecords() async {
     final List<UnapprovedForm1DataModel> records =
-        await UnapprovedDataService.fetchLocalUnapprovedData();
+    await UnapprovedDataService.fetchLocalUnapprovedData();
     setState(() {
       unapprovedForm1Data = records;
     });
@@ -72,7 +72,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                 ),
                 itemCount: unapprovedRecords.length,
                 separatorBuilder: (BuildContext context, int index) =>
-                    const SizedBox(
+                const SizedBox(
                   width: 12,
                 ),
               ),
@@ -154,44 +154,53 @@ class FormTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final selectedItems = unapprovedItems
-    //     .where((item) =>
-    //         item['title'] == selectedRecord && item['eventType'] == eventType)
-    //     .toList();
-
     return CustomCard(
       title: '$selectedRecord $eventType List',
       children: [
         if (selectedRecord == "Form 1A" || selectedRecord == "Form 1B")
-          Column(
-            children: unapprovedForm1aData
-                .map((e) => CustomForm1ACardDetail(
-                      unapprovedData: e,
-                    ))
-                .toList(),
-          )
-        else if (selectedRecord == "CPT")
-          const Column(
-            children: [
-              Text(
-                'Not Implemented',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-            ],
-          )
-        else
-          const Column(children: [
-            Text(
-              'Not Implemented',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-          ])
+          for (final dataModel in unapprovedForm1aData)
+            if (dataModel.services.isNotEmpty && eventType == "SERVICES")
+              CustomForm1ACardDetail(
+                unapprovedData: dataModel,
+                eventOrDomainId: dataModel.services[0].domainId,
+                isService: true,
+              )
+            else if (dataModel.criticalEvents.isNotEmpty &&
+                eventType == 'CRITICAL EVENTS')
+              CustomForm1ACardDetail(
+                unapprovedData: dataModel,
+                eventOrDomainId: dataModel.criticalEvents[0].event_id,
+                isService: false,
+              )
+            // Column(
+            //   children: unapprovedForm1aData
+            //       .map((e) => CustomForm1ACardDetail(
+            //             unapprovedData: e,
+            //           ))
+            //       .toList(),
+            // )
+            else if (selectedRecord == "CPT")
+                const Column(
+                  children: [
+                    Text(
+                      'Not Implemented',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                )
+              else
+                const Column(children: [
+                  Text(
+                    'Not Implemented',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ])
         // if (selectedRecord == "CPARA")
         //   Column(
         //     children: selectedItems.map((e) => ChildDetailsCard(e)).toList(),
@@ -318,8 +327,15 @@ class ChildDetailsCard extends StatelessWidget {
 class CustomForm1ACardDetail extends StatelessWidget {
   // list with a type of unapproved form 1A data model
   final UnapprovedForm1DataModel unapprovedData;
+  final String eventOrDomainId;
+  final bool isService;
 
-  const CustomForm1ACardDetail({super.key, required this.unapprovedData});
+  const CustomForm1ACardDetail({
+    super.key,
+    required this.unapprovedData,
+    required this.eventOrDomainId,
+    required this.isService,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -340,6 +356,19 @@ class CustomForm1ACardDetail extends StatelessWidget {
                 ),
                 Text(
                   unapprovedData.ovcCpimsId,
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  isService ? "Domain ID: " : "Event ID: ",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  eventOrDomainId,
                 ),
               ],
             ),
