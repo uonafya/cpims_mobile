@@ -20,9 +20,9 @@ class ApiService {
 
   postSecData(data, apiUrl) async {
     var fullUrl = _url + apiUrl;
-    // + await _getToken();
+    final getToken = await _getToken();
     return await http.post(Uri.parse(fullUrl),
-        body: jsonEncode(data), headers: _setAuthHeaders(_getToken()));
+        body: jsonEncode(data), headers: _setAuthHeaders(getToken));
   }
 
   getData(apiUrl) async {
@@ -55,6 +55,7 @@ class ApiService {
   _getToken() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('access');
+    print(token);
     return token;
   }
 
@@ -87,3 +88,5 @@ class ApiService {
     }
   }
 }
+
+final apiServiceConstructor = ApiService();

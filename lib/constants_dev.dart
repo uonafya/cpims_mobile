@@ -71,12 +71,12 @@ List drawerOptions(BuildContext context) {
     {
       'title': 'Caseload',
       'icon': FontAwesomeIcons.briefcase,
-      'children':[],
+      'children': [],
       'onTap': () => {
-        Get.off(() => const OVCCareScreen(),
-            transition: Transition.fadeIn,
-            duration: const Duration(milliseconds: 1000))
-      },
+            Get.off(() => const OVCCareScreen(),
+                transition: Transition.fadeIn,
+                duration: const Duration(milliseconds: 1000))
+          },
 
       // 'children': [
       //   {
@@ -143,8 +143,8 @@ List drawerOptions(BuildContext context) {
         try {
           const androidIdPlugin = AndroidId();
           final String? androidId = await androidIdPlugin.getId();
-          CaseLoadService().updateCaseLoadData(
-              context: context, deviceID: androidId!);
+          CaseLoadService()
+              .updateCaseLoadData(context: context, deviceID: androidId!);
           // syncWorkflows();
           snackBar = SnackBar(
             content: const Text(
@@ -307,7 +307,8 @@ const String mobileEndpoint = "https://dev.cpims.net/mobile/";
 
 const Map<String, String> headers = {"Content-Type": "application/json"};
 
-void errorSnackBar(BuildContext context, String message, {Duration duration = const Duration(seconds: 8)}) {
+void errorSnackBar(BuildContext context, String message,
+    {Duration duration = const Duration(seconds: 8)}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     backgroundColor: Colors.red,
     content: Text(message),

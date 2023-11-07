@@ -7,7 +7,6 @@ import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
 import '../../../Models/case_load_model.dart';
 import '../widgets/ovc_sub_population_form.dart';
 

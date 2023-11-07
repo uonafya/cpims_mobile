@@ -177,12 +177,6 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                     CparaFormsScreen(caseLoadModel: widget.caseLoadModel));
               },
             ),
-            // ChildDetailsWorkflowButton(
-            //   workflowName: "OVC Sub Population",
-            //   onClick: () {
-            //     Get.to(() => CheckboxForm(caseLoadModel: widget.caseLoadModel));
-            //   },
-            // ),
             ChildDetailsWorkflowButton(
               workflowName: "Case Plan Template",
               onClick: () {
@@ -190,22 +184,24 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                     () => CasePlanTemplateForm(caseLoad: widget.caseLoadModel));
               },
             ),
-            ChildDetailsWorkflowButton(
-              workflowName: "HIV Management Form",
-              onClick: () {
-                Get.to(
-                  () => HIVManagementForm(caseLoad: widget.caseLoadModel),
-                );
-              },
-            ),
-            ChildDetailsWorkflowButton(
-              workflowName: "HIV Assessment form",
-              onClick: () {
-                Get.to(() => HIVAssessmentScreen(
-                      caseLoadModel: widget.caseLoadModel,
-                    ));
-              },
-            ),
+            if (widget.caseLoadModel.ovchivstatus == "Positive")
+              ChildDetailsWorkflowButton(
+                workflowName: "HIV Management Form",
+                onClick: () {
+                  Get.to(
+                    () => HIVManagementForm(caseLoad: widget.caseLoadModel),
+                  );
+                },
+              ),
+            if (widget.caseLoadModel.ovchivstatus != "Positive")
+              ChildDetailsWorkflowButton(
+                workflowName: "HIV Assessment form",
+                onClick: () {
+                  Get.to(() => HIVAssessmentScreen(
+                        caseLoadModel: widget.caseLoadModel,
+                      ));
+                },
+              ),
             const SizedBox(
               height: 10,
             ),

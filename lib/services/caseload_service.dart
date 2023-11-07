@@ -1,4 +1,3 @@
-
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
@@ -10,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/auth_provider.dart';
 
 class CaseLoadService {
-
   static const String _caseLoadLastSavePrefKey = 'caseload_last_save';
 
   static Future<void> saveCaseLoadLastSave(int timestamp) async {
