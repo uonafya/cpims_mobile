@@ -1,16 +1,14 @@
-
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../providers/auth_provider.dart';
 
 class CaseLoadService {
-
   static const String _caseLoadLastSavePrefKey = 'caseload_last_save';
 
   static Future<void> saveCaseLoadLastSave(int timestamp) async {
@@ -65,7 +63,9 @@ class CaseLoadService {
       final Response response = await dio
           .get('api/caseload', queryParameters: {'deviceID': deviceID});
 
-      if (response.statusCode == 200) {
+      int statusCode = response.statusCode ?? 0;
+
+      if (statusCode == 200) {
         final List<CaseLoadModel> caseLoadModelList = (response.data as List)
             .map((json) => CaseLoadModel.fromJson(json))
             .toList();
@@ -80,16 +80,13 @@ class CaseLoadService {
         final int timestamp = DateTime.now().millisecondsSinceEpoch;
         await CaseLoadService.saveCaseLoadLastSave(timestamp);
         await preferences.setBool("hasUserSetup", true);
-      } else if (response.statusCode == 254) {
+      } else if (statusCode >= 251 && statusCode <= 256) {
         if (context.mounted) {
-          Get.snackbar(
-            "Error",
-            "You are not authorized to access this resource",
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
+          errorSnackBar(context, 'Not authorized to view this resource');
         }
+        await LocalDb.instance.deleteDb();
+        await AuthProvider.setAppLock(true);
+        return;
       } else {
         if (kDebugMode) {
           print("We have an issue");

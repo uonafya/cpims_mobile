@@ -1,23 +1,29 @@
 class SummaryDataModel {
-   int children = 0;
-   int caregivers = 0;
-   int government = 0;
-   int ngo = 0;
-   int caseRecords = 0;
-   int pendingCases = 0;
-   int orgUnits = 0;
-   int workforceMembers = 0;
-   int household = 0;
-   int childrenAll = 0; //ever register
-   OvcSummary ovcSummary = OvcSummary(
+  int children = 0;
+  int caregivers = 0;
+  int government = 0;
+  int ngo = 0;
+  int caseRecords = 0;
+  int pendingCases = 0;
+  int orgUnits = 0;
+  int workforceMembers = 0;
+  int household = 0;
+  int childrenAll = 0; //ever register
+  OvcSummary ovcSummary = OvcSummary(
       m0: 0, m1: 0, m2: 0, m3: 0, m4: 0, f0: 0, f1: 0, f2: 0, f3: 0, f4: 0);
-   List<dynamic> ovcRegs = [];
-   List<dynamic> caseRegs = [];
-   Map<String, dynamic> caseCats = {};
-   Map<String, dynamic> criteria = {};
-   String orgUnit = '';
-   int orgUnitId = 0;
-   String details = '';
+  List<dynamic> ovcRegs = [];
+  List<dynamic> caseRegs = [];
+  Map<String, dynamic> caseCats = {};
+  Map<String, dynamic> criteria = {};
+  String orgUnit = '';
+  int orgUnitId = 0;
+  String details = '';
+  int unapproved = 0;
+  int form1a, form1b = 0;
+  int cpara, cpt, clhiv = 0;
+  int unapprovedF1A, unapprovedF1B = 0;
+  int unapprovedCPR, unapprovedCPT = 0;
+  int unapprovedHRS, unapprovedHMF = 0;
 
   SummaryDataModel({
     required this.children,
@@ -38,6 +44,18 @@ class SummaryDataModel {
     required this.orgUnit,
     required this.orgUnitId,
     required this.details,
+    required this.unapproved,
+    required this.form1a,
+    required this.form1b,
+    required this.cpara,
+    required this.cpt,
+    required this.clhiv,
+    required this.unapprovedF1A,
+    required this.unapprovedF1B,
+    required this.unapprovedCPR,
+    required this.unapprovedCPT,
+    required this.unapprovedHRS,
+    required this.unapprovedHMF,
   });
 
   factory SummaryDataModel.fromJson(Map<String, dynamic> json) {
@@ -60,6 +78,18 @@ class SummaryDataModel {
       orgUnit: json['org_unit'],
       orgUnitId: json['org_unit_id'],
       details: json['details'],
+      unapproved: json['unapproved'],
+      form1a: json['form1a'],
+      form1b: json['form1b'],
+      cpara: json['cpara'],
+      cpt: json['cpt'],
+      clhiv: json['clhiv'],
+      unapprovedF1A: json['unapproved_F1A'],
+      unapprovedF1B: json['unapproved_F1B'],
+      unapprovedCPR: json['unapproved_CPR'],
+      unapprovedCPT: json['unapproved_CPT'],
+      unapprovedHRS: json['unapproved_HRS'],
+      unapprovedHMF: json['unapproved_HMF'],
     );
   }
 
@@ -83,6 +113,18 @@ class SummaryDataModel {
       'org_unit': orgUnit,
       'org_unit_id': orgUnitId,
       'details': details,
+      'unapproved': unapproved,
+      'form1a': form1a,
+      'form1b': form1b,
+      'cpara': cpara,
+      'cpt': cpt,
+      'clhiv': clhiv,
+      'unapproved_F1A': unapprovedF1A,
+      'unapproved_F1B': unapprovedF1B,
+      'unapproved_CPR': unapprovedCPR,
+      'unapproved_CPT': unapprovedCPT,
+      'unapproved_HRS': unapprovedHRS,
+      'unapproved_HMF': unapprovedHMF,
     };
   }
 }
