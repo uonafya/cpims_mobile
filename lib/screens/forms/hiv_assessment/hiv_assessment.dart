@@ -9,6 +9,7 @@ import 'package:cpims_mobile/widgets/custom_card.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 bool disableSubsquentHIVAssessmentFieldsAndSubmit(BuildContext context) {
@@ -52,7 +53,7 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
     const ProgressMonitoringForm(),
   ];
 
-  void handleNext(BuildContext context) {
+  void handleNext(BuildContext context) async {
     final formIndex =
         Provider.of<HIVAssessmentProvider>(context, listen: false).formIndex;
 
@@ -67,18 +68,14 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
       return;
     }
 
-    if (formIndex == 1 &&
-        Provider.of<HIVAssessmentProvider>(context, listen: false)
-                .hivRiskAssessmentModel ==
-            null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Please fill in the required fields"),
-        backgroundColor: Colors.red,
-      ));
-      return;
-    }
-
     if (formIndex == hivAssessmentTitles.length - 1) {
+      try {
+        await Provider.of<HIVAssessmentProvider>(context, listen: false)
+            .submitHIVAssessmentForm();
+      } catch (e) {
+        print(e);
+      }
+
       return;
     }
 
@@ -95,6 +92,15 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
     }
     Provider.of<HIVAssessmentProvider>(context, listen: false)
         .updateFormIndex(formIndex - 1);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      Provider.of<HIVAssessmentProvider>(context, listen: false)
+          .updateCaseLoadModel(widget.caseLoadModel);
+    });
   }
 
   @override

@@ -269,6 +269,7 @@ class _HomepageState extends State<Homepage> {
                       cparaCount: formStats.cparaCount,
                       onClick: () {},
                     ),
+
                     StatisticsItem(
                       title: 'UNAPPROVED RECORDS',
                       icon: FontAwesomeIcons.fileCircleXmark,
@@ -512,8 +513,7 @@ class _HomepageState extends State<Homepage> {
           snackPosition: SnackPosition.BOTTOM);
     }
     if (mounted) {
-      ScaffoldMessenger.of(context)
-          .removeCurrentSnackBar(); // Remove the indefinite snackbar
+      Get.closeAllSnackbars();
     }
   }
 }

@@ -40,6 +40,11 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
   int selectedStep = 0;
   List<Widget> steps = [];
 
+  List<CptHealthFormData> healthyCasePlans = [];
+  List<CptSafeFormData> safeCasePlans = [];
+  List<CptStableFormData> stableCasePlans = [];
+  List<CptschooledFormData> schooledCasePlans = [];
+
   @override
   void initState() {
     super.initState();
@@ -73,7 +78,6 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
 
   @override
   Widget build(BuildContext context) {
-    CptProvider cptProvider = Provider.of<CptProvider>(context, listen: false);
     bool isLastStep = selectedStep == steps.length - 1;
     return Scaffold(
       appBar: customAppBar(),
@@ -159,6 +163,11 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                 ),
                               ]),
                         ),
+                        TextButton(
+                            onPressed: () {
+                              addToList();
+                            },
+                            child: Text("Add")),
                         Row(
                           children: [
                             Expanded(
@@ -187,246 +196,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                     ? 'Submit Caseplan'
                                     : 'Next',
                                 onTap: () async {
-                                  if (selectedStep == steps.length - 1) {
-                                    try {
-                                      String? ovsId = widget.caseLoad.cpimsId!;
-                                      String? formattedDate =
-                                          currentDateOfCasePlan
-                                              .toIso8601String();
-                                      if (formattedDate.isEmpty) {
-                                        Get.snackbar(
-                                          'Error',
-                                          'Please select date of caseplan',
-                                          backgroundColor: Colors.red,
-                                          colorText: Colors.white,
-                                        );
-                                        return;
-                                      }
-                                      CptHealthFormData? cptHealthFormData =
-                                          context
-                                                  .read<CptProvider>()
-                                                  .cptHealthFormData ??
-                                              CptHealthFormData();
-                                      CptSafeFormData? cptSafeFormData = context
-                                              .read<CptProvider>()
-                                              .cptSafeFormData ??
-                                          CptSafeFormData();
-                                      CptStableFormData? cptStableFormData =
-                                          context
-                                                  .read<CptProvider>()
-                                                  .cptStableFormData ??
-                                              CptStableFormData();
-                                      CptschooledFormData? cptschooledFormData =
-                                          context
-                                                  .read<CptProvider>()
-                                                  .cptschooledFormData ??
-                                              CptschooledFormData();
-
-                                      print("Data colleced from each form");
-                                      print("Health $cptHealthFormData");
-                                      print("Safe $cptSafeFormData");
-                                      print("Stable $cptStableFormData");
-                                      print("Schooled $cptschooledFormData");
-
-                                      List<Map<String, dynamic>> servicesList =
-                                          [];
-                                      if (cptHealthFormData.serviceIds != null &&
-                                          cptHealthFormData.goalId != null &&
-                                          cptHealthFormData.gapId != null &&
-                                          cptHealthFormData.priorityId !=
-                                              null &&
-                                          cptHealthFormData.responsibleIds !=
-                                              null &&
-                                          cptHealthFormData.resultsId != null) {
-                                        String? completionDateValue =
-                                            cptHealthFormData.completionDate ??
-                                                '';
-                                        String? reason =
-                                            cptHealthFormData.reasonId ?? '';
-                                        Map<String, dynamic> healthService = {
-                                          'domain_id': "DHNU",
-                                          'service_id':
-                                              cptHealthFormData.serviceIds,
-                                          'goal_id': cptHealthFormData.goalId,
-                                          'gap_id': cptHealthFormData.gapId,
-                                          'priority_id':
-                                              cptHealthFormData.priorityId,
-                                          'responsible_id':
-                                              cptHealthFormData.responsibleIds,
-                                          'results_id':
-                                              cptHealthFormData.resultsId,
-                                          'reason_id': reason,
-                                          'completion_date':
-                                              completionDateValue,
-                                        };
-                                        servicesList.add(healthService);
-                                      }
-
-                                      if (cptSafeFormData.serviceIds != null &&
-                                          cptSafeFormData.goalId != null &&
-                                          cptSafeFormData.gapId != null &&
-                                          cptSafeFormData.priorityId != null &&
-                                          cptSafeFormData.responsibleIds !=
-                                              null &&
-                                          cptSafeFormData.resultsId != null) {
-                                        String? completionDateValue =
-                                            cptSafeFormData.completionDate ??
-                                                '';
-                                        String? reason =
-                                            cptSafeFormData.reasonId ?? '';
-                                        Map<String, dynamic> safeService = {
-                                          'domain_id': 'DPRO',
-                                          'service_id':
-                                              cptSafeFormData.serviceIds,
-                                          'goal_id': cptSafeFormData.goalId,
-                                          'gap_id': cptSafeFormData.gapId,
-                                          'priority_id':
-                                              cptSafeFormData.priorityId,
-                                          'responsible_id':
-                                              cptSafeFormData.responsibleIds,
-                                          'results_id':
-                                              cptSafeFormData.resultsId,
-                                          'reason_id': reason,
-                                          'completion_date':
-                                              completionDateValue,
-                                        };
-                                        servicesList.add(safeService);
-                                      }
-
-                                      if (cptStableFormData.serviceIds != null &&
-                                          cptStableFormData.goalId != null &&
-                                          cptStableFormData.gapId != null &&
-                                          cptStableFormData.priorityId !=
-                                              null &&
-                                          cptStableFormData.responsibleIds !=
-                                              null &&
-                                          cptStableFormData.resultsId != null) {
-                                        String? completionDateValue =
-                                            cptStableFormData.completionDate ??
-                                                '';
-                                        String? reason =
-                                            cptStableFormData.reasonId ?? '';
-                                        Map<String, dynamic> stableService = {
-                                          'domain_id': 'DHES',
-                                          'service_id':
-                                              cptStableFormData.serviceIds,
-                                          'goal_id': cptStableFormData.goalId,
-                                          'gap_id': cptStableFormData.gapId,
-                                          'priority_id':
-                                              cptStableFormData.priorityId,
-                                          'responsible_id':
-                                              cptStableFormData.responsibleIds,
-                                          'results_id':
-                                              cptStableFormData.resultsId,
-                                          'reason_id': reason,
-                                          'completion_date':
-                                              completionDateValue,
-                                        };
-                                        servicesList.add(stableService);
-                                      }
-
-                                      if (cptschooledFormData.serviceIds != null &&
-                                          cptschooledFormData.goalId != null &&
-                                          cptschooledFormData.gapId != null &&
-                                          cptschooledFormData.priorityId !=
-                                              null &&
-                                          cptschooledFormData.responsibleIds !=
-                                              null &&
-                                          cptschooledFormData.resultsId !=
-                                              null) {
-                                        String? completionDateValue =
-                                            cptschooledFormData
-                                                    .completionDate ??
-                                                '';
-                                        String? reason =
-                                            cptschooledFormData.reasonId ?? '';
-                                        Map<String, dynamic> schooledService = {
-                                          'domain_id': 'DEDU',
-                                          'service_id':
-                                              cptschooledFormData.serviceIds,
-                                          'goal_id': cptschooledFormData.goalId,
-                                          'gap_id': cptschooledFormData.gapId,
-                                          'priority_id':
-                                              cptschooledFormData.priorityId,
-                                          'responsible_id': cptschooledFormData
-                                              .responsibleIds,
-                                          'results_id':
-                                              cptschooledFormData.resultsId,
-                                          'reason_id': reason,
-                                          'completion_date':
-                                              completionDateValue,
-                                        };
-                                        servicesList.add(schooledService);
-                                      }
-
-                                      if (servicesList.isNotEmpty) {
-                                        Map<String, dynamic> payload = {
-                                          'ovc_cpims_id': ovsId,
-                                          'date_of_event': formattedDate,
-                                          'services': servicesList,
-                                        };
-                                        print(
-                                            "Final payload is${jsonEncode(payload)}");
-                                        bool isFormSaved = await CasePlanService
-                                            .saveCasePlanLocal(
-                                                CasePlanModel.fromJson(
-                                                    payload));
-                                        //provider clear
-
-                                        if (isFormSaved) {
-                                          if (context.mounted) {
-                                            context
-                                                .read<CptProvider>()
-                                                .clearProviderData();
-                                            context
-                                                .read<StatsProvider>()
-                                                .updateFormStats();
-                                          }
-                                          Get.snackbar(
-                                            'Success',
-                                            'Successfully saved CasePlan form',
-                                            backgroundColor: Colors.green,
-                                            colorText: Colors.white,
-                                          );
-                                          //get back to the previous screen
-                                          Navigator.pop(context);
-                                        } else {
-                                          Get.snackbar(
-                                            'Error',
-                                            'Failed to save CasePlan form',
-                                            backgroundColor: Colors.red,
-                                            colorText: Colors.white,
-                                          );
-                                          Navigator.pop(context);
-                                          //clear provider data
-                                          cptProvider.clearProviderData();
-                                        }
-                                      } else {
-                                        Get.snackbar(
-                                          'Error',
-                                          'Please fill all mandatory fields.',
-                                          backgroundColor: Colors.red,
-                                          colorText: Colors.white,
-                                        );
-                                      }
-                                    } catch (e) {
-                                      debugPrint(e.toString());
-                                    }
-                                    setState(() {
-                                      // if (isFormSaved == true) {
-                                      //   CustomToastWidget.showToast(
-                                      //       "Form saved successfully");
-                                      //   Navigator.pop(context);
-                                      //   selectedStep = 0;
-                                      // }
-                                    });
-                                  } else {
-                                    setState(() {
-                                      if (selectedStep < steps.length - 1) {
-                                        selectedStep++;
-                                      }
-                                    });
-                                  }
+                                  await submitData(context);
                                 },
                               ),
                             ),
@@ -467,5 +237,221 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
         ],
       ),
     );
+  }
+
+  Future<void> submitData(BuildContext context) async {
+    CptProvider cptProvider = Provider.of<CptProvider>(context, listen: false);
+
+    if (selectedStep == steps.length - 1) {
+      try {
+        String? ovsId = widget.caseLoad.cpimsId!;
+        String? formattedDate = currentDateOfCasePlan.toIso8601String();
+        if (formattedDate.isEmpty) {
+          Get.snackbar(
+            'Error',
+            'Please select date of caseplan',
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+          return;
+        }
+        CptHealthFormData? cptHealthFormData =
+            context.read<CptProvider>().cptHealthFormData ??
+                CptHealthFormData();
+        CptSafeFormData? cptSafeFormData =
+            context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
+        CptStableFormData? cptStableFormData =
+            context.read<CptProvider>().cptStableFormData ??
+                CptStableFormData();
+        CptschooledFormData? cptschooledFormData =
+            context.read<CptProvider>().cptschooledFormData ??
+                CptschooledFormData();
+
+        print("Data colleced from each form");
+        print("Health $cptHealthFormData");
+        print("Safe $cptSafeFormData");
+        print("Stable $cptStableFormData");
+        print("Schooled $cptschooledFormData");
+
+        List<Map<String, dynamic>> servicesList = [];
+        if (cptHealthFormData.serviceIds != null &&
+            cptHealthFormData.goalId != null &&
+            cptHealthFormData.gapId != null &&
+            cptHealthFormData.priorityId != null &&
+            cptHealthFormData.responsibleIds != null &&
+            cptHealthFormData.resultsId != null) {
+          String? completionDateValue = cptHealthFormData.completionDate ?? '';
+          String? reason = cptHealthFormData.reasonId ?? '';
+          Map<String, dynamic> healthService = {
+            'domain_id': "DHNU",
+            'service_id': cptHealthFormData.serviceIds,
+            'goal_id': cptHealthFormData.goalId,
+            'gap_id': cptHealthFormData.gapId,
+            'priority_id': cptHealthFormData.priorityId,
+            'responsible_id': cptHealthFormData.responsibleIds,
+            'results_id': cptHealthFormData.resultsId,
+            'reason_id': reason,
+            'completion_date': completionDateValue,
+          };
+          servicesList.add(healthService);
+        }
+
+        if (cptSafeFormData.serviceIds != null &&
+            cptSafeFormData.goalId != null &&
+            cptSafeFormData.gapId != null &&
+            cptSafeFormData.priorityId != null &&
+            cptSafeFormData.responsibleIds != null &&
+            cptSafeFormData.resultsId != null) {
+          String? completionDateValue = cptSafeFormData.completionDate ?? '';
+          String? reason = cptSafeFormData.reasonId ?? '';
+          Map<String, dynamic> safeService = {
+            'domain_id': 'DPRO',
+            'service_id': cptSafeFormData.serviceIds,
+            'goal_id': cptSafeFormData.goalId,
+            'gap_id': cptSafeFormData.gapId,
+            'priority_id': cptSafeFormData.priorityId,
+            'responsible_id': cptSafeFormData.responsibleIds,
+            'results_id': cptSafeFormData.resultsId,
+            'reason_id': reason,
+            'completion_date': completionDateValue,
+          };
+          servicesList.add(safeService);
+        }
+
+        if (cptStableFormData.serviceIds != null &&
+            cptStableFormData.goalId != null &&
+            cptStableFormData.gapId != null &&
+            cptStableFormData.priorityId != null &&
+            cptStableFormData.responsibleIds != null &&
+            cptStableFormData.resultsId != null) {
+          String? completionDateValue = cptStableFormData.completionDate ?? '';
+          String? reason = cptStableFormData.reasonId ?? '';
+          Map<String, dynamic> stableService = {
+            'domain_id': 'DHES',
+            'service_id': cptStableFormData.serviceIds,
+            'goal_id': cptStableFormData.goalId,
+            'gap_id': cptStableFormData.gapId,
+            'priority_id': cptStableFormData.priorityId,
+            'responsible_id': cptStableFormData.responsibleIds,
+            'results_id': cptStableFormData.resultsId,
+            'reason_id': reason,
+            'completion_date': completionDateValue,
+          };
+          servicesList.add(stableService);
+        }
+
+        if (cptschooledFormData.serviceIds != null &&
+            cptschooledFormData.goalId != null &&
+            cptschooledFormData.gapId != null &&
+            cptschooledFormData.priorityId != null &&
+            cptschooledFormData.responsibleIds != null &&
+            cptschooledFormData.resultsId != null) {
+          String? completionDateValue =
+              cptschooledFormData.completionDate ?? '';
+          String? reason = cptschooledFormData.reasonId ?? '';
+          Map<String, dynamic> schooledService = {
+            'domain_id': 'DEDU',
+            'service_id': cptschooledFormData.serviceIds,
+            'goal_id': cptschooledFormData.goalId,
+            'gap_id': cptschooledFormData.gapId,
+            'priority_id': cptschooledFormData.priorityId,
+            'responsible_id': cptschooledFormData.responsibleIds,
+            'results_id': cptschooledFormData.resultsId,
+            'reason_id': reason,
+            'completion_date': completionDateValue,
+          };
+          servicesList.add(schooledService);
+        }
+
+        if (servicesList.isNotEmpty) {
+          Map<String, dynamic> payload = {
+            'ovc_cpims_id': ovsId,
+            'date_of_event': formattedDate,
+            'services': servicesList,
+          };
+          print("Final payload is${jsonEncode(payload)}");
+          bool isFormSaved = await CasePlanService.saveCasePlanLocal(
+              CasePlanModel.fromJson(payload));
+          //provider clear
+
+          if (isFormSaved) {
+            if (context.mounted) {
+              context.read<CptProvider>().clearProviderData();
+              context.read<StatsProvider>().updateFormStats();
+            }
+            Get.snackbar(
+              'Success',
+              'Successfully saved CasePlan form',
+              backgroundColor: Colors.green,
+              colorText: Colors.white,
+            );
+            //get back to the previous screen
+            Navigator.pop(context);
+          } else {
+            Get.snackbar(
+              'Error',
+              'Failed to save CasePlan form',
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+            );
+            Navigator.pop(context);
+            //clear provider data
+            cptProvider.clearProviderData();
+          }
+        } else {
+          Get.snackbar(
+            'Error',
+            'Please fill all mandatory fields.',
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+      setState(() {
+        // if (isFormSaved == true) {
+        //   CustomToastWidget.showToast(
+        //       "Form saved successfully");
+        //   Navigator.pop(context);
+        //   selectedStep = 0;
+        // }
+      });
+    } else {
+      setState(() {
+        if (selectedStep < steps.length - 1) {
+          selectedStep++;
+        }
+      });
+    }
+  }
+
+  Future<void> addToList() async {
+    CptHealthFormData? cptHealthFormData =
+        context.read<CptProvider>().cptHealthFormData ?? CptHealthFormData();
+    CptSafeFormData? cptSafeFormData =
+        context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
+    CptStableFormData? cptStableFormData =
+        context.read<CptProvider>().cptStableFormData ?? CptStableFormData();
+    CptschooledFormData? cptschooledFormData =
+        context.read<CptProvider>().cptschooledFormData ??
+            CptschooledFormData();
+    if (selectedStep == 0) {
+      healthyCasePlans.add(cptHealthFormData);
+    }
+    if (selectedStep == 1) {
+      safeCasePlans.add(cptSafeFormData);
+    }
+    if (selectedStep == 2) {
+      stableCasePlans.add(cptStableFormData);
+    }
+
+    if (selectedStep == 3) {
+      schooledCasePlans.add(cptschooledFormData);
+    }
+
+    context.read<CptProvider>().clearProviderData();
+
+    print(healthyCasePlans.length);
   }
 }

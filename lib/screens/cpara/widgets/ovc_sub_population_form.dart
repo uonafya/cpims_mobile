@@ -1,5 +1,4 @@
 import 'package:cpims_mobile/providers/db_provider.dart';
-import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
