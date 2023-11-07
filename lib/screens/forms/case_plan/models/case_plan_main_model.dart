@@ -16,7 +16,7 @@ class CasePlanModelData {
   late List<ValueItem> selectedResult;
 
   String selectedReason = "";
-  late String ovc_cpims_id;
+  late String ovcCpimsId;
 
   CasePlanModelData({
     required this.selectedDomain,
@@ -26,7 +26,7 @@ class CasePlanModelData {
     required this.selectedNeed,
     required this.selectedPriorityAction,
     required this.selectedResult,
-    required this.ovc_cpims_id,
+    required this.ovcCpimsId,
     required this.selectedDate,
     required this.selectedDateToBeCompleted,
   });

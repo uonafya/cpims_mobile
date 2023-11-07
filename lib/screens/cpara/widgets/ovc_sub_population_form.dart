@@ -46,7 +46,7 @@ class CheckboxForm extends StatefulWidget {
   const CheckboxForm({Key? key, required this.caseLoadModel}) : super(key: key);
 
   @override
-  _CheckboxFormState createState() => _CheckboxFormState();
+  State<CheckboxForm> createState() => _CheckboxFormState();
 }
 
 class _CheckboxFormState extends State<CheckboxForm> {

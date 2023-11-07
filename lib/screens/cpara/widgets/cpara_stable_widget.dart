@@ -516,17 +516,17 @@ class PastCPARACardWidget extends StatelessWidget {
     Map<String, List<CPARAChildQuestions>> separatedChildren = {};
 
     for (var child in cparaDatabase.childQuestions) {
-      if (!separatedChildren.containsKey(child.ovc_cpims_id)) {
-        separatedChildren[child.ovc_cpims_id] = [];
+      if (!separatedChildren.containsKey(child.ovcCpimsId)) {
+        separatedChildren[child.ovcCpimsId] = [];
       }
-      separatedChildren[child.ovc_cpims_id]!.add(child);
+      separatedChildren[child.ovcCpimsId]!.add(child);
     }
 
     // Printing the separated children
     separatedChildren.forEach((id, childrenList) {
       print("Children with ID $id:");
       for (var child in childrenList) {
-        print("  ${child.question_code} - ${child.answer_id}");
+        print("  ${child.questionCode} - ${child.answerId}");
       }
     });
 
@@ -539,7 +539,7 @@ class PastCPARACardWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  cparaDatabase.date_of_event,
+                  cparaDatabase.dateOfEvent,
                   style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
@@ -778,16 +778,16 @@ String benchMarkOneScoreFromDb({required CPARADatabase cparaDatabase}) {
   String question5Answer = "Yes"; // 1.5
 
   for (CPARADatabaseQuestions question in cparaDatabase.questions) {
-    if (question.question_code == CparaQuestionIds.healthQuestion1) {
-      question1Answer = question.answer_id;
-    } else if (question.question_code == CparaQuestionIds.healthQuestion2) {
-      question2Answer = question.answer_id;
-    } else if (question.question_code == CparaQuestionIds.healthQuestion3) {
-      question3Answer = question.answer_id;
-    } else if (question.question_code == CparaQuestionIds.healthQuestion4) {
-      question4Answer = question.answer_id;
-    } else if (question.question_code == CparaQuestionIds.healthQuestion5) {
-      question5Answer = question.answer_id;
+    if (question.questionCode == CparaQuestionIds.healthQuestion1) {
+      question1Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.healthQuestion2) {
+      question2Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.healthQuestion3) {
+      question3Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.healthQuestion4) {
+      question4Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.healthQuestion5) {
+      question5Answer = question.answerId;
     }
   }
 
@@ -829,32 +829,24 @@ String benchMarkTwoScoreFromDb({required CPARADatabase cparaDatabase}) {
   String overallQuestion4Answer = "Yes"; // Is the caregiver HIV positive ?
 
   for (CPARADatabaseQuestions question in cparaDatabase.questions) {
-    if (question.question_code == CparaQuestionIds.healthGoal2Question1) {
-      question1Answer = question.answer_id;
-    } else if (question.question_code ==
-        CparaQuestionIds.healthGoal2Question2) {
-      question2Answer = question.answer_id;
-    } else if (question.question_code ==
-        CparaQuestionIds.healthGoal2Question3) {
-      question3Answer = question.answer_id;
-    } else if (question.question_code ==
-        CparaQuestionIds.healthGoal2Question4) {
-      question4Answer = question.answer_id;
-    } else if (question.question_code ==
-        CparaQuestionIds.healthGoal2Question5) {
-      question5Answer = question.answer_id;
-    } else if (question.question_code ==
-        CparaQuestionIds.healthGoal2Question6) {
-      question6Answer = question.answer_id;
-    } else if (question.question_code ==
-        CparaQuestionIds.healthGoal2Question7) {
-      question7Answer = question.answer_id;
-    } else if (question.question_code ==
-        CparaQuestionIds.healthGoal2Question8) {
-      question8Answer = question.answer_id;
-    } else if (question.question_code ==
-        CparaQuestionIds.healthGoal2Question9) {
-      question9Answer = question.answer_id;
+    if (question.questionCode == CparaQuestionIds.healthGoal2Question1) {
+      question1Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.healthGoal2Question2) {
+      question2Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.healthGoal2Question3) {
+      question3Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.healthGoal2Question4) {
+      question4Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.healthGoal2Question5) {
+      question5Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.healthGoal2Question6) {
+      question6Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.healthGoal2Question7) {
+      question7Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.healthGoal2Question8) {
+      question8Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.healthGoal2Question9) {
+      question9Answer = question.answerId;
     }
   }
 
@@ -888,35 +880,18 @@ String benchMarkThreeScoreFromDb({required CPARADatabase cparaDatabase}) {
   String overallQuestion1Answer =
       "Yes"; // Does the household have adolescent girls and boys ?
 
-  // // grouping the children by their ids
-  // Map<String, List<CPARAChildQuestions>> separatedChildren = {};
-  //
-  // for (var child in cparaDatabase.childQuestions) {
-  //   if (!separatedChildren.containsKey(child.ovc_cpims_id)) {
-  //     separatedChildren[child.ovc_cpims_id] = [];
-  //   }
-  //   separatedChildren[child.ovc_cpims_id]!.add(child);
-  // }
-  //
-  // // Printing the separated children
-  // separatedChildren.forEach((id, childrenList) {
-  //   print("Children with ID $id:");
-  //   for (var child in childrenList) {
-  //     print("  ${child.question_code} - ${child.answer_id}");
-  //   }
-  // });
   List<String> answers = [];
   for (CPARADatabaseQuestions question in cparaDatabase.questions) {
-    if (question.question_code == CparaQuestionIds.healthGoal3ChildQuestion1) {
-      childQuestion1Answer = question.answer_id;
+    if (question.questionCode == CparaQuestionIds.healthGoal3ChildQuestion1) {
+      childQuestion1Answer = question.answerId;
       answers.add(childQuestion1Answer);
-    } else if (question.question_code ==
+    } else if (question.questionCode ==
         CparaQuestionIds.healthGoal3ChildQuestion2) {
-      childQuestion2Answer = question.answer_id;
+      childQuestion2Answer = question.answerId;
       answers.add(childQuestion2Answer);
-    } else if (question.question_code ==
+    } else if (question.questionCode ==
         CparaQuestionIds.healthGoal3ChildQuestion3) {
-      childQuestion3Answer = question.answer_id;
+      childQuestion3Answer = question.answerId;
       answers.add(childQuestion3Answer);
     }
   }
@@ -945,17 +920,14 @@ String benchMarkFourScoreFromDb({required CPARADatabase cparaDatabase}) {
       "Yes"; // Is there child < 2 years in the household ?
 
   for (CPARADatabaseQuestions question in cparaDatabase.questions) {
-    if (question.question_code == CparaQuestionIds.healthGoal4Question1) {
-      question1Answer = question.answer_id;
-    } else if (question.question_code ==
-        CparaQuestionIds.healthGoal4Question2) {
-      question2Answer = question.answer_id;
-    } else if (question.question_code ==
-        CparaQuestionIds.healthGoal4Question3) {
-      question3Answer = question.answer_id;
-    } else if (question.question_code ==
-        CparaQuestionIds.healthGoal4Question4) {
-      question4Answer = question.answer_id;
+    if (question.questionCode == CparaQuestionIds.healthGoal4Question1) {
+      question1Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.healthGoal4Question2) {
+      question2Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.healthGoal4Question3) {
+      question3Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.healthGoal4Question4) {
+      question4Answer = question.answerId;
     }
   }
 
@@ -983,12 +955,12 @@ String benchMarkFiveScoreFromDb({required CPARADatabase cparaDatabase}) {
   String question3Answer = "Yes"; // 5.3
 
   for (CPARADatabaseQuestions question in cparaDatabase.questions) {
-    if (question.question_code == CparaQuestionIds.stableQuestion1) {
-      question1Answer = question.answer_id;
-    } else if (question.question_code == CparaQuestionIds.stableQuestion2) {
-      question2Answer = question.answer_id;
-    } else if (question.question_code == CparaQuestionIds.stableQuestion3) {
-      question3Answer = question.answer_id;
+    if (question.questionCode == CparaQuestionIds.stableQuestion1) {
+      question1Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.stableQuestion2) {
+      question2Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.stableQuestion3) {
+      question3Answer = question.answerId;
     }
   }
 
@@ -1018,20 +990,20 @@ String benchMarkSixScoreFromDb({required CPARADatabase cparaDatabase}) {
       "Yes"; // depends on number of children 6.3 Have you been exposed to violence, abuse (sexual, physical or emotional), neglect, or exploitation in the last six months?
   List<String> childAnswers = [];
   for (CPARADatabaseQuestions question in cparaDatabase.questions) {
-    if (question.question_code == CparaQuestionIds.safeQuestion1) {
-      question1Answer = question.answer_id;
-    } else if (question.question_code == CparaQuestionIds.safeQuestion2) {
-      question2Answer = question.answer_id;
-    } else if (question.question_code == CparaQuestionIds.safeQuestion3) {
-      question3Answer = question.answer_id;
-    } else if (question.question_code == CparaQuestionIds.safeQuestion4) {
-      question4Answer = question.answer_id;
+    if (question.questionCode == CparaQuestionIds.safeQuestion1) {
+      question1Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.safeQuestion2) {
+      question2Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.safeQuestion3) {
+      question3Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.safeQuestion4) {
+      question4Answer = question.answerId;
     }
   }
 
   for (CPARAChildQuestions question in cparaDatabase.childQuestions) {
-    if (question.question_code == CparaQuestionIds.safeChildQuestion1) {
-      childAnswers.add(question.answer_id);
+    if (question.questionCode == CparaQuestionIds.safeChildQuestion1) {
+      childAnswers.add(question.answerId);
     }
   }
 
@@ -1066,10 +1038,10 @@ String benchMarkSevenScoreFromDb({required CPARADatabase cparaDatabase}) {
   String question2Answer = "Yes"; // 7.2
 
   for (CPARADatabaseQuestions question in cparaDatabase.questions) {
-    if (question.question_code == CparaQuestionIds.safeQuestion5) {
-      question1Answer = question.answer_id;
-    } else if (question.question_code == CparaQuestionIds.safeQuestion6) {
-      question2Answer = question.answer_id;
+    if (question.questionCode == CparaQuestionIds.safeQuestion5) {
+      question1Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.safeQuestion6) {
+      question2Answer = question.answerId;
     }
   }
 
@@ -1090,8 +1062,8 @@ String benchMarkEightScoreFromDb({required CPARADatabase cparaDatabase}) {
   String question1Answer = "Yes"; // 8.1
 
   for (CPARADatabaseQuestions question in cparaDatabase.questions) {
-    if (question.question_code == CparaQuestionIds.safeQuestion7) {
-      question1Answer = question.answer_id;
+    if (question.questionCode == CparaQuestionIds.safeQuestion7) {
+      question1Answer = question.answerId;
     }
   }
   List<String> answers = [question1Answer];
@@ -1117,14 +1089,14 @@ String benchMarkNineScoreFromDb({required CPARADatabase cparaDatabase}) {
       "Yes"; // is there a child btw 4-5 years and ECDE in the area
 
   for (CPARADatabaseQuestions question in cparaDatabase.questions) {
-    if (question.question_code == CparaQuestionIds.schooledQuestion1) {
-      question1Answer = question.answer_id;
-    } else if (question.question_code == CparaQuestionIds.schooledQuestion2) {
-      question2Answer = question.answer_id;
-    } else if (question.question_code == CparaQuestionIds.schooledQuestion3) {
-      question3Answer = question.answer_id;
-    } else if (question.question_code == CparaQuestionIds.schooledQuestion4) {
-      question4Answer = question.answer_id;
+    if (question.questionCode == CparaQuestionIds.schooledQuestion1) {
+      question1Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.schooledQuestion2) {
+      question2Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.schooledQuestion3) {
+      question3Answer = question.answerId;
+    } else if (question.questionCode == CparaQuestionIds.schooledQuestion4) {
+      question4Answer = question.answerId;
     }
   }
 

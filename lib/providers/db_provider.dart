@@ -4,18 +4,18 @@ import 'dart:async';
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
-import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
+import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
+import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
+import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_form.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
-// import '../Models/case_plan_form.dart';
 import '../Models/caseplan_form_model.dart';
 import '../constants.dart';
 import '../screens/forms/form1a/new/form_one_a.dart';
@@ -54,7 +54,6 @@ class LocalDb {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
     const textTypeNull = 'TEXT NULL';
-    const defaultTime = 'DATETIME DEFAULT CURRENT_TIMESTAMP';
     const intType = 'INTEGER';
 
     await db.execute('''
@@ -170,6 +169,7 @@ class LocalDb {
     await creatingCparaTables(db, version);
     await createOvcSubPopulation(db, version);
     await createAppMetaDataTable(db, version);
+    await createHRSForms(db, version);
   }
 
   Future<void> createAppMetaDataTable(Database db, int version) async {
@@ -463,6 +463,98 @@ class LocalDb {
     } catch (err) {
       debugPrint(err.toString());
     }
+  }
+
+  Future<void> createHRSForms(Database db, int version) async {
+    // Define the table name
+
+    // Define the table schema with all the fields
+    const String createTableQuery = '''
+    CREATE TABLE $HRSForms (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      ovc_cpims_id TEXT,
+      HIV_RA_1A TEXT,
+      HIV_RS_01 TEXT,
+      HIV_RS_02 TEXT,
+      HIV_RS_03 TEXT,
+      HIV_RS_04 TEXT,
+      HIV_RS_05 TEXT,
+      HIV_RS_06 TEXT,
+      HIV_RS_09 TEXT,
+      HIV_RS_06A TEXT,
+      HIV_RS_07 TEXT,
+      HIV_RS_08 TEXT,
+      HIV_RS_10 TEXT,
+      HIV_RS_10A TEXT,
+      HIV_RS_10B TEXT,
+      HIV_RS_11 TEXT,
+      HIV_RS_14 TEXT,
+      HIV_RS_15 TEXT,
+      HIV_RS_16 TEXT,
+      HIV_RS_17 TEXT,
+      HIV_RS_18 TEXT,
+      HIV_RS_18A TEXT,
+      HIV_RS_18B TEXT,
+      HIV_RS_21 TEXT,
+      HIV_RS_22 TEXT,
+      HIV_RS_23 TEXT,
+      HIV_RS_24 TEXT,
+      HIV_RA_3Q6 TEXT
+    )
+  ''';
+
+    try {
+      await db.execute(createTableQuery);
+    } catch (e) {
+      print('Error creating table: $e');
+    }
+  }
+
+  Future<void> insertHRSData(
+      String cpmisId,
+      HIVCurrentStatusModel currentStatus,
+      HIVRiskAssessmentModel assessment,
+      ProgressMonitoringModel progress) async {
+    final db = await instance.database;
+    await db.insert(
+      HRSForms,
+      {
+        'ovc_cpims_id': cpmisId,
+        'HIV_RA_1A': currentStatus.dateOfAssessment,
+        'HIV_RS_01': currentStatus.statusOfChild,
+        'HIV_RS_02': currentStatus.hivStatus,
+        'HIV_RS_03': currentStatus.hivTestDone,
+        'HIV_RS_04': assessment.biologicalFather,
+        'HIV_RS_05': assessment.malnourished,
+        'HIV_RS_06': assessment.sexualAbuse,
+        'HIV_RS_09': assessment.sexualAbuseAdolescent,
+        'HIV_RS_06A': assessment.traditionalProcedures,
+        'HIV_RS_07': assessment.persistentlySick,
+        'HIV_RS_08': assessment.tb,
+        'HIV_RS_10': assessment.sexualIntercourse,
+        'HIV_RS_10A': assessment.symptomsOfSTI,
+        'HIV_RS_10B': assessment.ivDrugUser,
+        'HIV_RS_11': assessment.finalEvaluation,
+        'HIV_RS_14': progress.parentAcceptHivTesting,
+        'HIV_RS_15': progress.parentAcceptHivTestingDate,
+        'HIV_RS_16': progress.formalReferralMade,
+        'HIV_RS_17': progress.formalReferralMadeDate,
+        'HIV_RS_18': progress.formalReferralCompleted,
+        'HIV_RS_18A': progress.reasonForNotMakingReferral,
+        'HIV_RS_18B': progress.hivTestResult,
+        'HIV_RS_21': progress.referredForArt,
+        'HIV_RS_22': progress.referredForArtDate,
+        'HIV_RS_23': progress.artReferralCompleted,
+        'HIV_RS_24': progress.artReferralCompletedDate,
+        'HIV_RA_3Q6': progress.facilityOfArtEnrollment,
+      },
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> fetchHRSFormData() async {
+    final db = await LocalDb.instance.database;
+    final hrsData = await db.query(HRSForms);
+    return hrsData;
   }
 
   Future<void> insertOvcSubpopulationData(String uuid, String cpimsId,
@@ -1007,7 +1099,7 @@ class LocalDb {
       return AppFormMetaData.fromJson(metaDataList.first);
     } else {
       // Handle the case where no metadata is found
-      return AppFormMetaData(); // You should replace this with an appropriate default value or error handling.
+      return const AppFormMetaData(); // You should replace this with an appropriate default value or error handling.
     }
   }
 }
@@ -1024,6 +1116,7 @@ const form1ServicesTable = 'form1_services';
 const form1CriticalEventsTable = 'form1_critical_events';
 const ovcsubpopulation = 'ovcsubpopulation';
 const cparaForms = 'Form';
+const HRSForms = 'HRSForm';
 const cparaHouseholdAnswers = 'cpara_household_answers';
 const cparaChildAnswers = 'cpara_child_answers';
 

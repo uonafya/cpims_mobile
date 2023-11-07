@@ -5,6 +5,7 @@ import 'package:cpims_mobile/screens/cpara/cpara_util.dart';
 import 'package:cpims_mobile/screens/cpara/model/db_model.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,7 +29,6 @@ Future<List<CPARADatabase>> getUnsyncedForms(Database db) async {
     return forms;
   } catch (err) {
     throw ("Could Not Get Unsynced Forms ${err.toString()}");
-    print(err.toString());
   }
 }
 
@@ -51,27 +51,33 @@ Future<int> getUnsyncedCparaFormsCount(Database db) async {
 Future<CPARADatabase> getFormFromDB(int formID, Database? db) async {
   try {
     CPARADatabase form = CPARADatabase();
-    List<Map<String, dynamic>> fetchResult1 = await db!
-        .rawQuery("SELECT formID, householdid, date, questionid, answer, form.uuid "
-            "FROM HouseholdAnswer "
-            "INNER JOIN Form ON Form.id = HouseholdAnswer.formID "
-            "WHERE formID =  $formID");
+    List<Map<String, dynamic>> fetchResult1 = await db!.rawQuery(
+        "SELECT formID, householdid, date, questionid, answer, form.uuid "
+        "FROM HouseholdAnswer "
+        "INNER JOIN Form ON Form.id = HouseholdAnswer.formID "
+        "WHERE formID =  $formID");
 
-    form.cpara_form_id = formID;
+    form.cparaFormId = formID;
     var uuid = fetchResult1[0]['uuid'];
     var ovcpmisID = fetchResult1[0]['houseHoldID'];
-    form.ovc_cpims_id = ovcpmisID;
-    print("OVCPMIS ID from many: $ovcpmisID");
+    form.ovcCpimsId = ovcpmisID;
+    if (kDebugMode) {
+      print("OVCPMIS ID from many: $ovcpmisID");
+    }
     var dateOfEvent2 = fetchResult1[0]['date'];
-    form.date_of_event = dateOfEvent2;
-    print("Date of event from many: $dateOfEvent2");
+    form.dateOfEvent = dateOfEvent2;
+    if (kDebugMode) {
+      print("Date of event from many: $dateOfEvent2");
+    }
     List<CPARADatabaseQuestions> questions = [];
     for (var i in fetchResult1) {
       questions.add(CPARADatabaseQuestions(
-          question_code: i['questionID'], answer_id: i['answer'] ?? ""));
+          questionCode: i['questionID'], answerId: i['answer'] ?? ""));
     }
     form.questions = questions;
-    print("Questions from many: $questions");
+    if (kDebugMode) {
+      print("Questions from many: $questions");
+    }
 
     // Get children questions
     List<Map<String, dynamic>> fetchResult2 = await db.rawQuery(
@@ -104,7 +110,11 @@ Future<void> purgeForm(int formID, Database db) async {
 
     // Form
     await db.rawDelete("DELETE FROM Form WHERE id = ?", [formID]);
-  } catch (err) {}
+  } catch (err) {
+    if (kDebugMode) {
+      print(err);
+    }
+  }
 }
 
 //update form date time for sync
@@ -149,7 +159,7 @@ Future<void> submitCparaToUpstream() async {
     try {
       await singleCparaFormSubmission(
           cparaForm: cparaForm, authorization: bearerAuth);
-      updateFormDateSynced(cparaForm.cpara_form_id, database);
+      updateFormDateSynced(cparaForm.cparaFormId, database);
 
       successfullySubmittedForms++;
 
@@ -165,7 +175,7 @@ Future<void> submitCparaToUpstream() async {
       }
     } catch (e) {
       debugPrint(
-          "Cpara form with ovs cpims id : ${cparaForm.ovc_cpims_id} failed submission to upstream");
+          "Cpara form with ovs cpims id : ${cparaForm.ovcCpimsId} failed submission to upstream");
       continue;
     }
   }
@@ -178,26 +188,26 @@ Future<void> singleCparaFormSubmission(
   for (int i = 0; i < cparaForm.questions.length; i++) {
     houseHoldQuestions.add({
       "question_code": convertQuestionIdsStandardFormat(
-          text: cparaForm.questions[i].question_code),
+          text: cparaForm.questions[i].questionCode),
       "answer_id":
-          convertOptionStandardFormat(text: cparaForm.questions[i].answer_id),
+          convertOptionStandardFormat(text: cparaForm.questions[i].answerId),
     });
     debugPrint(
-        "Household ${cparaForm.questions[i].question_code} - ${cparaForm.questions[i].answer_id}");
+        "Household ${cparaForm.questions[i].questionCode} - ${cparaForm.questions[i].answerId}");
   }
 
   // child questions
   final individualQuestions = [];
   for (int i = 0; i < cparaForm.childQuestions.length; i++) {
     individualQuestions.add({
-      "ovc_cpims_id": cparaForm.childQuestions[i].ovc_cpims_id,
+      "ovc_cpims_id": cparaForm.childQuestions[i].ovcCpimsId,
       "question_code": convertQuestionIdsStandardFormat(
-          text: cparaForm.childQuestions[i].question_code),
+          text: cparaForm.childQuestions[i].questionCode),
       "answer_id": convertOptionStandardFormat(
-          text: cparaForm.childQuestions[i].answer_id),
+          text: cparaForm.childQuestions[i].answerId),
     });
-    debugPrint("Child ${cparaForm.childQuestions[i].ovc_cpims_id}: "
-        "${cparaForm.childQuestions[i].question_code} - ${cparaForm.childQuestions[i].answer_id}");
+    debugPrint("Child ${cparaForm.childQuestions[i].ovcCpimsId}: "
+        "${cparaForm.childQuestions[i].questionCode} - ${cparaForm.childQuestions[i].answerId}");
   }
 
   // scores value
@@ -220,8 +230,8 @@ Future<void> singleCparaFormSubmission(
   }
 
   var cparaMapData = {
-    "ovc_cpims_id": cparaForm.ovc_cpims_id,
-    "date_of_event": cparaForm.date_of_event,
+    "ovc_cpims_id": cparaForm.ovcCpimsId,
+    "date_of_event": cparaForm.dateOfEvent,
     "questions": houseHoldQuestions,
     "individual_questions": individualQuestions,
     "scores": scoreList,
@@ -259,7 +269,9 @@ Future<void> singleCparaFormSubmission(
   }
   debugPrint("${response.statusCode}");
   debugPrint(response.data.toString());
-  print("Data sent to server was $cparaMapData");
+  if (kDebugMode) {
+    print("Data sent to server was $cparaMapData");
+  }
 }
 
 // void fetchAndPostToServerOvcSubpopulationData() async {

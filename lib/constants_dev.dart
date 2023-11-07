@@ -16,7 +16,6 @@ const kSystemPadding = EdgeInsets.symmetric(horizontal: 20, vertical: 0);
 var _ovcActiveOrRegistered = '132,294 / 307,005';
 const syncName = "Sync";
 bool isSynching = false;
-bool _correct = true;
 dynamic snackBar;
 List<Map<String, dynamic>> homeCardsTitles = [
   {
@@ -73,7 +72,7 @@ List drawerOptions(BuildContext context) {
       'icon': FontAwesomeIcons.briefcase,
       'children': [],
       'onTap': () => {
-            Get.off(() => const OVCCareScreen(),
+            Get.to(() => const OVCCareScreen(),
                 transition: Transition.fadeIn,
                 duration: const Duration(milliseconds: 1000))
           },
@@ -143,8 +142,12 @@ List drawerOptions(BuildContext context) {
         try {
           const androidIdPlugin = AndroidId();
           final String? androidId = await androidIdPlugin.getId();
-          CaseLoadService()
-              .updateCaseLoadData(context: context, deviceID: androidId!);
+          if (context.mounted) {
+            CaseLoadService().updateCaseLoadData(
+              context: context,
+              deviceID: androidId!,
+            );
+          }
           // syncWorkflows();
           snackBar = SnackBar(
             content: const Text(
@@ -163,7 +166,9 @@ List drawerOptions(BuildContext context) {
             ),
           );
 
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
           Future.delayed(const Duration(seconds: 4));
 
           snackBar = SnackBar(
@@ -182,7 +187,9 @@ List drawerOptions(BuildContext context) {
               },
             ),
           );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
         } catch (e) {
           snackBar = SnackBar(
             content: Text(
@@ -200,7 +207,9 @@ List drawerOptions(BuildContext context) {
               },
             ),
           );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
         }
       },
       'children': []

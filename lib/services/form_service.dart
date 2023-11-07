@@ -6,24 +6,27 @@ import 'package:cpims_mobile/Models/form_1_model.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/services/api_service.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../constants.dart';
 
 class Form1Service {
-  final StreamController<int> _formCountController = StreamController<int>.broadcast();
+  final StreamController<int> _formCountController =
+      StreamController<int>.broadcast();
   Stream<int> get formCountStream => _formCountController.stream;
 
   // save form to local storage
-  static _saveValues(String formType, formData,metadata,uuid) async {
+  static _saveValues(String formType, formData, metadata, uuid) async {
 //save the form data that is in the form of a map to  a local database
     final db = LocalDb.instance;
     try {
-      await db.insertForm1Data(formType, formData,metadata,uuid);
+      await db.insertForm1Data(formType, formData, metadata, uuid);
       return true;
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
     return false;
   }
@@ -40,7 +43,8 @@ class Form1Service {
     return false;
   }
 
-  static Future<void> updateFormOneLocalDateSync(String formType, int id) async {
+  static Future<void> updateFormOneLocalDateSync(
+      String formType, int id) async {
     final db = LocalDb.instance;
     try {
       db.updateForm1DataDateSync(formType, id);
@@ -61,7 +65,9 @@ class Form1Service {
       debugPrint("_getAllValues: $forms");
       return forms;
     } catch (e) {
-      print("An error on getallValues ${e.toString()}");
+      if (kDebugMode) {
+        print("An error on getallValues ${e.toString()}");
+      }
     }
     return [];
   }
@@ -77,7 +83,9 @@ class Form1Service {
         return 0;
       }
     } catch (e) {
-      print("An error on getFormCount: ${e.toString()}");
+      if (kDebugMode) {
+        print("An error on getFormCount: ${e.toString()}");
+      }
     }
     return 0; // Return 0 if there is an error.
   }
@@ -93,7 +101,10 @@ class Form1Service {
         return 0;
       }
     } catch (e) {
-      print("An error on getFormCount for ovc sub population: ${e.toString()}");
+      if (kDebugMode) {
+        print(
+            "An error on getFormCount for ovc sub population: ${e.toString()}");
+      }
     }
     return 0; // Return 0 if there is an error.
   }
@@ -109,7 +120,9 @@ class Form1Service {
         return 0;
       }
     } catch (e) {
-      print("An error on getFormCount: ${e.toString()}");
+      if (kDebugMode) {
+        print("An error on getFormCount: ${e.toString()}");
+      }
     }
     return 0; // Return 0 if there is an error.
   }
@@ -117,7 +130,8 @@ class Form1Service {
   Future<void> updateFormCount(String formType) async {
     try {
       final db = LocalDb.instance;
-      Stream<int> unsyncedFormsStream = await db.queryForm1UnsyncedFormsStream(formType);
+      Stream<int> unsyncedFormsStream =
+          await db.queryForm1UnsyncedFormsStream(formType);
 
       unsyncedFormsStream.listen((count) {
         _formCountController.add(count);
@@ -125,7 +139,9 @@ class Form1Service {
         _formCountController.addError(error);
       });
     } catch (e) {
-      print("An error on updateFormCount: ${e.toString()}");
+      if (kDebugMode) {
+        print("An error on updateFormCount: ${e.toString()}");
+      }
       _formCountController.addError(e);
     }
   }
@@ -159,8 +175,9 @@ class Form1Service {
     }
   }
 
-  static Future<dynamic> saveFormLocal(String formType, formData,metadata,uuid) {
-    return _saveValues(formType, formData,metadata,uuid);
+  static Future<dynamic> saveFormLocal(
+      String formType, formData, metadata, uuid) {
+    return _saveValues(formType, formData, metadata, uuid);
   }
 
   static Future<bool> deleteFormLocal(String formType, int id) {
@@ -180,8 +197,8 @@ class Form1Service {
     return _getAllValues(formType);
   }
 
-  static Future<int?> getCountAllFormOneA()  {
-    return  getFormCount("form1a");
+  static Future<int?> getCountAllFormOneA() {
+    return getFormCount("form1a");
   }
 
   static Future<int?> getCountAllFormOneB() async {
@@ -192,7 +209,6 @@ class Form1Service {
   static Future<int?> getCountAllFormCpara() async {
     return await countCparaUnsyncedForms();
   }
-
 
   // send form to server
   static Future<Response> postFormRemote(
@@ -211,7 +227,9 @@ class CasePlanService {
       await db.insertCasePlanNew(formData);
       return true;
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
     return false;
   }
@@ -239,23 +257,26 @@ class CasePlanService {
 
       return casePlanList;
     } catch (e) {
-      print(">>>>>>>>>>>>>>>>>>>>>>>>>$e");
+      if (kDebugMode) {
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>$e");
+      }
     }
     return [];
   }
 
-
   static getAllCasePlans() async {
     final db = LocalDb.instance;
     try {
-      List<CasePlanModel> casePlans =  await db.getAllUnsyncedCasePlans();
+      List<CasePlanModel> casePlans = await db.getAllUnsyncedCasePlans();
       List<Map<String, dynamic>> casePlanList = [];
       for (var casePlan in casePlans) {
         casePlanList.add(casePlan.toJson());
       }
       return casePlanList;
     } catch (e) {
-      print("Error fetching caseplan fom db $e");
+      if (kDebugMode) {
+        print("Error fetching caseplan fom db $e");
+      }
     }
   }
 
@@ -265,10 +286,14 @@ class CasePlanService {
     try {
       http.Response response =
           await ApiService().postSecData(data, formEndpoint);
-      print(response.body);
+      if (kDebugMode) {
+        print(response.body);
+      }
       return response;
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
     return http.Response("error", 500);
   }
@@ -283,7 +308,9 @@ class CasePlanService {
         return 0;
       }
     } catch (e) {
-      print("An error on getCaseplanUnsyncedCount: ${e.toString()}");
+      if (kDebugMode) {
+        print("An error on getCaseplanUnsyncedCount: ${e.toString()}");
+      }
     }
     return 0; // Return 0 if there is an error.
   }
