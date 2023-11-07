@@ -10,6 +10,7 @@ import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,7 +46,9 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
       await Provider.of<HIVManagementFormProvider>(context, listen: false)
           .submitHIVManagementForm(widget.caseLoad.cpimsId);
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 

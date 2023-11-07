@@ -13,25 +13,30 @@ class HIVManagementFormProvider extends ChangeNotifier {
 
   HIVVisitationFormModel get hIVVisitationFormModel => _hivVisitationFormModel;
 
-  CaseLoadModel _caseLoadModel = CaseLoadModel();
+  final CaseLoadModel _caseLoadModel = CaseLoadModel();
   CaseLoadModel get caseLoadModel => _caseLoadModel;
 
   // update artTherapy Info Model
   void updateARTTheraphyHIVModel(ARTTherapyHIVFormModel formModel) {
     _artTherapyFormModel = formModel;
     notifyListeners();
-    print(_artTherapyFormModel.toJson());
+    if (kDebugMode) {
+      print(_artTherapyFormModel.toJson());
+    }
   }
 
   void updateHIVVisitationModel(HIVVisitationFormModel formModel) {
     _hivVisitationFormModel = formModel;
     notifyListeners();
-    print(_hivVisitationFormModel.toJson());
+    if (kDebugMode) {
+      print(_hivVisitationFormModel.toJson());
+    }
   }
 
   // clear form data
   void clearForms() {
     _artTherapyFormModel = ARTTherapyHIVFormModel();
+    _hivVisitationFormModel = HIVVisitationFormModel();
     notifyListeners();
   }
 
@@ -43,12 +48,39 @@ class HIVManagementFormProvider extends ChangeNotifier {
         ..._artTherapyFormModel.toJson(),
         ..._hivVisitationFormModel.toJson(),
       };
-      print(formData);
+
+      // Loop through the formData map and apply modifications
+      formData.forEach((key, value) {
+        if (value is String) {
+          // Combine values with 2 or more characters into one
+          formData[key] = value.split(' ').where((s) => s.length > 1).join(' ');
+          print(formData[value]);
+
+          // Combine the first words before "if"
+          formData[key] = formData[key]
+              .split(' ')
+              .map((value) =>
+                  value.contains('if') ? value.split('if')[0] : value)
+              .join(' ');
+          print(formData[value]);
+        } else {
+          print("Hello");
+        }
+      });
+      if (kDebugMode) {
+        print(formData);
+      }
+
+      // submit data
       final Response response =
           await apiServiceConstructor.postSecData(formData, "mobile/hmf/");
-      print(response.body);
+      if (kDebugMode) {
+        print(response.body);
+      }
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 }

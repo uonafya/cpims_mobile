@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-/// return date as a String in the format - [02-11-23]
+/// return date as a String in the format - [2023-11-23]
 String formattedDate(DateTime date) {
-  return DateFormat('dd-MM-yy').format(date);
+  return DateFormat('yyyy-MM-dd').format(date);
 }

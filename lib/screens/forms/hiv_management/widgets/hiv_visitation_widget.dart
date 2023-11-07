@@ -10,6 +10,7 @@ import 'package:cpims_mobile/widgets/custom_dynamic_radio_button.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/form_section.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 
 class HIVVisitationWidget extends StatefulWidget {
@@ -50,6 +51,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
 
   TextEditingController durationOnARTsController = TextEditingController();
   TextEditingController heightController = TextEditingController();
+  TextEditingController muACController = TextEditingController();
   TextEditingController arvDrugsDurationController = TextEditingController();
   TextEditingController treatmentSupportAgeController = TextEditingController();
   TextEditingController viralLoadResultsController = TextEditingController();
@@ -71,7 +73,8 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
       durationOnARTs: durationOnARTs,
       height: height,
       mUAC: mUAC,
-      arvDrugsAdherence: arvDrugsAdherence,
+      arvDrugsAdherence:
+          arvDrugsAdherence.split(' ').where((s) => s.length > 1).join(' '),
       arvDrugsDuration: arvDrugsDuration,
       adherenceCounseling: adherenceCounseling,
       treatmentSupporter: treatmentSupporter,
@@ -93,10 +96,13 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
       peerEducatorName: peerEducatorName,
       peerEducatorContact: peerEducatorContact,
     );
+
     Provider.of<HIVManagementFormProvider>(context, listen: false)
         .updateHIVVisitationModel(formData);
 
-    print(formData.toJson());
+    if (kDebugMode) {
+      print(formData.toJson());
+    }
   }
 
   @override
@@ -184,16 +190,14 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             const SizedBox(
               height: 10,
             ),
-            DateTextField(
-              label: 'Date',
-              enabled: true,
-              onDateSelected: (date) {
+            CustomTextField(
+              controller: muACController,
+              onChanged: (val) {
                 setState(() {
-                  mUAC = formattedDate(date!);
+                  mUAC = muACController.text;
                   handleOnSave();
                 });
               },
-              identifier: DateTextFieldIdentifier.dateOfAssessment,
             ),
           ],
         ),
@@ -416,7 +420,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             DateTextField(
-              label: 'If Yes, Date',
+              label: 'Date',
               enabled: true,
               onDateSelected: (date) {
                 setState(() {

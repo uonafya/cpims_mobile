@@ -4,6 +4,7 @@
 import 'dart:convert';
 
 import 'package:cpims_mobile/services/form_service.dart';
+import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 import '../Models/form_1_model.dart';
 import 'package:get/get.dart';
 import '../screens/forms/form1b/model/critical_events_form1b_model.dart';
@@ -116,7 +118,10 @@ class Form1bProvider extends ChangeNotifier {
     return criticalEvents;
   }
 
-  Future<bool> saveForm1bData(HealthFormData healthFormData) async {
+  Future<bool> saveForm1bData(
+    HealthFormData healthFormData,
+    String startInterviewTime,
+  ) async {
     List<MasterServicesFormData> masterServicesList =
         convertToMasterServicesFormData();
     //creating our data to be sent for saving
@@ -144,27 +149,31 @@ class Form1bProvider extends ChangeNotifier {
       criticalEventsList.add(entry);
     }
 
-    Form1DataModel toDbData = Form1DataModel(
-      ovcCpimsId: finalServicesFormData.ovc_cpims_id,
-      date_of_event: finalServicesFormData.date_of_event,
-      services: servicesList,
-      criticalEvents: criticalEventsList,
+    String formUuid = Uuid().v4();
+    AppFormMetaData appFormMetaData = AppFormMetaData(
+      formType: "form1b",
+      formId: formUuid,
+      startOfInterview: startInterviewTime,
     );
-    String data = jsonEncode(toDbData);
-    if (kDebugMode) {
-      print("The json data for form 1 b is $data");
-    }
-    if (kDebugMode) {
-      print("form1b payload:==========>$criticalEventsList");
-    }
 
-    bool isFormSaved = await Form1Service.saveFormLocal("form1b", toDbData);
+    Form1DataModel toDbData = Form1DataModel(
+        uuid: formUuid,
+        ovcCpimsId: finalServicesFormData.ovc_cpims_id,
+        date_of_event: finalServicesFormData.date_of_event,
+        services: servicesList,
+        criticalEvents: criticalEventsList);
+    String data = jsonEncode(toDbData);
+
+    print("The json data for form 1 b is $data");
+
+    bool isFormSaved = await Form1Service.saveFormLocal(
+        "form1b", toDbData, appFormMetaData, formUuid);
     if (isFormSaved == true) {
       Get.snackbar(
         'Success',
         'Saved data locally.Ensure to sync on internet connection',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.yellow,
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.green,
         colorText: Colors.white,
       );
       resetFormData();
@@ -229,24 +238,6 @@ class Form1bProvider extends ChangeNotifier {
 
   List<Map<String, dynamic>> form1bFetchedData = [];
 
-  Future<void> fetchSavedDataFromDb() async {
-    try {
-      List<Map<String, dynamic>> updatedForm1Rows =
-          await Form1Service.getAllForms("form1b");
-
-      form1bFetchedData = updatedForm1Rows;
-
-      if (kDebugMode) {
-        print(form1bFetchedData);
-      }
-      notifyListeners();
-    } catch (e) {
-      if (kDebugMode) {
-        print("Error fetching form1b data: $e");
-      }
-    }
-  }
-
   void resetFormData() {
     _formData.selectedServices.clear();
     _formData.selectedDate = DateTime.now();
@@ -267,73 +258,5 @@ class Form1bProvider extends ChangeNotifier {
     _criticalEventDataForm1b.selectedDate = DateTime.now();
 
     notifyListeners();
-  }
-
-  Future<void> handleSubmitToServer(
-      String data, Form1DataModel formOneBdata) async {
-    var prefs = await SharedPreferences.getInstance();
-    var accessToken = prefs.getString('access');
-    String bearerAuth = "Bearer $accessToken";
-
-    final dio = Dio();
-    const apiEndpoint = "https://dev.cpims.net/api/form/F1B/";
-
-    final options = Options(
-      headers: {"Authorization": bearerAuth},
-    );
-
-    final hasConnection = await Provider.of<ConnectivityProvider>(
-      Get.context!,
-      listen: false,
-    ).checkInternetConnection();
-    try {
-      if (hasConnection) {
-        final formOneApiResponse =
-            await dio.post(apiEndpoint, data: data, options: options);
-        if (formOneApiResponse.statusCode == 200) {
-          if (kDebugMode) {
-            print("Data posted  successfully to server is $data");
-          }
-          Get.snackbar(
-            'Success',
-            'Form 1B submitted to the server successfully',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.green,
-            colorText: Colors.white,
-          );
-        } else {
-          Get.snackbar(
-            'Failed',
-            'No Internet Connection.Try again',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
-        }
-      } else {
-        try {
-          Form1Service.saveFormLocal("form1a", formOneBdata);
-          Get.snackbar(
-            'Success',
-            'Saved data locally.Ensure to sync on internet connection',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.yellow,
-            colorText: Colors.white,
-          );
-        } catch (e) {
-          Get.snackbar(
-            'Failed',
-            'Failed to save locally',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
-        }
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
   }
 }

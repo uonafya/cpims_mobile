@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
@@ -268,9 +269,11 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           health: (healthModel),
                                         );
                                         // Create form
+                                        String startTime = context.read<AppMetaDataProvider>().startTimeInterview ?? DateTime.now().toIso8601String();
                                         await LocalDb.instance.insertCparaData(
                                             cparaModelDB: cparaModelDB,
                                             ovcId: ovcpmisid,
+                                            startTime: startTime,
                                             careProviderId: ovcpmisid);
                                         //todo: call ovc
                                         if (context.mounted) {

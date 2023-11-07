@@ -76,6 +76,17 @@ class AuthProvider with ChangeNotifier {
       },
     );
 
+    if (response.statusCode >= 250 && response.statusCode <= 260) {
+      if (context.mounted) {
+        errorSnackBar(context, 'Not authorized to view this resource');
+        await LocalDb.instance.deleteDb();
+        AuthProvider.setAppLock(true);
+        Get.off(() =>
+        const LockedScreen());
+      }
+      return;
+    }
+
     if (context.mounted) {
       httpReponseHandler(
         response: response,
