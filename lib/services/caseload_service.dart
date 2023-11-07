@@ -1,4 +1,3 @@
-
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
@@ -8,9 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class CaseLoadService {
-
   static const String _caseLoadLastSavePrefKey = 'caseload_last_save';
 
   static Future<void> saveCaseLoadLastSave(int timestamp) async {
@@ -64,8 +61,8 @@ class CaseLoadService {
     try {
       final Response response = await dio
           .get('api/caseload', queryParameters: {'deviceID': deviceID});
-
-      if (response.statusCode == 200) {
+//TO DO: REMOVE 252
+      if (response.statusCode == 200 || response.statusCode == 252) {
         final List<CaseLoadModel> caseLoadModelList = (response.data as List)
             .map((json) => CaseLoadModel.fromJson(json))
             .toList();

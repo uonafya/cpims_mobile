@@ -512,7 +512,7 @@ class _HomepageState extends State<Homepage> {
           snackPosition: SnackPosition.BOTTOM);
     }
     if (mounted) {
-      Get.closeCurrentSnackbar();
+      Get.closeAllSnackbars();
     }
   }
 }
