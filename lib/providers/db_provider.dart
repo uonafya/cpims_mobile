@@ -291,6 +291,7 @@ class LocalDb {
   Future<void> insertCparaData(
       {required CparaModel cparaModelDB,
       required String ovcId,
+        required String startTime,
       required String careProviderId}) async {
     final db = await instance.database;
 
@@ -304,7 +305,7 @@ class LocalDb {
         cparaModelDB.addHouseholdFilledQuestionsToDB(
             db, formDateString, ovcId, formID).then((value) {
               //insert app form metadata
-              insertAppFormMetaData(formUUID, cparaModelDB.appFormMetaData.startOfInterview, 'cpara');
+              insertAppFormMetaData(formUUID, startTime, 'cpara');
             });
         
       });
