@@ -1,15 +1,10 @@
 import 'package:cpims_mobile/providers/db_provider.dart';
-import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
-import 'package:cpims_mobile/widgets/custom_date_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
-import 'package:cpims_mobile/widgets/app_bar.dart';
-import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
