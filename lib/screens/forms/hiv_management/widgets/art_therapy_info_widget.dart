@@ -21,22 +21,22 @@ class ARTTherapyInfoWidget extends StatefulWidget {
 }
 
 class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
-  String? dateOfEvent;
-  String? dateHIVConfirmedPositive;
-  String? dateTreatmentInitiated;
-  String? baselineHEILoad;
-  String? dateStartedFirstLine;
-  String? arvsSubWithFirstLine;
-  String? arvsSubWithFirstLineDate;
-  String? switchToSecondLine;
-  String? switchToSecondLineDate;
-  String? switchToThirdLine;
-  String? switchToThirdLineDate;
+  String dateOfEvent = '';
+  String dateHIVConfirmedPositive = '';
+  String dateTreatmentInitiated = '';
+  String baselineHEILoad = '';
+  String dateStartedFirstLine = '';
+  String arvsSubWithFirstLine = '';
+  String arvsSubWithFirstLineDate = '';
+  String switchToSecondLine = '';
+  String switchToSecondLineDate = '';
+  String switchToThirdLine = '';
+  String switchToThirdLineDate = '';
 
   TextEditingController baselineHEILoadController = TextEditingController();
 
   void handleOnSave() {
-    final formData = HIVManagementFormModel(
+    final formData = ARTTherapyHIVFormModel(
       dateOfEvent: dateOfEvent,
       dateHIVConfirmedPositive: dateHIVConfirmedPositive,
       dateTreatmentInitiated: dateTreatmentInitiated,
@@ -50,7 +50,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
       switchToThirdLineDate: switchToThirdLineDate,
     );
     Provider.of<HIVManagementFormProvider>(context, listen: false)
-        .updateHIVManagementModel(formData);
+        .updateARTTheraphyHIVModel(formData);
 
     final isComplete = areAllFieldsFilled();
     if (isComplete) {
@@ -72,8 +72,8 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
       switchToThirdLine,
     ];
 
-    // Check if any required field is null or empty
-    return requiredFields.every((field) => field != null && field.isNotEmpty);
+    // Check if any required field is empty
+    return requiredFields.every((field) => field.isNotEmpty);
   }
 
   @override
@@ -103,6 +103,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 15,
+        ),
         FormSection(
           children: [
             const Text(
@@ -124,6 +127,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               identifier: DateTextFieldIdentifier.dateOfAssessment,
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
@@ -147,6 +153,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 15,
+        ),
         FormSection(
           children: [
             const Text(
@@ -166,6 +175,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               },
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
@@ -189,6 +201,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 15,
+        ),
         FormSection(
           children: [
             const Text(
@@ -205,7 +220,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                   arvsSubWithFirstLine =
                       convertingRadioButtonOptionsToString(options);
                   if (arvsSubWithFirstLine == 'No') {
-                    arvsSubWithFirstLineDate = null;
+                    arvsSubWithFirstLineDate = '';
                   }
                   handleOnSave();
                 });
@@ -224,6 +239,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 15,
+        ),
         FormSection(
           children: [
             const Text(
@@ -240,7 +258,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                   switchToSecondLine =
                       convertingRadioButtonOptionsToString(options);
                   if (switchToSecondLine == 'No') {
-                    switchToSecondLineDate = null;
+                    switchToSecondLineDate = '';
                   }
                   handleOnSave();
                 });
@@ -259,6 +277,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 15,
+        ),
         FormSection(
           children: [
             const Text(
@@ -275,7 +296,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                   switchToThirdLine =
                       convertingRadioButtonOptionsToString(options);
                   if (switchToThirdLine == 'No') {
-                    switchToThirdLineDate = null;
+                    switchToThirdLineDate = '';
                   }
                   handleOnSave();
                 });

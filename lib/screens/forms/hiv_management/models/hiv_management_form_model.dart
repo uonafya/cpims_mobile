@@ -1,166 +1,180 @@
-class HIVManagementFormModel {
-  final String? dateOfEvent;
-  final String? dateHIVConfirmedPositive;
-  final String? dateTreatmentInitiated;
-  final String? baselineHEILoad;
-  final String? dateStartedFirstLine;
-  final String? arvsSubWithFirstLine;
-  final String? arvsSubWithFirstLineDate;
-  final String? switchToSecondLine;
-  final String? switchToSecondLineDate;
-  final String? switchToThirdLine;
-  final String? switchToThirdLineDate;
-  final String? visitDate;
-  final String? durationOnARTs;
-  final String? height;
-  final String? mUAC;
-  final String? arvDrugsAdherence;
-  final String? arvDrugsDuration;
-  final String? adherenceCounseling;
-  final String? treatmentSupporter;
-  final String? treatmentSupporterSex;
-  final String? treatmentSupporterAge;
-  final String? treatmentSupporterHIVStatus;
-  final String? viralLoadResults;
-  final String? labInvestigationsDate;
-  final String? detectableViralLoadInterventions;
-  final String? disclosure;
-  final String? mUACScore;
-  final String? zScore;
-  final Set<String>? nutritionalSupport;
-  final String? supportGroupStatus;
-  final String? nhifEnrollment;
-  final String? nhifEnrollmentStatus;
-  final String? referralServices;
-  final String? nextAppointmentDate;
-  final String? peerEducatorName;
-  final String? peerEducatorContact;
+class ARTTherapyHIVFormModel {
+  final String dateOfEvent;
+  final String dateHIVConfirmedPositive;
+  final String dateTreatmentInitiated;
+  final String baselineHEILoad;
+  final String dateStartedFirstLine;
+  final String arvsSubWithFirstLine;
+  final String arvsSubWithFirstLineDate;
+  final String switchToSecondLine;
+  final String switchToSecondLineDate;
+  final String switchToThirdLine;
+  final String switchToThirdLineDate;
 
-  HIVManagementFormModel({
-    this.dateOfEvent,
-    this.dateHIVConfirmedPositive,
-    this.dateTreatmentInitiated,
-    this.baselineHEILoad,
-    this.dateStartedFirstLine,
-    this.arvsSubWithFirstLine,
-    this.arvsSubWithFirstLineDate,
-    this.switchToSecondLine,
-    this.switchToSecondLineDate,
-    this.switchToThirdLine,
-    this.switchToThirdLineDate,
-    this.visitDate,
-    this.durationOnARTs,
-    this.height,
-    this.mUAC,
-    this.arvDrugsAdherence,
-    this.arvDrugsDuration,
-    this.adherenceCounseling,
-    this.treatmentSupporter,
-    this.treatmentSupporterSex,
-    this.treatmentSupporterAge,
-    this.treatmentSupporterHIVStatus,
-    this.viralLoadResults,
-    this.labInvestigationsDate,
-    this.detectableViralLoadInterventions,
-    this.disclosure,
-    this.mUACScore,
-    this.zScore,
-    this.nutritionalSupport,
-    this.supportGroupStatus,
-    this.nhifEnrollment,
-    this.nhifEnrollmentStatus,
-    this.referralServices,
-    this.nextAppointmentDate,
-    this.peerEducatorName,
-    this.peerEducatorContact,
+  ARTTherapyHIVFormModel({
+    this.dateOfEvent = '',
+    this.dateHIVConfirmedPositive = '',
+    this.dateTreatmentInitiated = '',
+    this.baselineHEILoad = '',
+    this.dateStartedFirstLine = '',
+    this.arvsSubWithFirstLine = '',
+    this.arvsSubWithFirstLineDate = '',
+    this.switchToSecondLine = '',
+    this.switchToSecondLineDate = '',
+    this.switchToThirdLine = '',
+    this.switchToThirdLineDate = '',
   });
 
   Map<String, dynamic> toJson() {
-    List<dynamic>? nutritionalSupportList = nutritionalSupport?.toList();
-
     return {
-      'dateOfEvent': dateOfEvent,
-      'dateHIVConfirmedPositive': dateHIVConfirmedPositive,
-      'dateTreatmentInitiated': dateTreatmentInitiated,
-      'baselineHEILoad': baselineHEILoad,
-      'dateStartedFirstLine': dateStartedFirstLine,
-      'arvsSubWithFirstLine': arvsSubWithFirstLine,
-      'arvsSubWithFirstLineDate': arvsSubWithFirstLineDate,
-      'switchToSecondLine': switchToSecondLine,
-      'switchToSecondLineDate': switchToSecondLineDate,
-      'switchToThirdLine': switchToThirdLine,
-      'switchToThirdLineDate': switchToThirdLineDate,
-      'visitDate': visitDate,
-      'durationOnARTs': durationOnARTs,
-      'height': height,
-      'mUAC': mUAC,
-      'arvDrugsAdherence': arvDrugsAdherence,
-      'arvDrugsDuration': arvDrugsDuration,
-      'adherenceCounseling': adherenceCounseling,
-      'treatmentSupporter': treatmentSupporter,
-      'treatmentSupporterSex': treatmentSupporterSex,
-      'treatmentSupporterAge': treatmentSupporterAge,
-      'treatmentSupporterHIVStatus': treatmentSupporterHIVStatus,
-      'viralLoadResults': viralLoadResults,
-      'labInvestigationsDate': labInvestigationsDate,
-      'detectableViralLoadInterventions': detectableViralLoadInterventions,
-      'disclosure': disclosure,
-      'mUACScore': mUACScore,
-      'zScore': zScore,
-      'nutritionalSupport': nutritionalSupportList,
-      'supportGroupStatus': supportGroupStatus,
-      'nhifEnrollment': nhifEnrollment,
-      'nhifEnrollmentStatus': nhifEnrollmentStatus,
-      'referralServices': referralServices,
-      'nextAppointmentDate': nextAppointmentDate,
-      'peerEducatorName': peerEducatorName,
-      'peerEducatorContact': peerEducatorContact,
+      'HIV_MGMT_2_A': dateOfEvent,
+      'HIV_MGMT_1_A': dateHIVConfirmedPositive,
+      'HIV_MGMT_1_B': dateTreatmentInitiated,
+      'HIV_MGMT_1_C': baselineHEILoad,
+      'HIV_MGMT_1_D': dateStartedFirstLine,
+      '_HIV_MGMT_1_E': arvsSubWithFirstLine,
+      '_HIV_MGMT_1_E_DATE': arvsSubWithFirstLineDate,
+      '_HIV_MGMT_1_F': switchToSecondLine,
+      '_HIV_MGMT_1_F_DATE': switchToSecondLineDate,
+      '_HIV_MGMT_1_G': switchToThirdLine,
+      '_HIV_MGMT_1_G_DATE': switchToThirdLineDate,
     };
   }
 
-  factory HIVManagementFormModel.fromJson(Map<String, dynamic> json) {
-    Set<String>? nutritionalSupport =
-        (json['nutritionalSupport'] as List<dynamic>?)
-            ?.map((e) => e.toString())
-            .toSet();
-    return HIVManagementFormModel(
-      dateOfEvent: json['dateOfEvent'],
-      dateHIVConfirmedPositive: json['dateHIVConfirmedPositive'],
-      dateTreatmentInitiated: json['dateTreatmentInitiated'],
-      baselineHEILoad: json['baselineHEILoad'],
-      dateStartedFirstLine: json['dateStartedFirstLine'],
-      arvsSubWithFirstLine: json['arvsSubWithFirstLine'],
-      arvsSubWithFirstLineDate: json['arvsSubWithFirstLineDate'],
-      switchToSecondLine: json['switchToSecondLine'],
-      switchToSecondLineDate: json['switchToSecondLineDate'],
-      switchToThirdLine: json['switchToThirdLine'],
-      switchToThirdLineDate: json['switchToThirdLineDate'],
-      visitDate: json['visitDate'],
-      durationOnARTs: json['durationOnARTs'],
-      height: json['height'],
-      mUAC: json['mUAC'],
-      arvDrugsAdherence: json['arvDrugsAdherence'],
-      arvDrugsDuration: json['arvDrugsDuration'],
-      adherenceCounseling: json['adherenceCounseling'],
-      treatmentSupporter: json['treatmentSupporter'],
-      treatmentSupporterSex: json['treatmentSupporterSex'],
-      treatmentSupporterAge: json['treatmentSupporterAge'],
-      treatmentSupporterHIVStatus: json['treatmentSupporterHIVStatus'],
-      viralLoadResults: json['viralLoadResults'],
-      labInvestigationsDate: json['labInvestigationsDate'],
-      detectableViralLoadInterventions:
-          json['detectableViralLoadInterventions'],
-      disclosure: json['disclosure'],
-      mUACScore: json['mUACScore'],
-      zScore: json['zScore'],
+  factory ARTTherapyHIVFormModel.fromJson(Map<String, dynamic> json) {
+    return ARTTherapyHIVFormModel(
+      dateOfEvent: json['HIV_MGMT_2_A'],
+      dateHIVConfirmedPositive: json['HIV_MGMT_1_A'],
+      dateTreatmentInitiated: json['HIV_MGMT_1_B'],
+      baselineHEILoad: json['HIV_MGMT_1_C'],
+      dateStartedFirstLine: json['HIV_MGMT_1_D'],
+      arvsSubWithFirstLine: json['_HIV_MGMT_1_E'],
+      arvsSubWithFirstLineDate: json['_HIV_MGMT_1_E_DATE'],
+      switchToSecondLine: json['_HIV_MGMT_1_F'],
+      switchToSecondLineDate: json['_HIV_MGMT_1_F_DATE'],
+      switchToThirdLine: json['_HIV_MGMT_1_G'],
+      switchToThirdLineDate: json['_HIV_MGMT_1_G_DATE'],
+    );
+  }
+}
+
+class HIVVisitationFormModel {
+  final String visitDate;
+  final String durationOnARTs;
+  final String height;
+  final String mUAC;
+  final String arvDrugsAdherence;
+  final String arvDrugsDuration;
+  final String adherenceCounseling;
+  final String treatmentSupporter;
+  final String treatmentSupporterSex;
+  final String treatmentSupporterAge;
+  final String treatmentSupporterHIVStatus;
+  final String viralLoadResults;
+  final String labInvestigationsDate;
+  final String detectableViralLoadInterventions;
+  final String disclosure;
+  final String mUACScore;
+  final String zScore;
+  final Set<String> nutritionalSupport;
+  final String supportGroupStatus;
+  final String nhifEnrollment;
+  final String nhifEnrollmentStatus;
+  final String referralServices;
+  final String nextAppointmentDate;
+  final String peerEducatorName;
+  final String peerEducatorContact;
+
+  HIVVisitationFormModel({
+    this.visitDate = '',
+    this.durationOnARTs = '',
+    this.height = '',
+    this.mUAC = '',
+    this.arvDrugsAdherence = '',
+    this.arvDrugsDuration = '',
+    this.adherenceCounseling = '',
+    this.treatmentSupporter = '',
+    this.treatmentSupporterSex = '',
+    this.treatmentSupporterAge = '',
+    this.treatmentSupporterHIVStatus = '',
+    this.viralLoadResults = '',
+    this.labInvestigationsDate = '',
+    this.detectableViralLoadInterventions = '',
+    this.disclosure = '',
+    this.mUACScore = '',
+    this.zScore = '',
+    this.nutritionalSupport = const <String>{},
+    this.supportGroupStatus = '',
+    this.nhifEnrollment = '',
+    this.nhifEnrollmentStatus = '',
+    this.referralServices = '',
+    this.nextAppointmentDate = '',
+    this.peerEducatorName = '',
+    this.peerEducatorContact = '',
+  });
+
+  Map<String, dynamic> toJson() {
+    List<dynamic>? nutritionalSupportList = nutritionalSupport.toList();
+
+    return {
+      'HIV_MGMT_2_A': visitDate,
+      'HIV_MGMT_2_B': durationOnARTs,
+      'HIV_MGMT_2_C': height,
+      'HIV_MGMT_2_D': mUAC,
+      'HIV_MGMT_2_E': arvDrugsAdherence,
+      'HIV_MGMT_2_F': arvDrugsDuration,
+      'HIV_MGMT_2_G': adherenceCounseling,
+      'HIV_MGMT_2_H_2': treatmentSupporter,
+      'HIV_MGMT_2_H_3': treatmentSupporterSex,
+      'HIV_MGMT_2_H_4': treatmentSupporterAge,
+      'HIV_MGMT_2_H_5': treatmentSupporterHIVStatus,
+      'HIV_MGMT_2_I_1': viralLoadResults,
+      'HIV_MGMT_2_I_DATE': labInvestigationsDate,
+      'HIV_MGMT_2_J': detectableViralLoadInterventions,
+      'HIV_MGMT_2_K': disclosure,
+      'HIV_MGMT_2_L_1': mUACScore,
+      'HIV_MGMT_2_L_2': zScore,
+      'HIV_MGMT_2_M': nutritionalSupportList,
+      'HIV_MGMT_2_N': supportGroupStatus,
+      '_HIV_MGMT_2_O_1': nhifEnrollment,
+      '_HIV_MGMT_2_O_2': nhifEnrollmentStatus,
+      'HIV_MGMT_2_P': referralServices,
+      'HIV_MGMT_2_Q': nextAppointmentDate,
+      'HIV_MGMT_2_R': peerEducatorName,
+      'HIV_MGMT_2_S': peerEducatorContact,
+    };
+  }
+
+  factory HIVVisitationFormModel.fromJson(Map<String, dynamic> json) {
+    Set<String> nutritionalSupport = (json['HIV_MGMT_2_M'] as List<dynamic>)
+        .map((e) => e.toString())
+        .toSet();
+    return HIVVisitationFormModel(
+      visitDate: json['HIV_MGMT_2_A'],
+      durationOnARTs: json['HIV_MGMT_2_B'],
+      height: json['HIV_MGMT_2_C'],
+      mUAC: json['HIV_MGMT_2_D'],
+      arvDrugsAdherence: json['HIV_MGMT_2_E'],
+      arvDrugsDuration: json['HIV_MGMT_2_F'],
+      adherenceCounseling: json['HIV_MGMT_2_G'],
+      treatmentSupporter: json['HIV_MGMT_2_H_2'],
+      treatmentSupporterSex: json['HIV_MGMT_2_H_3'],
+      treatmentSupporterAge: json['HIV_MGMT_2_H_4'],
+      treatmentSupporterHIVStatus: json['HIV_MGMT_2_H_5'],
+      viralLoadResults: json['HIV_MGMT_2_I_1'],
+      labInvestigationsDate: json['HIV_MGMT_2_I_DATE'],
+      detectableViralLoadInterventions: json['HIV_MGMT_2_J'],
+      disclosure: json['HIV_MGMT_2_K'],
+      mUACScore: json['HIV_MGMT_2_L_1'],
+      zScore: json['HIV_MGMT_2_L_2'],
       nutritionalSupport: nutritionalSupport,
-      supportGroupStatus: json['supportGroupStatus'],
-      nhifEnrollment: json['nhifEnrollment'],
-      nhifEnrollmentStatus: json['nhifEnrollmentStatus'],
-      referralServices: json['referralServices'],
-      nextAppointmentDate: json['nextAppointmentDate'],
-      peerEducatorName: json['peerEducatorName'],
-      peerEducatorContact: json['peerEducatorContact'],
+      supportGroupStatus: json['HIV_MGMT_2_N'],
+      nhifEnrollment: json['_HIV_MGMT_2_O_1'],
+      nhifEnrollmentStatus: json['_HIV_MGMT_2_O_2'],
+      referralServices: json['HIV_MGMT_2_P'],
+      nextAppointmentDate: json['HIV_MGMT_2_Q'],
+      peerEducatorName: json['HIV_MGMT_2_R'],
+      peerEducatorContact: json['HIV_MGMT_2_S'],
     );
   }
 }

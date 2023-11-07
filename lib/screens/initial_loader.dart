@@ -109,12 +109,12 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
                   deviceID: androidId!,
                 );
               }
-              final lockApp = await AuthProvider.getAppLock();
+              // final lockApp = await AuthProvider.getAppLock();
 
-              if (lockApp) {
-                Get.off(() => const LockedScreen());
-                return;
-              }
+              // if (lockApp) {
+              //   Get.off(() => const LockedScreen());
+              //   return;
+              // }
 
               await Provider.of<UIProvider>(context, listen: false)
                   .setCaseLoadData();

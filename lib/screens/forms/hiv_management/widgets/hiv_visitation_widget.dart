@@ -4,12 +4,12 @@ import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_form_model.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
+import 'package:cpims_mobile/utils.dart';
 import 'package:cpims_mobile/widgets/custom_dynamic_checkbox_widget.dart';
 import 'package:cpims_mobile/widgets/custom_dynamic_radio_button.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/form_section.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class HIVVisitationWidget extends StatefulWidget {
@@ -22,31 +22,31 @@ class HIVVisitationWidget extends StatefulWidget {
 class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   Set<String> selectedOptions = <String>{};
 
-  String? visitDate;
-  String? durationOnARTs;
-  String? height;
-  String? mUAC;
-  String? arvDrugsAdherence;
-  String? arvDrugsDuration;
-  String? adherenceCounseling;
-  String? treatmentSupporter;
-  String? treatmentSupporterSex;
-  String? treatmentSupporterAge;
-  String? treatmentSupporterHIVStatus;
-  String? viralLoadResults;
-  String? labInvestigationsDate;
-  String? detectableViralLoadInterventions;
-  String? disclosure;
-  String? mUACScore;
-  String? zScore;
-  Set<String>? nutritionalSupport;
-  String? supportGroupStatus;
-  String? nhifEnrollment;
-  String? nhifEnrollmentStatus;
-  String? referralServices;
-  String? nextAppointmentDate;
-  String? peerEducatorName;
-  String? peerEducatorContact;
+  String visitDate = '';
+  String durationOnARTs = '';
+  String height = '';
+  String mUAC = '';
+  String arvDrugsAdherence = '';
+  String arvDrugsDuration = '';
+  String adherenceCounseling = '';
+  String treatmentSupporter = '';
+  String treatmentSupporterSex = '';
+  String treatmentSupporterAge = '';
+  String treatmentSupporterHIVStatus = '';
+  String viralLoadResults = '';
+  String labInvestigationsDate = '';
+  String detectableViralLoadInterventions = '';
+  String disclosure = '';
+  String mUACScore = '';
+  String zScore = '';
+  Set<String> nutritionalSupport = <String>{};
+  String supportGroupStatus = '';
+  String nhifEnrollment = '';
+  String nhifEnrollmentStatus = '';
+  String referralServices = '';
+  String nextAppointmentDate = '';
+  String peerEducatorName = '';
+  String peerEducatorContact = '';
 
   TextEditingController durationOnARTsController = TextEditingController();
   TextEditingController heightController = TextEditingController();
@@ -66,7 +66,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   }
 
   void handleOnSave() {
-    final formData = HIVManagementFormModel(
+    final formData = HIVVisitationFormModel(
       visitDate: visitDate,
       durationOnARTs: durationOnARTs,
       height: height,
@@ -94,7 +94,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
       peerEducatorContact: peerEducatorContact,
     );
     Provider.of<HIVManagementFormProvider>(context, listen: false)
-        .updateHIVManagementModel(formData);
+        .updateHIVVisitationModel(formData);
+
+    print(formData.toJson());
   }
 
   @override
@@ -116,13 +118,16 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               enabled: true,
               onDateSelected: (date) {
                 setState(() {
-                  visitDate = DateFormat.yMd(date).toString();
+                  visitDate = formattedDate(date!);
                   handleOnSave();
                 });
               },
               identifier: DateTextFieldIdentifier.dateOfAssessment,
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
@@ -144,6 +149,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 15,
+        ),
         FormSection(
           children: [
             const Text(
@@ -164,6 +172,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 15,
+        ),
         FormSection(
           children: [
             const Text(
@@ -178,13 +189,16 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               enabled: true,
               onDateSelected: (date) {
                 setState(() {
-                  mUAC = DateFormat.yMd(date).toString();
+                  mUAC = formattedDate(date!);
                   handleOnSave();
                 });
               },
               identifier: DateTextFieldIdentifier.dateOfAssessment,
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
@@ -199,13 +213,16 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               isNaAvailable: false,
               optionSelected: (String? option) {
                 setState(() {
-                  arvDrugsAdherence = option;
+                  arvDrugsAdherence = option!;
                   handleOnSave();
                 });
               },
               customOptions: const ['Good', 'Fair', 'Poor'],
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
@@ -227,6 +244,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 15,
+        ),
         FormSection(
           children: [
             const Text(
@@ -240,7 +260,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               isNaAvailable: false,
               optionSelected: (String? option) {
                 setState(() {
-                  adherenceCounseling = option;
+                  adherenceCounseling = option!;
                   handleOnSave();
                 });
               },
@@ -251,6 +271,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               ],
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
@@ -265,7 +288,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               isNaAvailable: false,
               optionSelected: (String? option) {
                 setState(() {
-                  treatmentSupporter = option;
+                  treatmentSupporter = option!;
                   handleOnSave();
                 });
               },
@@ -278,6 +301,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               ],
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
@@ -292,7 +318,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               isNaAvailable: false,
               optionSelected: (String? option) {
                 setState(() {
-                  treatmentSupporterSex = option;
+                  treatmentSupporterSex = option!;
                   handleOnSave();
                 });
               },
@@ -302,6 +328,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               ],
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
@@ -324,6 +353,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 15,
+        ),
         FormSection(
           children: [
             const Text(
@@ -337,7 +369,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               isNaAvailable: false,
               optionSelected: (String? option) {
                 setState(() {
-                  treatmentSupporterHIVStatus = option;
+                  treatmentSupporterHIVStatus = option!;
                 });
               },
               customOptions: const [
@@ -347,6 +379,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               ],
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
@@ -368,6 +403,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 15,
+        ),
         FormSection(
           children: [
             const Text(
@@ -382,13 +420,16 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               enabled: true,
               onDateSelected: (date) {
                 setState(() {
-                  labInvestigationsDate = DateFormat.yMd(date).toString();
+                  labInvestigationsDate = formattedDate(date!);
                   handleOnSave();
                 });
               },
               identifier: DateTextFieldIdentifier.dateOfAssessment,
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
@@ -403,7 +444,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               isNaAvailable: false,
               optionSelected: (String? option) {
                 setState(() {
-                  detectableViralLoadInterventions = option;
+                  detectableViralLoadInterventions = option!;
                   handleOnSave();
                 });
               },
@@ -424,6 +465,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 15,
+        ),
         FormSection(
           children: [
             const Text(
@@ -437,7 +481,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               isNaAvailable: false,
               optionSelected: (String? option) {
                 setState(() {
-                  disclosure = option;
+                  disclosure = option!;
                   handleOnSave();
                 });
               },
@@ -452,6 +496,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 15,
+        ),
         FormSection(
           children: [
             const Text(
@@ -465,7 +512,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               isNaAvailable: false,
               optionSelected: (String? option) {
                 setState(() {
-                  mUACScore = option;
+                  mUACScore = option!;
                   handleOnSave();
                 });
               },
@@ -476,6 +523,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               ],
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
@@ -497,6 +547,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               },
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
@@ -521,6 +574,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 15,
+        ),
         FormSection(
           children: [
             const Text(
@@ -538,10 +594,13 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               ],
               isNaAvailable: false,
               optionSelected: (String? option) {
-                supportGroupStatus = option;
+                supportGroupStatus = option!;
               },
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
@@ -564,6 +623,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 15,
+        ),
         FormSection(
           children: [
             const Text(
@@ -581,11 +643,14 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               isNaAvailable: false,
               optionSelected: (String? option) {
                 setState(() {
-                  nhifEnrollmentStatus = option;
+                  nhifEnrollmentStatus = option!;
                 });
               },
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
@@ -608,6 +673,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 15,
+        ),
         FormSection(
           children: [
             const Text(
@@ -623,12 +691,15 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               identifier: DateTextFieldIdentifier.dateOfAssessment,
               onDateSelected: (DateTime? date) {
                 setState(() {
-                  nextAppointmentDate = DateFormat.yMd(date).toString();
+                  nextAppointmentDate = formattedDate(date!);
                   handleOnSave();
                 });
               },
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
@@ -649,6 +720,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               },
             ),
           ],
+        ),
+        const SizedBox(
+          height: 15,
         ),
         FormSection(
           children: [
