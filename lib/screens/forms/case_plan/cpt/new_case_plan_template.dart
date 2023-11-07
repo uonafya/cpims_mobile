@@ -6,6 +6,7 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/safe_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/schooled_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/stable_cpt.dart';
 import 'package:cpims_mobile/services/form_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -167,7 +168,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                             onPressed: () {
                               addToList();
                             },
-                            child: Text("Add")),
+                            child: const Text("Add")),
                         Row(
                           children: [
                             Expanded(
@@ -267,11 +268,21 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
             context.read<CptProvider>().cptschooledFormData ??
                 CptschooledFormData();
 
-        print("Data colleced from each form");
-        print("Health $cptHealthFormData");
-        print("Safe $cptSafeFormData");
-        print("Stable $cptStableFormData");
-        print("Schooled $cptschooledFormData");
+        if (kDebugMode) {
+          print("Data colleced from each form");
+        }
+        if (kDebugMode) {
+          print("Health $cptHealthFormData");
+        }
+        if (kDebugMode) {
+          print("Safe $cptSafeFormData");
+        }
+        if (kDebugMode) {
+          print("Stable $cptStableFormData");
+        }
+        if (kDebugMode) {
+          print("Schooled $cptschooledFormData");
+        }
 
         List<Map<String, dynamic>> servicesList = [];
         if (cptHealthFormData.serviceIds != null &&
@@ -369,7 +380,9 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
             'date_of_event': formattedDate,
             'services': servicesList,
           };
-          print("Final payload is${jsonEncode(payload)}");
+          if (kDebugMode) {
+            print("Final payload is${jsonEncode(payload)}");
+          }
           bool isFormSaved = await CasePlanService.saveCasePlanLocal(
               CasePlanModel.fromJson(payload));
           //provider clear
@@ -386,7 +399,9 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
               colorText: Colors.white,
             );
             //get back to the previous screen
-            Navigator.pop(context);
+            if (context.mounted) {
+              Navigator.pop(context);
+            }
           } else {
             Get.snackbar(
               'Error',
@@ -394,7 +409,9 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
               backgroundColor: Colors.red,
               colorText: Colors.white,
             );
-            Navigator.pop(context);
+            if (context.mounted) {
+              Navigator.pop(context);
+            }
             //clear provider data
             cptProvider.clearProviderData();
           }
@@ -452,6 +469,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
 
     context.read<CptProvider>().clearProviderData();
 
-    print(healthyCasePlans.length);
+    if (kDebugMode) {
+      print(healthyCasePlans.length);
+    }
   }
 }

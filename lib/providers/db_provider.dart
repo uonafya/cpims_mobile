@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
-import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
@@ -51,7 +50,6 @@ class LocalDb {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
     const textTypeNull = 'TEXT NULL';
-    const defaultTime = 'DATETIME DEFAULT CURRENT_TIMESTAMP';
     const intType = 'INTEGER';
 
     await db.execute('''
@@ -887,7 +885,7 @@ class LocalDb {
       return AppFormMetaData.fromJson(metaDataList.first);
     } else {
       // Handle the case where no metadata is found
-      return AppFormMetaData(); // You should replace this with an appropriate default value or error handling.
+      return const AppFormMetaData(); // You should replace this with an appropriate default value or error handling.
     }
   }
 }

@@ -7,6 +7,7 @@ import 'package:cpims_mobile/widgets/custom_forms_date_picker.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -279,8 +280,11 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                                   .setSelectedDomain(selectedEvents);
                               // Print the selected domain value
                               if (selectedEvents.isNotEmpty) {
-                                print(
-                                    "selected Domain: ${selectedEvents[0].value}");
+                                if (kDebugMode) {
+                                  print(
+                                    "selected Domain: ${selectedEvents[0].value}",
+                                  );
+                                }
                               }
                             },
                             selectedOptions: selectedDomain,
@@ -459,8 +463,11 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                             onOptionSelected: (selectedEvents) {
                               casePlanProvider
                                   .setSelectedServicesList(selectedEvents);
-                              print(
-                                  "selected Services: ${selectedEvents[0].value}");
+                              if (kDebugMode) {
+                                print(
+                                  "selected Services: ${selectedEvents[0].value}",
+                                );
+                              }
                             },
                             selectedOptions:
                                 casePlanProvider.cpFormData.selectedServices,
@@ -638,20 +645,9 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                                           completionDate: dateToBeCompleted,
                                         ))
                                     .toList();
-                            //
-                            //  //caseplan model
-                            //  CasePlanModel casePlanModel = CasePlanModel(
-                            //    ovcCpimsId: ovcCpimsId,
-                            //    dateOfEvent: dateOfCaseplan,
-                            //    services: servicesList,
-                            //  );
-
-                            // print("JSON caseplan is ${casePlanModel.toJson()}");
-                            //  caseplanModelFoThisOvC.add(casePlanModel);
-                            //  print("caseplan model: $casePlanModel");
-                            //
                             debugPrint(
-                                "caseplan model selected: $caseplanModelFoThisOvC");
+                              "caseplan model selected: $caseplanModelFoThisOvC",
+                            );
                           },
                         ),
                       ),
@@ -672,9 +668,11 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                     ]),
                     const SizedBox(height: 20),
                     SizedBox(
-                        width: 300, // Adjust the width value as needed
-                        child: HistoryAssessmentListWidget(
-                            casePlanModelFromDb: caseplanModelFoThisOvC)),
+                      width: 300, // Adjust the width value as needed
+                      child: HistoryAssessmentListWidget(
+                        casePlanModelFromDb: caseplanModelFoThisOvC,
+                      ),
+                    ),
                   ],
                 ));
           }),
@@ -686,10 +684,12 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
 }
 
 class HistoryAssessmentListWidget extends StatelessWidget {
-  List<CasePlanModel> casePlanModelFromDb;
+  final List<CasePlanModel> casePlanModelFromDb;
 
-  HistoryAssessmentListWidget({Key? key, required this.casePlanModelFromDb})
-      : super(key: key);
+  const HistoryAssessmentListWidget({
+    Key? key,
+    required this.casePlanModelFromDb,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

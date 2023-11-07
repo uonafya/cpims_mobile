@@ -1,5 +1,3 @@
-
-import 'package:cpims_mobile/services/form_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
@@ -79,7 +77,6 @@ class Form1AProvider extends ChangeNotifier {
       criticalEvents.add(criticalEvent);
     }
     eventData = criticalEvents;
-    print(criticalEvents);
   }
 
   void submitServicesData() {
@@ -93,7 +90,6 @@ class Form1AProvider extends ChangeNotifier {
           'serviceId': serviceId,
         };
         serviceOfDomains.add(item);
-        print(serviceOfDomains);
         services = serviceOfDomains;
       }
     }
@@ -108,13 +104,12 @@ class Form1AProvider extends ChangeNotifier {
     List<Form1ServicesModel> servicesList = [];
     List<Form1CriticalEventsModel> eventsList = [];
 
-    for (var event in eventData ?? []) {
-      if (event != null &&
-          event['event_id'] != null &&
+    for (var event in eventData) {
+      if (event['event_id'] != null &&
           event['event_date'] != null) {
         Form1CriticalEventsModel entry = Form1CriticalEventsModel(
-          event_id: event['event_id'],
-          event_date: dateOfEvent,
+          eventId: event['event_id'],
+          eventDate: dateOfEvent,
         );
         eventsList.add(entry);
       }

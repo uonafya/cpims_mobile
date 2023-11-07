@@ -33,19 +33,25 @@ class HIVAssessmentProvider with ChangeNotifier {
     if (_hivCurrentStatusModel.hivStatus == "HIV_Positive") {
       updateFormIndex(2);
     }
-    print(hivCurrentStatusModel.toJson());
+    if (kDebugMode) {
+      print(hivCurrentStatusModel.toJson());
+    }
     notifyListeners();
   }
 
   void updateHIVRiskAssessmentModel(HIVRiskAssessmentModel model) {
     _hivRiskAssessmentModel = model;
-    print(hivRiskAssessmentModel.toJson());
+    if (kDebugMode) {
+      print(hivRiskAssessmentModel.toJson());
+    }
     notifyListeners();
   }
 
   void updateProgressMonitoringModel(ProgressMonitoringModel model) {
     _progressMonitoringModel = model;
-    print(progressMonitoringModel.toJson());
+    if (kDebugMode) {
+      print(progressMonitoringModel.toJson());
+    }
     notifyListeners();
   }
 
@@ -66,9 +72,13 @@ class HIVAssessmentProvider with ChangeNotifier {
       };
       final response =
           await apiServiceConstructor.postSecData(data, "mobile/hrs/");
-      print(response);
+      if (kDebugMode) {
+        print(response);
+      }
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 }

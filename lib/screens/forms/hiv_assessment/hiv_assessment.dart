@@ -8,17 +8,16 @@ import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 bool disableSubsquentHIVAssessmentFieldsAndSubmit(BuildContext context) {
   final currentStatus =
       Provider.of<HIVAssessmentProvider>(context).hivCurrentStatusModel;
-  return currentStatus != null &&
-      (currentStatus.statusOfChild == "No" ||
-          currentStatus.hivStatus == "HIV_Positive" ||
-          currentStatus.hivTestDone == "Yes");
+  return (currentStatus.statusOfChild == "No" ||
+      currentStatus.hivStatus == "HIV_Positive" ||
+      currentStatus.hivTestDone == "Yes");
 }
 
 class HIVAssessmentScreen extends StatefulWidget {
@@ -73,7 +72,9 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         await Provider.of<HIVAssessmentProvider>(context, listen: false)
             .submitHIVAssessmentForm();
       } catch (e) {
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
       }
 
       return;

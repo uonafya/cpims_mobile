@@ -1,9 +1,8 @@
-
 import 'package:cpims_mobile/Models/caseplan_form_model.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/models/case_plan_main_model.dart';
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:cpims_mobile/widgets/custom_toast.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import '../screens/forms/case_plan/utils/case_plan_dummy_data.dart';
 
@@ -16,7 +15,7 @@ class CasePlanProvider extends ChangeNotifier {
     selectedNeed: [],
     selectedPriorityAction: [],
     selectedResult: [],
-    ovc_cpims_id: "",
+    ovcCpimsId: "",
     selectedDate: DateTime.now(),
     selectedDateToBeCompleted: DateTime.now(),
   );
@@ -59,7 +58,7 @@ class CasePlanProvider extends ChangeNotifier {
   CasePlanModelData get cpFormData => _casePlanModelData;
 
   void setFinalFormDataOvcId(String ovcCpimsId) {
-    _casePlanModelData.ovc_cpims_id = ovcCpimsId;
+    _casePlanModelData.ovcCpimsId = ovcCpimsId;
     notifyListeners();
   }
 
@@ -164,20 +163,41 @@ class CasePlanProvider extends ChangeNotifier {
       reasonIs = _casePlanModelData.selectedReason;
     }
     dateOfCasePlan = _casePlanModelData.selectedDate.toString();
-      completionDate = _casePlanModelData.selectedDateToBeCompleted.toString();
-  
-    // print("goal --->${cpFormData.selectedGoal[0].value}");
-    print("priority ---> ${_casePlanModelData.selectedPriorityAction}");
-    print("goal ---> ${_casePlanModelData.selectedGoal}");
-    print("need ---> ${_casePlanModelData.selectedNeed}");
-    print("services ---> $services");
-    print("domain ---> $domainId");
-    print("gap ---> $gapId");
-    print("responsible ---> $responsibleId");
-    print("results   ----> $resultsId");
-    print("reason   ----> $reasonIs");
-    print("completion date   ----> $completionDate");
-    print("ovc cpims id   ----> $ovcCpimsId");
+    completionDate = _casePlanModelData.selectedDateToBeCompleted.toString();
+
+    if (kDebugMode) {
+      print("priority ---> ${_casePlanModelData.selectedPriorityAction}");
+    }
+    if (kDebugMode) {
+      print("goal ---> ${_casePlanModelData.selectedGoal}");
+    }
+    if (kDebugMode) {
+      print("need ---> ${_casePlanModelData.selectedNeed}");
+    }
+    if (kDebugMode) {
+      print("services ---> $services");
+    }
+    if (kDebugMode) {
+      print("domain ---> $domainId");
+    }
+    if (kDebugMode) {
+      print("gap ---> $gapId");
+    }
+    if (kDebugMode) {
+      print("responsible ---> $responsibleId");
+    }
+    if (kDebugMode) {
+      print("results   ----> $resultsId");
+    }
+    if (kDebugMode) {
+      print("reason   ----> $reasonIs");
+    }
+    if (kDebugMode) {
+      print("completion date   ----> $completionDate");
+    }
+    if (kDebugMode) {
+      print("ovc cpims id   ----> $ovcCpimsId");
+    }
 
     Map<String, dynamic> payload = {
       'ovc_cpims_id': ovcCpimsId,
@@ -196,7 +216,9 @@ class CasePlanProvider extends ChangeNotifier {
         }
       ]
     };
-    print("casePlan Payload------>$payload");
+    if (kDebugMode) {
+      print("casePlan Payload------>$payload");
+    }
     return payload;
   }
 
@@ -215,7 +237,6 @@ class CasePlanProvider extends ChangeNotifier {
     return isFormSaved;
   }
 
-
   void resetFormData() {
     _casePlanModelData.selectedDomain.clear();
     _casePlanModelData.selectedServices.clear();
@@ -224,7 +245,7 @@ class CasePlanProvider extends ChangeNotifier {
     _casePlanModelData.selectedNeed.clear();
     _casePlanModelData.selectedPriorityAction.clear();
     _casePlanModelData.selectedResult.clear();
-    _casePlanModelData.ovc_cpims_id = "";
+    _casePlanModelData.ovcCpimsId = "";
     _casePlanModelData.selectedDate = DateTime.now();
 
     notifyListeners();

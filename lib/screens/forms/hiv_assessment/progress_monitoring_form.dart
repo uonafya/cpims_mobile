@@ -137,8 +137,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
               ),
               CustomRadioButton(
                 isNaAvailable: false,
-                option: formData != null &&
-                        formData.parentAcceptHivTesting.isNotEmpty
+                option: formData.parentAcceptHivTesting.isNotEmpty
                     ? convertingStringToRadioButtonOptions(
                         formData.parentAcceptHivTesting)
                     : null,
@@ -148,7 +147,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                   handleOnFormSaved();
                 },
               ),
-              if (formData != null && formData.parentAcceptHivTesting == "Yes")
+              if (formData.parentAcceptHivTesting == "Yes")
                 DateTextField(
                   label: "Report Date",
                   enabled: true,
@@ -165,7 +164,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
               CustomRadioButton(
                 isNaAvailable: false,
                 option:
-                    formData != null && formData.formalReferralMade.isNotEmpty
+                    formData.formalReferralMade.isNotEmpty
                         ? convertingStringToRadioButtonOptions(
                             formData.formalReferralMade)
                         : null,
@@ -175,7 +174,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                   handleOnFormSaved();
                 },
               ),
-              if (formData != null && formData.formalReferralMade == "Yes")
+              if (formData.formalReferralMade == "Yes")
                 DateTextField(
                   label: "Report Date",
                   enabled: true,
@@ -195,8 +194,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
               ),
               CustomRadioButton(
                 isNaAvailable: false,
-                option: formData != null &&
-                        formData.formalReferralCompleted.isNotEmpty
+                option: formData.formalReferralCompleted.isNotEmpty
                     ? convertingStringToRadioButtonOptions(
                         formData.formalReferralCompleted)
                     : null,
@@ -206,7 +204,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                   handleOnFormSaved();
                 },
               ),
-              if (formData != null && formData.formalReferralCompleted == "Yes")
+              if (formData.formalReferralCompleted == "Yes")
                 DateTextField(
                   label: "Report Date",
                   enabled: true,
@@ -224,7 +222,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
               const SizedBox(height: 10),
               CustomTextField(
                 hintText: "Response",
-                initialValue: formData?.reasonForNotMakingReferral,
+                initialValue: formData.reasonForNotMakingReferral,
                 onChanged: (val) {
                   reasonForNotMakingReferral = val;
                   handleOnFormSaved();
@@ -238,7 +236,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
               const SizedBox(height: 10),
               CustomDynamicRadioButton(
                 isNaAvailable: false,
-                option: formData != null && formData.hivTestResult.isNotEmpty
+                option: formData.hivTestResult.isNotEmpty
                     ? formData.hivTestResult
                     : null,
                 optionSelected: (val) {
@@ -264,7 +262,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                   CustomRadioButton(
                     isNaAvailable: false,
                     option:
-                        formData != null && formData.referredForArt.isNotEmpty
+                        formData.referredForArt.isNotEmpty
                             ? convertingStringToRadioButtonOptions(
                                 formData.referredForArt)
                             : null,
@@ -274,7 +272,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                       handleOnFormSaved();
                     },
                   ),
-                  if (formData != null && formData.referredForArt == "Yes")
+                  if (formData.referredForArt == "Yes")
                     DateTextField(
                       label: "Report Date",
                       enabled: true,
@@ -299,8 +297,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                   const SizedBox(height: 10),
                   CustomRadioButton(
                     isNaAvailable: false,
-                    option: formData != null &&
-                            formData.artReferralCompleted.isNotEmpty
+                    option: formData.artReferralCompleted.isNotEmpty
                         ? convertingStringToRadioButtonOptions(
                             formData.artReferralCompleted)
                         : null,
@@ -310,8 +307,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                       handleOnFormSaved();
                     },
                   ),
-                  if (formData != null &&
-                      formData.artReferralCompleted == "Yes")
+                  if (formData.artReferralCompleted == "Yes")
                     DateTextField(
                       label: "Report Date",
                       enabled: true,
@@ -336,7 +332,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                   const SizedBox(height: 10),
                   CustomTextField(
                       hintText: "Search for facility here",
-                      initialValue: formData?.facilityOfArtEnrollment,
+                      initialValue: formData.facilityOfArtEnrollment,
                       onChanged: (val) {
                         facilityOfArtEnrollment = val;
                         handleOnFormSaved();

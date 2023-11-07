@@ -1,9 +1,9 @@
-import 'package:cpims_mobile/Models/form_1_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
@@ -88,7 +88,9 @@ class CparaModel {
         }
       }
     } catch (err) {
-      print("Error adding children ${err.toString()}");
+      if (kDebugMode) {
+        print("Error adding children ${err.toString()}");
+      }
     }
   }
 
@@ -114,7 +116,9 @@ class CparaModel {
       }
       await batch.commit(noResult: true);
     } catch (err) {
-      print("Error adding children ${err.toString()}");
+      if (kDebugMode) {
+        print("Error adding children ${err.toString()}");
+      }
     }
   }
 
@@ -132,32 +136,53 @@ class CparaModel {
       // var ovcSubPopulationModelJSON=ovcSubPopulationModel?.toJSON();
 
       // insert to database, for now debugPrint for testing
-      print("Detail");
-      print(detailJSON.toString());
-      print("Health");
-      print(healthJSON.toString());
-      print("Safe");
-      print(safeJSON.toString());
-      print("Schooled");
-      print(schooledJSON.toString());
-      print("Stable");
-      print(stableJSON.toString());
-      // print("OVC Sbpopulation");
-      // print(ovcSubPopulationModelJSON.toString());
-
-      // var h = healthJSON.remove('children');
-      // var s = safeJSON.remove('children');
-      // Get children from safe and health
+      if (kDebugMode) {
+        print("Detail");
+      }
+      if (kDebugMode) {
+        print(detailJSON.toString());
+      }
+      if (kDebugMode) {
+        print("Health");
+      }
+      if (kDebugMode) {
+        print(healthJSON.toString());
+      }
+      if (kDebugMode) {
+        print("Safe");
+      }
+      if (kDebugMode) {
+        print(safeJSON.toString());
+      }
+      if (kDebugMode) {
+        print("Schooled");
+      }
+      if (kDebugMode) {
+        print(schooledJSON.toString());
+      }
+      if (kDebugMode) {
+        print("Stable");
+      }
+      if (kDebugMode) {
+        print(stableJSON.toString());
+      }
       // Health
       List<Map<String, dynamic>> healtChildren = healthJSON.remove('children');
-      print("\nHealth Children\n");
-      print(healtChildren.toString());
+      if (kDebugMode) {
+        print("\nHealth Children\n");
+      }
+      if (kDebugMode) {
+        print(healtChildren.toString());
+      }
 
       // Safe
       List<Map<String, dynamic>> safeChildren = safeJSON.remove('children');
-      // List<Map<String, dynamic>> safeChildren = [{"id": "45", "q1": "ge"}];
-      print("\nSafe Children\n");
-      print(safeChildren.toString());
+      if (kDebugMode) {
+        print("\nSafe Children\n");
+      }
+      if (kDebugMode) {
+        print(safeChildren.toString());
+      }
 
       // Convert health children to a usable format
       List<List<Map<String, dynamic>>> usableHealthChildren = [];
@@ -194,11 +219,19 @@ class CparaModel {
       await addChildren2(healtChildren, db!, formID);
       await addChildren2(safeChildren, db, formID);
 
-      print("\nUsable Health Children\n");
-      print(usableHealthChildren.toString());
+      if (kDebugMode) {
+        print("\nUsable Health Children\n");
+      }
+      if (kDebugMode) {
+        print(usableHealthChildren.toString());
+      }
 
-      print("\nUsable Safe Children\n");
-      print(usableSafeChildren.toString());
+      if (kDebugMode) {
+        print("\nUsable Safe Children\n");
+      }
+      if (kDebugMode) {
+        print(usableSafeChildren.toString());
+      }
 
       // Merge all maps
       json.addAll(detailJSON);
@@ -206,8 +239,9 @@ class CparaModel {
       json.addAll(safeJSON);
       json.addAll(schooledJSON);
       json.addAll(stableJSON);
-      // json.addAll(ovcSubPopulationModelJSON!);
-      print(json);
+      if (kDebugMode) {
+        print(json);
+      }
 
       // Send request
       // Create questions to send
@@ -230,10 +264,18 @@ class CparaModel {
       jsonToSend['date_of_previous_event'] = dateOfPreviousEvent;
       jsonToSend['questions'] = questions;
 
-      print("The Data Sent To The Server");
-      print(jsonToSend.toString());
-      print("Sending Data");
-      print("Local Db Data start");
+      if (kDebugMode) {
+        print("The Data Sent To The Server");
+      }
+      if (kDebugMode) {
+        print(jsonToSend.toString());
+      }
+      if (kDebugMode) {
+        print("Sending Data");
+      }
+      if (kDebugMode) {
+        print("Local Db Data start");
+      }
       // Insert database
       // Create a batch
       var batch = db.batch();
@@ -250,30 +292,14 @@ class CparaModel {
       });
 
       await batch.commit(noResult: true);
-
-      print(
-          "Local Db Data end KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
-
-      // // Insert database
-      // // Create a batch
-      // var batch = db!.batch();
-      // json.forEach((key, value) {
-      //   batch.insert(
-      //     "HouseholdAnswer",
-      //     {
-      //       "houseHoldID": houseHoldID,
-      //       "questionID": key,
-      //       "answer": value,
-      //       "formID": formID
-      //     },
-      //   );
-      // });
-      //
-      // await batch.commit(noResult: true);
     } catch (err) {
-      print("Error adding household filled questions to db ${err.toString()}");
+      if (kDebugMode) {
+        print(
+            "Error adding household filled questions to db ${err.toString()}");
+      }
     }
   }
+
   // Create Form in database
   Future<String> createForm(Database? db) async {
     try {
@@ -284,7 +310,9 @@ class CparaModel {
 
       return formUUID;
     } catch (err) {
-      print("Error creating form ${err.toString()}");
+      if (kDebugMode) {
+        print("Error creating form ${err.toString()}");
+      }
       return "";
     }
   }
@@ -294,8 +322,12 @@ class CparaModel {
     try {
       List<Map<String, dynamic>> fetchResults = await db!
           .rawQuery("SELECT date, id FROM Form ORDER BY id DESC LIMIT 1");
-      print("FetchResult is This");
-      print(fetchResults.toString());
+      if (kDebugMode) {
+        print("FetchResult is This");
+      }
+      if (kDebugMode) {
+        print(fetchResults.toString());
+      }
       DateTime formDate = DateTime.parse(fetchResults[0]['date']);
       int formID = fetchResults[0]['id'];
       return FormData(formID: formID, formDate: formDate);
