@@ -103,7 +103,12 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
         drawer: const Drawer(
           child: CustomDrawer(),
         ),
-        body: const Center(child: const LinearProgressIndicator()),
+        body: Center(
+            child: LoadingWidget(
+          loadingText: "CPARA is being submitted",
+          headerText:
+              'Case Plan Achievement Readiness Assessment \n ${widget.caseLoadModel.caregiverNames}',
+        )),
       );
     }
 
@@ -156,7 +161,11 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                           height: 30,
                         ),
                         isLoading
-                            ? const LinearProgressIndicator()
+                            ? LoadingWidget(
+                                loadingText: "CPARA is being submitted",
+                                headerText:
+                                    'Case Plan Achievement Readiness Assessment \n ${widget.caseLoadModel.caregiverNames}',
+                              )
                             : Row(
                                 children: [
                                   Expanded(
@@ -199,6 +208,11 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           // Set isloading to true
                                           setState(() {
                                             isLoading = true;
+                                          });
+
+                                          await Future.delayed(
+                                              Duration(seconds: 10), () {
+                                            debugPrint("Done");
                                           });
 
                                           CparaProvider cparaProvider =
@@ -684,5 +698,40 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
       colorText: Colors.white,
     );
     return;
+  }
+}
+
+// Loading Screen
+class LoadingWidget extends StatelessWidget {
+  final String loadingText;
+  final String headerText;
+
+  const LoadingWidget(
+      {required this.loadingText, required this.headerText, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          width: double.infinity,
+          color: Colors.black,
+          child: Text(
+            headerText,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+        Center(
+          child: Column(children: [
+            LinearProgressIndicator(),
+            SizedBox(
+              height: 50,
+            ),
+            Text(loadingText)
+          ]),
+        )
+      ],
+    );
   }
 }
