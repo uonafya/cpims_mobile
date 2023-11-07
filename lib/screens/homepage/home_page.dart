@@ -56,7 +56,6 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     super.initState();
     showCountUnsyncedForms();
-    context.read<StatsProvider>().updateFormStats();
     syncWorkflows();
   }
 
@@ -162,8 +161,8 @@ class _HomepageState extends State<Homepage> {
     if (isConnected) {
       await submitCparaToUpstream();
       await postCasePlansToServer();
-      fetchAndPostToServerOvcSubpopulationDataNew();
-      postFormOneToServer();
+      await fetchAndPostToServerOvcSubpopulationDataNew();
+      await postFormOneToServer();
       await showCountUnsyncedForms();
       if (mounted) {
         context.read<StatsProvider>().updateFormStats();
@@ -422,7 +421,7 @@ class _HomepageState extends State<Homepage> {
     // progressTextWidget.text = 'Syncing Progress: ${progress.toStringAsFixed(2)}%';
   }
 
-  void postFormOneToServer() async {
+  Future<void> postFormOneToServer() async {
     var prefs = await SharedPreferences.getInstance();
     var accessToken = prefs.getString('access');
     setState(() {
@@ -458,6 +457,7 @@ class _HomepageState extends State<Homepage> {
         );
         if (response.statusCode == 201) {
           debugPrint("Data to sync is $formData");
+          print("Data to sync is $formData");
           await Form1Service.updateFormLocalDateSync(
             formType['formType']!,
             formData.id,

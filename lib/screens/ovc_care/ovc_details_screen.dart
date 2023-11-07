@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/cpara/cpara_forms.dart';
@@ -140,6 +141,11 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                 context
                     .read<Form1AProvider>()
                     .updateCaseLoadModel(widget.caseLoadModel);
+                String startDateTime = DateTime.now().toString();
+                context
+                    .read<AppMetaDataProvider>()
+                    .updateStartTimeInterview(startDateTime);
+
                 Get.to(() => FomOneA(caseLoadModel: widget.caseLoadModel));
               },
             ),
@@ -149,6 +155,10 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                 Get.to(() => Form1BScreen(
                       caseLoad: widget.caseLoadModel,
                     ));
+                String startDateTime = DateTime.now().toString();
+                context
+                    .read<AppMetaDataProvider>()
+                    .updateStartTimeInterview(startDateTime);
               },
             ),
             ChildDetailsWorkflowButton(
@@ -170,9 +180,13 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                 final caseLoadData =
                     Provider.of<UIProvider>(context, listen: false)
                         .caseLoadData;
+context.read<CparaProvider>().updateChildren(caseLoadData ?? []);
+                // Set start time to form meta data
+                String startDateTime = DateTime.now().toString();
                 context
-                    .read<CparaProvider>()
-                    .updateChildren(caseLoadData ?? []);
+                    .read<AppMetaDataProvider>()
+                    .updateStartTimeInterview(startDateTime);
+
                 Get.to(() =>
                     CparaFormsScreen(caseLoadModel: widget.caseLoadModel));
               },

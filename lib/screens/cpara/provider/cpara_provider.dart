@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/Models/form_1_model.dart';
 import 'package:cpims_mobile/screens/cpara/cpara_util.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
@@ -20,6 +21,7 @@ class CparaProvider extends ChangeNotifier {
   CaseLoadModel? caseLoadModel;
   List<CaseLoadModel> children = [];
   CparaOvcSubPopulation? cparaOvcSubPopulation;
+
 
   // Calculate schooled benchmark
   int schooledBenchmark() {
@@ -292,9 +294,10 @@ class CparaProvider extends ChangeNotifier {
   // initialize cpara ovc questions
   void updateCparaOvcQuestions() {
     List<CparaOvcChild> cparaOvcChildren = [];
-    List<CparaOvcChild> cparaOvcChildrenExisting = cparaOvcSubPopulation?.childrenQuestions ?? [];
+    List<CparaOvcChild> cparaOvcChildrenExisting =
+        cparaOvcSubPopulation?.childrenQuestions ?? [];
     // List<CaseLoadModel> models = children;
-    if(cparaOvcChildrenExisting.isEmpty){
+    if (cparaOvcChildrenExisting.isEmpty) {
       for (CaseLoadModel model in children) {
         cparaOvcChildren.add(
           CparaOvcChild(
@@ -308,7 +311,7 @@ class CparaProvider extends ChangeNotifier {
         );
       }
       CparaOvcSubPopulation current =
-      CparaOvcSubPopulation(childrenQuestions: cparaOvcChildren);
+          CparaOvcSubPopulation(childrenQuestions: cparaOvcChildren);
       cparaOvcSubPopulation = current;
     }
     notifyListeners();
@@ -319,7 +322,6 @@ class CparaProvider extends ChangeNotifier {
     this.schooledModel = schooledModel;
     notifyListeners();
   }
-
 
   void updateCaseLoadModel(CaseLoadModel caseLoadModel) {
     this.caseLoadModel = caseLoadModel;
@@ -352,7 +354,6 @@ class CparaProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
-
 
   void clearCparaProvider() {
     cparaModel = null;

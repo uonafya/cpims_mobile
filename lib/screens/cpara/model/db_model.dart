@@ -1,4 +1,6 @@
 // Models for interacting with db
+import 'package:cpims_mobile/utils/app_form_metadata.dart';
+
 class CPARAChildQuestions {
   String ovc_cpims_id;
   String question_code;
@@ -48,6 +50,7 @@ class CPARADatabase {
   String date_of_event;
   List<CPARADatabaseQuestions> questions;
   List<CPARAChildQuestions> childQuestions;
+  AppFormMetaData appFormMetaData;
 
   CPARADatabase(
       {
@@ -55,5 +58,7 @@ class CPARADatabase {
         this.ovc_cpims_id = "",
         this.date_of_event = "",
         this.questions = const [],
-        this.childQuestions = const []});
+        this.childQuestions = const [],
+      this.appFormMetaData = const AppFormMetaData()
+      });
 }

@@ -1,5 +1,4 @@
-
-
+import 'package:cpims_mobile/Models/form_1_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
@@ -7,9 +6,9 @@ import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:dio/dio.dart';
-
+import 'package:uuid/uuid.dart';
 import '../widgets/ovc_sub_population_form.dart';
-
+import 'package:cpims_mobile/utils/app_form_metadata.dart';
 
 final dio = Dio();
 
@@ -20,6 +19,8 @@ class CparaModel {
   final SchooledModel schooled;
   final HealthModel health;
   final List<Map<String, List<CheckboxQuestion>>>? ovcSubPopulations;
+  final String uuid;
+  final AppFormMetaData appFormMetaData;
 
   CparaModel({
     required this.detail,
@@ -27,7 +28,9 @@ class CparaModel {
     required this.stable,
     required this.schooled,
     required this.health,
-    this.ovcSubPopulations
+    this.ovcSubPopulations,
+    this.uuid = "",
+    this.appFormMetaData = const AppFormMetaData(),
     // required this.ovcSubPopulationModel
   });
 
@@ -39,7 +42,9 @@ class CparaModel {
         '  stable: $stable,\n'
         '  schooled: $schooled,\n'
         '  health: $health,\n'
-    ' subpopulation: $ovcSubPopulations,\n'
+        '  appFormMetaData: $appFormMetaData, \n'
+        '  uuid $uuid, \n'
+        ' subpopulation: $ovcSubPopulations,\n'
         '}';
   }
 
@@ -50,8 +55,9 @@ class CparaModel {
       stable: StableModel.fromJson(json['stable']),
       schooled: SchooledModel.fromJson(json['schooled']),
       health: HealthModel.fromJson(json['health']),
-      ovcSubPopulations: json['ovc_subpopulation']
-      // ovcSubPopulationModel: OvcSubPopulationModel.fromJson(json['ovcSubPopulationModel'])
+      ovcSubPopulations: json['ovc_subpopulation'],
+      uuid: json['uuid'],
+      appFormMetaData: AppFormMetaData.fromJson(json['appFormMetaData']),
     );
   }
 
@@ -86,15 +92,16 @@ class CparaModel {
     }
   }
 
-  Future<void> addChildren2(List<Map<String, dynamic>> data, Database db, int formId) async{
+  Future<void> addChildren2(
+      List<Map<String, dynamic>> data, Database db, int formId) async {
     try {
       // Create a batch
       var batch = db.batch();
-      for(Map i in data) {
+      for (Map i in data) {
         // getting data for each child
 
         i.forEach((key, value) {
-          if(key != "id" ){
+          if (key != "id") {
             batch.insert("ChildAnswer", {
               "childID": i["id"],
               "questionID": key,
@@ -106,14 +113,14 @@ class CparaModel {
         // Insert database
       }
       await batch.commit(noResult: true);
-    }catch(err) {
+    } catch (err) {
       print("Error adding children ${err.toString()}");
     }
   }
 
   // This function add the portion of the form filled by the household to the database
-  Future<void> addHouseholdFilledQuestionsToDB(Database? db,
-      String formDate, String ovcpmsid, int formID) async {
+  Future<void> addHouseholdFilledQuestionsToDB(
+      Database? db, String formDate, String ovcpmsid, int formID) async {
     try {
       // Get JSON data from CPARA model
       Map<String, dynamic> json = {};
@@ -244,8 +251,8 @@ class CparaModel {
 
       await batch.commit(noResult: true);
 
-       print("Local Db Data end KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
-
+      print(
+          "Local Db Data end KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
 
       // // Insert database
       // // Create a batch
@@ -267,14 +274,18 @@ class CparaModel {
       print("Error adding household filled questions to db ${err.toString()}");
     }
   }
-
   // Create Form in database
-  Future<void> createForm(Database? db) async {
+  Future<String> createForm(Database? db) async {
     try {
+      String formUUID = const Uuid().v4();
       // Insert entry to db
-      db!.insert("Form", {"date": DateTime.now().toString().split(' ')[0]});
+      db!.insert("Form",
+          {"date": DateTime.now().toString().split(' ')[0], "uuid": formUUID});
+
+      return formUUID;
     } catch (err) {
       print("Error creating form ${err.toString()}");
+      return "";
     }
   }
 

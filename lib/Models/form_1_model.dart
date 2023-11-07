@@ -1,22 +1,27 @@
+import 'package:cpims_mobile/providers/db_provider.dart';
+import 'package:cpims_mobile/utils/app_form_metadata.dart';
+
 class Form1DataModel {
   final int? id;
+  final String uuid;
   final String ovcCpimsId;
   final String date_of_event;
   final List<Form1ServicesModel> services;
   final List<Form1CriticalEventsModel> criticalEvents;
-  final String? collected_at;
-  final String? location_lat;
-  final String? location_long;
+  final AppFormMetaData appFormMetaData;
 
   Form1DataModel({
+    required this.uuid,
     this.id,
     required this.ovcCpimsId,
     required this.date_of_event,
     required this.services,
     required this.criticalEvents,
-    this.collected_at,
-    this.location_lat,
-    this.location_long,
+    this.appFormMetaData = const AppFormMetaData(
+      formType: "",
+      formId: "",
+      startOfInterview: "",
+    ),
   });
 
   factory Form1DataModel.fromJson(Map<String, dynamic> json) {
@@ -37,44 +42,41 @@ class Form1DataModel {
 
     return Form1DataModel(
       id: json['id'] as int,
+      uuid: json['uuid'] as String,
       ovcCpimsId: json['ovc_cpims_id'] as String,
       date_of_event: json['date_of_event'] as String,
       services: services,
       criticalEvents: criticalEvents,
-      collected_at: json['collected_at'],
-      location_lat: json['location_lat'],
-      location_long: json['location_long'],
+      appFormMetaData: AppFormMetaData.fromJson(json['app_form_metadata']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'ovc_cpims_id': ovcCpimsId,
+      'uuid': uuid,
       'date_of_event': date_of_event,
       'services': services.map((service) => service.toJson()).toList(),
       'critical_events': criticalEvents.map((event) => event.toJson()).toList(),
-      'collected_at': collected_at,
-      'location_lat': location_lat,
-      'location_long': location_long,
+      'app_form_metadata': appFormMetaData.toJson(),
     };
   }
 
   Map<String, dynamic> toMap() {
     return {
       'ovc_cpims_id': ovcCpimsId,
+      'uuid': uuid,
       'date_of_event': date_of_event,
       'services': services.map((service) => service.toMap()).toList(),
       'critical_events': criticalEvents.map((event) => event.toMap()).toList(),
     };
   }
 
-
   @override
   String toString() {
-    return 'Form1DataModel{ovcCpimsId: $ovcCpimsId, date_of_event: $date_of_event, services: $services, criticalEvents: $criticalEvents} , collected_at: $collected_at';
+    return 'Form1DataModel{ovcCpimsId: $ovcCpimsId, date_of_event: $date_of_event, services: $services, criticalEvents: $criticalEvents},uuid: $uuid';
   }
 }
-
 
 class Form1ServicesModel {
   final String domainId;
@@ -111,7 +113,6 @@ class Form1ServicesModel {
     };
   }
 }
-
 
 class Form1CriticalEventsModel {
   final String event_id;
