@@ -6,10 +6,12 @@ import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
+import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -294,23 +296,140 @@ class LocalDb {
         required String startTime,
       required String careProviderId}) async {
     final db = await instance.database;
-
+    var idForm = 0;
+    String selectedDate = cparaModelDB.detail.dateOfAssessment ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
     // Create form
-    cparaModelDB.createForm(db).then((formUUID) {
+    cparaModelDB.createForm(db, selectedDate).then((formUUID) {
+
       // Get formID
       cparaModelDB.getLatestFormID(db).then((formData) {
         var formDate = formData.formDate;
         var formDateString = formDate.toString().split(' ')[0];
         var formID = formData.formID;
+        idForm = formID;
         cparaModelDB.addHouseholdFilledQuestionsToDB(
             db, formDateString, ovcId, formID).then((value) {
               //insert app form metadata
-              insertAppFormMetaData(formUUID, startTime, 'cpara');
+              insertAppFormMetaData(formUUID, startTime, 'cpara').then((value) => handleSubmit(selectedDate: selectedDate,
+                  formId: formID, ovcSub: cparaModelDB.ovcSubPopulations));
             });
-        
+
       });
     });
+    // await handleSubmit(selectedDate: "selectedDate");
   }
+
+  void handleSubmit({required String selectedDate, required int formId, required CparaOvcSubPopulation ovcSub}) async {
+    // CparaOvcSubPopulation ovcSub =
+    //     context.read<CparaProvider>().cparaOvcSubPopulation ??
+    //         CparaOvcSubPopulation();
+    final localDb = LocalDb.instance;
+    List<CparaOvcChild> listOfOvcChild = ovcSub.childrenQuestions ?? [];
+
+    // final currentContext = context; // Store the context in a local variable
+
+    try {
+      for (var child in listOfOvcChild) {
+        List<CheckboxQuestion> selectedQuestions = [];
+        if (child.answer1 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question1 ?? "double",
+              isChecked: child.answer1 ?? false));
+        }
+
+        if (child.answer2 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question2 ?? "AGYW",
+              isChecked: child.answer2 ?? false));
+        }
+
+        if (child.answer3 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question3 ?? "HEI",
+              isChecked: child.answer3 ?? false));
+        }
+
+        if (child.answer4 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question4 ?? "FSW",
+              isChecked: child.answer4 ?? false));
+        }
+
+        if (child.answer5 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question5 ?? "PLHIV",
+              isChecked: child.answer5 ?? false));
+        }
+
+        if (child.answer6 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question6 ?? "CLHIV",
+              isChecked: child.answer6 ?? false));
+        }
+
+        if (child.answer7 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question7 ?? "SVAC",
+              isChecked: child.answer7 ?? false));
+        }
+
+        if (child.answer8 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question8 ?? "AHIV",
+              isChecked: child.answer8 ?? false));
+        }
+
+        // String uuid = const Uuid().v4();
+        // String? dateOfAssessment = selectedDate != null
+        //     ? DateFormat('yyyy-MM-dd').format(selectedDate)
+        //     : null;
+        await localDb.insertOvcSubpopulationData(
+            "$formId",
+            "${child.ovcId}",
+            selectedDate,
+            selectedQuestions);
+      }
+      // if(mounted) {
+      //   Navigator.pop(context);
+      // }
+    } catch (error) {
+      throw("Error Occurred");
+      // if (currentContext.mounted) {
+      //   showDialog(
+      //     context: currentContext, // Use the local context
+      //     builder: (context) => AlertDialog(
+      //       title: const Text('Error'),
+      //       content: Text('An error occurred: $error'),
+      //       actions: [
+      //         TextButton(
+      //           onPressed: () {
+      //             Get.back(); // Close the dialog
+      //           },
+      //           child: const Text('OK'),
+      //         ),
+      //       ],
+      //     ),
+      //   );
+      // }
+    }
+  }
+
 
   Future<void> createOvcSubPopulation(Database db, int version) async {
     try {

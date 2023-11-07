@@ -320,7 +320,7 @@ class DateTextField2 extends StatelessWidget {
             lastDate: DateTime.now(),
           ).then((pickedDate) {
             if (pickedDate != null) {
-              updateDate(pickedDate.toIso8601String());
+              updateDate(DateFormat('yyyy-MM-dd').format(pickedDate ?? DateTime.now()));
             }
           });
         }
