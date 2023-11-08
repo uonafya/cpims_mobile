@@ -60,12 +60,12 @@ Future<CPARADatabase> getFormFromDB(int formID, Database? db) async {
     form.cparaFormId = formID;
     var uuid = fetchResult1[0]['uuid'];
     var ovcpmisID = fetchResult1[0]['houseHoldID'];
-    form.ovc_cpims_id = ovcpmisID;
+    form.ovcCpimsId = ovcpmisID;
     if (kDebugMode) {
       print("OVCPMIS ID from many: $ovcpmisID");
     }
     var dateOfEvent2 = fetchResult1[0]['date'];
-    form.date_of_event = dateOfEvent2;
+    form.dateOfEvent = dateOfEvent2;
     if (kDebugMode) {
       print("Date of event from many: $dateOfEvent2");
     }
@@ -273,122 +273,6 @@ Future<void> singleCparaFormSubmission(
     print("Data sent to server was $cparaMapData");
   }
 }
-
-void fetchAndPostToServerOvcSubpopulationData() async {
-  var prefs = await SharedPreferences.getInstance();
-  var accessToken = prefs.getString('access');
-  String bearerAuth = "Bearer $accessToken";
-  Database database = await LocalDb.instance.database;
-  List<Map<String, dynamic>> result = await fetchOvcSubPopulationData();
-  int totalForms = result.length;
-  int successfullySubmittedForms = 0;
-
-  for (var row in result) {
-    try {
-      Map<String, dynamic> ovcSubPopulation = {
-        'id': row['id'],
-        'uuid': row['uuid'],
-        'ovc_cpims_id': row['cpims_id'],
-        'date_of_event': row['date_of_event'],
-        'sub_population': [
-          {
-            'ovc_cpims_id': row['cpims_id'],
-            'question_code': row['criteria'],
-            'answer_id': 'AYES',
-          }
-        ],
-      };
-
-      var ovcPostToServer = {
-        "ovc_subpopulation": [ovcSubPopulation],
-      };
-
-      debugPrint(
-          "Data to be posted to server is ${json.encode(ovcPostToServer)}");
-
-      final response =
-          await ovcSubPopulationPostOvcToServer(ovcSubPopulation, bearerAuth);
-
-      if (response.statusCode == 200) {
-        await updateOvcSubpopulationDateSynced(row['id'], database);
-        successfullySubmittedForms++; // Increment the counter.
-        if (successfullySubmittedForms == totalForms) {
-          Get.snackbar(
-            "Success",
-            "OVC Subpopulation Forms synced successfully",
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.green,
-            colorText: Colors.white,
-            duration: const Duration(seconds: 3),
-          );
-        }
-      } else {
-        debugPrint(
-            'Failed to post data to server. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      debugPrint('Error posting data to server: $e');
-    }
-  }
-}
-
-// void fetchAndPostToServerOvcSubpopulationData() async {
-//   var prefs = await SharedPreferences.getInstance();
-//   var accessToken = prefs.getString('access');
-//   String bearerAuth = "Bearer $accessToken";
-//   Database database = await LocalDb.instance.database;
-//   List<Map<String, dynamic>> result = await fetchOvcSubPopulationData();
-//   int totalForms = result.length;
-//   int successfullySubmittedForms = 0;
-//
-//   for (var row in result) {
-//     try {
-//       Map<String, dynamic> ovcSubPopulation = {
-//         'id': row['id'],
-//         'uuid': row['uuid'],
-//         'ovc_cpims_id': row['cpims_id'],
-//         'date_of_event': row['date_of_event'],
-//         'sub_population': [
-//           {
-//             'ovc_cpims_id': row['cpims_id'],
-//             'question_code': row['criteria'],
-//             'answer_id': 'AYES',
-//           }
-//         ],
-//       };
-//
-//       var ovcPostToServer = {
-//         "ovc_subpopulation": [ovcSubPopulation],
-//       };
-//
-//       debugPrint(
-//           "Data to be posted to server is ${json.encode(ovcPostToServer)}");
-//
-//       final response =
-//           await ovcSubPopulationPostOvcToServer(ovcSubPopulation, bearerAuth);
-//
-//       if (response.statusCode == 200) {
-//         await updateOvcSubpopulationDateSynced(row['id'], database);
-//         successfullySubmittedForms++; // Increment the counter.
-//         if (successfullySubmittedForms == totalForms) {
-//           Get.snackbar(
-//             "Success",
-//             "OVC Subpopulation Forms synced successfully",
-//             snackPosition: SnackPosition.BOTTOM,
-//             backgroundColor: Colors.green,
-//             colorText: Colors.white,
-//             duration: const Duration(seconds: 3),
-//           );
-//         }
-//       } else {
-//         debugPrint(
-//             'Failed to post data to server. Status code: ${response.statusCode}');
-//       }
-//     } catch (e) {
-//       debugPrint('Error posting data to server: $e');
-//     }
-//   }
-// }
 
 Future<List<Map<String, dynamic>>> fetchQuestionsForOvc(
     String ovcCpimsId, String dateOfEvent) async {
