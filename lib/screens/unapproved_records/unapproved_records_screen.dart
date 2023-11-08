@@ -85,19 +85,20 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
               ),
             ),
             const SizedBox(height: 10),
-            if (selectedRecord == 'CPARA')
+            if (selectedRecord == 'CPT')
               Column(
                 children: [
-                  for (var item in unapprovedItems)
-                    if (item['title'] == 'CPARA')
-                      CustomForm1ACardDetail(
-                        unapprovedData: unapprovedCaseplanData,
-                        eventOrDomainId: '12',
-                        isService: true,
-                      ),
+                  ChildDetailsCard(
+                    unapprovedRecords: unapprovedCaseplanData,
+                    selectedRecord: selectedRecord,
+                  ),
                 ],
               ),
-            if (selectedRecord != 'CPARA')
+            if (selectedRecord == "CPARA")
+              const Column(
+                children: [Text('Hello')],
+              ),
+            if (selectedRecord != 'CPARA' && selectedRecord != 'CPT')
               DefaultTabController(
                 length: 2,
                 child: Expanded(
@@ -167,23 +168,46 @@ class FormTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomCard(
-      title: '$selectedRecord $eventType List',
+    return ListView(
+      shrinkWrap: true,
       children: [
-        if (selectedRecord == "Form 1A" || selectedRecord == "Form 1B")
-          for (final dataModel in unapprovedForm1aData!)
-            if (dataModel.services.isNotEmpty && eventType == "SERVICES")
-              CustomForm1ACardDetail<UnapprovedForm1DataModel>(
-                unapprovedData: dataModel,
-                eventOrDomainId: dataModel.services[0].domainId,
-                isService: true,
-              )
-            else if (dataModel.criticalEvents.isNotEmpty &&
-                eventType == 'CRITICAL EVENTS')
-              CustomForm1ACardDetail<UnapprovedForm1DataModel>(
-                unapprovedData: dataModel,
-                eventOrDomainId: dataModel.criticalEvents[0].eventId,
-                isService: false,
+        CustomCard(
+          title: '$selectedRecord $eventType List',
+          children: [
+            if (selectedRecord == "Form 1A" || selectedRecord == "Form 1B")
+              ...List.generate(
+                (unapprovedForm1aData as dynamic).length,
+                (index) {
+                  final UnapprovedForm1DataModel dataModel =
+                      unapprovedForm1aData![index];
+                  return dataModel.services.isNotEmpty &&
+                          eventType == 'SERVICES'
+                      ? CustomForm1ACardDetail<UnapprovedForm1DataModel>(
+                          unapprovedData: dataModel,
+                          eventOrDomainId: dataModel.services[0].domainId,
+                          isService: true,
+                        )
+                      : dataModel.criticalEvents.isNotEmpty &&
+                              eventType == 'CRITICAL EVENTS'
+                          ? CustomForm1ACardDetail<UnapprovedForm1DataModel>(
+                              unapprovedData: dataModel,
+                              eventOrDomainId:
+                                  dataModel.criticalEvents[0].eventId,
+                              isService: false,
+                            )
+                          : const Column(
+                              children: [
+                                Text(
+                                  'Not Implemented',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            );
+                },
               )
             else if (selectedRecord == "CPT")
               for (final cptdataModel in unapprovedCPTData!)
@@ -200,54 +224,92 @@ class FormTab extends StatelessWidget {
                     eventOrDomainId: cptdataModel.services[0].domainId,
                     isService: true,
                   )
-                else
-                  const Column(children: [
-                    Text(
-                      'Not Implemented',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ])
+          ],
+        ),
       ],
     );
   }
 }
 
-class ChildDetailsCard extends StatelessWidget {
-  final Map<String, dynamic> cargiverData;
+class ChildDetailsCard<T> extends StatelessWidget {
+  final T unapprovedRecords;
+  final String selectedRecord;
 
-  const ChildDetailsCard({super.key, required this.cargiverData});
+  const ChildDetailsCard({
+    super.key,
+    required this.unapprovedRecords,
+    required this.selectedRecord,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: Row(
+    return CustomCard(
+      title: 'Unapproved $selectedRecord Forms',
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    "${cargiverData['caregiverName']}",
-                  ),
-                  Text(
-                    "Caregiver ID: ${cargiverData['caregiverID']}",
-                  ),
-                  Text(
-                    "${cargiverData['date']}",
-                  ),
-                ],
+              ListView.builder(
+                itemCount: (unapprovedRecords as dynamic).length,
+                shrinkWrap: true,
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemBuilder: (BuildContext context, index) {
+                  final UnapprovedCasePlanModel unapprovedRecord =
+                      (unapprovedRecords as dynamic)[index];
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Text(
+                            "CPIMS ID: ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            (unapprovedRecord as dynamic).ovcCpimsId,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text(
+                            "Date of Event: ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            (unapprovedRecord as dynamic).dateOfEvent,
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Message: ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            (unapprovedRecord as dynamic).message,
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
               ),
             ],
           ),
         ),
-      ),
+      ],
     );
   }
 }
@@ -255,13 +317,13 @@ class ChildDetailsCard extends StatelessWidget {
 class CustomForm1ACardDetail<T> extends StatelessWidget {
   // list with a type of unapproved data model
   final T unapprovedData;
-  final String eventOrDomainId;
+  final String? eventOrDomainId;
   final bool isService;
 
   const CustomForm1ACardDetail({
     super.key,
     required this.unapprovedData,
-    required this.eventOrDomainId,
+    this.eventOrDomainId,
     required this.isService,
   });
 
@@ -296,7 +358,7 @@ class CustomForm1ACardDetail<T> extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  eventOrDomainId,
+                  eventOrDomainId!,
                 ),
               ],
             ),
@@ -313,7 +375,8 @@ class CustomForm1ACardDetail<T> extends StatelessWidget {
                 ),
               ],
             ),
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
                   "Message: ",
