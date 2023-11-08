@@ -65,7 +65,7 @@ class CaseLoadService {
 
       int statusCode = response.statusCode ?? 0;
 
-      if (statusCode == 200 || statusCode == 252) {
+      if (statusCode == 200) {
         final List<CaseLoadModel> caseLoadModelList = (response.data as List)
             .map((json) => CaseLoadModel.fromJson(json))
             .toList();
