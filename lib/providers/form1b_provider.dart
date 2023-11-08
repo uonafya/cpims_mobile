@@ -166,13 +166,6 @@ class Form1bProvider extends ChangeNotifier {
       formUuid,
     );
     if (isFormSaved == true) {
-      Get.snackbar(
-        'Success',
-        'Saved data locally.Ensure to sync on internet connection',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
       resetFormData();
       notifyListeners();
     }

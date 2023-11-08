@@ -691,8 +691,8 @@ class LocalDb {
           form1CriticalEventsTable,
           {
             'form_id': formId,
-            'event_id': criticalEvent.event_id,
-            'event_date': criticalEvent.event_date,
+            'event_id': criticalEvent.eventId,
+            'event_date': criticalEvent.eventDate,
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
