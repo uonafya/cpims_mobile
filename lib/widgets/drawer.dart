@@ -1,6 +1,7 @@
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
+import 'package:cpims_mobile/screens/cpara/cpara_util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -88,6 +89,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ],
         ),
       ),
+      TextButton(
+          onPressed: (){
+            listOfUnapprovedCparas(remoteData: "remoteData");
+          },
+          child: Text("Submit Cpara")),
     ]);
   }
 

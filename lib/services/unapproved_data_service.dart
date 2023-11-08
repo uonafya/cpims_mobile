@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:ffi';
 import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
+import 'package:cpims_mobile/screens/cpara/cpara_util.dart';
+import 'package:cpims_mobile/screens/cpara/model/unnaproved_cpara_database_model.dart';
 
 import '../providers/db_provider.dart';
 
@@ -37,6 +39,12 @@ class UnapprovedDataService {
         // Handle CasePlan template
       } else if (endpoint == endpoints[3]) {
         // Handle CPara
+        final db = LocalDb.instance;
+List<UnapprovedCparaDatabase> listOfUnaprovedCparas = listOfUnapprovedCparas(remoteData: "remoteData");
+        for (UnapprovedCparaDatabase unapprovedCpara in listOfUnaprovedCparas) {
+          // db.insertUnapprovedCpara(unapprovedCpara);
+        }
+
       }
       return;
     }).toList();
@@ -63,5 +71,10 @@ class UnapprovedDataService {
       unapprovedForm1Data.add(UnapprovedForm1DataModel.fromJson(map));
     }
     return unapprovedForm1Data;
+  }
+
+  static Future<List<UnapprovedCparaDatabase>> fetchLocalUnapprovedCparaData() async {
+    final db = LocalDb.instance;
+    return [];
   }
 }
