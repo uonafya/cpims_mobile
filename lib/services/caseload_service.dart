@@ -31,15 +31,25 @@ class CaseLoadService {
     final int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
     final int diff = currentTimestamp - caseloadLastSave;
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
+
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16), // Add some spacing
+                Text("Setting up your device. Please be patient..."),
+              ],
+            ),
+          );
+        },
+      );
+    }
 
     if (!(isForceSync || diff > 2592000000)) {
       // Todo: 30 days - 2592000000 milliseconds
