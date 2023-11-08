@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/providers/cpara/read_unapproved_cpara_from_db.dart';
 import 'package:cpims_mobile/providers/cpara/unapproved_cpara_database.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
@@ -47,7 +48,7 @@ class UnapprovedCparaService {
       var schooledJSON = model.schooled.toJSON();
 
       // Get questions from stable
-      var stableJSON = model.schooled.toJSON();
+      var stableJSON = model.stable.toJSON();
 
       json.addAll(healthJSON);
       json.addAll(detailJSON);
@@ -100,7 +101,8 @@ class UnapprovedCparaService {
       datab.insert("UnapprovedCPARA", {
         "id": model.uuid,
         "date_of_event": model.detail.dateOfAssessment,
-        "message": model.message
+        "message": model.message,
+        "ovc_id": model.cpmis_id,
       });
 
       // Add questions to DB
@@ -119,6 +121,19 @@ class UnapprovedCparaService {
       print(err.toString());
       throw (cannot_store_unapproved_cpara);
     }
+  }
+
+  static Future<List<UnapprovedCparaModel>> getUnapprovedFromDB() async{
+    var unapprovedForms = await fetchUnapprovedCparaForms();
+    List<UnapprovedCparaModel> formsToBeReturned = [];
+
+    for (Map i in unapprovedForms) {
+      formsToBeReturned.add(
+        await getUnaprovedCparaFromDb(i['id'] ?? "", i['message'] ?? "", i['ovc_id'] ?? "", i['date_of_event'] ?? "")
+      );
+    }
+    print(formsToBeReturned);
+    return formsToBeReturned;
   }
 
   static List _cparaovcchildtojson(CparaOvcChild child, String form_id) {
@@ -193,7 +208,7 @@ var testModel = UnapprovedCparaModel(
         childrenQuestions: [
           HealthChild(
               name: "B",
-              id: '1',
+              id: '3',
               question1: 'yes',
               question2: 'yes',
               question3: 'yes'),
@@ -205,7 +220,7 @@ var testModel = UnapprovedCparaModel(
               question3: 'yes'),
           HealthChild(
               name: "A",
-              id: '1',
+              id: '2',
               question1: 'yes',
               question2: 'yes',
               question3: 'yes')
@@ -214,14 +229,9 @@ var testModel = UnapprovedCparaModel(
       CparaOvcChild(
           name: "Y",
           ovcId: "1",
-          question4: "yes",
-          question3: "yes",
-          question2: "Yes",
-          question1: "yes",
-          question5: "yes",
-          question6: "yes",
-          question7: 'yes',
-          question8: 'yes'),
+          question6: "",
+          question7: '',
+          question8: ''),
       CparaOvcChild(
           name: "Y",
           ovcId: "2",
@@ -240,8 +250,8 @@ var testModel = UnapprovedCparaModel(
         question3: 'yes',
         childrenQuestions: [
           SafeChild(ovcId: '1', name: 'E', question1: 'yes'),
-          SafeChild(ovcId: '1', name: 'B', question1: 'yes'),
-          SafeChild(ovcId: '1', name: 'X', question1: 'yes'),
+          SafeChild(ovcId: '2', name: 'B', question1: 'yes'),
+          SafeChild(ovcId: '3', name: 'X', question1: 'yes'),
         ]),
     schooled: SchooledModel(
         mainquestion1: 'yes',
