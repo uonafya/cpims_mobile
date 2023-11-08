@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -45,6 +46,7 @@ class _StableCasePlanState extends State<StableCasePlan> {
 
   @override
   void initState() {
+    super.initState();
     cptProvider = context.read<CptProvider>();
     cptProviderDomainList = cptProvider.csAllDomains.map((domain) {
       return ValueItem(
@@ -223,7 +225,9 @@ class _StableCasePlanState extends State<StableCasePlan> {
             context.read<CptProvider>().updateCptStableFormData(
                 cptStableFormData.copyWith(goalId: selectedEvents[0].value));
             // Print the updated goalId
-            print("The selected goal was ${selectedEvents[0].value}");
+            if (kDebugMode) {
+              print("The selected goal was ${selectedEvents[0].value}");
+            }
           },
           selectedOptions: selectedGoalOptions,
           options: casePlanGoalStableList,
@@ -258,7 +262,9 @@ class _StableCasePlanState extends State<StableCasePlan> {
             context.read<CptProvider>().updateCptStableFormData(
                 cptStableFormData.copyWith(gapId: selectedEvents[0].value));
             // Print the updated goalId
-            print("The selected need was ${selectedEvents[0].value}");
+            if (kDebugMode) {
+              print("The selected need was ${selectedEvents[0].value}");
+            }
           },
           options: casePlanGapsStableList,
           selectedOptions: selectedNeedOptions,
@@ -294,7 +300,9 @@ class _StableCasePlanState extends State<StableCasePlan> {
                 cptStableFormData.copyWith(
                     priorityId: selectedEvents[0].value));
             // Print the updated goalId
-            print("The selected prioity was ${selectedEvents[0].value}");
+            if (kDebugMode) {
+              print("The selected prioity was ${selectedEvents[0].value}");
+            }
           },
           options: casePlanPrioritiesStableList,
           selectedOptions: selectedPriorityActionOptions,
@@ -333,7 +341,9 @@ class _StableCasePlanState extends State<StableCasePlan> {
                 ));
             selectedServiceIds =
                 selectedEvents.map((item) => item.value).toList();
-            print("The selected service IDs are $selectedServiceIds");
+            if (kDebugMode) {
+              print("The selected service IDs are $selectedServiceIds");
+            }
           },
           selectedOptions: selectedServicesOptions,
           options: casePlanServicesStableList,
@@ -373,8 +383,10 @@ class _StableCasePlanState extends State<StableCasePlan> {
                 ));
             selectedPersonResponsibleIds =
                 selectedEvents.map((item) => item.value).toList();
-            print(
+            if (kDebugMode) {
+              print(
                 "The selected responsible IDs are $selectedPersonResponsibleIds");
+            }
           },
           selectedOptions: selectedPersonsResponsibleOptions,
           options: casePlanProviderPersonsResponsibleList,
@@ -409,7 +421,9 @@ class _StableCasePlanState extends State<StableCasePlan> {
             context.read<CptProvider>().updateCptStableFormData(
                 cptStableFormData.copyWith(resultsId: selectedEvents[0].value));
             // Print the updated goalId
-            print("The selected result was ${selectedEvents[0].value}");
+            if (kDebugMode) {
+              print("The selected result was ${selectedEvents[0].value}");
+            }
           },
           selectedOptions: selectedResultsOptions,
           options: casePlanProviderResultList,
@@ -445,7 +459,9 @@ class _StableCasePlanState extends State<StableCasePlan> {
             context.read<CptProvider>().updateCptStableFormData(
                 cptStableFormData.copyWith(
                     completionDate: completionDate.toIso8601String()));
-            print("The selected date was $completionDate");
+            if (kDebugMode) {
+              print("The selected date was $completionDate");
+            }
           },
         ),
         const SizedBox(height: 10),

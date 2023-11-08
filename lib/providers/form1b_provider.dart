@@ -1,8 +1,6 @@
 // import 'package:cpims_mobile/Models/form1_data_basemodel.dart';
 // import 'package:cpims_mobile/Models/form_1b.dart';
 
-import 'dart:convert';
-
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:dio/dio.dart';
@@ -10,8 +8,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import '../Models/form_1_model.dart';
 import 'package:get/get.dart';
@@ -144,12 +140,11 @@ class Form1bProvider extends ChangeNotifier {
     List<Form1CriticalEventsModel> criticalEventsList = [];
     for (var criticalEvent in criticalEventsFormData) {
       Form1CriticalEventsModel entry = Form1CriticalEventsModel(
-          event_id: criticalEvent.event_id,
-          event_date: criticalEvent.event_date);
+          eventId: criticalEvent.eventId, eventDate: criticalEvent.eventDate);
       criticalEventsList.add(entry);
     }
 
-    String formUuid = Uuid().v4();
+    String formUuid = const Uuid().v4();
     AppFormMetaData appFormMetaData = AppFormMetaData(
       formType: "form1b",
       formId: formUuid,
@@ -157,17 +152,19 @@ class Form1bProvider extends ChangeNotifier {
     );
 
     Form1DataModel toDbData = Form1DataModel(
-        uuid: formUuid,
-        ovcCpimsId: finalServicesFormData.ovc_cpims_id,
-        date_of_event: finalServicesFormData.date_of_event,
-        services: servicesList,
-        criticalEvents: criticalEventsList);
-    String data = jsonEncode(toDbData);
-
-    print("The json data for form 1 b is $data");
+      uuid: formUuid,
+      ovcCpimsId: finalServicesFormData.ovc_cpims_id,
+      dateOfEvent: finalServicesFormData.date_of_event,
+      services: servicesList,
+      criticalEvents: criticalEventsList,
+    );
 
     bool isFormSaved = await Form1Service.saveFormLocal(
-        "form1b", toDbData, appFormMetaData, formUuid);
+      "form1b",
+      toDbData,
+      appFormMetaData,
+      formUuid,
+    );
     if (isFormSaved == true) {
       Get.snackbar(
         'Success',
@@ -229,7 +226,7 @@ class Form1bProvider extends ChangeNotifier {
           DateFormat('yyyy-MM-dd').format(criticalEventDataForm1b.selectedDate);
 
       eventsList.add(
-        Form1CriticalEventsModel(event_id: eventId!, event_date: eventDate),
+        Form1CriticalEventsModel(eventId: eventId!, eventDate: eventDate),
       );
     }
 

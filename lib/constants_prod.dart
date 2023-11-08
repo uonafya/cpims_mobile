@@ -16,7 +16,6 @@ const kSystemPadding = EdgeInsets.symmetric(horizontal: 20, vertical: 0);
 var _ovcActiveOrRegistered = '132,294 / 307,005';
 const syncName = "Sync";
 bool isSynching = false;
-bool _correct = true;
 dynamic snackBar;
 List<Map<String, dynamic>> homeCardsTitles = [
   {
@@ -71,12 +70,12 @@ List drawerOptions(BuildContext context) {
     {
       'title': 'Caseload',
       'icon': FontAwesomeIcons.briefcase,
-      'children':[],
+      'children': [],
       'onTap': () => {
-        Get.off(() => const OVCCareScreen(),
-            transition: Transition.fadeIn,
-            duration: const Duration(milliseconds: 1000))
-      },
+            Get.off(() => const OVCCareScreen(),
+                transition: Transition.fadeIn,
+                duration: const Duration(milliseconds: 1000))
+          },
 
       // 'children': [
       //   {
@@ -143,8 +142,12 @@ List drawerOptions(BuildContext context) {
         try {
           const androidIdPlugin = AndroidId();
           final String? androidId = await androidIdPlugin.getId();
-          CaseLoadService().updateCaseLoadData(
-              context: context, deviceID: androidId!);
+          if (context.mounted) {
+            CaseLoadService().updateCaseLoadData(
+              context: context,
+              deviceID: androidId!,
+            );
+          }
           // syncWorkflows();
           snackBar = SnackBar(
             content: const Text(
@@ -163,7 +166,9 @@ List drawerOptions(BuildContext context) {
             ),
           );
 
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
           Future.delayed(const Duration(seconds: 4));
 
           snackBar = SnackBar(
@@ -182,7 +187,9 @@ List drawerOptions(BuildContext context) {
               },
             ),
           );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
         } catch (e) {
           snackBar = SnackBar(
             content: Text(
@@ -200,7 +207,9 @@ List drawerOptions(BuildContext context) {
               },
             ),
           );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
         }
       },
       'children': []
@@ -307,7 +316,8 @@ const String test = "https://dev.cpims.net/mobile/";
 
 const Map<String, String> headers = {"Content-Type": "application/json"};
 
-void errorSnackBar(BuildContext context, String message, {Duration duration = const Duration(seconds: 8)}) {
+void errorSnackBar(BuildContext context, String message,
+    {Duration duration = const Duration(seconds: 8)}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     backgroundColor: Colors.red,
     content: Text(message),

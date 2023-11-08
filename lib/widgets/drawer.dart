@@ -47,9 +47,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             if (option.title.toLowerCase() == 'log out') {
               await Provider.of<AuthProvider>(context, listen: false)
                   .logOut(context);
-            } else if (option.title == syncName) {
-              print("Clicked sync");
-            }
+            } else if (option.title == syncName) {}
             drawerProvider.changeDrawerOption(index);
           },
           child: option.children.isNotEmpty

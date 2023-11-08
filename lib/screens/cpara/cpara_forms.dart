@@ -196,6 +196,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                     SchooledModel schooledModel =
                                         cparaProvider.schooledModel ??
                                             SchooledModel();
+                                    CparaOvcSubPopulation cparaOvcSub =
+                                        cparaProvider.cparaOvcSubPopulation ??
+                                            CparaOvcSubPopulation();
                                     try {
                                       cparaFormValidation(
                                           context: context,
@@ -267,6 +270,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           stable: stableModel,
                                           schooled: schooledModel,
                                           health: (healthModel),
+                                          ovcSubPopulations: cparaOvcSub
                                         );
                                         // Create form
                                         String startTime = context.read<AppMetaDataProvider>().startTimeInterview ?? DateTime.now().toIso8601String();
@@ -275,16 +279,16 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                             ovcId: ovcpmisid,
                                             startTime: startTime,
                                             careProviderId: ovcpmisid);
-                                        //todo: call ovc
-                                        if (context.mounted) {
-                                          DateTime? date = DateTime.tryParse(
-                                              detailModel.dateOfAssessment ??
-                                                  "");
-                                          handleSubmit(
-                                              context: context,
-                                              selectedDate:
-                                                  date ?? DateTime.now());
-                                        }
+                                        // //todo: call ovc
+                                        // if (context.mounted) {
+                                        //   DateTime? date = DateTime.tryParse(
+                                        //       detailModel.dateOfAssessment ??
+                                        //           "");
+                                        //   handleSubmit(
+                                        //       context: context,
+                                        //       selectedDate:
+                                        //           date ?? DateTime.now());
+                                        // }
 
                                         if (context.mounted) {
                                           cparaProvider.clearCparaProvider();

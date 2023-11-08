@@ -27,9 +27,9 @@ class AppMetaDataProvider extends ChangeNotifier {
   }
 
   void clearFormMetaData() {
-    this.formType = null;
-    this.startTimeInterview = null;
-    this.endTimeInterview = null;
+    formType = null;
+    startTimeInterview = null;
+    endTimeInterview = null;
     notifyListeners();
   }
 }

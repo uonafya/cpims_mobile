@@ -5,6 +5,7 @@ import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_safe.dar
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_stable.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/form_one_a_healthy.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/form_one_a_schooled.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -46,7 +47,7 @@ class _FomOneAState extends State<FomOneA> {
     super.initState();
     Future.delayed(Duration.zero, () {
       Form1AProviderNew form1AProvider =
-      Provider.of<Form1AProviderNew>(context, listen: false);
+          Provider.of<Form1AProviderNew>(context, listen: false);
       form1AProvider.setFinalFormDataOvcId(widget.caseLoadModel.cpimsId!);
     });
   }
@@ -54,7 +55,7 @@ class _FomOneAState extends State<FomOneA> {
   @override
   Widget build(BuildContext context) {
     Form1AProviderNew form1AProvider =
-    Provider.of<Form1AProviderNew>(context, listen: false);
+        Provider.of<Form1AProviderNew>(context, listen: false);
     bool isLastStep = selectedStep == steps.length - 1;
 
     bool isFormInvalid() {
@@ -101,9 +102,7 @@ class _FomOneAState extends State<FomOneA> {
                   width: double.infinity,
                   color: Colors.black,
                   child: Text(
-                    ' FORM 1A DETAILS \n CARE GIVER: ${widget.caseLoadModel
-                        .caregiverNames} \n CPIMS ID: ${widget.caseLoadModel
-                        .cpimsId}',
+                    ' FORM 1A DETAILS \n CARE GIVER: ${widget.caseLoadModel.caregiverNames} \n CPIMS ID: ${widget.caseLoadModel.cpimsId}',
                     style: const TextStyle(color: Colors.white),
                   ),
                 ),
@@ -141,7 +140,7 @@ class _FomOneAState extends State<FomOneA> {
                               CustomFormsDatePicker(
                                   hintText: 'Select the date',
                                   selectedDateTime:
-                                  form1AProvider.formData.selectedDate,
+                                      form1AProvider.formData.selectedDate,
                                   allowFutureDates: false,
                                   onDateSelected: (selectedDate) {
                                     form1AProvider
@@ -201,16 +200,16 @@ class _FomOneAState extends State<FomOneA> {
                                       String endTimeInterview = '';
                                       if (context.mounted) {
                                         startInterviewTime = context
-                                            .read<AppMetaDataProvider>()
-                                            .startTimeInterview ??
+                                                .read<AppMetaDataProvider>()
+                                                .startTimeInterview ??
                                             '';
                                         endTimeInterview =
                                             DateTime.now().toIso8601String();
                                       }
                                       bool isFormSaved =
-                                      await form1AProvider.saveForm1AData(
-                                          form1AProvider.formData,
-                                          startInterviewTime);
+                                          await form1AProvider.saveForm1AData(
+                                              form1AProvider.formData,
+                                              startInterviewTime);
                                       setState(() {
                                         if (isFormSaved == true) {
                                           if (context.mounted) {
@@ -225,7 +224,7 @@ class _FomOneAState extends State<FomOneA> {
                                             'Success',
                                             'Form1A data saved successfully.',
                                             duration:
-                                            const Duration(seconds: 2),
+                                                const Duration(seconds: 2),
                                             snackPosition: SnackPosition.TOP,
                                             backgroundColor: Colors.green,
                                             colorText: Colors.white,
@@ -237,7 +236,11 @@ class _FomOneAState extends State<FomOneA> {
                                         }
                                       });
                                     } catch (e) {
-                                      print("Error getting user location: $e");
+                                      if (kDebugMode) {
+                                        print(
+                                          "Error getting user location: $e",
+                                        );
+                                      }
                                     }
                                   }
                                 } else {
@@ -268,6 +271,7 @@ class _FomOneAState extends State<FomOneA> {
     );
   }
 }
+
 Future<Position> getUserLocation() async {
   bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
@@ -286,4 +290,3 @@ Future<Position> getUserLocation() async {
   }
   return await Geolocator.getCurrentPosition();
 }
-

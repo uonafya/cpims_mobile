@@ -1,4 +1,3 @@
-
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
@@ -95,7 +94,6 @@ class Form1AProvider extends ChangeNotifier {
           'serviceId': serviceId,
         };
         serviceOfDomains.add(item);
-        print(serviceOfDomains);
         services = serviceOfDomains;
       }
     }
@@ -114,8 +112,8 @@ class Form1AProvider extends ChangeNotifier {
       if (event['event_id'] != null &&
           event['event_date'] != null) {
         Form1CriticalEventsModel entry = Form1CriticalEventsModel(
-          event_id: event['event_id'],
-          event_date: dateOfEvent,
+          eventId: event['event_id'],
+          eventDate: dateOfEvent,
         );
         eventsList.add(entry);
       }
