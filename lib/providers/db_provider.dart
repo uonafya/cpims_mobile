@@ -8,6 +8,7 @@ import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
 import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
+import 'package:cpims_mobile/screens/cpara/provider/db_util.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
@@ -187,6 +188,7 @@ class LocalDb {
     await createOvcSubPopulation(db, version);
     await createAppMetaDataTable(db, version);
     await createHRSForms(db, version);
+    await createUnapprovedCparaTables(db, version);
   }
 
   Future<void> createAppMetaDataTable(Database db, int version) async {
@@ -315,27 +317,34 @@ class LocalDb {
       required String careProviderId}) async {
     final db = await instance.database;
     var idForm = 0;
-    String selectedDate = cparaModelDB.detail.dateOfAssessment ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
+    String selectedDate = cparaModelDB.detail.dateOfAssessment ??
+        DateFormat('yyyy-MM-dd').format(DateTime.now());
     // Create form
     cparaModelDB.createForm(db, selectedDate).then((formUUID) {
-
       // Get formID
       cparaModelDB.getLatestFormID(db).then((formData) {
         var formDate = formData.formDate;
         var formDateString = formDate.toString().split(' ')[0];
         var formID = formData.formID;
         idForm = formID;
-        cparaModelDB.addHouseholdFilledQuestionsToDB(
-            db, formDateString, ovcId, formID).then((value) {
-              //insert app form metadata
-              insertAppFormMetaData(formUUID, startTime, 'cpara').then((value) => handleSubmit(selectedDate: selectedDate,
-                  formId: formID, ovcSub: cparaModelDB.ovcSubPopulations));
-            });
+        cparaModelDB
+            .addHouseholdFilledQuestionsToDB(db, formDateString, ovcId, formID)
+            .then((value) {
+          //insert app form metadata
+          insertAppFormMetaData(formUUID, startTime, 'cpara').then((value) =>
+              handleSubmit(
+                  selectedDate: selectedDate,
+                  formId: formID,
+                  ovcSub: cparaModelDB.ovcSubPopulations));
+        });
       });
     });
   }
 
-  void handleSubmit({required String selectedDate, required int formId, required CparaOvcSubPopulation ovcSub}) async {
+  void handleSubmit(
+      {required String selectedDate,
+      required int formId,
+      required CparaOvcSubPopulation ovcSub}) async {
     // CparaOvcSubPopulation ovcSub =
     //     context.read<CparaProvider>().cparaOvcSubPopulation ??
     //         CparaOvcSubPopulation();
@@ -416,16 +425,13 @@ class LocalDb {
         //     ? DateFormat('yyyy-MM-dd').format(selectedDate)
         //     : null;
         await localDb.insertOvcSubpopulationData(
-            "$formId",
-            "${child.ovcId}",
-            selectedDate,
-            selectedQuestions);
+            "$formId", "${child.ovcId}", selectedDate, selectedQuestions);
       }
       // if(mounted) {
       //   Navigator.pop(context);
       // }
     } catch (error) {
-      throw("Error Occurred");
+      throw ("Error Occurred");
       // if (currentContext.mounted) {
       //   showDialog(
       //     context: currentContext, // Use the local context
@@ -445,7 +451,6 @@ class LocalDb {
       // }
     }
   }
-
 
   Future<void> createOvcSubPopulation(Database db, int version) async {
     try {
@@ -639,7 +644,8 @@ class LocalDb {
     );
   }
 
-  Future<void> insertUnapprovedAppFormMetaData(uuid, AppFormMetaData metadata, formType) async {
+  Future<void> insertUnapprovedAppFormMetaData(
+      uuid, AppFormMetaData metadata, formType) async {
     final db = await instance.database;
     await db.insert(
       appFormMetaDataTable,
@@ -705,8 +711,8 @@ class LocalDb {
   }
 
   // insert formData(either form1a or form1b)
-  Future<void> insertUnapprovedForm1Data(
-      String formType,UnapprovedForm1DataModel formData, metadata, uuid) async {
+  Future<void> insertUnapprovedForm1Data(String formType,
+      UnapprovedForm1DataModel formData, metadata, uuid) async {
     try {
       final db = await instance.database;
       final formId = await db.insert(
@@ -716,7 +722,7 @@ class LocalDb {
           'date_of_event': formData.dateOfEvent,
           'form_type': formType,
           'uuid': uuid,
-          Form1.message : formData.message
+          Form1.message: formData.message
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -728,7 +734,7 @@ class LocalDb {
         await db.insert(
           form1ServicesTable,
           {
-            Form1Services.unapprovedFormId : formId,
+            Form1Services.unapprovedFormId: formId,
             'domain_id': service.domainId,
             'service_id': service.serviceId,
           },
@@ -739,7 +745,7 @@ class LocalDb {
         await db.insert(
           form1CriticalEventsTable,
           {
-            Form1Services.unapprovedFormId : formId,
+            Form1Services.unapprovedFormId: formId,
             'event_id': criticalEvent.eventId,
             'event_date': criticalEvent.eventDate,
           },
@@ -806,11 +812,11 @@ class LocalDb {
     }
   }
 
-  Future<List<Map<String, dynamic>>> queryAllUnapprovedForm1Rows(String formType) async {
+  Future<List<Map<String, dynamic>>> queryAllUnapprovedForm1Rows(
+      String formType) async {
     try {
       final db = await instance.database;
-      const sql =
-          'SELECT * FROM $unapprovedForm1Table WHERE form_type = ?';
+      const sql = 'SELECT * FROM $unapprovedForm1Table WHERE form_type = ?';
       final List<Map<String, dynamic>> form1Rows =
           await db.rawQuery(sql, [formType]);
 

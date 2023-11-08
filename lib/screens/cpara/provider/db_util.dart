@@ -17,7 +17,7 @@ import '../model/sub_ovc_child.dart';
 import '../widgets/cpara_stable_widget.dart';
 
 // Code for creating unapproved CPARA tables
-Future<void> createUnapprovedCparaTables(Database db) async {
+Future<void> createUnapprovedCparaTables(Database db, int version) async {
   // Creating table to store unapproved CPARA form
   await db.execute('''
     CREATE TABLE IF NOT EXISTS UnapprovedCPARA(
