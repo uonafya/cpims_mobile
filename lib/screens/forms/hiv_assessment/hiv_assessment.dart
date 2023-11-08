@@ -10,6 +10,7 @@ import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 bool disableSubsquentHIVAssessmentFieldsAndSubmit(BuildContext context) {
@@ -80,6 +81,11 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         setState(() {
           isLoading = false;
         });
+        Get.snackbar("HRS Form submitted", "HRS Form submitted successfully",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white);
+        Navigator.pop(context);
       } catch (e) {
         if (kDebugMode) {
           print(e);

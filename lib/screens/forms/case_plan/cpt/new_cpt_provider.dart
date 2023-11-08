@@ -2,6 +2,7 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/healthy_cpt_mode
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/safe_cpt_model.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/stable_cpt_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 
 import '../../../../Models/case_load_model.dart';
 import '../../../../Models/caseplan_form_model.dart';
@@ -48,6 +49,7 @@ class CptProvider extends ChangeNotifier {
   CasePlanSafeModel? casePlanSafeModel;
   CasePlanschooledModel? casePlanschooledModel;
   CasePlanStableModel? casePlanStableModel;
+  List<Map<String, dynamic>> servicesList = [];
 
   CaseLoadModel? caseLoadModel;
 
@@ -55,8 +57,12 @@ class CptProvider extends ChangeNotifier {
   CptStableFormData? cptStableFormData;
   CptschooledFormData? cptschooledFormData;
   CptHealthFormData? cptHealthFormData;
-
   CptHealthFormData get cptHealth => cptHealthFormData!;
+
+  List<CptHealthFormData> cptHealthFormDataList = [];
+  List<CptSafeFormData> cptSafeFormDataList = [];
+  List<CptStableFormData> cptStableFormDataList = [];
+  List<CptschooledFormData> cptschooledFormDataList = [];
 
   late CasePlanModel casePlanModel;
 
@@ -80,27 +86,102 @@ class CptProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-    void updateDateOfCasePlan(String? dateOfCasePlan) {
+  void updateDateOfCasePlan(String? dateOfCasePlan) {
     casePlanModel.dateOfEvent = dateOfCasePlan!;
     notifyListeners();
   }
 
-
   void clearProviderData() {
     casePlanHealthyModel = null;
+    casePlanSafeModel = null;
+    casePlanStableModel = null;
+    casePlanschooledModel = null;
+    cptSafeFormData = null;
+    cptStableFormData = null;
+    cptHealthFormData = null;
+    cptschooledFormData = null;
+    caseLoadModel = null;
+    notifyListeners();
+  }
+
+  //Lists
+
+  void updateCptList(CptHealthFormData formData) {
+    cptHealthFormDataList.firstWhereOrNull(
+                (element) => element.goalId == formData.goalId) !=
+            null
+        ? cptHealthFormDataList
+            .removeWhere((element) => element.goalId == formData.goalId)
+        : null;
+    cptHealthFormDataList.insert(0, formData);
     cptHealthFormData = null;
 
+    notifyListeners();
+  }
+
+  void updateCptSafeList(CptSafeFormData formData) {
+    cptSafeFormDataList.firstWhereOrNull(
+                (element) => element.goalId == formData.goalId) !=
+            null
+        ? cptSafeFormDataList
+            .removeWhere((element) => element.goalId == formData.goalId)
+        : null;
+    cptSafeFormDataList.insert(0, formData);
     cptSafeFormData = null;
-    casePlanSafeModel = null;
 
-    casePlanStableModel = null;
+    notifyListeners();
+  }
+
+  void updateCptStableList(CptStableFormData formData) {
+    cptStableFormDataList.firstWhereOrNull(
+                (element) => element.goalId == formData.goalId) !=
+            null
+        ? cptStableFormDataList
+            .removeWhere((element) => element.goalId == formData.goalId)
+        : null;
+    cptStableFormDataList.insert(0, formData);
     cptStableFormData = null;
+    notifyListeners();
+  }
 
+  void updateCptSchooledList(CptschooledFormData formData) {
+    cptschooledFormDataList.firstWhereOrNull(
+                (element) => element.goalId == formData.goalId) !=
+            null
+        ? cptschooledFormDataList
+            .removeWhere((element) => element.goalId == formData.goalId)
+        : null;
+    cptschooledFormDataList.insert(0, formData);
     cptschooledFormData = null;
-    casePlanschooledModel = null;
+    notifyListeners();
+  }
 
+  void updateDateOfCasePlanList(String? dateCPlan) {
+    casePlanModel.dateOfEvent = dateCPlan!;
+    notifyListeners();
+  }
 
-    caseLoadModel = null;
+  void removeCptHealthList(CptHealthFormData formData) {
+    cptHealthFormDataList
+        .removeWhere((element) => element.goalId == formData.goalId);
+    notifyListeners();
+  }
+
+  void removeCptSafeList(CptSafeFormData formData) {
+    cptSafeFormDataList
+        .removeWhere((element) => element.goalId == formData.goalId);
+    notifyListeners();
+  }
+
+  void removeCptStableList(CptStableFormData formData) {
+    cptStableFormDataList
+        .removeWhere((element) => element.goalId == formData.goalId);
+    notifyListeners();
+  }
+
+  void removeCptSchooledList(CptschooledFormData formData) {
+    cptschooledFormDataList
+        .removeWhere((element) => element.goalId == formData.goalId);
     notifyListeners();
   }
 }
