@@ -134,14 +134,27 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                   ),
                 ),
               ),
-            ElevatedButton(
-              onPressed: () {
-                UnapprovedCparaService.storeInDB(testModel);
-              },
-              child: Text("This Is A Test Button"),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
-              ),
+            Row(
+              children: [
+                TextButton(
+                  onPressed: () {
+                    UnapprovedCparaService.storeInDB(testModel);
+                  },
+                  child: Text("Store In DB"),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    UnapprovedCparaService.getUnapprovedFromDB();
+                  },
+                  child: Text("Fetch From DB"),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
+                  ),
+                )
+              ],
             )
           ],
         ),
