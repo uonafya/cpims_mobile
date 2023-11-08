@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
+import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_form_model.dart';
 import 'package:cpims_mobile/services/api_service.dart';
 import 'package:flutter/foundation.dart';
@@ -71,12 +72,12 @@ class HIVManagementFormProvider extends ChangeNotifier {
         print(formData);
       }
 
-      // submit data
-      final Response response =
-          await apiServiceConstructor.postSecData(formData, "mobile/hmf/");
-      if (kDebugMode) {
-        print(response.body);
-      }
+      // save data locally
+      await LocalDb.instance.insertHMFFormData(
+        cpimsID!,
+        _artTherapyFormModel,
+        _hivVisitationFormModel,
+      );
     } catch (e) {
       if (kDebugMode) {
         print(e);

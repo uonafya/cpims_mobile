@@ -8,6 +8,7 @@ import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
+import 'package:cpims_mobile/services/api_service.dart';
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
@@ -153,6 +154,26 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
+  Future<void> syncHMFFormData() async {
+    final db = await LocalDb.instance;
+    try {
+      // read from localdb
+      final queryResults = await db.fetchHMFFormData();
+      // submit data
+      for (final formData in queryResults) {
+        final Response response =
+            await apiServiceConstructor.postSecData(formData, "mobile/hmf/");
+        if (kDebugMode) {
+          print(response.data);
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
   Future<void> syncWorkflows() async {
     final isConnected =
         await Provider.of<ConnectivityProvider>(context, listen: false)
@@ -163,6 +184,7 @@ class _HomepageState extends State<Homepage> {
       // await fetchAndPostToServerOvcSubpopulationDataNew();
       await postFormOneToServer();
       await showCountUnsyncedForms();
+      await syncHMFFormData();
       if (mounted) {
         context.read<StatsProvider>().updateFormStats();
       }

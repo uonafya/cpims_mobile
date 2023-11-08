@@ -27,7 +27,7 @@ class ARTTherapyHIVFormModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'HIV_MGMT_2_A': dateOfEvent,
+      'date_of_event': dateOfEvent,
       'HIV_MGMT_1_A': dateHIVConfirmedPositive,
       'HIV_MGMT_1_B': dateTreatmentInitiated,
       'HIV_MGMT_1_C': baselineHEILoad,
@@ -43,7 +43,7 @@ class ARTTherapyHIVFormModel {
 
   factory ARTTherapyHIVFormModel.fromJson(Map<String, dynamic> json) {
     return ARTTherapyHIVFormModel(
-      dateOfEvent: json['HIV_MGMT_2_A'] ?? '',
+      dateOfEvent: json['date_of_event'] ?? '',
       dateHIVConfirmedPositive: json['HIV_MGMT_1_A'] ?? '',
       dateTreatmentInitiated: json['HIV_MGMT_1_B'] ?? '',
       baselineHEILoad: json['HIV_MGMT_1_C'] ?? '',
