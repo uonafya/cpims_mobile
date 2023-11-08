@@ -1,6 +1,8 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants_prod.dart';
+import 'package:cpims_mobile/providers/hiv_management_form_provider.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/utils/hiv_management_form_constants.dart';
+import 'package:cpims_mobile/screens/forms/hiv_management/utils/hiv_management_form_status_provider.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/widgets/art_therapy_info_widget.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/widgets/hiv_visitation_widget.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
@@ -8,7 +10,9 @@ import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HIVManagementForm extends StatefulWidget {
   final CaseLoadModel caseLoad;
@@ -25,15 +29,34 @@ class HIVManagementForm extends StatefulWidget {
 class _HIVManagementFormState extends State<HIVManagementForm> {
   int selectedStep = 0;
   List<Widget> steps = [];
+  bool isStep1Completed = false;
 
   @override
   void initState() {
     super.initState();
-    steps = [const ARTTherapyInfoWidget(), const HIVVisitationWidget()];
+    steps = [
+      const ARTTherapyInfoWidget(),
+      const HIVVisitationWidget(),
+    ];
+  }
+
+  // submit hivmanagementform
+  void submitHIVManagementForm() async {
+    try {
+      await Provider.of<HIVManagementFormProvider>(context, listen: false)
+          .submitHIVManagementForm(widget.caseLoad.cpimsId);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final formCompletionStatus =
+        context.watch<FormCompletionStatusProvider>().artTherapyFormCompleted;
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -127,11 +150,12 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                   : 'Next',
                               onTap: () {
                                 if (selectedStep == steps.length - 1) {
-                                  // Navigator.pop(context);
                                   // logic for verifying form and submitting
+                                  submitHIVManagementForm();
                                 } else {
                                   setState(() {
-                                    if (selectedStep < steps.length - 1) {
+                                    if (selectedStep < steps.length - 1 &&
+                                        formCompletionStatus == true) {
                                       selectedStep++;
                                     }
                                   });

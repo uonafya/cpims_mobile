@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:cpims_mobile/services/form_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 
@@ -77,6 +78,9 @@ class Form1AProvider extends ChangeNotifier {
       criticalEvents.add(criticalEvent);
     }
     eventData = criticalEvents;
+    if (kDebugMode) {
+      print(criticalEvents);
+    }
   }
 
   void submitServicesData() {

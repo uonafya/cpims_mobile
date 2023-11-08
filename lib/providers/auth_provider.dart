@@ -15,7 +15,6 @@ import 'package:get/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
-
   static const String _lockAppPrefKey = '_lockAppPrefKey';
 
   UserModel _user = UserModel(
@@ -57,7 +56,6 @@ class AuthProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_lockAppPrefKey) ?? false;
   }
-
 
   Future<void> login({
     required BuildContext context,
@@ -143,6 +141,8 @@ class AuthProvider with ChangeNotifier {
                 await sharedPreferences.remove('refresh');
 
                 clearUser();
+
+                CaseLoadService.saveCaseLoadLastSave(0);
 
                 CaseLoadService.saveCaseLoadLastSave(0);
 

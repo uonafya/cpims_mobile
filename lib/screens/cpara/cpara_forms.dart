@@ -295,7 +295,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           context
                                               .read<StatsProvider>()
                                               .updateCparaFormStats();
-                                          //navigate back
+                                           //navigate back
                                           Get.snackbar(
                                             'Success',
                                             'Successfully saved CPARA form',
