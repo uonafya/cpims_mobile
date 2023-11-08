@@ -30,8 +30,8 @@ class UnapprovedDataService {
       } else if (endpoint == endpoints[1]) {
         final db = LocalDb.instance;
         for (var map in jsonData) {
-          final unapprovedForm1A = UnapprovedForm1DataModel.fromJson(map);
-          db.insertUnapprovedForm1Data(_formType1B, unapprovedForm1A, unapprovedForm1A.appFormMetaData, unapprovedForm1A.uuid);
+          final unapprovedForm1B = UnapprovedForm1DataModel.fromJson(map);
+          db.insertUnapprovedForm1Data(_formType1B, unapprovedForm1B, unapprovedForm1B.appFormMetaData, unapprovedForm1B.uuid);
         }
       } else if (endpoint == endpoints[2]) {
         // Handle CasePlan template
