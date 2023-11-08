@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/safe_cpt_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -211,7 +212,9 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
           context.read<CptProvider>().updateCptSafeFormData(
               cptSafeFormData.copyWith(goalId: selectedEvents[0].value));
           // Print the updated goalId
-          print("The selected goal was ${selectedEvents[0].value}");
+          if (kDebugMode) {
+            print("The selected goal was ${selectedEvents[0].value}");
+          }
         },
         selectedOptions: selectedGoalOptions,
         options: casePlanGoalSafeList,
@@ -245,7 +248,9 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
           context.read<CptProvider>().updateCptSafeFormData(
               cptSafeFormData.copyWith(gapId: selectedEvents[0].value));
           // Print the updated goalId
-          print("The selected need was ${selectedEvents[0].value}");
+          if (kDebugMode) {
+            print("The selected need was ${selectedEvents[0].value}");
+          }
         },
         options: casePlanGapsSafeList,
         selectedOptions: selectedNeedOptions,
@@ -278,7 +283,9 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
               context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
           context.read<CptProvider>().updateCptSafeFormData(
               cptSafeFormData.copyWith(priorityId: selectedEvents[0].value));
-          print("The selected priority was ${selectedEvents[0].value}");
+          if (kDebugMode) {
+            print("The selected priority was ${selectedEvents[0].value}");
+          }
         },
         options: casePlanPrioritiesSafeList,
         selectedOptions: selectedPriorityActionOptions,
@@ -316,7 +323,9 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
               ));
           selectedServiceIds =
               selectedEvents.map((item) => item.value).toList();
-          print("The selected service IDs are $selectedServiceIds");
+          if (kDebugMode) {
+            print("The selected service IDs are $selectedServiceIds");
+          }
         },
         selectedOptions: selectedServicesOptions,
         options: casePlanServicesSafeList,
@@ -355,8 +364,10 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
               ));
           selectedPersonResponsibleIds =
               selectedEvents.map((item) => item.value).toList();
-          print(
+          if (kDebugMode) {
+            print(
               "The selected responsible IDs are $selectedPersonResponsibleIds");
+          }
         },
         selectedOptions: selectedPersonsResponsibleOptions,
         options: casePlanProviderPersonsResponsibleList,
@@ -390,7 +401,9 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
           context.read<CptProvider>().updateCptSafeFormData(
               cptSafeFormData.copyWith(resultsId: selectedEvents[0].value));
           // Print the updated goalId
-          print("The selected result was ${selectedEvents[0].value}");
+          if (kDebugMode) {
+            print("The selected result was ${selectedEvents[0].value}");
+          }
         },
         selectedOptions: selectedResultsOptions,
         options: casePlanProviderResultList,

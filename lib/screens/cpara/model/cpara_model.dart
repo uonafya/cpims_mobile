@@ -1,9 +1,10 @@
-import 'package:cpims_mobile/Models/form_1_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/detail_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/health_model.dart';
+import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
@@ -18,7 +19,7 @@ class CparaModel {
   final StableModel stable;
   final SchooledModel schooled;
   final HealthModel health;
-  final List<Map<String, List<CheckboxQuestion>>>? ovcSubPopulations;
+  final CparaOvcSubPopulation ovcSubPopulations;
   final String uuid;
   final AppFormMetaData appFormMetaData;
 
@@ -28,7 +29,7 @@ class CparaModel {
     required this.stable,
     required this.schooled,
     required this.health,
-    this.ovcSubPopulations,
+    required this.ovcSubPopulations,
     this.uuid = "",
     this.appFormMetaData = const AppFormMetaData(),
     // required this.ovcSubPopulationModel
@@ -88,7 +89,9 @@ class CparaModel {
         }
       }
     } catch (err) {
-      print("Error adding children ${err.toString()}");
+      if (kDebugMode) {
+        print("Error adding children ${err.toString()}");
+      }
     }
   }
 
@@ -114,7 +117,9 @@ class CparaModel {
       }
       await batch.commit(noResult: true);
     } catch (err) {
-      print("Error adding children ${err.toString()}");
+      if (kDebugMode) {
+        print("Error adding children ${err.toString()}");
+      }
     }
   }
 
@@ -133,14 +138,21 @@ class CparaModel {
       // Get children from safe and health
       // Health
       List<Map<String, dynamic>> healtChildren = healthJSON.remove('children');
-      print("\nHealth Children\n");
-      print(healtChildren.toString());
+      if (kDebugMode) {
+        print("\nHealth Children\n");
+      }
+      if (kDebugMode) {
+        print(healtChildren.toString());
+      }
 
       // Safe
       List<Map<String, dynamic>> safeChildren = safeJSON.remove('children');
-      // List<Map<String, dynamic>> safeChildren = [{"id": "45", "q1": "ge"}];
-      print("\nSafe Children\n");
-      print(safeChildren.toString());
+      if (kDebugMode) {
+        print("\nSafe Children\n");
+      }
+      if (kDebugMode) {
+        print(safeChildren.toString());
+      }
 
       // Convert health children to a usable format
       List<List<Map<String, dynamic>>> usableHealthChildren = [];
@@ -172,7 +184,7 @@ class CparaModel {
         usableSafeChildren.add(tempList);
       }
 
-      
+
       await addChildren2(healtChildren, db!, formID);
       await addChildren2(safeChildren, db, formID);
 
@@ -221,20 +233,29 @@ class CparaModel {
 
       await batch.commit(noResult: true);
     } catch (err) {
-      print("Error adding household filled questions to db ${err.toString()}");
+      if (kDebugMode) {
+        print(
+            "Error adding household filled questions to db ${err.toString()}");
+      }
     }
   }
+
   // Create Form in database
-  Future<String> createForm(Database? db) async {
+  Future<String> createForm(Database? db, String assessmentDate) async {
     try {
       String formUUID = const Uuid().v4();
       // Insert entry to db
       db!.insert("Form",
-          {"date": DateTime.now().toString().split(' ')[0], "uuid": formUUID});
+          {"date": assessmentDate, "uuid": formUUID});
+      // db!.insert("Form",
+      //     {"date": DateTime.now().toString().split(' ')[0], "uuid": formUUID});
+
 
       return formUUID;
     } catch (err) {
-      print("Error creating form ${err.toString()}");
+      if (kDebugMode) {
+        print("Error creating form ${err.toString()}");
+      }
       return "";
     }
   }
@@ -244,8 +265,12 @@ class CparaModel {
     try {
       List<Map<String, dynamic>> fetchResults = await db!
           .rawQuery("SELECT date, id FROM Form ORDER BY id DESC LIMIT 1");
-      print("FetchResult is This");
-      print(fetchResults.toString());
+      if (kDebugMode) {
+        print("FetchResult is This");
+      }
+      if (kDebugMode) {
+        print(fetchResults.toString());
+      }
       DateTime formDate = DateTime.parse(fetchResults[0]['date']);
       int formID = fetchResults[0]['id'];
       return FormData(formID: formID, formDate: formDate);

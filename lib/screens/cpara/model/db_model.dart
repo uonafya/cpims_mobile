@@ -1,64 +1,65 @@
 // Models for interacting with db
+import 'package:cpims_mobile/screens/cpara/model/sub_ovc_child.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 
 class CPARAChildQuestions {
-  String ovc_cpims_id;
-  String question_code;
-  String answer_id;
+  String ovcCpimsId;
+  String questionCode;
+  String answerId;
 
   CPARAChildQuestions(
-      {this.ovc_cpims_id = "", this.question_code = "", this.answer_id = ""});
+      {this.ovcCpimsId = "", this.questionCode = "", this.answerId = ""});
 
   factory CPARAChildQuestions.fromJSON(Map<String, dynamic> json) {
     return CPARAChildQuestions(
-        question_code: "${json['questionid']}",
-        answer_id: "${json['answer']}",
-        ovc_cpims_id: "${json['childID']}");
+        questionCode: "${json['questionid']}",
+        answerId: "${json['answer']}",
+        ovcCpimsId: "${json['childID']}");
   }
 
   Map<String, dynamic> toJSON() {
     return {
-      "ovc_cpims_id": ovc_cpims_id,
-      "question_code": question_code,
-      "answer_id": answer_id
+      "ovc_cpims_id": ovcCpimsId,
+      "question_code": questionCode,
+      "answer_id": answerId
     };
   }
 }
 
 class CPARADatabaseQuestions {
-  final String question_code;
-  final String answer_id;
+  final String questionCode;
+  final String answerId;
 
   const CPARADatabaseQuestions({
-    required this.question_code,
-    required this.answer_id,
+    required this.questionCode,
+    required this.answerId,
   });
 
   factory CPARADatabaseQuestions.fromJSON(Map<String, dynamic> json) {
     return CPARADatabaseQuestions(
-        question_code: json['questionid'], answer_id: json['answer']);
+        questionCode: json['questionid'], answerId: json['answer']);
   }
 
   Map<String, dynamic> toJSON() {
-    return {question_code: answer_id};
+    return {questionCode: answerId};
   }
 }
 
 class CPARADatabase {
-  int cpara_form_id;
-  String ovc_cpims_id;
-  String date_of_event;
+  int cparaFormId;
+  String ovcCpimsId;
+  String dateOfEvent;
   List<CPARADatabaseQuestions> questions;
   List<CPARAChildQuestions> childQuestions;
   AppFormMetaData appFormMetaData;
+  List<SubOvcChild> listOfSubOvcs;
 
   CPARADatabase(
-      {
-        this.cpara_form_id = 0,
-        this.ovc_cpims_id = "",
-        this.date_of_event = "",
-        this.questions = const [],
-        this.childQuestions = const [],
-      this.appFormMetaData = const AppFormMetaData()
-      });
+      {this.cparaFormId = 0,
+      this.ovcCpimsId = "",
+      this.dateOfEvent = "",
+      this.questions = const [],
+      this.childQuestions = const [],
+      this.appFormMetaData = const AppFormMetaData(),
+      this.listOfSubOvcs = const []});
 }

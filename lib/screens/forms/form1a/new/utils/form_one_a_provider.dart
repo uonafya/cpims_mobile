@@ -1,18 +1,12 @@
 import 'dart:convert';
 
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../Models/form_1_model.dart';
-import '../../../../../providers/connection_provider.dart';
-import '../../../../../providers/db_provider.dart';
 import '../../../../../services/form_service.dart';
 import '../../../form1b/model/critical_events_form1b_model.dart';
 import '../../../form1b/model/health_form1b_model.dart';
@@ -128,7 +122,7 @@ class Form1AProviderNew extends ChangeNotifier {
   }
 
   Future<bool> saveForm1AData(
-      HealthFormData healthFormData,String startInterviewTime) async {
+      HealthFormData healthFormData, String startInterviewTime) async {
     List<MasterServicesFormData> masterServicesList =
         convertToMasterServicesFormData();
     setFinalFormDataServices(masterServicesList);
@@ -140,7 +134,7 @@ class Form1AProviderNew extends ChangeNotifier {
     List<Form1ServicesModel> servicesList = [];
 
     for (MasterServicesFormData masterFormData
-        in finalServicesFormData.services ?? []) {
+        in finalServicesFormData.services) {
       Form1ServicesModel entry = Form1ServicesModel(
           domainId: masterFormData.domainId,
           serviceId: masterFormData.selectedServiceId);
@@ -150,12 +144,11 @@ class Form1AProviderNew extends ChangeNotifier {
     List<Form1CriticalEventsModel> criticalEventsList = [];
     for (var criticalEvent in criticalEventsFormData) {
       Form1CriticalEventsModel entry = Form1CriticalEventsModel(
-          event_id: criticalEvent.event_id,
-          event_date: criticalEvent.event_date);
+          eventId: criticalEvent.eventId, eventDate: criticalEvent.eventDate);
       criticalEventsList.add(entry);
     }
 
-    String formUUID = Uuid().v4();
+    String formUUID = const Uuid().v4();
 
     AppFormMetaData appFormMetaData = AppFormMetaData(
       formId: formUUID,
@@ -165,16 +158,21 @@ class Form1AProviderNew extends ChangeNotifier {
 
     Form1DataModel toDbData = Form1DataModel(
       ovcCpimsId: finalServicesFormData.ovc_cpims_id,
-      date_of_event: finalServicesFormData.date_of_event,
+      dateOfEvent: finalServicesFormData.date_of_event,
       services: servicesList,
       criticalEvents: criticalEventsList,
       uuid: formUUID,
     );
     String data = jsonEncode(toDbData);
-    print("The json data for form 1 a is $data");
-    print("form1b payload:==========>$criticalEventsList");
+    if (kDebugMode) {
+      print("The json data for form 1 a is $data");
+    }
+    if (kDebugMode) {
+      print("form1b payload:==========>$criticalEventsList");
+    }
 
-    bool isFormSaved = await Form1Service.saveFormLocal("form1a", toDbData,appFormMetaData,formUUID);
+    bool isFormSaved = await Form1Service.saveFormLocal(
+        "form1a", toDbData, appFormMetaData, formUUID);
     if (isFormSaved == true) {
       resetFormData();
       notifyListeners();
@@ -238,7 +236,7 @@ class Form1AProviderNew extends ChangeNotifier {
           DateFormat('yyyy-MM-dd').format(criticalEventDataForm1b.selectedDate);
 
       eventsList.add(
-        Form1CriticalEventsModel(event_id: eventId!, event_date: eventDate),
+        Form1CriticalEventsModel(eventId: eventId!, eventDate: eventDate),
       );
     }
 
@@ -268,5 +266,4 @@ class Form1AProviderNew extends ChangeNotifier {
 
     notifyListeners();
   }
-
 }

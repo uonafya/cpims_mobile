@@ -169,7 +169,7 @@ class FormTab extends StatelessWidget {
                 eventType == 'CRITICAL EVENTS')
               CustomForm1ACardDetail(
                 unapprovedData: dataModel,
-                eventOrDomainId: dataModel.criticalEvents[0].event_id,
+                eventOrDomainId: dataModel.criticalEvents[0].eventId,
                 isService: false,
               )
             // Column(
@@ -381,7 +381,7 @@ class CustomForm1ACardDetail extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  unapprovedData.date_of_event,
+                  unapprovedData.dateOfEvent,
                 ),
               ],
             ),

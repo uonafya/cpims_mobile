@@ -4,15 +4,24 @@ import 'dart:async';
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
+import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
+import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
+import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
+import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
+import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
+import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_form.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+// import '../Models/case_plan_form.dart';
 import '../Models/caseplan_form_model.dart';
+import '../constants.dart';
 import '../screens/forms/form1a/new/form_one_a.dart';
 
 class LocalDb {
@@ -177,6 +186,7 @@ class LocalDb {
     await creatingCparaTables(db, version);
     await createOvcSubPopulation(db, version);
     await createAppMetaDataTable(db, version);
+    await createHRSForms(db, version);
   }
 
   Future<void> createAppMetaDataTable(Database db, int version) async {
@@ -301,26 +311,141 @@ class LocalDb {
   Future<void> insertCparaData(
       {required CparaModel cparaModelDB,
       required String ovcId,
-        required String startTime,
+      required String startTime,
       required String careProviderId}) async {
     final db = await instance.database;
-
+    var idForm = 0;
+    String selectedDate = cparaModelDB.detail.dateOfAssessment ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
     // Create form
-    cparaModelDB.createForm(db).then((formUUID) {
+    cparaModelDB.createForm(db, selectedDate).then((formUUID) {
+
       // Get formID
       cparaModelDB.getLatestFormID(db).then((formData) {
         var formDate = formData.formDate;
         var formDateString = formDate.toString().split(' ')[0];
         var formID = formData.formID;
+        idForm = formID;
         cparaModelDB.addHouseholdFilledQuestionsToDB(
             db, formDateString, ovcId, formID).then((value) {
               //insert app form metadata
-              insertAppFormMetaData(formUUID, startTime, 'cpara');
+              insertAppFormMetaData(formUUID, startTime, 'cpara').then((value) => handleSubmit(selectedDate: selectedDate,
+                  formId: formID, ovcSub: cparaModelDB.ovcSubPopulations));
             });
-        
       });
     });
   }
+
+  void handleSubmit({required String selectedDate, required int formId, required CparaOvcSubPopulation ovcSub}) async {
+    // CparaOvcSubPopulation ovcSub =
+    //     context.read<CparaProvider>().cparaOvcSubPopulation ??
+    //         CparaOvcSubPopulation();
+    final localDb = LocalDb.instance;
+    List<CparaOvcChild> listOfOvcChild = ovcSub.childrenQuestions ?? [];
+
+    // final currentContext = context; // Store the context in a local variable
+
+    try {
+      for (var child in listOfOvcChild) {
+        List<CheckboxQuestion> selectedQuestions = [];
+        if (child.answer1 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question1 ?? "double",
+              isChecked: child.answer1 ?? false));
+        }
+
+        if (child.answer2 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question2 ?? "AGYW",
+              isChecked: child.answer2 ?? false));
+        }
+
+        if (child.answer3 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question3 ?? "HEI",
+              isChecked: child.answer3 ?? false));
+        }
+
+        if (child.answer4 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question4 ?? "FSW",
+              isChecked: child.answer4 ?? false));
+        }
+
+        if (child.answer5 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question5 ?? "PLHIV",
+              isChecked: child.answer5 ?? false));
+        }
+
+        if (child.answer6 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question6 ?? "CLHIV",
+              isChecked: child.answer6 ?? false));
+        }
+
+        if (child.answer7 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question7 ?? "SVAC",
+              isChecked: child.answer7 ?? false));
+        }
+
+        if (child.answer8 ?? false) {
+          selectedQuestions.add(CheckboxQuestion(
+              question: "question",
+              id: 0,
+              questionID: child.question8 ?? "AHIV",
+              isChecked: child.answer8 ?? false));
+        }
+
+        // String uuid = const Uuid().v4();
+        // String? dateOfAssessment = selectedDate != null
+        //     ? DateFormat('yyyy-MM-dd').format(selectedDate)
+        //     : null;
+        await localDb.insertOvcSubpopulationData(
+            "$formId",
+            "${child.ovcId}",
+            selectedDate,
+            selectedQuestions);
+      }
+      // if(mounted) {
+      //   Navigator.pop(context);
+      // }
+    } catch (error) {
+      throw("Error Occurred");
+      // if (currentContext.mounted) {
+      //   showDialog(
+      //     context: currentContext, // Use the local context
+      //     builder: (context) => AlertDialog(
+      //       title: const Text('Error'),
+      //       content: Text('An error occurred: $error'),
+      //       actions: [
+      //         TextButton(
+      //           onPressed: () {
+      //             Get.back(); // Close the dialog
+      //           },
+      //           child: const Text('OK'),
+      //         ),
+      //       ],
+      //     ),
+      //   );
+      // }
+    }
+  }
+
 
   Future<void> createOvcSubPopulation(Database db, int version) async {
     try {
@@ -354,6 +479,98 @@ class LocalDb {
     } catch (err) {
       debugPrint(err.toString());
     }
+  }
+
+  Future<void> createHRSForms(Database db, int version) async {
+    // Define the table name
+
+    // Define the table schema with all the fields
+    const String createTableQuery = '''
+    CREATE TABLE $HRSForms (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      ovc_cpims_id TEXT,
+      HIV_RA_1A TEXT,
+      HIV_RS_01 TEXT,
+      HIV_RS_02 TEXT,
+      HIV_RS_03 TEXT,
+      HIV_RS_04 TEXT,
+      HIV_RS_05 TEXT,
+      HIV_RS_06 TEXT,
+      HIV_RS_09 TEXT,
+      HIV_RS_06A TEXT,
+      HIV_RS_07 TEXT,
+      HIV_RS_08 TEXT,
+      HIV_RS_10 TEXT,
+      HIV_RS_10A TEXT,
+      HIV_RS_10B TEXT,
+      HIV_RS_11 TEXT,
+      HIV_RS_14 TEXT,
+      HIV_RS_15 TEXT,
+      HIV_RS_16 TEXT,
+      HIV_RS_17 TEXT,
+      HIV_RS_18 TEXT,
+      HIV_RS_18A TEXT,
+      HIV_RS_18B TEXT,
+      HIV_RS_21 TEXT,
+      HIV_RS_22 TEXT,
+      HIV_RS_23 TEXT,
+      HIV_RS_24 TEXT,
+      HIV_RA_3Q6 TEXT
+    )
+  ''';
+
+    try {
+      await db.execute(createTableQuery);
+    } catch (e) {
+      print('Error creating table: $e');
+    }
+  }
+
+  Future<void> insertHRSData(
+      String cpmisId,
+      HIVCurrentStatusModel currentStatus,
+      HIVRiskAssessmentModel assessment,
+      ProgressMonitoringModel progress) async {
+    final db = await instance.database;
+    await db.insert(
+      HRSForms,
+      {
+        'ovc_cpims_id': cpmisId,
+        'HIV_RA_1A': currentStatus.dateOfAssessment,
+        'HIV_RS_01': currentStatus.statusOfChild,
+        'HIV_RS_02': currentStatus.hivStatus,
+        'HIV_RS_03': currentStatus.hivTestDone,
+        'HIV_RS_04': assessment.biologicalFather,
+        'HIV_RS_05': assessment.malnourished,
+        'HIV_RS_06': assessment.sexualAbuse,
+        'HIV_RS_09': assessment.sexualAbuseAdolescent,
+        'HIV_RS_06A': assessment.traditionalProcedures,
+        'HIV_RS_07': assessment.persistentlySick,
+        'HIV_RS_08': assessment.tb,
+        'HIV_RS_10': assessment.sexualIntercourse,
+        'HIV_RS_10A': assessment.symptomsOfSTI,
+        'HIV_RS_10B': assessment.ivDrugUser,
+        'HIV_RS_11': assessment.finalEvaluation,
+        'HIV_RS_14': progress.parentAcceptHivTesting,
+        'HIV_RS_15': progress.parentAcceptHivTestingDate,
+        'HIV_RS_16': progress.formalReferralMade,
+        'HIV_RS_17': progress.formalReferralMadeDate,
+        'HIV_RS_18': progress.formalReferralCompleted,
+        'HIV_RS_18A': progress.reasonForNotMakingReferral,
+        'HIV_RS_18B': progress.hivTestResult,
+        'HIV_RS_21': progress.referredForArt,
+        'HIV_RS_22': progress.referredForArtDate,
+        'HIV_RS_23': progress.artReferralCompleted,
+        'HIV_RS_24': progress.artReferralCompletedDate,
+        'HIV_RA_3Q6': progress.facilityOfArtEnrollment,
+      },
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> fetchHRSFormData() async {
+    final db = await LocalDb.instance.database;
+    final hrsData = await db.query(HRSForms);
+    return hrsData;
   }
 
   Future<void> insertOvcSubpopulationData(String uuid, String cpimsId,
@@ -489,14 +706,14 @@ class LocalDb {
 
   // insert formData(either form1a or form1b)
   Future<void> insertUnapprovedForm1Data(
-      String formType, formData, metadata, uuid) async {
+      String formType,UnapprovedForm1DataModel formData, metadata, uuid) async {
     try {
       final db = await instance.database;
       final formId = await db.insert(
         unapprovedForm1Table,
         {
           'ovc_cpims_id': formData.ovcCpimsId,
-          'date_of_event': formData.date_of_event,
+          'date_of_event': formData.dateOfEvent,
           'form_type': formType,
           'uuid': uuid,
           Form1.message : formData.message
@@ -523,8 +740,8 @@ class LocalDb {
           form1CriticalEventsTable,
           {
             Form1Services.unapprovedFormId : formId,
-            'event_id': criticalEvent.event_id,
-            'event_date': criticalEvent.event_date,
+            'event_id': criticalEvent.eventId,
+            'event_date': criticalEvent.eventDate,
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
@@ -542,7 +759,7 @@ class LocalDb {
       const sql =
           'SELECT * FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
       final List<Map<String, dynamic>> form1Rows =
-      await db.rawQuery(sql, [formType]);
+          await db.rawQuery(sql, [formType]);
 
       List<Map<String, dynamic>> updatedForm1Rows = [];
 
@@ -564,7 +781,7 @@ class LocalDb {
         );
 
         final AppFormMetaData appFormMetaData =
-        await getAppFormMetaData(form1row['uuid']);
+            await getAppFormMetaData(form1row['uuid']);
 
         // Create a new map that includes existing form1row data, services, critical_events, and ID
         Map<String, dynamic> updatedForm1Row = {
@@ -573,6 +790,7 @@ class LocalDb {
           'critical_events': criticalEvents,
           'id': formId,
           'app_form_metadata': appFormMetaData.toJson(),
+          'device_id': await getDeviceId(),
         };
         // Add the updated map to the list
         updatedForm1Rows.add(updatedForm1Row);
@@ -1050,11 +1268,9 @@ class LocalDb {
       return AppFormMetaData.fromJson(metaDataList.first);
     } else {
       // Handle the case where no metadata is found
-      return AppFormMetaData(); // You should replace this with an appropriate default value or error handling.
+      return const AppFormMetaData(); // You should replace this with an appropriate default value or error handling.
     }
   }
-
-  
 }
 
 // table name and field names
@@ -1070,6 +1286,7 @@ const form1ServicesTable = 'form1_services';
 const form1CriticalEventsTable = 'form1_critical_events';
 const ovcsubpopulation = 'ovcsubpopulation';
 const cparaForms = 'Form';
+const HRSForms = 'HRSForm';
 const cparaHouseholdAnswers = 'cpara_household_answers';
 const cparaChildAnswers = 'cpara_child_answers';
 

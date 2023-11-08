@@ -7,11 +7,13 @@ import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
 
 class CparaDetailsWidget extends StatefulWidget {
@@ -44,9 +46,7 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
         ? hasHivExposedInfant
         : convertingStringToRadioButtonOptions(
             detailModel.hasHivExposedInfant!);
-    // dateOfAssessment = detailModel.dateOfAssessment == null ? dateOfAssessment : DateTime.parse(detailModel.dateOfAssessment!);
-    // dateOfLastAssessment = detailModel.dateOfLastAssessment == null ? dateOfLastAssessment : DateTime.parse(detailModel.dateOfLastAssessment!);
-    List<CaseLoadModel> models = context.read<CparaProvider>().children ?? [];
+    List<CaseLoadModel> models = context.read<CparaProvider>().children;
     children = models;
 
     super.initState();
@@ -57,7 +57,8 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
       case 'assesment':
         DetailModel detailModel =
             context.read<CparaProvider>().detailModel ?? DetailModel();
-        var newDetailModel = detailModel.copyWith(dateOfAssessment: newDate ?? "");
+        var newDetailModel =
+            detailModel.copyWith(dateOfAssessment: newDate ?? "");
         context.read<CparaProvider>().updateDetailModel(newDetailModel);
       case 'previous':
         DetailModel detailModel =
@@ -70,26 +71,38 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
     }
   }
 
-  void _getDataAndMoveToNext() {
-    print('Is first assessment: $widget');
-    print('Is child headed: $isChildHeaded');
-    print('Has HIV exposed infant: $hasHivExposedInfant');
-    print(
-        'Has pregnant or breastfeeding woman: $hasPregnantOrBreastfeedingWoman');
+  void getDataAndMoveToNext() {
+    if (kDebugMode) {
+      print('Is first assessment: $widget');
+    }
+    if (kDebugMode) {
+      print('Is child headed: $isChildHeaded');
+    }
+    if (kDebugMode) {
+      print('Has HIV exposed infant: $hasHivExposedInfant');
+    }
+    if (kDebugMode) {
+      print(
+          'Has pregnant or breastfeeding woman: $hasPregnantOrBreastfeedingWoman');
+    }
 
     DateTime? dateOfAssessment =
         _dateTextFieldKey.currentState?.getSelectedDate();
     String formattedDateOfAssessment = dateOfAssessment != null
         ? DateFormat('yyyy-MM-dd').format(dateOfAssessment)
         : '';
-    print('Date of assessment: $formattedDateOfAssessment');
+    if (kDebugMode) {
+      print('Date of assessment: $formattedDateOfAssessment');
+    }
 
     DateTime? dateOfPreviousAssessment =
         _dateTextFieldPreviousKey.currentState?.getSelectedDate();
     String formattedDateOfPreviousAssessment = dateOfPreviousAssessment != null
         ? DateFormat('yyyy-MM-dd').format(dateOfPreviousAssessment)
         : '';
-    print('Date of previous assessment: $formattedDateOfPreviousAssessment');
+    if (kDebugMode) {
+      print('Date of previous assessment: $formattedDateOfPreviousAssessment');
+    }
   }
 
   final GlobalKey<_DateTextFieldState> _dateTextFieldKey = GlobalKey();
@@ -320,7 +333,7 @@ class DateTextField2 extends StatelessWidget {
             lastDate: DateTime.now(),
           ).then((pickedDate) {
             if (pickedDate != null) {
-              updateDate(pickedDate.toIso8601String());
+              updateDate(DateFormat('yyyy-MM-dd').format(pickedDate ?? DateTime.now()));
             }
           });
         }
@@ -353,7 +366,7 @@ class DateTextField extends StatefulWidget {
   final Function(DateTime?)? onDateSelected;
 
   @override
-  _DateTextFieldState createState() => _DateTextFieldState();
+  State<DateTextField> createState() => _DateTextFieldState();
 }
 
 class _DateTextFieldState extends State<DateTextField> {
@@ -409,7 +422,7 @@ class TextViewsColumn extends StatefulWidget {
   const TextViewsColumn({super.key});
 
   @override
-  _TextViewsColumnState createState() => _TextViewsColumnState();
+  State<TextViewsColumn> createState() => _TextViewsColumnState();
 }
 
 class _TextViewsColumnState extends State<TextViewsColumn> {
@@ -529,7 +542,7 @@ class ChildCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ReusableTitleText(title: 'Gender'),
-                ReusableTitleText(title: 'Unique Number'),
+                ReusableTitleText(title: 'CPIMS ID'),
               ],
             ),
             Row(
@@ -671,7 +684,6 @@ class ApiService {
     );
 
     if (response.statusCode == 200) {
-      print(response.body);
       final Map<String, dynamic> jsonData = json.decode(response.body);
       return CparaOvcDetails.fromJson(jsonData);
     } else {

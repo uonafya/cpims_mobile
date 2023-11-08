@@ -7,6 +7,7 @@ import 'package:cpims_mobile/screens/cpara/cpara_forms.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/forms/form1b/form_1B.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/screens/hiv_management_form_screen.dart';
+import 'package:cpims_mobile/screens/forms/hiv_management/screens/hiv_management_form_screen.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_assessment.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/widgets/custom_card_grid_item.dart';
@@ -21,7 +22,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 
-import '../cpara/widgets/ovc_sub_population_form.dart';
 import '../forms/case_plan/cpt/new_case_plan_template.dart';
 import '../forms/form1a/new/form_one_a.dart';
 
@@ -165,12 +165,11 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
               workflowName: "CPARA",
               onClick: () {
                 // Get instance of current CPARA provider
-                var old_cpims_id =
-                    context.read<CparaProvider>().caseLoadModel?.cpimsId ??
-                        null;
+                var oldCpimsId =
+                    context.read<CparaProvider>().caseLoadModel?.cpimsId;
 
                 // Add check here
-                if (widget.caseLoadModel.cpimsId != old_cpims_id) {
+                if (widget.caseLoadModel.cpimsId != oldCpimsId) {
                   // Clear previous CPARA data
                   context.read<CparaProvider>().clearCparaProvider();
                 }
@@ -180,7 +179,9 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                 final caseLoadData =
                     Provider.of<UIProvider>(context, listen: false)
                         .caseLoadData;
-context.read<CparaProvider>().updateChildren(caseLoadData ?? []);
+                context
+                    .read<CparaProvider>()
+                    .updateChildren(caseLoadData ?? []);
                 // Set start time to form meta data
                 String startDateTime = DateTime.now().toString();
                 context

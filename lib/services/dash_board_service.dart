@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/services/api_service.dart';
-import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DashBoardService {

@@ -33,17 +33,17 @@ class HIVRiskAssessmentModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'biologicalFather': biologicalFather,
-      'malnourished': malnourished,
-      'sexualAbuse': sexualAbuse,
-      'sexualAbuseAdolescent': sexualAbuseAdolescent,
-      'traditionalProcedures': traditionalProcedures,
-      'persistentlySick': persistentlySick,
-      'tb': tb,
-      'sexualIntercourse': sexualIntercourse,
-      'symptomsOfSTI': symptomsOfSTI,
-      'ivDrugUser': ivDrugUser,
-      'finalEvaluation': finalEvaluation,
+      'HIV_RS_04': biologicalFather,
+      'HIV_RS_05': malnourished,
+      'HIV_RS_06': sexualAbuse,
+      'HIV_RS_09': sexualAbuseAdolescent,
+      'HIV_RS_06A': traditionalProcedures,
+      'HIV_RS_07': persistentlySick,
+      'HIV_RS_08': tb,
+      'HIV_RS_10': sexualIntercourse,
+      'HIV_RS_10A': symptomsOfSTI,
+      'HIV_RS_10B': ivDrugUser,
+      'HIV_RS_11': finalEvaluation,
     };
   }
 }
