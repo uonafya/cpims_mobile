@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
+import 'package:cpims_mobile/screens/cpara/model/unnaproved_cpara_database_model.dart';
 import 'package:flutter/foundation.dart';
 
 String convertOptionStandardFormat({required String text}) {
@@ -169,4 +172,13 @@ String overallChildrenBenchmark({required List<String> childrenOptions}) {
   }
 
   return "yes";
+}
+
+List<UnapprovedCparaDatabase> listOfUnapprovedCparas({required String remoteData}){
+  var unapprovedCparaRemoteData = '[{"form_id":8, "ovc_cpims_id": "67804874", "date_of_event": "2023-11-08", "questions": [{"questionid":"CP1d","answer":"AYES"}], "individual_questions": [{"childID": "5674321", "questionid":"CP1d","answer":"AYES"}], "scores": [{"b1": "1"}], "app_form_metadata": {"form_id": "3fhfgjjyu", "location_lat": "-0.422", "location_long":"34.76", "start_of_interview":"2023-11-07 15:53:54.935785","end_of_interview":"2023-11-07T15:54:29.973195","form_type":"cpara"}, "sub_population": [{"ovc_cpims_id":"4566776", "criteria":"double", "answer_id":"AYES"}], "message":"Poor record filling"}]';
+
+  var decodedData = json.decode(unapprovedCparaRemoteData);
+  // List<dynamic>.from(cparaForm.listOfSubOvcs.map((x) => x.toJson())),
+  List<UnapprovedCparaDatabase> listOfUnaprovedCparas =  List<UnapprovedCparaDatabase>.from(decodedData.map((x) => UnapprovedCparaDatabase.fromJson(x)));
+  return listOfUnaprovedCparas;
 }

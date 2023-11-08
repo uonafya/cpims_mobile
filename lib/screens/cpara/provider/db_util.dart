@@ -262,7 +262,7 @@ Future<void> singleCparaFormSubmission(
     "sub_population": List<dynamic>.from(cparaForm.listOfSubOvcs.map((x) => x.toJson())),
     "device_id": await getDeviceId(),
   };
-  debugPrint(json.encode(cparaMapData));
+  debugPrint(json.encode(cparaMapData), wrapWidth: 1000000);
 
   dio.interceptors.add(LogInterceptor());
   const cparaUrl = "mobile/cpara/";
