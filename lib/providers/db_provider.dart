@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
+import 'package:cpims_mobile/providers/unapproved_cpt_provider.dart';
 import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
 import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
@@ -187,6 +188,8 @@ class LocalDb {
     await createOvcSubPopulation(db, version);
     await createAppMetaDataTable(db, version);
     await createHRSForms(db, version);
+    final unapprovedCptDb = UnapprovedCptProvider();
+    await unapprovedCptDb.createTable(db, version);
   }
 
   Future<void> createAppMetaDataTable(Database db, int version) async {
@@ -716,7 +719,7 @@ class LocalDb {
           'date_of_event': formData.dateOfEvent,
           'form_type': formType,
           'uuid': uuid,
-          Form1.message : formData.message
+          Form1.message: formData.message
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -728,7 +731,7 @@ class LocalDb {
         await db.insert(
           form1ServicesTable,
           {
-            Form1Services.unapprovedFormId : formId,
+            Form1Services.unapprovedFormId: formId,
             'domain_id': service.domainId,
             'service_id': service.serviceId,
           },

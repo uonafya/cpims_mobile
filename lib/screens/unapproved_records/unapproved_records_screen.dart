@@ -7,6 +7,8 @@ import 'package:cpims_mobile/widgets/custom_chip.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 
+import '../../Models/unapproved_caseplan_form_model.dart';
+
 class UnapprovedRecordsScreens extends StatefulWidget {
   const UnapprovedRecordsScreens({super.key});
 
@@ -33,12 +35,17 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
   }
 
   List<UnapprovedForm1DataModel> unapprovedForm1Data = [];
+  List<UnapprovedCasePlanModel> unapprovedCaseplanData = [];
 
   void getRecords() async {
     final List<UnapprovedForm1DataModel> records =
-    await UnapprovedDataService.fetchLocalUnapprovedForm1AData();
+        await UnapprovedDataService.fetchLocalUnapprovedForm1AData();
+    final List<UnapprovedCasePlanModel> unapprovedCaseplanRecords =
+        await UnapprovedDataService.fetchLocalUnapprovedCasePlanData();
+    print(unapprovedCaseplanRecords);
     setState(() {
       unapprovedForm1Data = records;
+      unapprovedCaseplanData = unapprovedCaseplanRecords;
     });
   }
 
@@ -72,7 +79,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                 ),
                 itemCount: unapprovedRecords.length,
                 separatorBuilder: (BuildContext context, int index) =>
-                const SizedBox(
+                    const SizedBox(
                   width: 12,
                 ),
               ),
@@ -83,8 +90,10 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                 children: [
                   for (var item in unapprovedItems)
                     if (item['title'] == 'CPARA')
-                      const ChildDetailsCard(
-                        cargiverData: {},
+                      CustomForm1ACardDetail(
+                        unapprovedData: unapprovedCaseplanData,
+                        eventOrDomainId: '12',
+                        isService: true,
                       ),
                 ],
               ),
@@ -120,11 +129,13 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                               selectedRecord: selectedRecord,
                               eventType: 'SERVICES',
                               unapprovedForm1aData: unapprovedForm1Data,
+                              unapprovedCPTData: unapprovedCaseplanData,
                             ),
                             FormTab(
                               selectedRecord: selectedRecord,
                               eventType: 'CRITICAL EVENTS',
                               unapprovedForm1aData: unapprovedForm1Data,
+                              unapprovedCPTData: unapprovedCaseplanData,
                             ),
                           ],
                         ),
@@ -143,13 +154,15 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
 class FormTab extends StatelessWidget {
   final String selectedRecord;
   final String eventType;
-  final List<UnapprovedForm1DataModel> unapprovedForm1aData;
+  final List? unapprovedForm1aData;
+  final List? unapprovedCPTData;
 
   const FormTab({
     super.key,
     required this.selectedRecord,
     required this.eventType,
-    required this.unapprovedForm1aData,
+    this.unapprovedForm1aData,
+    this.unapprovedCPTData,
   });
 
   @override
@@ -158,133 +171,46 @@ class FormTab extends StatelessWidget {
       title: '$selectedRecord $eventType List',
       children: [
         if (selectedRecord == "Form 1A" || selectedRecord == "Form 1B")
-          for (final dataModel in unapprovedForm1aData)
+          for (final dataModel in unapprovedForm1aData!)
             if (dataModel.services.isNotEmpty && eventType == "SERVICES")
-              CustomForm1ACardDetail(
+              CustomForm1ACardDetail<UnapprovedForm1DataModel>(
                 unapprovedData: dataModel,
                 eventOrDomainId: dataModel.services[0].domainId,
                 isService: true,
               )
             else if (dataModel.criticalEvents.isNotEmpty &&
                 eventType == 'CRITICAL EVENTS')
-              CustomForm1ACardDetail(
+              CustomForm1ACardDetail<UnapprovedForm1DataModel>(
                 unapprovedData: dataModel,
                 eventOrDomainId: dataModel.criticalEvents[0].eventId,
                 isService: false,
               )
-            // Column(
-            //   children: unapprovedForm1aData
-            //       .map((e) => CustomForm1ACardDetail(
-            //             unapprovedData: e,
-            //           ))
-            //       .toList(),
-            // )
             else if (selectedRecord == "CPT")
-                const Column(
-                  children: [
+              for (final cptdataModel in unapprovedCPTData!)
+                if (cptdataModel.services.isNotEmpty && eventType == "SERVICES")
+                  CustomForm1ACardDetail<UnapprovedCasePlanModel>(
+                    unapprovedData: cptdataModel,
+                    eventOrDomainId: cptdataModel.services[0].domainId,
+                    isService: true,
+                  )
+                else if (cptdataModel.criticalEvents.isNotEmpty &&
+                    eventType == 'CRITICAL EVENTS')
+                  CustomForm1ACardDetail<UnapprovedCasePlanModel>(
+                    unapprovedData: cptdataModel,
+                    eventOrDomainId: cptdataModel.services[0].domainId,
+                    isService: true,
+                  )
+                else
+                  const Column(children: [
                     Text(
                       'Not Implemented',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
+                        color: Colors.black,
                       ),
                     ),
-                  ],
-                )
-              else
-                const Column(children: [
-                  Text(
-                    'Not Implemented',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                ])
-        // if (selectedRecord == "CPARA")
-        //   Column(
-        //     children: selectedItems.map((e) => ChildDetailsCard(e)).toList(),
-        //   )
-        // else
-        //   Table(
-        //     columnWidths: const {
-        //       0: FlexColumnWidth(1),
-        //       1: FlexColumnWidth(2),
-        //       2: FlexColumnWidth(1),
-        //     },
-        //     border: TableBorder.symmetric(
-        //       inside: BorderSide(
-        //         color: Colors.grey.withOpacity(0.5),
-        //       ),
-        //     ),
-        //     children: [
-        //       const TableRow(
-        //         children: [
-        //           Padding(
-        //             padding: EdgeInsets.symmetric(vertical: 8.0),
-        //             child: Text(
-        //               'Child ID',
-        //               textAlign: TextAlign.start,
-        //               style: TextStyle(
-        //                 fontWeight: FontWeight.w600,
-        //                 fontSize: 16,
-        //               ),
-        //             ),
-        //           ),
-        //           Padding(
-        //             padding: EdgeInsets.symmetric(
-        //               vertical: 8.0,
-        //               horizontal: 10.0,
-        //             ),
-        //             child: Text(
-        //               'Details',
-        //               textAlign: TextAlign.start,
-        //               style: TextStyle(
-        //                 fontWeight: FontWeight.w600,
-        //                 fontSize: 16,
-        //               ),
-        //             ),
-        //           ),
-        //           Padding(
-        //             padding: EdgeInsets.symmetric(
-        //               vertical: 8.0,
-        //               horizontal: 10.0,
-        //             ),
-        //             child: Text(
-        //               'Date',
-        //               textAlign: TextAlign.start,
-        //               style: TextStyle(
-        //                 fontWeight: FontWeight.w600,
-        //                 fontSize: 16,
-        //               ),
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //       ...selectedItems
-        //           .map(
-        //             (e) => TableRow(
-        //               children: [
-        //                 Padding(
-        //                   padding: const EdgeInsets.symmetric(
-        //                     vertical: 8.0,
-        //                   ),
-        //                   child: Text(e['childID']),
-        //                 ),
-        //                 Padding(
-        //                   padding: const EdgeInsets.all(8.0),
-        //                   child: Text(e['details']),
-        //                 ),
-        //                 Padding(
-        //                   padding: const EdgeInsets.all(8.0),
-        //                   child: Text(e['date']),
-        //                 ),
-        //               ],
-        //             ),
-        //           )
-        //           .toList(),
-        //     ],
-        //   ),
+                  ])
       ],
     );
   }
@@ -300,33 +226,35 @@ class ChildDetailsCard extends StatelessWidget {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(
-                  "${cargiverData['caregiverName']}",
-                ),
-                Text(
-                  "Caregiver ID: ${cargiverData['caregiverID']}",
-                ),
-                Text(
-                  "${cargiverData['date']}",
-                ),
-              ],
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "${cargiverData['caregiverName']}",
+                  ),
+                  Text(
+                    "Caregiver ID: ${cargiverData['caregiverID']}",
+                  ),
+                  Text(
+                    "${cargiverData['date']}",
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class CustomForm1ACardDetail extends StatelessWidget {
-  // list with a type of unapproved form 1A data model
-  final UnapprovedForm1DataModel unapprovedData;
+class CustomForm1ACardDetail<T> extends StatelessWidget {
+  // list with a type of unapproved data model
+  final T unapprovedData;
   final String eventOrDomainId;
   final bool isService;
 
@@ -355,7 +283,7 @@ class CustomForm1ACardDetail extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  unapprovedData.ovcCpimsId,
+                  (unapprovedData as dynamic).ovcCpimsId,
                 ),
               ],
             ),
@@ -381,7 +309,7 @@ class CustomForm1ACardDetail extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  unapprovedData.dateOfEvent,
+                  (unapprovedData as dynamic).dateOfEvent,
                 ),
               ],
             ),
@@ -394,7 +322,7 @@ class CustomForm1ACardDetail extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  unapprovedData.message,
+                  (unapprovedData as dynamic).message,
                 ),
               ],
             ),
