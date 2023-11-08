@@ -23,7 +23,8 @@ Future<void> createUnapprovedCparaTables(Database db, int version) async {
     CREATE TABLE IF NOT EXISTS UnapprovedCPARA(
       id TEXT PRIMARY KEY,
       date_of_event TEXT,
-      message TEXT
+      message TEXT,
+      ovc_id TEXT
     )
     ''');
 
