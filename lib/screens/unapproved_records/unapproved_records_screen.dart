@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
 import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
@@ -36,7 +37,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
 
   void getRecords() async {
     final List<UnapprovedForm1DataModel> records =
-    await UnapprovedDataService.fetchLocalUnapprovedForm1AData();
+        await UnapprovedDataService.fetchLocalUnapprovedForm1AData();
     setState(() {
       unapprovedForm1Data = records;
     });
@@ -72,7 +73,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                 ),
                 itemCount: unapprovedRecords.length,
                 separatorBuilder: (BuildContext context, int index) =>
-                const SizedBox(
+                    const SizedBox(
                   width: 12,
                 ),
               ),
@@ -133,6 +134,15 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                   ),
                 ),
               ),
+            ElevatedButton(
+              onPressed: () {
+                UnapprovedCparaService.storeInDB(testModel);
+              },
+              child: Text("This Is A Test Button"),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
+              ),
+            )
           ],
         ),
       ),
@@ -180,19 +190,8 @@ class FormTab extends StatelessWidget {
             //       .toList(),
             // )
             else if (selectedRecord == "CPT")
-                const Column(
-                  children: [
-                    Text(
-                      'Not Implemented',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ],
-                )
-              else
-                const Column(children: [
+              const Column(
+                children: [
                   Text(
                     'Not Implemented',
                     style: TextStyle(
@@ -200,7 +199,18 @@ class FormTab extends StatelessWidget {
                       fontSize: 20,
                     ),
                   ),
-                ])
+                ],
+              )
+            else
+              const Column(children: [
+                Text(
+                  'Not Implemented',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+              ])
         // if (selectedRecord == "CPARA")
         //   Column(
         //     children: selectedItems.map((e) => ChildDetailsCard(e)).toList(),
