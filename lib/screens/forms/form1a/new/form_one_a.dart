@@ -33,6 +33,7 @@ class FomOneA extends StatefulWidget {
 
 class _FomOneAState extends State<FomOneA> {
   int selectedStep = 0;
+  bool isLoading = false;
 
   List<Widget> steps = [
     const FormOneAHealthy(),
@@ -179,6 +180,7 @@ class _FomOneAState extends State<FomOneA> {
                           ),
                           Expanded(
                             child: CustomButton(
+                              isLoading: isLoading,
                               text: isLastStep ? 'Submit Form1A' : 'Next',
                               onTap: () async {
                                 if (isLastStep) {
@@ -206,12 +208,16 @@ class _FomOneAState extends State<FomOneA> {
                                         endTimeInterview =
                                             DateTime.now().toIso8601String();
                                       }
+                                      setState(() {
+                                        isLoading = true;
+                                      });
                                       bool isFormSaved =
                                           await form1AProvider.saveForm1AData(
                                               form1AProvider.formData,
                                               startInterviewTime);
                                       setState(() {
                                         if (isFormSaved == true) {
+                                          isLoading = false;
                                           if (context.mounted) {
                                             context
                                                 .read<StatsProvider>()
