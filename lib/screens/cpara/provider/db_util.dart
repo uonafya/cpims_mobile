@@ -21,8 +21,9 @@ Future<void> createUnapprovedCparaTables(Database db, int version) async {
   // Creating table to store unapproved CPARA form
   await db.execute('''
     CREATE TABLE IF NOT EXISTS UnapprovedCPARA(
-      id INTEGER PRIMARY KEY,
-      date_of_event TEXT
+      id TEXT PRIMARY KEY,
+      date_of_event TEXT,
+      message TEXT
     )
     ''');
 
