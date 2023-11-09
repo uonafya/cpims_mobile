@@ -56,6 +56,7 @@ class CPARADatabase {
   AppFormMetaData appFormMetaData;
   List<SubOvcChild> listOfSubOvcs;
 
+
   CPARADatabase({
     this.cparaFormId = 0,
     this.ovcCpimsId = "",
@@ -65,4 +66,5 @@ class CPARADatabase {
     this.appFormMetaData = const AppFormMetaData(),
     this.listOfSubOvcs = const [],
   });
+
 }
