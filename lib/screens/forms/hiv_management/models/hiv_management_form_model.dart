@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 class ARTTherapyHIVFormModel {
+  final String dateOfEvent;
   final String dateHIVConfirmedPositive;
   final String dateTreatmentInitiated;
   final String baselineHEILoad;
@@ -13,6 +14,7 @@ class ARTTherapyHIVFormModel {
   final String switchToThirdLineDate;
 
   ARTTherapyHIVFormModel({
+    this.dateOfEvent = '',
     this.dateHIVConfirmedPositive = '',
     this.dateTreatmentInitiated = '',
     this.baselineHEILoad = '',
