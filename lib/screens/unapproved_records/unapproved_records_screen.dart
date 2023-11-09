@@ -95,6 +95,21 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       CaseLoadModel caseLoad = CaseLoadModel();
       caseLoad.cpimsId = unapprovedForm1A.ovcCpimsId;
       caseLoad.caregiverNames = "Unknown";
+      List<ValueItem> form1CriticalEvents = [];
+      List<ValueItem> criticalEventsOptions = formOneACriticalEvents.map((service) {
+        return ValueItem(
+            label: service['event_description'], value: service['event_id']);
+      }).toList();
+      for (var form1ACriticalEvent in unapprovedForm1A.criticalEvents) {
+        var t = criticalEventsOptions.where((element) => element.value == form1ACriticalEvent.eventId);
+        if(t.isNotEmpty) {
+          form1CriticalEvents.add(t.first);
+        }
+      }
+      if (form1CriticalEvents.isNotEmpty) {
+        form1aProvider.setCriticalEventsSelectedEvents(form1CriticalEvents);
+      }
+
       List<ValueItem> form1StableServices = [];
       String stableServicesDomain = domainsList[2]['item_id'];
       List<ValueItem> stableServices = stableServicesOptions.map((service) {
