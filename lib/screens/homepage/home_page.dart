@@ -175,6 +175,28 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
+  Future<void> syncHRSFormData() async {
+    final db = await LocalDb.instance;
+    try {
+      // read from localdb
+      final queryResults = await db.fetchHRSFormData();
+      // submit data
+      for (final formData in queryResults) {
+        final response =
+            await apiServiceConstructor.postSecData(formData, "mobile/hrs/");
+        if (kDebugMode) {
+          print(response);
+        }
+        //Remove from localdb
+        await db.updateHRSData(formData['uuid']);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
   Future<void> syncWorkflows() async {
     final isConnected =
         await Provider.of<ConnectivityProvider>(context, listen: false)
@@ -185,6 +207,7 @@ class _HomepageState extends State<Homepage> {
       // await fetchAndPostToServerOvcSubpopulationDataNew();
       await postFormOneToServer();
       await showCountUnsyncedForms();
+      await syncHRSFormData();
       await syncHMFFormData();
       if (mounted) {
         context.read<StatsProvider>().updateFormStats();

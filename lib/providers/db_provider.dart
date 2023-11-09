@@ -309,7 +309,8 @@ class LocalDb {
       required String careProviderId}) async {
     final db = await instance.database;
     var idForm = 0;
-    String selectedDate = cparaModelDB.detail.dateOfAssessment ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
+    String selectedDate = cparaModelDB.detail.dateOfAssessment ??
+        DateFormat('yyyy-MM-dd').format(DateTime.now());
     // Create form
     cparaModelDB.createForm(db, selectedDate).then((formUUID) {
       // Get formID
@@ -573,8 +574,21 @@ class LocalDb {
 
   Future<List<Map<String, dynamic>>> fetchHRSFormData() async {
     final db = await LocalDb.instance.database;
-    final hrsData = await db.query(HRSForms);
+
+    final hrsData = await db.query(HRSForms,
+        where: 'form_date_synced IS NULL OR form_date_synced = ""');
     return hrsData;
+  }
+
+  Future<void> deleteHRSData(String id) async {
+    final db = await LocalDb.instance.database;
+    await db.delete(HRSForms, where: 'uuid = ?', whereArgs: [id]);
+  }
+
+  Future<void> updateHRSData(String id) async {
+    final db = await LocalDb.instance.database;
+    await db.update(HRSForms, {'form_date_synced': DateTime.now().toString()},
+        where: 'uuid = ?', whereArgs: [id]);
   }
 
   // create HIVManagement table
@@ -763,7 +777,8 @@ class LocalDb {
     );
   }
 
-  Future<void> insertUnapprovedAppFormMetaData(uuid, AppFormMetaData metadata, formType) async {
+  Future<void> insertUnapprovedAppFormMetaData(
+      uuid, AppFormMetaData metadata, formType) async {
     final db = await instance.database;
     await db.insert(
       appFormMetaDataTable,
@@ -829,8 +844,8 @@ class LocalDb {
   }
 
   // insert formData(either form1a or form1b)
-  Future<void> insertUnapprovedForm1Data(
-      String formType,UnapprovedForm1DataModel formData, metadata, uuid) async {
+  Future<void> insertUnapprovedForm1Data(String formType,
+      UnapprovedForm1DataModel formData, metadata, uuid) async {
     try {
       final db = await instance.database;
       final formId = await db.insert(
@@ -863,7 +878,7 @@ class LocalDb {
         await db.insert(
           form1CriticalEventsTable,
           {
-            Form1Services.unapprovedFormId : formId,
+            Form1Services.unapprovedFormId: formId,
             'event_id': criticalEvent.eventId,
             'event_date': criticalEvent.eventDate,
           },
@@ -930,11 +945,11 @@ class LocalDb {
     }
   }
 
-  Future<List<Map<String, dynamic>>> queryAllUnapprovedForm1Rows(String formType) async {
+  Future<List<Map<String, dynamic>>> queryAllUnapprovedForm1Rows(
+      String formType) async {
     try {
       final db = await instance.database;
-      const sql =
-          'SELECT * FROM $unapprovedForm1Table WHERE form_type = ?';
+      const sql = 'SELECT * FROM $unapprovedForm1Table WHERE form_type = ?';
       final List<Map<String, dynamic>> form1Rows =
           await db.rawQuery(sql, [formType]);
 

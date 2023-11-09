@@ -64,16 +64,6 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         Provider.of<HIVAssessmentProvider>(context, listen: false)
             .hivCurrentStatusModel;
 
-    if (formIndex == 0 &&
-        (hivCurrentStatusModel.dateOfAssessment.isEmpty ||
-            hivCurrentStatusModel.statusOfChild.isEmpty)) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Please fill in the required fields"),
-        backgroundColor: Colors.red,
-      ));
-      return;
-    }
-
     if (formIndex == hivAssessmentTitles.length - 1) {
       try {
         setState(() {
@@ -88,7 +78,8 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         }
         AppMetaDataProvider appMetaDataProvider =
             Provider.of<AppMetaDataProvider>(context, listen: false);
-      String startTime = appMetaDataProvider.startTimeInterview ?? DateTime.now().toIso8601String();
+        String startTime = appMetaDataProvider.startTimeInterview ??
+            DateTime.now().toIso8601String();
         await Provider.of<HIVAssessmentProvider>(context, listen: false)
             .submitHIVAssessmentForm(startTime);
         setState(() {

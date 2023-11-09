@@ -333,7 +333,8 @@ class DateTextField2 extends StatelessWidget {
             lastDate: DateTime.now(),
           ).then((pickedDate) {
             if (pickedDate != null) {
-              updateDate(DateFormat('yyyy-MM-dd').format(pickedDate ?? DateTime.now()));
+              updateDate(DateFormat('yyyy-MM-dd')
+                  .format(pickedDate ?? DateTime.now()));
             }
           });
         }
@@ -350,15 +351,15 @@ class DateTextField2 extends StatelessWidget {
 }
 
 class DateTextField extends StatefulWidget {
-  const DateTextField(
-      {Key? key,
-      // required this.initialValue,
-        this.allowFutureDates = false,
-      required this.label,
-      required this.enabled,
-      required this.onDateSelected,
-      required this.identifier,})
-      : super(key: key);
+  const DateTextField({
+    Key? key,
+    // required this.initialValue,
+    this.allowFutureDates = false,
+    required this.label,
+    required this.enabled,
+    required this.onDateSelected,
+    required this.identifier,
+  }) : super(key: key);
 
   final String label;
   final bool enabled;
