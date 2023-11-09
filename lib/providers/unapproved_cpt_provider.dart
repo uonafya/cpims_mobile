@@ -106,9 +106,8 @@ class UnapprovedCptProvider {
         ));
 
         print("Unapproved list $unapprovedCasePlanList");
-
-        return unapprovedCasePlanList;
       }
+      return unapprovedCasePlanList;
     } catch (e) {
       if (kDebugMode) {
         print('Error retrieving case plans: $e');
