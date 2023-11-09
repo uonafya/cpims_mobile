@@ -92,6 +92,7 @@ class CparaModel {
       if (kDebugMode) {
         print("Error adding children ${err.toString()}");
       }
+      throw "Could Not Save CPARA Form";
     }
   }
 
@@ -120,12 +121,13 @@ class CparaModel {
       if (kDebugMode) {
         print("Error adding children ${err.toString()}");
       }
+      throw "Could Not Save CPARA Form";
     }
   }
 
   // This function add the portion of the form filled by the household to the database
   Future<void> addHouseholdFilledQuestionsToDB(
-      Database? db, String formDate, String ovcpmsid, formID) async {
+      Database? db, String formDate, String ovcpmsid, int formID) async {
     try {
       // Get JSON data from CPARA model
       Map<String, dynamic> json = {};
@@ -237,13 +239,19 @@ class CparaModel {
         print(
             "Error adding household filled questions to db ${err.toString()}");
       }
+      throw "Could Not Save CPARA Form";
     }
   }
 
   // Create Form in database
-  Future<String> createForm(Database? db, String assessmentDate) async {
+  Future<String> createForm(Database? db, String assessmentDate, String? uuid) async {
     try {
-      String formUUID = const Uuid().v4();
+      String formUUID;
+      if (uuid == null) {
+        formUUID = const Uuid().v4();
+      }else {
+        formUUID = uuid;
+      }
       // Insert entry to db
       db!.insert("Form",
           {"date": assessmentDate, "uuid": formUUID});
@@ -256,7 +264,7 @@ class CparaModel {
       if (kDebugMode) {
         print("Error creating form ${err.toString()}");
       }
-      return "";
+      throw "Could Not Create CPARA Form";
     }
   }
 

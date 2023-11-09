@@ -322,7 +322,12 @@ class LocalDb {
     String selectedDate = cparaModelDB.detail.dateOfAssessment ??
         DateFormat('yyyy-MM-dd').format(DateTime.now());
     if (isRejected == true) {
-      await cparaModelDB.addHouseholdFilledQuestionsToDB(db, selectedDate, ovcId, cparaModelDB.uuid);
+      var formUUID = await cparaModelDB.createForm(db, selectedDate, cparaModelDB.uuid);
+      var formData = await cparaModelDB.getLatestFormID(db);
+      var formDate = formData.formDate;
+      var formDateString = formDate.toString().split(' ')[0];
+      var formID = formData.formID;
+      await cparaModelDB.addHouseholdFilledQuestionsToDB(db, selectedDate, ovcId, formID);
       await insertAppFormMetaData(cparaModelDB.uuid, startTime, 'cpara');
       handleSubmit(selectedDate: selectedDate, formId: cparaModelDB.uuid, ovcSub: cparaModelDB.ovcSubPopulations);
 
@@ -330,7 +335,7 @@ class LocalDb {
       UnapprovedCparaService.deleteUnapprovedCparaForm(cparaModelDB.uuid);
     } else {
       // Create form
-      cparaModelDB.createForm(db, selectedDate).then((formUUID) {
+      cparaModelDB.createForm(db, selectedDate, null).then((formUUID) {
         // Get formID
         cparaModelDB.getLatestFormID(db).then((formData) {
           var formDate = formData.formDate;
