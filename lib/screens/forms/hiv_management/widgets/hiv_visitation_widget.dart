@@ -40,7 +40,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   String disclosure = '';
   String mUACScore = '';
   String zScore = '';
-  Set<String> nutritionalSupport = <String>{};
+  Set<String> nutritionalSupport = const <String>{};
   String supportGroupStatus = '';
   String nhifEnrollment = '';
   String nhifEnrollmentStatus = '';
@@ -87,7 +87,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
       disclosure: disclosure,
       mUACScore: mUACScore,
       zScore: zScore,
-      nutritionalSupport: nutritionalSupport,
+      nutritionalSupport: nutritionalSupport.toList(),
       supportGroupStatus: supportGroupStatus,
       nhifEnrollment: nhifEnrollment,
       nhifEnrollmentStatus: nhifEnrollmentStatus,
@@ -692,6 +692,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             DateTextField(
               label: 'Date',
               enabled: true,
+              allowFutureDates: true,
               identifier: DateTextFieldIdentifier.dateOfAssessment,
               onDateSelected: (DateTime? date) {
                 setState(() {

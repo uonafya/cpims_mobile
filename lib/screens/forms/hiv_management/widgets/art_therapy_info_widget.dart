@@ -21,7 +21,6 @@ class ARTTherapyInfoWidget extends StatefulWidget {
 }
 
 class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
-  String dateOfEvent = '';
   String dateHIVConfirmedPositive = '';
   String dateTreatmentInitiated = '';
   String baselineHEILoad = '';
@@ -37,7 +36,6 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
 
   void handleOnSave() {
     final formData = ARTTherapyHIVFormModel(
-      dateOfEvent: dateOfEvent,
       dateHIVConfirmedPositive: dateHIVConfirmedPositive,
       dateTreatmentInitiated: dateTreatmentInitiated,
       baselineHEILoad: baselineHEILoad,
@@ -62,7 +60,6 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
   bool areAllFieldsFilled() {
     // Define a list of required fields to check if they are filled in
     final requiredFields = [
-      dateOfEvent,
       dateHIVConfirmedPositive,
       dateTreatmentInitiated,
       baselineHEILoad,
@@ -81,31 +78,6 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
     return StepsWrapper(
       title: '1. ARV Therapy Info',
       children: [
-        FormSection(
-          children: [
-            const Text(
-              'Date',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            DateTextField(
-              label: 'Date of record',
-              enabled: true,
-              onDateSelected: (date) {
-                setState(() {
-                  dateOfEvent = formattedDate(date!);
-                  handleOnSave();
-                });
-              },
-              identifier: DateTextFieldIdentifier.dateOfAssessment,
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 15,
-        ),
         FormSection(
           children: [
             const Text(

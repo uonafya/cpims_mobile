@@ -353,10 +353,11 @@ class DateTextField extends StatefulWidget {
   const DateTextField(
       {Key? key,
       // required this.initialValue,
+        this.allowFutureDates = false,
       required this.label,
       required this.enabled,
       required this.onDateSelected,
-      required this.identifier})
+      required this.identifier,})
       : super(key: key);
 
   final String label;
@@ -364,6 +365,7 @@ class DateTextField extends StatefulWidget {
   // final String initialValue;
   final DateTextFieldIdentifier identifier;
   final Function(DateTime?)? onDateSelected;
+  final bool allowFutureDates;
 
   @override
   State<DateTextField> createState() => _DateTextFieldState();
@@ -395,7 +397,7 @@ class _DateTextFieldState extends State<DateTextField> {
             context: context,
             initialDate: DateTime.now(),
             firstDate: DateTime(2000),
-            lastDate: DateTime.now(),
+            lastDate: widget.allowFutureDates ? DateTime(2101) : DateTime.now(),
           ).then((pickedDate) {
             if (pickedDate != null && mounted) {
               setState(() {
