@@ -301,7 +301,7 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
 
 // Benchmark score
           BenchMarkQuestion(
-            groupValue: allShouldBeYes(
+            groupValue: allShouldBeOnlyYes(
               [
                 q91ChildrenEnrolledInSchool,
                 q92ChildrenAttendingSchoolRegularly,

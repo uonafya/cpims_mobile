@@ -703,7 +703,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
 // Benchmak 7 results
         BenchMarkQuestion(
-            groupValue: allShouldBeYes(
+            groupValue: allShouldBeOnlyYes(
                 [caregiverLived12months, primaryCaregiver], "Benchmark 7"),
             benchmarkQuestion: "Has the household achieved this benchmarks?",
             selectedOption: (value) {}),
@@ -739,7 +739,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
 // Benchmak 7 results
         BenchMarkQuestion(
-          groupValue: allShouldBeYes([legalDocuments], "Benchmark mark 8"),
+          groupValue: allShouldBeOnlyYes([legalDocuments], "Benchmark mark 8"),
           benchmarkQuestion: "Has the household achieved this benchmarks?",
           selectedOption: (value) {},
         ),

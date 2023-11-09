@@ -33,9 +33,19 @@ import '../../Models/case_load_model.dart';
 import 'model/ovc_model.dart';
 
 class CparaFormsScreen extends StatefulWidget {
+  final bool isRejected;
+  final String rejectedMessage;
+  final String formId;
+
   final CaseLoadModel caseLoadModel;
 
-  const CparaFormsScreen({super.key, required this.caseLoadModel});
+  const CparaFormsScreen({
+    super.key,
+    required this.caseLoadModel,
+    this.isRejected = false,
+    this.rejectedMessage = "",
+    this.formId = ""
+  });
 
   @override
   State<CparaFormsScreen> createState() => _CparaFormsScreenState();
@@ -122,6 +132,19 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),
+                  if (widget.isRejected == true)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        width: double.infinity,
+                        color: Colors.red,
+                        child: Text(
+                          "${widget.rejectedMessage}",
+                          style: const TextStyle(color: Colors.white),
+                        )
+                      ),
+                    ),
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Column(
@@ -278,6 +301,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                             cparaModelDB: cparaModelDB,
                                             ovcId: ovcpmisid,
                                             startTime: startTime,
+                                            isRejected: widget.isRejected,
                                             careProviderId: ovcpmisid);
                                         // //todo: call ovc
                                         // if (context.mounted) {
