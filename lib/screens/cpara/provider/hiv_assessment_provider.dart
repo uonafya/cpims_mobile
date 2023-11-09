@@ -6,15 +6,20 @@ import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_fo
 import 'package:cpims_mobile/services/api_service.dart';
 import 'package:cpims_mobile/utils/strings.dart';
 import 'package:flutter/foundation.dart';
+import 'package:uuid/uuid.dart';
 
 class HIVAssessmentProvider with ChangeNotifier {
   CaseLoadModel _caseLoadModel = CaseLoadModel();
+
   CaseLoadModel get caseLoadModel => _caseLoadModel;
   HIVCurrentStatusModel _hivCurrentStatusModel = HIVCurrentStatusModel();
+
   HIVCurrentStatusModel get hivCurrentStatusModel => _hivCurrentStatusModel;
   HIVRiskAssessmentModel _hivRiskAssessmentModel = HIVRiskAssessmentModel();
+
   HIVRiskAssessmentModel get hivRiskAssessmentModel => _hivRiskAssessmentModel;
   ProgressMonitoringModel _progressMonitoringModel = ProgressMonitoringModel();
+
   ProgressMonitoringModel get progressMonitoringModel =>
       _progressMonitoringModel;
 
@@ -65,7 +70,7 @@ class HIVAssessmentProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> submitHIVAssessmentForm() async {
+  Future<void> submitHIVAssessmentForm(String startTime) async {
     try {
       final data = {
         'ovc_cpims_id': caseLoadModel.cpimsId,
@@ -82,11 +87,15 @@ class HIVAssessmentProvider with ChangeNotifier {
           data[key] = convertBooleanStringToDBBoolen("No");
         }
       });
+      String formUuid = Uuid().v4();
       await LocalDb.instance.insertHRSData(
           caseLoadModel.cpimsId!,
           _hivCurrentStatusModel,
           _hivRiskAssessmentModel,
-          _progressMonitoringModel);
+          _progressMonitoringModel,
+          formUuid,
+          startTime,
+          "HIV Risk Assessment");
 
       print(data);
       await apiServiceConstructor.postSecData(data, "mobile/hrs/");

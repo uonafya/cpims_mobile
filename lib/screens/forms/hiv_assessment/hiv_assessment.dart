@@ -1,8 +1,10 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
+import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/screens/cpara/provider/hiv_assessment_provider.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_form.dart';
+import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
@@ -84,9 +86,11 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
             backgroundColor: Colors.red,
           ));
         }
-
+        AppMetaDataProvider appMetaDataProvider =
+            Provider.of<AppMetaDataProvider>(context, listen: false);
+      String startTime = appMetaDataProvider.startTimeInterview ?? DateTime.now().toIso8601String();
         await Provider.of<HIVAssessmentProvider>(context, listen: false)
-            .submitHIVAssessmentForm();
+            .submitHIVAssessmentForm(startTime);
         setState(() {
           isLoading = false;
         });

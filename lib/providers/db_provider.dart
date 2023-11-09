@@ -504,22 +504,28 @@ class LocalDb {
       HIV_RS_22 TEXT,
       HIV_RS_23 TEXT,
       HIV_RS_24 TEXT,
-      HIV_RA_3Q6 TEXT
+      HIV_RA_3Q6 TEXT,
+      uuid TEXT,
+      form_date_synced TEXT NULL
     )
   ''';
 
     try {
       await db.execute(createTableQuery);
     } catch (e) {
-              print('Error creating table: $e');
-      }
+      print('Error creating table: $e');
     }
-  
+  }
+
   Future<void> insertHRSData(
       String cpmisId,
       HIVCurrentStatusModel currentStatus,
       HIVRiskAssessmentModel assessment,
-      ProgressMonitoringModel progress) async {
+      ProgressMonitoringModel progress,
+      String uuid,
+      String startOfInterview,
+      String formType
+      ) async {
     final db = await instance.database;
     await db.insert(
       HRSForms,
@@ -552,8 +558,11 @@ class LocalDb {
         'HIV_RS_23': progress.artReferralCompleted,
         'HIV_RS_24': progress.artReferralCompletedDate,
         'HIV_RA_3Q6': progress.facilityOfArtEnrollment,
+        'uuid': uuid,
+        'form_date_synced': null,
       },
     );
+    await insertAppFormMetaData(uuid, startOfInterview, formType);
   }
 
   Future<List<Map<String, dynamic>>> fetchHRSFormData() async {
@@ -565,7 +574,6 @@ class LocalDb {
   // create HIVManagement table
   Future<void> createHMFForms(Database db, int version) async {
     // Define the table schema with all the fields
-    print("-------------------Creating HMF Forms---------------------------");
     const String createTableQuery = '''
     CREATE TABLE $HMForms (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
