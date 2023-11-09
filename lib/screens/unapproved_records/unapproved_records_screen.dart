@@ -34,17 +34,21 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     });
   }
 
-  List<UnapprovedForm1DataModel> unapprovedForm1Data = [];
+  List<UnapprovedForm1DataModel> unapprovedForm1AData = [];
+  List<UnapprovedForm1DataModel> unapprovedForm1BData = [];
   List<UnapprovedCasePlanModel> unapprovedCaseplanData = [];
 
   void getRecords() async {
-    final List<UnapprovedForm1DataModel> records =
+    final List<UnapprovedForm1DataModel> form1ARecords =
         await UnapprovedDataService.fetchLocalUnapprovedForm1AData();
+    final List<UnapprovedForm1DataModel> form1BRecords =
+    await UnapprovedDataService.fetchLocalUnapprovedForm1BData();
     final List<UnapprovedCasePlanModel> unapprovedCaseplanRecords =
         await UnapprovedDataService.fetchLocalUnapprovedCasePlanData();
     print(unapprovedCaseplanRecords);
     setState(() {
-      unapprovedForm1Data = records;
+      unapprovedForm1AData = form1ARecords;
+      unapprovedForm1BData = form1BRecords;
       unapprovedCaseplanData = unapprovedCaseplanRecords;
     });
   }
@@ -94,51 +98,18 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
               const Column(
                 children: [Text('Hello')],
               ),
-            if (selectedRecord != 'CPARA' && selectedRecord != 'CPT')
-              DefaultTabController(
-                length: 2,
-                child: Expanded(
-                  child: Column(
-                    children: [
-                      const TabBar(
-                        tabs: [
-                          Tab(
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text('SERVICES'),
-                            ),
-                          ),
-                          Tab(
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text('CRITICAL EVENTS'),
-                            ),
-                          ),
-                        ],
-                        indicatorColor: kPrimaryColor,
-                        labelColor: Colors.black,
-                      ),
-                      const SizedBox(height: 10),
-                      Expanded(
-                        child: TabBarView(
-                          children: [
-                            FormTab(
-                              selectedRecord: selectedRecord,
-                              eventType: 'SERVICES',
-                              unapprovedForm1aData: unapprovedForm1Data,
-                              unapprovedCPTData: unapprovedCaseplanData,
-                            ),
-                            FormTab(
-                              selectedRecord: selectedRecord,
-                              eventType: 'CRITICAL EVENTS',
-                              unapprovedForm1aData: unapprovedForm1Data,
-                              unapprovedCPTData: unapprovedCaseplanData,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+            if (selectedRecord == unapprovedRecords[0])
+              Expanded(
+                child: FormTab(
+                  selectedRecord: selectedRecord,
+                  unapprovedForm1aData: unapprovedForm1AData,
+                ),
+              ),
+            if (selectedRecord == unapprovedRecords[1])
+              Expanded(
+                child: FormTab(
+                  selectedRecord: selectedRecord,
+                  unapprovedForm1aData: unapprovedForm1BData,
                 ),
               ),
           ],
@@ -150,76 +121,36 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
 
 class FormTab extends StatelessWidget {
   final String selectedRecord;
-  final String eventType;
-  final List? unapprovedForm1aData;
-  final List? unapprovedCPTData;
+  final List<UnapprovedForm1DataModel>? unapprovedForm1aData;
 
   const FormTab({
     super.key,
     required this.selectedRecord,
-    required this.eventType,
     this.unapprovedForm1aData,
-    this.unapprovedCPTData,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       shrinkWrap: true,
+      physics: const AlwaysScrollableScrollPhysics(),
       children: [
         CustomCard(
-          title: '$selectedRecord $eventType List',
+          title: 'Unapproved $selectedRecord List',
           children: [
             if (selectedRecord == "Form 1A" || selectedRecord == "Form 1B")
               ...List.generate(
-                (unapprovedForm1aData as dynamic).length,
+                unapprovedForm1aData!.length,
                 (index) {
                   final UnapprovedForm1DataModel dataModel =
                       unapprovedForm1aData![index];
-                  return dataModel.services.isNotEmpty &&
-                          eventType == 'SERVICES'
-                      ? UnapprovedForm1CardDetails<UnapprovedForm1DataModel>(
-                          unapprovedData: dataModel,
-                          eventOrDomainId: dataModel.services[0].domainId,
-                          isService: true,
-                        )
-                      : dataModel.criticalEvents.isNotEmpty &&
-                              eventType == 'CRITICAL EVENTS'
-                          ? UnapprovedForm1CardDetails<UnapprovedForm1DataModel>(
-                              unapprovedData: dataModel,
-                              eventOrDomainId:
-                                  dataModel.criticalEvents[0].eventId,
-                              isService: false,
-                            )
-                          : const Column(
-                              children: [
-                                Text(
-                                  'Not Implemented',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            );
+                  return UnapprovedForm1CardDetails<UnapprovedForm1DataModel>(
+                    unapprovedData: dataModel,
+                    eventOrDomainId: dataModel.services[0].domainId,
+                    isService: true,
+                  );
                 },
               )
-            else if (selectedRecord == "CPT")
-              for (final cptdataModel in unapprovedCPTData!)
-                if (cptdataModel.services.isNotEmpty && eventType == "SERVICES")
-                  UnapprovedForm1CardDetails<UnapprovedCasePlanModel>(
-                    unapprovedData: cptdataModel,
-                    eventOrDomainId: cptdataModel.services[0].domainId,
-                    isService: true,
-                  )
-                else if (cptdataModel.criticalEvents.isNotEmpty &&
-                    eventType == 'CRITICAL EVENTS')
-                  UnapprovedForm1CardDetails<UnapprovedCasePlanModel>(
-                    unapprovedData: cptdataModel,
-                    eventOrDomainId: cptdataModel.services[0].domainId,
-                    isService: true,
-                  )
           ],
         ),
       ],
@@ -251,12 +182,12 @@ class ChildDetailsCard<T> extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   ListView.builder(
-                    itemCount: (unapprovedRecords as dynamic).length,
+                    itemCount: unapprovedRecords.length,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (BuildContext context, index) {
                       final UnapprovedCasePlanModel unapprovedRecord =
-                          (unapprovedRecords as dynamic)[index];
+                          unapprovedRecords[index];
                       return UnapprovedCasePlanFormDetails(unapprovedRecord: unapprovedRecord);
                     },
                   ),
@@ -580,7 +511,7 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
                   height: 4,
                 ),
                 Text(
-                  (unapprovedData as dynamic).message,
+                  unapprovedData .message,
                 ),
               ],
             ),
