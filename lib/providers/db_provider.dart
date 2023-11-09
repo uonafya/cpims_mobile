@@ -4,12 +4,16 @@ import 'dart:async';
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
+import 'package:cpims_mobile/providers/unapproved_cpt_provider.dart';
+import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
+import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_form.dart';
+import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_form_model.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:flutter/foundation.dart';
@@ -55,7 +59,9 @@ class LocalDb {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
     const textTypeNull = 'TEXT NULL';
+    const defaultTime = 'DATETIME DEFAULT CURRENT_TIMESTAMP';
     const intType = 'INTEGER';
+    const intTypeNull = 'INTEGER NULL';
 
     await db.execute('''
       CREATE TABLE $caseloadTable (
@@ -109,7 +115,8 @@ class LocalDb {
     await db.execute('''
         CREATE TABLE $casePlanServicesTable (
           ${CasePlanServices.id} $idType,
-          ${CasePlanServices.formId} $intType,
+          ${CasePlanServices.formId} $intTypeNull,
+          ${CasePlanServices.unapprovedFormId} $intTypeNull,
           ${CasePlanServices.domainId} $textType,
           ${CasePlanServices.goalId} $textType,
           ${CasePlanServices.priorityId} $textType,
@@ -172,6 +179,8 @@ class LocalDb {
     await createAppMetaDataTable(db, version);
     await createHRSForms(db, version);
     await createHMFForms(db, version);
+    final unapprovedCptDb = UnapprovedCptProvider();
+    await unapprovedCptDb.createTable(db, version);
   }
 
   Future<void> createAppMetaDataTable(Database db, int version) async {
@@ -300,8 +309,7 @@ class LocalDb {
       required String careProviderId}) async {
     final db = await instance.database;
     var idForm = 0;
-    String selectedDate = cparaModelDB.detail.dateOfAssessment ??
-        DateFormat('yyyy-MM-dd').format(DateTime.now());
+    String selectedDate = cparaModelDB.detail.dateOfAssessment ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
     // Create form
     cparaModelDB.createForm(db, selectedDate).then((formUUID) {
       // Get formID
@@ -322,7 +330,6 @@ class LocalDb {
         });
       });
     });
-    // await handleSubmit(selectedDate: "selectedDate");
   }
 
   void handleSubmit(
@@ -748,6 +755,22 @@ class LocalDb {
     );
   }
 
+  Future<void> insertUnapprovedAppFormMetaData(uuid, AppFormMetaData metadata, formType) async {
+    final db = await instance.database;
+    await db.insert(
+      appFormMetaDataTable,
+      {
+        'form_id': uuid,
+        'location_lat': metadata.location_lat,
+        'location_long': metadata.location_long,
+        'start_of_interview': metadata.startOfInterview,
+        'end_of_interview': metadata.endOfInterview,
+        'form_type': formType,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
   // insert formData(either form1a or form1b)
   Future<void> insertForm1Data(
       String formType, formData, metadata, uuid) async {
@@ -784,6 +807,55 @@ class LocalDb {
           form1CriticalEventsTable,
           {
             'form_id': formId,
+            'event_id': criticalEvent.event_id,
+            'event_date': criticalEvent.event_date,
+          },
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error inserting form1 data: $e');
+      }
+    }
+  }
+
+  // insert formData(either form1a or form1b)
+  Future<void> insertUnapprovedForm1Data(
+      String formType,UnapprovedForm1DataModel formData, metadata, uuid) async {
+    try {
+      final db = await instance.database;
+      final formId = await db.insert(
+        unapprovedForm1Table,
+        {
+          'ovc_cpims_id': formData.ovcCpimsId,
+          'date_of_event': formData.dateOfEvent,
+          'form_type': formType,
+          'uuid': uuid,
+          Form1.message: formData.message
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      //insert app form metadata
+      await insertUnapprovedAppFormMetaData(uuid, metadata, formType);
+
+      // insert services
+      for (var service in formData.services) {
+        await db.insert(
+          form1ServicesTable,
+          {
+            Form1Services.unapprovedFormId: formId,
+            'domain_id': service.domainId,
+            'service_id': service.serviceId,
+          },
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      for (var criticalEvent in formData.criticalEvents) {
+        await db.insert(
+          form1CriticalEventsTable,
+          {
+            Form1Services.unapprovedFormId : formId,
             'event_id': criticalEvent.eventId,
             'event_date': criticalEvent.eventDate,
           },
@@ -850,6 +922,58 @@ class LocalDb {
     }
   }
 
+  Future<List<Map<String, dynamic>>> queryAllUnapprovedForm1Rows(String formType) async {
+    try {
+      final db = await instance.database;
+      const sql =
+          'SELECT * FROM $unapprovedForm1Table WHERE form_type = ?';
+      final List<Map<String, dynamic>> form1Rows =
+          await db.rawQuery(sql, [formType]);
+
+      List<Map<String, dynamic>> updatedForm1Rows = [];
+
+      for (var form1row in form1Rows) {
+        int formId = form1row['_id'];
+
+        // Fetch associated services
+        final List<Map<String, dynamic>> services = await db.query(
+          form1ServicesTable,
+          where: '${Form1Services.unapprovedFormId} = ?',
+          whereArgs: [formId],
+        );
+
+        // Fetch associated critical events
+        final List<Map<String, dynamic>> criticalEvents = await db.query(
+          form1CriticalEventsTable,
+          where: '${Form1CriticalEvents.unapprovedFormId} = ?',
+          whereArgs: [formId],
+        );
+
+        final AppFormMetaData appFormMetaData =
+            await getAppFormMetaData(form1row['uuid']);
+
+        // Create a new map that includes existing form1row data, services, critical_events, and ID
+        Map<String, dynamic> updatedForm1Row = {
+          ...form1row,
+          'services': services,
+          'critical_events': criticalEvents,
+          'id': formId,
+          'app_form_metadata': appFormMetaData.toJson(),
+        };
+        // Add the updated map to the list
+        updatedForm1Rows.add(updatedForm1Row);
+      }
+      debugPrint("Updated form1 rows: $updatedForm1Rows");
+
+      return updatedForm1Rows;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error querying form1 data: $e");
+      }
+      return [];
+    }
+  }
+
   Future<int?> queryForm1UnsyncedForms(String formType) async {
     try {
       final db = await instance.database;
@@ -897,6 +1021,42 @@ class LocalDb {
     }
 
     return controller.stream;
+  }
+
+  // get a single row(form 1a or 1b)
+  Future<bool> deleteUnApprovedForm1Data(int id) async {
+    try {
+      final db = await instance.database;
+      final queryResults = await db.query(
+        unapprovedForm1Table,
+        where: '${Form1.id} = ?',
+        whereArgs: [id],
+      );
+
+      if (queryResults.isNotEmpty) {
+        final form1Id = queryResults.first[Form1.id] as int;
+        await db.delete(
+          form1ServicesTable,
+          where: '${Form1Services.unapprovedFormId} = ?',
+          whereArgs: [form1Id],
+        );
+        await db.delete(
+          form1CriticalEventsTable,
+          where: '${Form1CriticalEvents.unapprovedFormId} = ?',
+          whereArgs: [form1Id],
+        );
+        final rowsAffected = await db.delete(
+          unapprovedForm1Table,
+          where: '${Form1.id} = ?',
+          whereArgs: [form1Id],
+        );
+        return rowsAffected > 0;
+      }
+      return false;
+    } catch (e) {
+      debugPrint("Error deleting form1 data: $e");
+    }
+    return false;
   }
 
   // get a single row(form 1a or 1b)
@@ -1236,6 +1396,7 @@ const tableFormMetadata = 'form_metadata';
 const casePlanTable = 'case_plan';
 const casePlanServicesTable = 'case_plan_services';
 const form1Table = 'form1';
+const unapprovedForm1Table = 'unapproved_form1';
 const appFormMetaDataTable = 'app_form_metadata';
 const form1ServicesTable = 'form1_services';
 const form1CriticalEventsTable = 'form1_critical_events';
@@ -1364,6 +1525,7 @@ class CasePlanServices {
   ];
   static const String id = 'id';
   static const String formId = 'form_id';
+  static const String unapprovedFormId = 'unapproved_form_id';
   static const String domainId = 'domain_id';
   static const String goalId = 'goal_id';
   static const String priorityId = 'priority_id';
@@ -1390,6 +1552,7 @@ class Form1 {
   static const String ovcCpimsId = "ovc_cpims_id";
   static const String dateOfEvent = 'date_of_event';
   static const String formDateSynced = 'form_date_synced';
+  static const String message = 'message';
 }
 
 class Form1Services {
@@ -1402,6 +1565,7 @@ class Form1Services {
 
   static const String id = "_id";
   static const String formId = "form_id";
+  static const String unapprovedFormId = "unapproved_form_id";
   static const String domainId = "domain_id";
   static const String serviceId = "service_id";
 }
@@ -1416,6 +1580,7 @@ class Form1CriticalEvents {
 
   static const String id = "_id";
   static const String formId = "form_id";
+  static const String unapprovedFormId = "unapproved_form_id";
   static const String eventId = "event_id";
   static const String eventDate = "event_date";
 }

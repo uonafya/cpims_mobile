@@ -146,15 +146,15 @@ class Form1AProvider extends ChangeNotifier {
 
   // CaseLoad
 
-  late CaseLoadModel _caseLoadModel;
-
-  set caseLoadModel(CaseLoadModel value) {
-    _caseLoadModel = value;
-    notifyListeners();
-  }
-
-  void updateCaseLoadModel(CaseLoadModel caseLoadModel) {
-    _caseLoadModel = caseLoadModel;
-    notifyListeners();
-  }
+  // late CaseLoadModel _caseLoadModel;
+  //
+  // set caseLoadModel(CaseLoadModel value) {
+  //   _caseLoadModel = value;
+  //   notifyListeners();
+  // }
+  //
+  // void updateCaseLoadModel(CaseLoadModel caseLoadModel) {
+  //   _caseLoadModel = caseLoadModel;
+  //   notifyListeners();
+  // }
 }
