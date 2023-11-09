@@ -40,7 +40,7 @@ class HIVManagementFormProvider extends ChangeNotifier {
   }
 
   // submit form
-  Future<void> submitHIVManagementForm(String? cpimsID) async {
+  Future<void> submitHIVManagementForm(String? cpimsID,uuid,startTimeInterview,formType) async {
     try {
       final formData = {
         'ovc_cpims_id': cpimsID,
@@ -49,29 +49,29 @@ class HIVManagementFormProvider extends ChangeNotifier {
       };
 
       // Loop through the formData map and apply modifications
-      formData.forEach((key, value) {
-        if (value is String) {
-          // Combine values with 2 or more characters into one
-          formData[key] = value.split(' ').where((s) => s.length > 1).join(' ');
-          if (kDebugMode) {
-            print(formData[value]);
-          }
-      
-          // Combine the first words before "if"
-          formData[key] = formData[key]
-              .split(' ')
-              .map((value) =>
-                  value.contains('if') ? value.split('if')[0] : value)
-              .join(' ');
-          if (kDebugMode) {
-            print(formData[value]);
-          }
-        } else {
-          if (kDebugMode) {
-            print("Hello");
-          }
-        }
-      });
+      // formData.forEach((key, value) {
+      //   if (value is String) {
+      //     // Combine values with 2 or more characters into one
+      //     formData[key] = value.split(' ').where((s) => s.length > 1).join(' ');
+      //     if (kDebugMode) {
+      //       print(formData[value]);
+      //     }
+      //
+      //     // Combine the first words before "if"
+      //     formData[key] = formData[key]
+      //         .split(' ')
+      //         .map((value) =>
+      //             value.contains('if') ? value.split('if')[0] : value)
+      //         .join(' ');
+      //     if (kDebugMode) {
+      //       print(formData[value]);
+      //     }
+      //   } else {
+      //     if (kDebugMode) {
+      //       print("Hello");
+      //     }
+      //   }
+      // });
       if (kDebugMode) {
         print(formData);
       }
@@ -85,6 +85,9 @@ class HIVManagementFormProvider extends ChangeNotifier {
         cpimsID!,
         _artTherapyFormModel,
         _hivVisitationFormModel,
+        uuid,
+        startTimeInterview,
+        formType
       );
     } catch (e) {
       if (kDebugMode) {

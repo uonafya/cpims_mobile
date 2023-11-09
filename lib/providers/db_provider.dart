@@ -531,8 +531,7 @@ class LocalDb {
       ProgressMonitoringModel progress,
       String uuid,
       String startOfInterview,
-      String formType
-      ) async {
+      String formType) async {
     final db = await instance.database;
     await db.insert(
       HRSForms,
@@ -619,13 +618,16 @@ class LocalDb {
       HIV_MGMT_2_P TEXT,
       HIV_MGMT_2_Q TEXT,
       HIV_MGMT_2_R TEXT,
-      HIV_MGMT_2_S TEXT
+      HIV_MGMT_2_S TEXT,
+      uuid TEXT,
+      form_date_synced TEXT NULL
     )
   ''';
 
     try {
       await db.execute(createTableQuery);
-      print("------------------Function ----Creating HMF Forms---------------------------");
+      print(
+          "------------------Function ----Creating HMF Forms---------------------------");
     } catch (e) {
       print("-------------------Error HMF Forms---------------------------$e");
       if (kDebugMode) {
@@ -635,10 +637,12 @@ class LocalDb {
   }
 
   Future<void> insertHMFFormData(
-    String cpmisId,
-    ARTTherapyHIVFormModel artTherapyHIVFormModel,
-    HIVVisitationFormModel hivVisitationFormModel,
-  ) async {
+      String cpmisId,
+      ARTTherapyHIVFormModel artTherapyHIVFormModel,
+      HIVVisitationFormModel hivVisitationFormModel,
+      String uuid,
+      String startTimeInterview,
+      String formType) async {
     final db = await instance.database;
     await db.insert(
       HMForms,
@@ -679,8 +683,12 @@ class LocalDb {
         'HIV_MGMT_2_Q': hivVisitationFormModel.nextAppointmentDate,
         'HIV_MGMT_2_R': hivVisitationFormModel.peerEducatorName,
         'HIV_MGMT_2_S': hivVisitationFormModel.peerEducatorContact,
+        'uuid': uuid,
+        'form_date_synced': null,
       },
     );
+
+    await insertAppFormMetaData(uuid, startTimeInterview, formType);
   }
 
   Future<List<Map<String, dynamic>>> fetchHMFFormData() async {

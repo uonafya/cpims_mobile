@@ -202,6 +202,10 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
               ChildDetailsWorkflowButton(
                 workflowName: "HIV Management Form",
                 onClick: () {
+                  String startDateTime = DateTime.now().toString();
+                  context
+                      .read<AppMetaDataProvider>()
+                      .updateStartTimeInterview(startDateTime);
                   Get.to(
                     () => HIVManagementForm(caseLoad: widget.caseLoadModel),
                   );
