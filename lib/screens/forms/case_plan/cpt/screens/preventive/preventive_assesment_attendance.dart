@@ -7,7 +7,6 @@ import 'package:cpims_mobile/widgets/custom_card.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,6 +43,10 @@ class _PreventiveAssessmentState extends State<PreventiveAssessment> {
 
     if (provider.formIndex != preventiveAssementTitles.length - 1) {
       provider.updateFormIndex(provider.formIndex + 1);
+    }
+
+    if (provider.formIndex == preventiveAssementTitles.length - 1) {
+      Navigator.of(context).pop();
     }
   }
 

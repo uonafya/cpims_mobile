@@ -77,6 +77,14 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         setState(() {
           isLoading = true;
         });
+        if (hivCurrentStatusModel.dateOfAssessment.isEmpty ||
+            hivCurrentStatusModel.statusOfChild.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Please fill in the required fields"),
+            backgroundColor: Colors.red,
+          ));
+        }
+
         await Provider.of<HIVAssessmentProvider>(context, listen: false)
             .submitHIVAssessmentForm();
         setState(() {

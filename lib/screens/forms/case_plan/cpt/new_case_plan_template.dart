@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/add_cpt_button.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/healthy_cpt.dart';
@@ -11,6 +12,7 @@ import 'package:cpims_mobile/services/form_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Models/case_load_model.dart';
@@ -39,7 +41,7 @@ class CasePlanTemplateForm extends StatefulWidget {
 }
 
 class _Form1BScreen extends State<CasePlanTemplateForm> {
-  DateTime currentDateOfCasePlan = DateTime.now();
+  String currentDateOfCasePlan = "";
   int selectedStep = 0;
   List<Widget> steps = [];
   int clearFieldIndex = -1;
@@ -57,8 +59,6 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
       SchooledCasePlanTemplate(caseLoadModel: widget.caseLoad),
       StableCasePlan(caseLoadModel: widget.caseLoad),
     ];
-
-    currentDateOfCasePlan = DateTime.now();
   }
 
   // Future<bool> saveCasePlanLocal(String jsonPayload) async {
@@ -154,12 +154,18 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 10),
-                                CustomFormsDatePicker(
-                                    hintText: 'Select Date of CasePlan',
-                                    selectedDateTime: currentDateOfCasePlan,
-                                    onDateSelected: (DateTime date) {
+                                DateTextField(
+                                    label: currentDateOfCasePlan.isNotEmpty
+                                        ? currentDateOfCasePlan
+                                        : 'Select Date of CasePlan',
+                                    enabled: true,
+                                    identifier: DateTextFieldIdentifier
+                                        .dateOfAssessment,
+                                    onDateSelected: (val) {
                                       setState(() {
-                                        currentDateOfCasePlan = date;
+                                        currentDateOfCasePlan =
+                                            DateFormat("yyyy-MM-dd")
+                                                .format(val!);
                                       });
                                     }),
                                 const SizedBox(
@@ -168,8 +174,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                               ]),
                         ),
                         AddCPTButton(
-                          formattedDate:
-                              currentDateOfCasePlan.toIso8601String(),
+                          formattedDate: currentDateOfCasePlan,
                           onTap: () {
                             if (selectedStep != steps.length - 1) {
                               setState(() {
@@ -274,7 +279,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
     if (selectedStep == steps.length - 1) {
       try {
         String? ovsId = widget.caseLoad.cpimsId!;
-        String? formattedDate = currentDateOfCasePlan.toIso8601String();
+        String formattedDate = currentDateOfCasePlan;
         if (formattedDate.isEmpty) {
           Get.snackbar(
             'Error',
