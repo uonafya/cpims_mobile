@@ -8,8 +8,10 @@ import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
+import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 bool disableSubsquentHIVAssessmentFieldsAndSubmit(BuildContext context) {
@@ -75,11 +77,24 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         setState(() {
           isLoading = true;
         });
+        if (hivCurrentStatusModel.dateOfAssessment.isEmpty ||
+            hivCurrentStatusModel.statusOfChild.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Please fill in the required fields"),
+            backgroundColor: Colors.red,
+          ));
+        }
+
         await Provider.of<HIVAssessmentProvider>(context, listen: false)
             .submitHIVAssessmentForm();
         setState(() {
           isLoading = false;
         });
+        Get.snackbar("HRS Form submitted", "HRS Form submitted successfully",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white);
+        Navigator.pop(context);
       } catch (e) {
         if (kDebugMode) {
           print(e);
@@ -170,11 +185,12 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
                   onTap: () => handleNext(context),
                 )),
               ]),
-              const SizedBox(
-                height: 40,
-              ),
             ],
           ),
+          const SizedBox(
+            height: 40,
+          ),
+          const Footer(),
         ],
       ),
     );

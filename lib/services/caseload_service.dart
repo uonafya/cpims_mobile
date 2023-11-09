@@ -4,6 +4,7 @@ import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/auth_provider.dart';
@@ -31,15 +32,35 @@ class CaseLoadService {
     final int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
     final int diff = currentTimestamp - caseloadLastSave;
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SpinKitFadingCircle(
+                  itemBuilder: (BuildContext context, int index) {
+                    return DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: index.isEven ? Colors.red : Colors.green,
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16), // Add some spacing
+                const Text(
+                  "Setting up your device. Please be patient...",
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
 
     if (!(isForceSync || diff > 2592000000)) {
       // Todo: 30 days - 2592000000 milliseconds

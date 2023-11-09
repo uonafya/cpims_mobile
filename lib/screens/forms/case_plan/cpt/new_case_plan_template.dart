@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/add_cpt_button.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/healthy_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/safe_cpt.dart';
@@ -10,6 +12,7 @@ import 'package:cpims_mobile/services/form_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Models/case_load_model.dart';
@@ -38,26 +41,24 @@ class CasePlanTemplateForm extends StatefulWidget {
 }
 
 class _Form1BScreen extends State<CasePlanTemplateForm> {
-  DateTime currentDateOfCasePlan = DateTime.now();
+  String currentDateOfCasePlan = "";
   int selectedStep = 0;
   List<Widget> steps = [];
-
-  List<CptHealthFormData> healthyCasePlans = [];
-  List<CptSafeFormData> safeCasePlans = [];
-  List<CptStableFormData> stableCasePlans = [];
-  List<CptschooledFormData> schooledCasePlans = [];
+  int clearFieldIndex = -1;
 
   @override
   void initState() {
     super.initState();
     steps = [
-      HealthyCasePlan(caseLoadModel: widget.caseLoad),
-      SafeCasePlan(caseLoadModel: widget.caseLoad),
+      HealthyCasePlan(
+        caseLoadModel: widget.caseLoad,
+      ),
+      SafeCasePlan(
+        caseLoadModel: widget.caseLoad,
+      ),
       SchooledCasePlanTemplate(caseLoadModel: widget.caseLoad),
       StableCasePlan(caseLoadModel: widget.caseLoad),
     ];
-
-    currentDateOfCasePlan = DateTime.now();
   }
 
   // Future<bool> saveCasePlanLocal(String jsonPayload) async {
@@ -81,6 +82,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
   @override
   Widget build(BuildContext context) {
     bool isLastStep = selectedStep == steps.length - 1;
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -152,12 +154,18 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 10),
-                                CustomFormsDatePicker(
-                                    hintText: 'Select Date of CasePlan',
-                                    selectedDateTime: currentDateOfCasePlan,
-                                    onDateSelected: (DateTime date) {
+                                DateTextField(
+                                    label: currentDateOfCasePlan.isNotEmpty
+                                        ? currentDateOfCasePlan
+                                        : 'Select Date of CasePlan',
+                                    enabled: true,
+                                    identifier: DateTextFieldIdentifier
+                                        .dateOfAssessment,
+                                    onDateSelected: (val) {
                                       setState(() {
-                                        currentDateOfCasePlan = date;
+                                        currentDateOfCasePlan =
+                                            DateFormat("yyyy-MM-dd")
+                                                .format(val!);
                                       });
                                     }),
                                 const SizedBox(
@@ -165,11 +173,36 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                 ),
                               ]),
                         ),
-                        TextButton(
-                            onPressed: () {
-                              addToList(context);
-                            },
-                            child: const Text("Add")),
+                        AddCPTButton(
+                          formattedDate: currentDateOfCasePlan,
+                          onTap: () {
+                            if (selectedStep != steps.length - 1) {
+                              setState(() {
+                                selectedStep++;
+                              });
+                              Future.delayed(const Duration(milliseconds: 50),
+                                  () {
+                                setState(() {
+                                  selectedStep--;
+                                });
+                              });
+                            } else if (selectedStep == steps.length - 1) {
+                              setState(() {
+                                selectedStep = 0;
+                              });
+
+                              Future.delayed(const Duration(milliseconds: 50),
+                                  () {
+                                setState(() {
+                                  selectedStep = steps.length - 1;
+                                });
+                              });
+                            }
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         Row(
                           children: [
                             Expanded(
@@ -200,6 +233,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                 onTap: () async {
                                   await submitData(context);
                                 },
+                                color: kTextGrey,
                               ),
                             ),
                           ],
@@ -207,86 +241,11 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                         const SizedBox(
                           height: 30,
                         ),
-                        ...List.generate(
-                            healthyCasePlans.length,
-                            (index) => DomainItem(
-                                  domain: CPTDomainModel(
-                                      domain: "Healthy",
-                                      serviceIds:
-                                          healthyCasePlans[index].serviceIds,
-                                      goalId: healthyCasePlans[index].goalId,
-                                      gapId: healthyCasePlans[index].gapId,
-                                      priorityId:
-                                          healthyCasePlans[index].priorityId,
-                                      responsibleIds: healthyCasePlans[index]
-                                          .responsibleIds,
-                                      resultsId:
-                                          healthyCasePlans[index].resultsId,
-                                      reasonId:
-                                          healthyCasePlans[index].reasonId),
-                                )),
-                        ...List.generate(
-                            safeCasePlans.length,
-                            (index) => DomainItem(
-                                  domain: CPTDomainModel(
-                                      domain: "Safe",
-                                      serviceIds:
-                                          safeCasePlans[index].serviceIds,
-                                      goalId: safeCasePlans[index].goalId,
-                                      gapId: safeCasePlans[index].gapId,
-                                      priorityId:
-                                          safeCasePlans[index].priorityId,
-                                      responsibleIds:
-                                          safeCasePlans[index].responsibleIds,
-                                      resultsId: safeCasePlans[index].resultsId,
-                                      reasonId: safeCasePlans[index].reasonId),
-                                )),
-                        ...List.generate(
-                            stableCasePlans.length,
-                            (index) => DomainItem(
-                                  domain: CPTDomainModel(
-                                      domain: "Stable",
-                                      serviceIds:
-                                          stableCasePlans[index].serviceIds,
-                                      goalId: stableCasePlans[index].goalId,
-                                      gapId: stableCasePlans[index].gapId,
-                                      priorityId:
-                                          stableCasePlans[index].priorityId,
-                                      responsibleIds:
-                                          stableCasePlans[index].responsibleIds,
-                                      resultsId:
-                                          stableCasePlans[index].resultsId,
-                                      reasonId:
-                                          stableCasePlans[index].reasonId),
-                                )),
-                        ...List.generate(
-                            schooledCasePlans.length,
-                            (index) => DomainItem(
-                                  domain: CPTDomainModel(
-                                      domain: "Stable",
-                                      serviceIds:
-                                          schooledCasePlans[index].serviceIds,
-                                      goalId: schooledCasePlans[index].goalId,
-                                      gapId: schooledCasePlans[index].gapId,
-                                      priorityId:
-                                          schooledCasePlans[index].priorityId,
-                                      responsibleIds: schooledCasePlans[index]
-                                          .responsibleIds,
-                                      resultsId:
-                                          schooledCasePlans[index].resultsId,
-                                      reasonId:
-                                          schooledCasePlans[index].reasonId),
-                                )),
+                        ...List.generate(getDomainItems(context).length,
+                            (index) => getDomainItems(context)[index]),
                         const SizedBox(height: 20),
                         GestureDetector(
-                          onTap: () {
-                            // TODO Handle past assessments
-                            // Get.to(() => HistoryForm1A(
-                            //     caseLoadModel: widget.caseLoadModel));
-                            for (int i = 0; i < healthyCasePlans.length; i++) {
-                              print(healthyCasePlans[i].toJson());
-                            }
-                          },
+                          onTap: () {},
                           child: const Row(
                             children: [
                               Text(
@@ -320,7 +279,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
     if (selectedStep == steps.length - 1) {
       try {
         String? ovsId = widget.caseLoad.cpimsId!;
-        String? formattedDate = currentDateOfCasePlan.toIso8601String();
+        String formattedDate = currentDateOfCasePlan;
         if (formattedDate.isEmpty) {
           Get.snackbar(
             'Error',
@@ -330,133 +289,17 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
           );
           return;
         }
-        CptHealthFormData? cptHealthFormData =
-            context.read<CptProvider>().cptHealthFormData ??
-                CptHealthFormData();
-        CptSafeFormData? cptSafeFormData =
-            context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
-        CptStableFormData? cptStableFormData =
-            context.read<CptProvider>().cptStableFormData ??
-                CptStableFormData();
-        CptschooledFormData? cptschooledFormData =
-            context.read<CptProvider>().cptschooledFormData ??
-                CptschooledFormData();
 
-        if (kDebugMode) {
-          print("Data colleced from each form");
-        }
-        if (kDebugMode) {
-          print("Health $cptHealthFormData");
-        }
-        if (kDebugMode) {
-          print("Safe $cptSafeFormData");
-        }
-        if (kDebugMode) {
-          print("Stable $cptStableFormData");
-        }
-        if (kDebugMode) {
-          print("Schooled $cptschooledFormData");
-        }
-
-        List<Map<String, dynamic>> servicesList = [];
-        if (cptHealthFormData.serviceIds != null &&
-            cptHealthFormData.goalId != null &&
-            cptHealthFormData.gapId != null &&
-            cptHealthFormData.priorityId != null &&
-            cptHealthFormData.responsibleIds != null &&
-            cptHealthFormData.resultsId != null) {
-          String? completionDateValue = cptHealthFormData.completionDate ?? '';
-          String? reason = cptHealthFormData.reasonId ?? '';
-          Map<String, dynamic> healthService = {
-            'domain_id': "DHNU",
-            'service_id': cptHealthFormData.serviceIds,
-            'goal_id': cptHealthFormData.goalId,
-            'gap_id': cptHealthFormData.gapId,
-            'priority_id': cptHealthFormData.priorityId,
-            'responsible_id': cptHealthFormData.responsibleIds,
-            'results_id': cptHealthFormData.resultsId,
-            'reason_id': reason,
-            'completion_date': completionDateValue,
-          };
-          servicesList.add(healthService);
-        }
-
-        if (cptSafeFormData.serviceIds != null &&
-            cptSafeFormData.goalId != null &&
-            cptSafeFormData.gapId != null &&
-            cptSafeFormData.priorityId != null &&
-            cptSafeFormData.responsibleIds != null &&
-            cptSafeFormData.resultsId != null) {
-          String? completionDateValue = cptSafeFormData.completionDate ?? '';
-          String? reason = cptSafeFormData.reasonId ?? '';
-          Map<String, dynamic> safeService = {
-            'domain_id': 'DPRO',
-            'service_id': cptSafeFormData.serviceIds,
-            'goal_id': cptSafeFormData.goalId,
-            'gap_id': cptSafeFormData.gapId,
-            'priority_id': cptSafeFormData.priorityId,
-            'responsible_id': cptSafeFormData.responsibleIds,
-            'results_id': cptSafeFormData.resultsId,
-            'reason_id': reason,
-            'completion_date': completionDateValue,
-          };
-          servicesList.add(safeService);
-        }
-
-        if (cptStableFormData.serviceIds != null &&
-            cptStableFormData.goalId != null &&
-            cptStableFormData.gapId != null &&
-            cptStableFormData.priorityId != null &&
-            cptStableFormData.responsibleIds != null &&
-            cptStableFormData.resultsId != null) {
-          String? completionDateValue = cptStableFormData.completionDate ?? '';
-          String? reason = cptStableFormData.reasonId ?? '';
-          Map<String, dynamic> stableService = {
-            'domain_id': 'DHES',
-            'service_id': cptStableFormData.serviceIds,
-            'goal_id': cptStableFormData.goalId,
-            'gap_id': cptStableFormData.gapId,
-            'priority_id': cptStableFormData.priorityId,
-            'responsible_id': cptStableFormData.responsibleIds,
-            'results_id': cptStableFormData.resultsId,
-            'reason_id': reason,
-            'completion_date': completionDateValue,
-          };
-          servicesList.add(stableService);
-        }
-
-        if (cptschooledFormData.serviceIds != null &&
-            cptschooledFormData.goalId != null &&
-            cptschooledFormData.gapId != null &&
-            cptschooledFormData.priorityId != null &&
-            cptschooledFormData.responsibleIds != null &&
-            cptschooledFormData.resultsId != null) {
-          String? completionDateValue =
-              cptschooledFormData.completionDate ?? '';
-          String? reason = cptschooledFormData.reasonId ?? '';
-          Map<String, dynamic> schooledService = {
-            'domain_id': 'DEDU',
-            'service_id': cptschooledFormData.serviceIds,
-            'goal_id': cptschooledFormData.goalId,
-            'gap_id': cptschooledFormData.gapId,
-            'priority_id': cptschooledFormData.priorityId,
-            'responsible_id': cptschooledFormData.responsibleIds,
-            'results_id': cptschooledFormData.resultsId,
-            'reason_id': reason,
-            'completion_date': completionDateValue,
-          };
-          servicesList.add(schooledService);
-        }
-
-        if (servicesList.isNotEmpty) {
+        if (cptProvider.servicesList.isNotEmpty) {
           Map<String, dynamic> payload = {
             'ovc_cpims_id': ovsId,
             'date_of_event': formattedDate,
-            'services': servicesList,
+            'services': cptProvider.servicesList,
           };
           if (kDebugMode) {
             print("Final payload is${jsonEncode(payload)}");
           }
+          print(payload);
           bool isFormSaved = await CasePlanService.saveCasePlanLocal(
               CasePlanModel.fromJson(payload));
           //provider clear
@@ -516,82 +359,65 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
       });
     }
   }
+}
 
-  Future<void> addToList(BuildContext context) async {
-    final provider = Provider.of<CptProvider>(context, listen: false);
-    CptHealthFormData? cptHealthFormData =
-        context.read<CptProvider>().cptHealthFormData ?? CptHealthFormData();
-    CptSafeFormData? cptSafeFormData =
-        context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
-    CptStableFormData? cptStableFormData =
-        context.read<CptProvider>().cptStableFormData ?? CptStableFormData();
-    CptschooledFormData? cptschooledFormData =
-        context.read<CptProvider>().cptschooledFormData ??
-            CptschooledFormData();
-    if (selectedStep == 0) {
-//Check if any of the fields is empty
-      if (cptHealthFormData.serviceIds == null ||
-          cptHealthFormData.goalId == null ||
-          cptHealthFormData.gapId == null ||
-          cptHealthFormData.priorityId == null ||
-          cptHealthFormData.responsibleIds == null ||
-          cptHealthFormData.resultsId == null) {
-        return;
-      }
+List<DomainItem> getDomainItems(BuildContext context) {
+  final cptProvider = Provider.of<CptProvider>(context);
+  List<CPTDomainModel> domainList = [];
+  final cptHealthFormDataList = cptProvider.cptHealthFormDataList;
+  final cptSafeFormDataList = cptProvider.cptSafeFormDataList;
+  final cptStableFormDataList = cptProvider.cptStableFormDataList;
+  final cptschooledFormDataList = cptProvider.cptschooledFormDataList;
 
-      //Check if it exists in the list
-      if (healthyCasePlans.contains(cptHealthFormData)) {
-        healthyCasePlans.remove(cptHealthFormData);
-      }
-      healthyCasePlans.add(cptHealthFormData);
-    }
-    if (selectedStep == 1) {
-      if (cptSafeFormData.serviceIds == null ||
-          cptSafeFormData.goalId == null ||
-          cptSafeFormData.gapId == null ||
-          cptSafeFormData.priorityId == null ||
-          cptSafeFormData.responsibleIds == null ||
-          cptSafeFormData.resultsId == null) {
-        return;
-      }
-      if (safeCasePlans.contains(cptSafeFormData)) {
-        safeCasePlans.remove(cptSafeFormData);
-      }
-      safeCasePlans.add(cptSafeFormData);
-    }
-    if (selectedStep == 2) {
-      if (cptStableFormData.serviceIds == null ||
-          cptStableFormData.goalId == null ||
-          cptStableFormData.gapId == null ||
-          cptStableFormData.priorityId == null ||
-          cptStableFormData.responsibleIds == null ||
-          cptStableFormData.resultsId == null) {
-        return;
-      }
-      if (stableCasePlans.contains(cptStableFormData)) {
-        stableCasePlans.remove(cptStableFormData);
-      }
-      stableCasePlans.add(cptStableFormData);
-    }
-
-    if (selectedStep == 3) {
-      if (cptschooledFormData.serviceIds == null ||
-          cptschooledFormData.goalId == null ||
-          cptschooledFormData.gapId == null ||
-          cptschooledFormData.priorityId == null ||
-          cptschooledFormData.responsibleIds == null ||
-          cptschooledFormData.resultsId == null) {
-        return;
-      }
-      if (schooledCasePlans.contains(cptschooledFormData)) {
-        schooledCasePlans.remove(cptschooledFormData);
-      }
-      schooledCasePlans.add(cptschooledFormData);
-    }
-
-    context.read<CptProvider>().clearProviderData();
-
-    setState(() {});
-
+  for (CptHealthFormData cptHealthForm in cptHealthFormDataList) {
+    domainList.add(CPTDomainModel(
+        domain: "Healthy",
+        serviceIds: cptHealthForm.serviceIds,
+        goalId: cptHealthForm.goalId,
+        gapId: cptHealthForm.gapId,
+        priorityId: cptHealthForm.priorityId,
+        responsibleIds: cptHealthForm.responsibleIds,
+        resultsId: cptHealthForm.resultsId,
+        reasonId: cptHealthForm.reasonId));
   }
+  for (CptSafeFormData cptSafeForm in cptSafeFormDataList) {
+    domainList.add(CPTDomainModel(
+        domain: "Safe",
+        serviceIds: cptSafeForm.serviceIds,
+        goalId: cptSafeForm.goalId,
+        gapId: cptSafeForm.gapId,
+        priorityId: cptSafeForm.priorityId,
+        responsibleIds: cptSafeForm.responsibleIds,
+        resultsId: cptSafeForm.resultsId,
+        reasonId: cptSafeForm.reasonId));
+  }
+  for (CptStableFormData cptStableForm in cptStableFormDataList) {
+    domainList.add(CPTDomainModel(
+        domain: "Stable",
+        serviceIds: cptStableForm.serviceIds,
+        goalId: cptStableForm.goalId,
+        gapId: cptStableForm.gapId,
+        priorityId: cptStableForm.priorityId,
+        responsibleIds: cptStableForm.responsibleIds,
+        resultsId: cptStableForm.resultsId,
+        reasonId: cptStableForm.reasonId));
+  }
+
+  for (CptschooledFormData cptschooledForm in cptschooledFormDataList) {
+    domainList.add(CPTDomainModel(
+        domain: "Schooled",
+        serviceIds: cptschooledForm.serviceIds,
+        goalId: cptschooledForm.goalId,
+        gapId: cptschooledForm.gapId,
+        priorityId: cptschooledForm.priorityId,
+        responsibleIds: cptschooledForm.responsibleIds,
+        resultsId: cptschooledForm.resultsId,
+        reasonId: cptschooledForm.reasonId));
+  }
+
+  return List.generate(
+      domainList.length,
+      (index) => DomainItem(
+            domain: domainList[index],
+          ));
 }

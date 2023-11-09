@@ -14,14 +14,13 @@ import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_for
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_form.dart';
 import 'package:cpims_mobile/services/caseload_service.dart';
+import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_form_model.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
-// import '../Models/case_plan_form.dart';
 import '../Models/caseplan_form_model.dart';
 import '../constants.dart';
 import '../screens/forms/form1a/new/form_one_a.dart';
@@ -143,17 +142,6 @@ class LocalDb {
         ''');
 
     await db.execute('''
-        CREATE TABLE $unapprovedForm1Table (
-          ${Form1.id} $idType,
-          ${Form1.uuid} $textType,
-          ${Form1.ovcCpimsId} $textType,
-          ${Form1.dateOfEvent} $textType,
-          ${Form1.formType} $textType,
-          ${Form1.message} $textType
-        )
-        ''');
-
-    await db.execute('''
         CREATE TABLE $form1Table (
           ${Form1.id} $idType,
           ${Form1.uuid} $textType,
@@ -169,20 +157,20 @@ class LocalDb {
     await db.execute('''
   CREATE TABLE $form1ServicesTable (
     ${Form1Services.id} $idType,
-    ${Form1Services.formId} $intTypeNull,
+    ${Form1Services.formId} $intType,
     ${Form1Services.domainId} $textType,
     ${Form1Services.serviceId} $textType,
-    ${Form1Services.unapprovedFormId} $intTypeNull
+    FOREIGN KEY (${Form1Services.formId}) REFERENCES $form1Table(${Form1.id})
   )
 ''');
 
     await db.execute('''
       CREATE TABLE $form1CriticalEventsTable (
         ${Form1CriticalEvents.id} $idType,
-        ${Form1CriticalEvents.formId} $intTypeNull,
+        ${Form1CriticalEvents.formId} $textType,
         ${Form1CriticalEvents.eventId} $textType,
         ${Form1CriticalEvents.eventDate} $textType,
-        ${Form1CriticalEvents.unapprovedFormId} $intTypeNull
+        FOREIGN KEY (${Form1CriticalEvents.formId}) REFERENCES $form1Table(${Form1.id})
         )
       ''');
 
@@ -190,6 +178,7 @@ class LocalDb {
     await createOvcSubPopulation(db, version);
     await createAppMetaDataTable(db, version);
     await createHRSForms(db, version);
+    await createHMFForms(db, version);
     final unapprovedCptDb = UnapprovedCptProvider();
     await unapprovedCptDb.createTable(db, version);
   }
@@ -323,24 +312,30 @@ class LocalDb {
     String selectedDate = cparaModelDB.detail.dateOfAssessment ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
     // Create form
     cparaModelDB.createForm(db, selectedDate).then((formUUID) {
-
       // Get formID
       cparaModelDB.getLatestFormID(db).then((formData) {
         var formDate = formData.formDate;
         var formDateString = formDate.toString().split(' ')[0];
         var formID = formData.formID;
         idForm = formID;
-        cparaModelDB.addHouseholdFilledQuestionsToDB(
-            db, formDateString, ovcId, formID).then((value) {
-              //insert app form metadata
-              insertAppFormMetaData(formUUID, startTime, 'cpara').then((value) => handleSubmit(selectedDate: selectedDate,
-                  formId: formID, ovcSub: cparaModelDB.ovcSubPopulations));
-            });
+        cparaModelDB
+            .addHouseholdFilledQuestionsToDB(db, formDateString, ovcId, formID)
+            .then((value) {
+          //insert app form metadata
+          insertAppFormMetaData(formUUID, startTime, 'cpara').then((value) =>
+              handleSubmit(
+                  selectedDate: selectedDate,
+                  formId: formID,
+                  ovcSub: cparaModelDB.ovcSubPopulations));
+        });
       });
     });
   }
 
-  void handleSubmit({required String selectedDate, required int formId, required CparaOvcSubPopulation ovcSub}) async {
+  void handleSubmit(
+      {required String selectedDate,
+      required int formId,
+      required CparaOvcSubPopulation ovcSub}) async {
     // CparaOvcSubPopulation ovcSub =
     //     context.read<CparaProvider>().cparaOvcSubPopulation ??
     //         CparaOvcSubPopulation();
@@ -421,16 +416,13 @@ class LocalDb {
         //     ? DateFormat('yyyy-MM-dd').format(selectedDate)
         //     : null;
         await localDb.insertOvcSubpopulationData(
-            "$formId",
-            "${child.ovcId}",
-            selectedDate,
-            selectedQuestions);
+            "$formId", "${child.ovcId}", selectedDate, selectedQuestions);
       }
       // if(mounted) {
       //   Navigator.pop(context);
       // }
     } catch (error) {
-      throw("Error Occurred");
+      throw ("Error Occurred");
       // if (currentContext.mounted) {
       //   showDialog(
       //     context: currentContext, // Use the local context
@@ -450,7 +442,6 @@ class LocalDb {
       // }
     }
   }
-
 
   Future<void> createOvcSubPopulation(Database db, int version) async {
     try {
@@ -578,6 +569,117 @@ class LocalDb {
     return hrsData;
   }
 
+  // create HIVManagement table
+  Future<void> createHMFForms(Database db, int version) async {
+    // Define the table schema with all the fields
+    const String createTableQuery = '''
+    CREATE TABLE $hmfForms (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      ovc_cpims_id TEXT,
+      date_of_event TEXT,
+      HIV_MGMT_1_A TEXT,
+      HIV_MGMT_1_B TEXT,
+      HIV_MGMT_1_C TEXT,
+      HIV_MGMT_1_D TEXT,
+      HIV_MGMT_1_E TEXT,
+      HIV_MGMT_1_E_DATE TEXT,
+      HIV_MGMT_1_F TEXT,
+      HIV_MGMT_1_F_DATE TEXT,
+      HIV_MGMT_1_G TEXT,
+      HIV_MGMT_1_G_DATE TEXT,
+      HIV_MGMT_2_A TEXT,
+      HIV_MGMT_2_B TEXT,
+      HIV_MGMT_2_C TEXT,
+      HIV_MGMT_2_D TEXT,
+      HIV_MGMT_2_E TEXT,
+      HIV_MGMT_2_F TEXT,
+      HIV_MGMT_2_G TEXT,
+      HIV_MGMT_2_H_2 TEXT,
+      HIV_MGMT_2_H_3 TEXT,
+      HIV_MGMT_2_H_4 TEXT,
+      HIV_MGMT_2_H_5 TEXT,
+      HIV_MGMT_2_I_1 TEXT,
+      HIV_MGMT_2_I_DATE TEXT,
+      HIV_MGMT_2_J TEXT,
+      HIV_MGMT_2_K TEXT,
+      HIV_MGMT_2_L_1 TEXT,
+      HIV_MGMT_2_L_2 TEXT,
+      HIV_MGMT_2_M TEXT,
+      HIV_MGMT_2_N TEXT,
+      HIV_MGMT_2_O_1 TEXT,
+      HIV_MGMT_2_O_2 TEXT,
+      HIV_MGMT_2_P TEXT,
+      HIV_MGMT_2_Q TEXT,
+      HIV_MGMT_2_R TEXT,
+      HIV_MGMT_2_S TEXT,
+    )
+  ''';
+
+    try {
+      await db.execute(createTableQuery);
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error creating table: $e');
+      }
+    }
+  }
+
+  Future<void> insertHMFFormData(
+    String cpmisId,
+    ARTTherapyHIVFormModel artTherapyHIVFormModel,
+    HIVVisitationFormModel hivVisitationFormModel,
+  ) async {
+    final db = await instance.database;
+    await db.insert(
+      hmfForms,
+      {
+        'ovc_cpims_id': cpmisId,
+        'date_of_event': artTherapyHIVFormModel.dateOfEvent,
+        'HIV_MGMT_1_A': artTherapyHIVFormModel.dateHIVConfirmedPositive,
+        'HIV_MGMT_1_B': artTherapyHIVFormModel.dateTreatmentInitiated,
+        'HIV_MGMT_1_C': artTherapyHIVFormModel.baselineHEILoad,
+        'HIV_MGMT_1_D': artTherapyHIVFormModel.dateStartedFirstLine,
+        'HIV_MGMT_1_E': artTherapyHIVFormModel.arvsSubWithFirstLine,
+        'HIV_MGMT_1_E_DATE': artTherapyHIVFormModel.arvsSubWithFirstLineDate,
+        'HIV_MGMT_1_F': artTherapyHIVFormModel.switchToSecondLine,
+        'HIV_MGMT_1_F_DATE': artTherapyHIVFormModel.switchToSecondLineDate,
+        'HIV_MGMT_1_G': artTherapyHIVFormModel.switchToThirdLine,
+        'HIV_MGMT_1_G_DATE': artTherapyHIVFormModel.switchToThirdLineDate,
+        'HIV_MGMT_2_A': hivVisitationFormModel.visitDate,
+        'HIV_MGMT_2_B': hivVisitationFormModel.durationOnARTs,
+        'HIV_MGMT_2_C': hivVisitationFormModel.height,
+        'HIV_MGMT_2_D': hivVisitationFormModel.mUAC,
+        'HIV_MGMT_2_E': hivVisitationFormModel.arvDrugsAdherence,
+        'HIV_MGMT_2_F': hivVisitationFormModel.arvDrugsDuration,
+        'HIV_MGMT_2_G': hivVisitationFormModel.adherenceCounseling,
+        'HIV_MGMT_2_H_2': hivVisitationFormModel.treatmentSupporter,
+        'HIV_MGMT_2_H_3': hivVisitationFormModel.treatmentSupporterSex,
+        'HIV_MGMT_2_H_4': hivVisitationFormModel.treatmentSupporterAge,
+        'HIV_MGMT_2_H_5': hivVisitationFormModel.treatmentSupporterHIVStatus,
+        'HIV_MGMT_2_I_1': hivVisitationFormModel.viralLoadResults,
+        'HIV_MGMT_2_I_DATE': hivVisitationFormModel.labInvestigationsDate,
+        'HIV_MGMT_2_J': hivVisitationFormModel.detectableViralLoadInterventions,
+        'HIV_MGMT_2_K': hivVisitationFormModel.disclosure,
+        'HIV_MGMT_2_L_1': hivVisitationFormModel.mUACScore,
+        'HIV_MGMT_2_L_2': hivVisitationFormModel,
+        'HIV_MGMT_2_M': hivVisitationFormModel.nhifEnrollmentStatus,
+        'HIV_MGMT_2_N': hivVisitationFormModel.supportGroupStatus,
+        'HIV_MGMT_2_O_1': hivVisitationFormModel.nhifEnrollment,
+        'HIV_MGMT_2_O_2': hivVisitationFormModel.nhifEnrollmentStatus,
+        'HIV_MGMT_2_P': hivVisitationFormModel.referralServices,
+        'HIV_MGMT_2_Q': hivVisitationFormModel.nextAppointmentDate,
+        'HIV_MGMT_2_R': hivVisitationFormModel.peerEducatorName,
+        'HIV_MGMT_2_S': hivVisitationFormModel.peerEducatorContact,
+      },
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> fetchHMFFormData() async {
+    final db = await LocalDb.instance.database;
+    final hmfFormData = await db.query(hmfForms);
+    return hmfFormData;
+  }
+
   Future<void> insertOvcSubpopulationData(String uuid, String cpimsId,
       String dateOfAssessment, List<CheckboxQuestion> questions) async {
     final db = await instance.database;
@@ -669,7 +771,7 @@ class LocalDb {
         form1Table,
         {
           'ovc_cpims_id': formData.ovcCpimsId,
-          'date_of_event': formData.date_of_event,
+          'date_of_event': formData.dateOfEvent,
           'form_type': formType,
           'form_date_synced': null,
           'uuid': uuid,
@@ -1292,6 +1394,7 @@ const form1CriticalEventsTable = 'form1_critical_events';
 const ovcsubpopulation = 'ovcsubpopulation';
 const cparaForms = 'Form';
 const HRSForms = 'HRSForm';
+const hmfForms = 'HMFForm';
 const cparaHouseholdAnswers = 'cpara_household_answers';
 const cparaChildAnswers = 'cpara_child_answers';
 

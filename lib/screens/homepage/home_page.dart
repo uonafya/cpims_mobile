@@ -3,11 +3,13 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/caregiver/caregiver.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/preventive/preventive_assesment_attendance.dart';
 import 'package:cpims_mobile/screens/homepage/provider/stats_provider.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
+import 'package:cpims_mobile/services/api_service.dart';
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
@@ -153,6 +155,26 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
+  Future<void> syncHMFFormData() async {
+    final db = await LocalDb.instance;
+    try {
+      // read from localdb
+      final queryResults = await db.fetchHMFFormData();
+      // submit data
+      for (final formData in queryResults) {
+        final Response response =
+            await apiServiceConstructor.postSecData(formData, "mobile/hmf/");
+        if (kDebugMode) {
+          print(response.data);
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
   Future<void> syncWorkflows() async {
     final isConnected =
         await Provider.of<ConnectivityProvider>(context, listen: false)
@@ -163,6 +185,7 @@ class _HomepageState extends State<Homepage> {
       // await fetchAndPostToServerOvcSubpopulationDataNew();
       await postFormOneToServer();
       await showCountUnsyncedForms();
+      await syncHMFFormData();
       if (mounted) {
         context.read<StatsProvider>().updateFormStats();
       }
@@ -385,8 +408,24 @@ class _HomepageState extends State<Homepage> {
                 right: 30,
                 left: 20,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    SizedBox(
+                      width: 140,
+                      child: CustomButton(
+                        onTap: () {
+                          Get.to(
+                            () => const PreventiveAssessment(),
+                            transition: Transition.cupertino,
+                            duration: const Duration(
+                              milliseconds: 200,
+                            ),
+                          );
+                        },
+                        text: "Preventive",
+                        color: Colors.grey,
+                      ),
+                    ),
                     SizedBox(
                       width: 140,
                       child: CustomButton(

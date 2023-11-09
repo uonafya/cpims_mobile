@@ -14,7 +14,6 @@ import 'package:cpims_mobile/services/metadata_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +21,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/auth_provider.dart';
 import '../services/caseload_service.dart';
-import '../services/unapproved_data_service.dart';
 import 'locked_screen.dart';
 
 class InitialLoadingScreen extends StatefulWidget {
@@ -118,8 +116,6 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
                 return;
               }
 
-              await UnapprovedDataService.fetchRemoteUnapprovedData(accessToken);
-
               await Provider.of<UIProvider>(context, listen: false)
                   .setCaseLoadData();
               try {
@@ -134,7 +130,6 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
           Get.off(() => const Homepage());
         } catch (e) {
           if (kDebugMode) {
-            e.printError();
             print("Error in init load: $e");
           }
         }
