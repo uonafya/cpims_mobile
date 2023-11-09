@@ -66,14 +66,14 @@ class CparaOvcChild {
   String? question6;
   String? question7;
   String? question8;
-  final bool? answer1;
-  final bool? answer2;
-  final bool? answer3;
-  final bool? answer4;
-  final bool? answer5;
-  final bool? answer6;
-  final bool? answer7;
-  final bool? answer8;
+  bool? answer1;
+  bool? answer2;
+  bool? answer3;
+  bool? answer4;
+  bool? answer5;
+  bool? answer6;
+  bool? answer7;
+  bool? answer8;
 
 
   CparaOvcChild({

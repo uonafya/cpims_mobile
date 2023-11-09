@@ -20,7 +20,7 @@ class CparaModel {
   final SchooledModel schooled;
   final HealthModel health;
   final CparaOvcSubPopulation ovcSubPopulations;
-  final String uuid;
+  String uuid;
   final AppFormMetaData appFormMetaData;
 
   CparaModel({
@@ -125,7 +125,7 @@ class CparaModel {
 
   // This function add the portion of the form filled by the household to the database
   Future<void> addHouseholdFilledQuestionsToDB(
-      Database? db, String formDate, String ovcpmsid, int formID) async {
+      Database? db, String formDate, String ovcpmsid, formID) async {
     try {
       // Get JSON data from CPARA model
       Map<String, dynamic> json = {};
