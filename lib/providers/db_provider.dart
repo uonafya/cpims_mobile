@@ -142,6 +142,17 @@ class LocalDb {
         ''');
 
     await db.execute('''
+        CREATE TABLE $unapprovedForm1Table (
+          ${Form1.id} $idType,
+          ${Form1.uuid} $textType,
+          ${Form1.ovcCpimsId} $textType,
+          ${Form1.dateOfEvent} $textType,
+          ${Form1.formType} $textType,
+          ${Form1.message} $textType
+        )
+        ''');
+
+    await db.execute('''
         CREATE TABLE $form1Table (
           ${Form1.id} $idType,
           ${Form1.uuid} $textType,
@@ -157,20 +168,20 @@ class LocalDb {
     await db.execute('''
   CREATE TABLE $form1ServicesTable (
     ${Form1Services.id} $idType,
-    ${Form1Services.formId} $intType,
+    ${Form1Services.formId} $intTypeNull,
     ${Form1Services.domainId} $textType,
     ${Form1Services.serviceId} $textType,
-    FOREIGN KEY (${Form1Services.formId}) REFERENCES $form1Table(${Form1.id})
+    ${Form1Services.unapprovedFormId} $intTypeNull
   )
 ''');
 
     await db.execute('''
       CREATE TABLE $form1CriticalEventsTable (
         ${Form1CriticalEvents.id} $idType,
-        ${Form1CriticalEvents.formId} $textType,
+        ${Form1CriticalEvents.formId} $intTypeNull,
         ${Form1CriticalEvents.eventId} $textType,
         ${Form1CriticalEvents.eventDate} $textType,
-        FOREIGN KEY (${Form1CriticalEvents.formId}) REFERENCES $form1Table(${Form1.id})
+        ${Form1CriticalEvents.unapprovedFormId} $intTypeNull
         )
       ''');
 
