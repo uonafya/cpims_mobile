@@ -36,6 +36,7 @@ class CparaFormsScreen extends StatefulWidget {
   final bool isRejected;
   final String rejectedMessage;
   final String formId;
+  final String cpmisID;
 
   final CaseLoadModel caseLoadModel;
 
@@ -44,7 +45,8 @@ class CparaFormsScreen extends StatefulWidget {
     required this.caseLoadModel,
     this.isRejected = false,
     this.rejectedMessage = "",
-    this.formId = ""
+    this.formId = "",
+    this.cpmisID = ""
   });
 
   @override
@@ -69,14 +71,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
   @override
   void initState() {
     super.initState();
-    // final caseLoadData = Provider.of<UIProvider>(context, listen: false).caseLoadData;
-    // todo: update case load data in Cpara provider
-    // fetchChildren(caseLoadData);
-  }
-
-  Future<void> initializeDbInstance() async {
-    database = await LocalDb.instance.database;
-    if (mounted) setState(() {});
   }
 
   fetchChildren(caseList) async {
@@ -140,7 +134,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                         width: double.infinity,
                         color: Colors.red,
                         child: Text(
-                          "${widget.rejectedMessage}",
+                          widget.rejectedMessage,
                           style: const TextStyle(color: Colors.white),
                         )
                       ),
@@ -203,6 +197,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                   if (selectedStep == steps.length - 1) {
                                     CparaProvider cparaProvider =
                                         context.read<CparaProvider>();
+
                                     // display collected data
                                     DetailModel detailModel =
                                         cparaProvider.detailModel ??
@@ -279,8 +274,13 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                       }
 
                                       try {
-                                        String? ovsId = cparaProvider
-                                            .caseLoadModel?.cpimsId;
+                                        String? ovsId;
+                                        if (widget.isRejected == true) {
+                                          ovsId = widget.cpmisID;
+                                        } else {
+                                          ovsId = cparaProvider
+                                              .caseLoadModel?.cpimsId;
+                                        }
 
                                         if (ovsId == null) {
                                           throw ("No CPMSID found");
@@ -293,7 +293,8 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           stable: stableModel,
                                           schooled: schooledModel,
                                           health: (healthModel),
-                                          ovcSubPopulations: cparaOvcSub
+                                          ovcSubPopulations: cparaOvcSub,
+                                          uuid: cparaProvider.cparaModel?.uuid ?? ""
                                         );
                                         // Create form
                                         String startTime = context.read<AppMetaDataProvider>().startTimeInterview ?? DateTime.now().toIso8601String();
@@ -303,16 +304,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                             startTime: startTime,
                                             isRejected: widget.isRejected,
                                             careProviderId: ovcpmisid);
-                                        // //todo: call ovc
-                                        // if (context.mounted) {
-                                        //   DateTime? date = DateTime.tryParse(
-                                        //       detailModel.dateOfAssessment ??
-                                        //           "");
-                                        //   handleSubmit(
-                                        //       context: context,
-                                        //       selectedDate:
-                                        //           date ?? DateTime.now());
-                                        // }
 
                                         if (context.mounted) {
                                           cparaProvider.clearCparaProvider();
@@ -329,9 +320,10 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           Navigator.pop(context);
                                         }
                                       } catch (err) {
+                                        debugPrint(err.toString());
                                         Get.snackbar(
-                                          'Success',
-                                          'Successfully saved CPARA form',
+                                          'Failed',
+                                          'Failed to save CPARA form',
                                           backgroundColor: Colors.red,
                                           colorText: Colors.white,
                                         );

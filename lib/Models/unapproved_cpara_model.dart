@@ -5,10 +5,10 @@
 // import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 // import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 // import 'package:cpims_mobile/utils/app_form_metadata.dart';
-
+//
 // class UnapprovedCparaModel extends CparaModel {
 //   final String message;
-
+//
 //   UnapprovedCparaModel({
 //     required super.detail,
 //     required super.safe,
@@ -20,7 +20,7 @@
 //     super.appFormMetaData,
 //     required this.message,
 //   });
-
+//
 //   @override
 //   String toString() {
 //     return 'UnapprovedCparaModel {\n'
@@ -35,7 +35,7 @@
 //         '  message: $message\n'
 //         '}';
 //   }
-
+//
 //   factory UnapprovedCparaModel.fromJson(Map<String, dynamic> json) {
 //     return UnapprovedCparaModel(
 //       detail: DetailModel.fromJson(json['detail']),

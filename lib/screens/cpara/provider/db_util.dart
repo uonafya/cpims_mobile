@@ -82,7 +82,7 @@ Future<CPARADatabase> getFormFromDB(int formID, Database? db) async {
         "INNER JOIN Form ON Form.id = HouseholdAnswer.formID "
         "WHERE formID =  $formID");
 
-    form.cparaFormId = formID;
+    form.cparaFormId = "$formID";
     var uuid = fetchResult1[0]['uuid'];
     var ovcpmisID = fetchResult1[0]['houseHoldID'];
     form.ovcCpimsId = ovcpmisID;
@@ -143,8 +143,9 @@ Future<void> purgeForm(int formID, Database db) async {
 }
 
 //update form date time for sync
-Future<void> updateFormDateSynced(int formID, Database db) async {
+Future<void> updateFormDateSynced(String formID, Database db) async {
   try {
+    int updatedId = int.parse(formID);
     DateTime now = DateTime.now();
     await db.rawUpdate("UPDATE Form SET form_date_synced = ? WHERE id = ?",
         [now.toUtc().toIso8601String(), formID]);

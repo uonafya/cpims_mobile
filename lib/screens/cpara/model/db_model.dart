@@ -12,9 +12,9 @@ class CPARAChildQuestions {
 
   factory CPARAChildQuestions.fromJSON(Map<String, dynamic> json) {
     return CPARAChildQuestions(
-        questionCode: "${json['questionid']}",
-        answerId: "${json['answer']}",
-        ovcCpimsId: "${json['childID']}");
+        questionCode: "${json['question_code']}",
+        answerId: "${json['answer_id']}",
+        ovcCpimsId: "${json['ovc_cpims_id']}");
   }
 
   Map<String, dynamic> toJSON() {
@@ -37,7 +37,7 @@ class CPARADatabaseQuestions {
 
   factory CPARADatabaseQuestions.fromJSON(Map<String, dynamic> json) {
     return CPARADatabaseQuestions(
-        questionCode: json['questionid'], answerId: json['answer']);
+        questionCode: json['question_code'], answerId: json['answer_id']);
   }
 
   Map<String, dynamic> toJSON() {
@@ -46,7 +46,7 @@ class CPARADatabaseQuestions {
 }
 
 class CPARADatabase {
-  int cparaFormId;
+  String cparaFormId;
   String ovcCpimsId;
   String dateOfEvent;
   List<CPARADatabaseQuestions> questions;
@@ -55,7 +55,7 @@ class CPARADatabase {
   List<SubOvcChild> listOfSubOvcs;
 
   CPARADatabase(
-      {this.cparaFormId = 0,
+      {this.cparaFormId = "",
       this.ovcCpimsId = "",
       this.dateOfEvent = "",
       this.questions = const [],

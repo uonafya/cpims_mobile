@@ -20,4 +20,9 @@ class UnapprovedCparaModel extends CparaModel {
     required this.message,
     required this.cpmis_id,
   });
+
+  // fromJson
+  // factory UnapprovedCparaModel.fromJson(Map<String, dynamic> json) {
+  //   return
+  // }
 }
