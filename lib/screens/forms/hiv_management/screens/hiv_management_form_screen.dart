@@ -32,6 +32,7 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
   int selectedStep = 0;
   List<Widget> steps = [];
   bool isStep1Completed = false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -45,9 +46,10 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
   // submit hivmanagementform
   void submitHIVManagementForm(String startInterviewTime) async {
     try {
-      String formUUid=Uuid().v4();
+      String formUUid = Uuid().v4();
       await Provider.of<HIVManagementFormProvider>(context, listen: false)
-          .submitHIVManagementForm(widget.caseLoad.cpimsId,formUUid,startInterviewTime,"HIV Management Form");
+          .submitHIVManagementForm(widget.caseLoad.cpimsId, formUUid,
+              startInterviewTime, "HIV Management Form");
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -152,21 +154,45 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                   ? 'Submit Form'
                                   : 'Next',
                               onTap: () {
-                                if (selectedStep == steps.length - 1) {
-                                  // logic for verifying form and submitting
-                                  AppMetaDataProvider appMetaDataProvider =
-                                      Provider.of<AppMetaDataProvider>(context,
-                                          listen: false);
-                                  String startInterviewTime=
-                                      appMetaDataProvider.startTimeInterview ?? DateTime.now().toIso8601String();
-                                  submitHIVManagementForm(startInterviewTime);
-                                } else {
+                                try {
+                                  if (selectedStep == steps.length - 1) {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    // logic for verifying form and submitting
+                                    AppMetaDataProvider appMetaDataProvider =
+                                        Provider.of<AppMetaDataProvider>(
+                                            context,
+                                            listen: false);
+                                    String startInterviewTime =
+                                        appMetaDataProvider
+                                                .startTimeInterview ??
+                                            DateTime.now().toIso8601String();
+                                    submitHIVManagementForm(startInterviewTime);
+
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    HIVManagementFormProvider
+                                        hivManagementFormProvider =
+                                        Provider.of<HIVManagementFormProvider>(
+                                            context,
+                                            listen: false);
+                                    hivManagementFormProvider.clearForms();
+                                    Navigator.pop(context);
+                                  } else {
+                                    setState(() {
+                                      if (selectedStep < steps.length - 1 &&
+                                          formCompletionStatus == true) {
+                                        selectedStep++;
+                                      }
+                                    });
+                                  }
+                                } catch (e) {
                                   setState(() {
-                                    if (selectedStep < steps.length - 1 &&
-                                        formCompletionStatus == true) {
-                                      selectedStep++;
-                                    }
+                                    isLoading = false;
                                   });
+                                  print(e);
                                 }
                               },
                               color: kPrimaryColor,

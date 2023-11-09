@@ -26,6 +26,7 @@ bool disableSubsquentHIVAssessmentFieldsAndSubmit(BuildContext context) {
 
 class HIVAssessmentScreen extends StatefulWidget {
   const HIVAssessmentScreen({super.key, required this.caseLoadModel});
+
   final CaseLoadModel caseLoadModel;
 
   @override
@@ -88,18 +89,23 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         }
         AppMetaDataProvider appMetaDataProvider =
             Provider.of<AppMetaDataProvider>(context, listen: false);
-      String startTime = appMetaDataProvider.startTimeInterview ?? DateTime.now().toIso8601String();
+        String startTime = appMetaDataProvider.startTimeInterview ??
+            DateTime.now().toIso8601String();
         await Provider.of<HIVAssessmentProvider>(context, listen: false)
             .submitHIVAssessmentForm(startTime);
         setState(() {
           isLoading = false;
         });
+        Navigator.pop(context);
+
         Get.snackbar("HRS Form submitted", "HRS Form submitted successfully",
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.green,
             colorText: Colors.white);
-        Navigator.pop(context);
       } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
         if (kDebugMode) {
           print(e);
         }
