@@ -44,7 +44,8 @@ class UnapprovedDataService {
           final unapprovedCptData = UnapprovedCasePlanModel.fromJson(map);
           final unapprovedCpt = UnapprovedCptProvider();
           var localdb = await db.database;
-          unapprovedCpt.insertUnapprovedCasePlanData(localdb, unapprovedCptData);
+          unapprovedCpt.insertUnapprovedCasePlanData(
+              localdb, unapprovedCptData);
         }
       } else if (endpoint == endpoints[3]) {
         // Handle CPara
@@ -80,16 +81,25 @@ class UnapprovedDataService {
     return unapprovedForm1Data;
   }
 
-  static Future<List<UnapprovedCasePlanModel>> fetchLocalUnapprovedCasePlanData() async {
+  static Future<List<UnapprovedCasePlanModel>>
+      fetchLocalUnapprovedCasePlanData() async {
     final db = LocalDb.instance;
     final unapprovedCpt = UnapprovedCptProvider();
     var localdb = await db.database;
-    List<UnapprovedCasePlanModel> unapprovedCptList = await unapprovedCpt.getAllUnapprovedCasePlanData(localdb);
+    List<UnapprovedCasePlanModel> unapprovedCptList =
+        await unapprovedCpt.getAllUnapprovedCasePlanData(localdb);
     return unapprovedCptList;
   }
 
   static Future<bool> deleteUnapprovedForm1(int id) async {
     final db = LocalDb.instance;
     return await db.deleteUnApprovedForm1Data(id);
+  }
+
+  static Future<bool> deleteUnapprovedCpt(int id) async {
+    final db = LocalDb.instance;
+    final unapprovedCpt = UnapprovedCptProvider();
+    var localdb = await db.database;
+    return await unapprovedCpt.deleteUnapprovedCasePlanData(localdb, id);
   }
 }

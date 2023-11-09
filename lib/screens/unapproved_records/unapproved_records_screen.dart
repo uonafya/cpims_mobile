@@ -37,16 +37,25 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
   List<UnapprovedForm1DataModel> unapprovedForm1AData = [];
   List<UnapprovedForm1DataModel> unapprovedForm1BData = [];
   List<UnapprovedCasePlanModel> unapprovedCaseplanData = [];
-  
+
   void deleteUnapprovedForm1(int id) async {
     bool success = await UnapprovedDataService.deleteUnapprovedForm1(id);
     if (success) {
       setState(() {
         if (selectedRecord == unapprovedRecords[0]) {
-            unapprovedForm1AData.removeWhere((element) => element.id == id);
+          unapprovedForm1AData.removeWhere((element) => element.id == id);
         } else if (selectedRecord == unapprovedRecords[1]) {
           unapprovedForm1BData.removeWhere((element) => element.id == id);
         }
+      });
+    }
+  }
+
+  void deleteUnapprovedCPT(int id) async {
+    bool success = await UnapprovedDataService.deleteUnapprovedCpt(id);
+    if (success) {
+      setState(() {
+        unapprovedCaseplanData.removeWhere((element) => element.id == id);
       });
     }
   }
@@ -55,10 +64,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     final List<UnapprovedForm1DataModel> form1ARecords =
         await UnapprovedDataService.fetchLocalUnapprovedForm1AData();
     final List<UnapprovedForm1DataModel> form1BRecords =
-    await UnapprovedDataService.fetchLocalUnapprovedForm1BData();
+        await UnapprovedDataService.fetchLocalUnapprovedForm1BData();
     final List<UnapprovedCasePlanModel> unapprovedCaseplanRecords =
         await UnapprovedDataService.fetchLocalUnapprovedCasePlanData();
-    print(unapprovedCaseplanRecords);
     setState(() {
       unapprovedForm1AData = form1ARecords;
       unapprovedForm1BData = form1BRecords;
@@ -106,7 +114,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
               ChildDetailsCard(
                 unapprovedRecords: unapprovedCaseplanData,
                 selectedRecord: selectedRecord,
-                onDelete: deleteUnapprovedForm1,
+                onDelete: deleteUnapprovedCPT,
               ),
             if (selectedRecord == "CPARA")
               const Column(
@@ -185,7 +193,7 @@ class ChildDetailsCard<T> extends StatelessWidget {
   const ChildDetailsCard({
     super.key,
     required this.unapprovedRecords,
-    required this.selectedRecord, 
+    required this.selectedRecord,
     required this.onDelete,
   });
 
@@ -210,8 +218,10 @@ class ChildDetailsCard<T> extends StatelessWidget {
                       final UnapprovedCasePlanModel unapprovedRecord =
                           unapprovedRecords[index];
                       return UnapprovedCasePlanFormDetails(
-                          unapprovedRecord: unapprovedRecord,
-                          onDelete: (int ) {  },
+                        unapprovedRecord: unapprovedRecord,
+                        onDelete: (int) {
+                          onDelete!(int);
+                        },
                       );
                     },
                   ),
@@ -228,7 +238,7 @@ class ChildDetailsCard<T> extends StatelessWidget {
 class UnapprovedCasePlanFormDetails extends StatelessWidget {
   const UnapprovedCasePlanFormDetails({
     super.key,
-    required this.unapprovedRecord, 
+    required this.unapprovedRecord,
     required this.onDelete,
   });
 
@@ -259,12 +269,10 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
+                IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
                 IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.edit)),
-                IconButton(
-                    onPressed:()async{
-                      await  onDelete(unapprovedRecord.id ?? 0);
+                    onPressed: () async {
+                      await onDelete(unapprovedRecord.id ?? 0);
                     },
                     icon: const Icon(Icons.delete)),
               ],
@@ -320,20 +328,17 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                       .asMap()
                       .entries
                       .map((e) => Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(
                                 height: 12,
                               ),
                               Text(
-                                  "#${e.key}",
+                                "#${e.key}",
                                 style: const TextStyle(
-                                  fontWeight:
-                                  FontWeight.bold,
+                                  fontWeight: FontWeight.bold,
                                   fontSize: 14,
                                 ),
-
                               ),
                               Row(
                                 children: [
@@ -343,8 +348,7 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                                         const Text(
                                           "Domain: ",
                                           style: TextStyle(
-                                            fontWeight:
-                                                FontWeight.bold,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                         Text(e.value.domainId),
@@ -357,8 +361,7 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                                         const Text(
                                           "Goal: ",
                                           style: TextStyle(
-                                            fontWeight:
-                                                FontWeight.bold,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                         Text(e.value.goalId),
@@ -375,8 +378,7 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                                         const Text(
                                           "Gap: ",
                                           style: TextStyle(
-                                            fontWeight:
-                                                FontWeight.bold,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                         Text(e.value.gapId),
@@ -389,8 +391,7 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                                         const Text(
                                           "Priority: ",
                                           style: TextStyle(
-                                            fontWeight:
-                                                FontWeight.bold,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                         Text(e.value.priorityId),
@@ -407,8 +408,7 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                                         const Text(
                                           "Result: ",
                                           style: TextStyle(
-                                            fontWeight:
-                                                FontWeight.bold,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                         Text(e.value.resultsId),
@@ -421,8 +421,7 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                                         const Text(
                                           "Reason: ",
                                           style: TextStyle(
-                                            fontWeight:
-                                                FontWeight.bold,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                         Text(e.value.reasonId),
@@ -432,8 +431,7 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                                 ],
                               ),
                               Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text(
                                     "Service IDs",
@@ -447,8 +445,7 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                                 ],
                               ),
                               Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text(
                                     "Responsible IDs",
@@ -457,8 +454,7 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    e.value.responsibleIds
-                                        .join(', '),
+                                    e.value.responsibleIds.join(', '),
                                   ),
                                 ],
                               ),
@@ -513,16 +509,12 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                IconButton
-                  (onPressed: () {},
-                    icon: const Icon(Icons.edit)
-                ),
+                IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
                 IconButton(
-                    onPressed:()async{
-                      await  onDelete(unapprovedData.id ?? 0);
+                    onPressed: () async {
+                      await onDelete(unapprovedData.id ?? 0);
                     },
-                    icon: const Icon(Icons.delete)
-                ),
+                    icon: const Icon(Icons.delete)),
               ],
             ),
             Column(
@@ -549,7 +541,7 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
                   height: 4,
                 ),
                 Text(
-                  unapprovedData .message,
+                  unapprovedData.message,
                 ),
               ],
             ),

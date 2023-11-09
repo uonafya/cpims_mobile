@@ -78,8 +78,6 @@ class UnapprovedCptProvider {
       SELECT * FROM case_plan_services WHERE unapproved_form_id = $unapprovedCasePlanId
     ''');
 
-        print("Service Response $serviceRes");
-
         List<CasePlanServiceModel> serviceList = [];
         for (var service in serviceRes) {
           serviceList.add(CasePlanServiceModel(
@@ -95,8 +93,6 @@ class UnapprovedCptProvider {
           ));
         }
 
-        print("Service List $serviceList");
-
         unapprovedCasePlanList.add(UnapprovedCasePlanModel(
           id: result['id'] as int,
           ovcCpimsId: result['ovc_cpims_id'] as String,
@@ -105,7 +101,6 @@ class UnapprovedCptProvider {
           message: result['message'] as String,
         ));
 
-        print("Unapproved list $unapprovedCasePlanList");
       }
       return unapprovedCasePlanList;
     } catch (e) {
@@ -114,19 +109,21 @@ class UnapprovedCptProvider {
       }
       return [];
     }
-    return [];
   }
 
 // function to delete unapproved caseplan data
-  Future<void> deleteUnapprovedCasePlanData(Database db, int id) async {
+  Future<bool> deleteUnapprovedCasePlanData(Database db, int id) async {
     try {
-      await db.delete('unapproved_cpt', where: 'id = ?', whereArgs: [id]);
-      await db
-          .delete('case_plan_services', where: 'form_id = ?', whereArgs: [id]);
+      int deletedRows1 =
+          await db.delete('unapproved_cpt', where: 'id = ?', whereArgs: [id]);
+      int deletedRows2 = await db
+          .delete('case_plan_services', where: 'unapproved_form_id = ?', whereArgs: [id]);
+      return deletedRows1 > 0 && deletedRows2 > 0;
     } catch (e) {
       if (kDebugMode) {
         print('Error deleting case plan: $e');
       }
+      return false;
     }
   }
 
