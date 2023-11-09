@@ -86,13 +86,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
             ),
             const SizedBox(height: 10),
             if (selectedRecord == 'CPT')
-              Column(
-                children: [
-                  ChildDetailsCard(
-                    unapprovedRecords: unapprovedCaseplanData,
-                    selectedRecord: selectedRecord,
-                  ),
-                ],
+              ChildDetailsCard(
+                unapprovedRecords: unapprovedCaseplanData,
+                selectedRecord: selectedRecord,
               ),
             if (selectedRecord == "CPARA")
               const Column(
@@ -182,14 +178,14 @@ class FormTab extends StatelessWidget {
                       unapprovedForm1aData![index];
                   return dataModel.services.isNotEmpty &&
                           eventType == 'SERVICES'
-                      ? CustomForm1ACardDetail<UnapprovedForm1DataModel>(
+                      ? UnapprovedForm1CardDetails<UnapprovedForm1DataModel>(
                           unapprovedData: dataModel,
                           eventOrDomainId: dataModel.services[0].domainId,
                           isService: true,
                         )
                       : dataModel.criticalEvents.isNotEmpty &&
                               eventType == 'CRITICAL EVENTS'
-                          ? CustomForm1ACardDetail<UnapprovedForm1DataModel>(
+                          ? UnapprovedForm1CardDetails<UnapprovedForm1DataModel>(
                               unapprovedData: dataModel,
                               eventOrDomainId:
                                   dataModel.criticalEvents[0].eventId,
@@ -212,14 +208,14 @@ class FormTab extends StatelessWidget {
             else if (selectedRecord == "CPT")
               for (final cptdataModel in unapprovedCPTData!)
                 if (cptdataModel.services.isNotEmpty && eventType == "SERVICES")
-                  CustomForm1ACardDetail<UnapprovedCasePlanModel>(
+                  UnapprovedForm1CardDetails<UnapprovedCasePlanModel>(
                     unapprovedData: cptdataModel,
                     eventOrDomainId: cptdataModel.services[0].domainId,
                     isService: true,
                   )
                 else if (cptdataModel.criticalEvents.isNotEmpty &&
                     eventType == 'CRITICAL EVENTS')
-                  CustomForm1ACardDetail<UnapprovedCasePlanModel>(
+                  UnapprovedForm1CardDetails<UnapprovedCasePlanModel>(
                     unapprovedData: cptdataModel,
                     eventOrDomainId: cptdataModel.services[0].domainId,
                     isService: true,
@@ -243,238 +239,288 @@ class ChildDetailsCard<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomCard(
-      title: 'Unapproved $selectedRecord Forms',
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
+    return Expanded(
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          CustomCard(
+            title: 'Unapproved $selectedRecord Forms',
             children: [
-              ListView.builder(
-                itemCount: (unapprovedRecords as dynamic).length,
-                shrinkWrap: true,
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemBuilder: (BuildContext context, index) {
-                  final UnapprovedCasePlanModel unapprovedRecord =
-                      (unapprovedRecords as dynamic)[index];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                            "CPIMS ID: ",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Text(
-                            unapprovedRecord.ovcCpimsId,
-                            style: const TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                          const Spacer(),
-                          IconButton(onPressed:() {}, icon: const Icon(Icons.edit)),
-                          IconButton(onPressed:() {}, icon: const Icon(Icons.delete)),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          Row(
-                            children: [
-                              const Text(
-                                "Message",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const Spacer(),
-                              Text(
-                                unapprovedRecord.dateOfEvent,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          Text(
-                            unapprovedRecord.message,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      Visibility(
-                        visible: unapprovedRecord.services.isNotEmpty,
-                        child: const Text(
-                          "Services",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      Visibility(
-                          visible: unapprovedRecord.services.isNotEmpty,
-                          child: Column(
-                            children: unapprovedRecord.services.asMap().entries.map((e) => Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("#${e.key}"),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Text(
-                                            "Domain: ",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Text(e.value.domainId),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Text(
-                                            "Goal: ",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Text(e.value.goalId),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Text(
-                                            "Gap: ",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Text(e.value.gapId),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Text(
-                                            "Priority: ",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Text(e.value.priorityId),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Text(
-                                            "Result: ",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Text(e.value.resultsId),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Text(
-                                            "Reason: ",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Text(e.value.reasonId),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "Service IDs",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      e.value.serviceIds.join(' ,'),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "Responsible IDs",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      e.value.responsibleIds.join(' ,'),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )).toList(),
-                          )
-                      ),
-
-                    ],
-                  );
-                },
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ListView.builder(
+                    itemCount: (unapprovedRecords as dynamic).length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (BuildContext context, index) {
+                      final UnapprovedCasePlanModel unapprovedRecord =
+                          (unapprovedRecords as dynamic)[index];
+                      return UnapprovedCasePlanFormDetails(unapprovedRecord: unapprovedRecord);
+                    },
+                  ),
+                ],
               ),
             ],
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
 
-class CustomForm1ACardDetail<T> extends StatelessWidget {
+class UnapprovedCasePlanFormDetails extends StatelessWidget {
+  const UnapprovedCasePlanFormDetails({
+    super.key,
+    required this.unapprovedRecord,
+  });
+
+  final UnapprovedCasePlanModel unapprovedRecord;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Text(
+                  "CPIMS ID: ",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                Text(
+                  unapprovedRecord.ovcCpimsId,
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                const Spacer(),
+                IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.edit)),
+                IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.delete)),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 4,
+                ),
+                Row(
+                  children: [
+                    const Text(
+                      "Message",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      unapprovedRecord.dateOfEvent,
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 4,
+                ),
+                Text(
+                  unapprovedRecord.message,
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 4,
+            ),
+            Visibility(
+              visible: unapprovedRecord.services.isNotEmpty,
+              child: const Text(
+                "Services",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 4,
+            ),
+            Visibility(
+                visible: unapprovedRecord.services.isNotEmpty,
+                child: Column(
+                  children: unapprovedRecord.services
+                      .asMap()
+                      .entries
+                      .map((e) => Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              Text(
+                                  "#${e.key}",
+                                style: const TextStyle(
+                                  fontWeight:
+                                  FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "Domain: ",
+                                          style: TextStyle(
+                                            fontWeight:
+                                                FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(e.value.domainId),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "Goal: ",
+                                          style: TextStyle(
+                                            fontWeight:
+                                                FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(e.value.goalId),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "Gap: ",
+                                          style: TextStyle(
+                                            fontWeight:
+                                                FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(e.value.gapId),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "Priority: ",
+                                          style: TextStyle(
+                                            fontWeight:
+                                                FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(e.value.priorityId),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "Result: ",
+                                          style: TextStyle(
+                                            fontWeight:
+                                                FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(e.value.resultsId),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "Reason: ",
+                                          style: TextStyle(
+                                            fontWeight:
+                                                FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(e.value.reasonId),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Service IDs",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    e.value.serviceIds.join(', '),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Responsible IDs",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    e.value.responsibleIds
+                                        .join(', '),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ))
+                      .toList(),
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class UnapprovedForm1CardDetails<T> extends StatelessWidget {
   // list with a type of unapproved data model
   final UnapprovedForm1DataModel unapprovedData;
   final String? eventOrDomainId;
   final bool isService;
 
-  const CustomForm1ACardDetail({
+  const UnapprovedForm1CardDetails({
     super.key,
     required this.unapprovedData,
     this.eventOrDomainId,
@@ -506,8 +552,8 @@ class CustomForm1ACardDetail<T> extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                IconButton(onPressed:() {}, icon: const Icon(Icons.edit)),
-                IconButton(onPressed:() {}, icon: const Icon(Icons.delete)),
+                IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
+                IconButton(onPressed: () {}, icon: const Icon(Icons.delete)),
               ],
             ),
             Column(
@@ -542,53 +588,54 @@ class CustomForm1ACardDetail<T> extends StatelessWidget {
               height: 4,
             ),
             Visibility(
-                visible: unapprovedData.services.isNotEmpty,
-                child: const Text(
-                  "Services",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+              visible: unapprovedData.services.isNotEmpty,
+              child: const Text(
+                "Services",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
+              ),
             ),
             const SizedBox(
               height: 4,
             ),
             Visibility(
-              visible: unapprovedData.services.isNotEmpty,
-              child: Column(
-                children: unapprovedData.services.map((e) => Row(
-                  children: [
-                    Expanded(
-                        child: Row(
-                          children: [
-                            const Text(
-                              "ID: ",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                visible: unapprovedData.services.isNotEmpty,
+                child: Column(
+                  children: unapprovedData.services
+                      .map((e) => Row(
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    const Text(
+                                      "ID: ",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(e.serviceId.toString()),
+                                  ],
+                                ),
                               ),
-                            ),
-                            Text(e.serviceId.toString()),
-                          ],
-                        ),
-                    ),
-                    Expanded(
-                      child: Row(
-                        children: [
-                          const Text(
-                            "Domain: ",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(e.domainId),
-                        ],
-                      ),
-                    ),
-                  ],
-                )).toList(),
-              )
-            ),
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    const Text(
+                                      "Domain: ",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(e.domainId),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ))
+                      .toList(),
+                )),
             const SizedBox(
               height: 4,
             ),
@@ -608,38 +655,37 @@ class CustomForm1ACardDetail<T> extends StatelessWidget {
             Visibility(
                 visible: unapprovedData.criticalEvents.isNotEmpty,
                 child: Column(
-                  children: unapprovedData.criticalEvents.map((e) => Row(
-                    children: [
-                      Expanded(
-                          child: Row(
+                  children: unapprovedData.criticalEvents
+                      .map((e) => Row(
                             children: [
-                              const Text(
-                                "ID: ",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(e.eventId),
+                              Expanded(
+                                  child: Row(
+                                children: [
+                                  const Text(
+                                    "ID: ",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(e.eventId),
+                                ],
+                              )),
+                              Expanded(
+                                  child: Row(
+                                children: [
+                                  const Text(
+                                    "Date: ",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(e.eventDate),
+                                ],
+                              )),
                             ],
-                          )
-                      ),
-                      Expanded(
-                          child: Row(
-                            children: [
-                              const Text(
-                                "Date: ",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(e.eventDate),
-                            ],
-                          )
-                      ),
-                    ],
-                  )).toList(),
-                )
-            ),
+                          ))
+                      .toList(),
+                )),
           ],
         ),
       ),
