@@ -32,6 +32,7 @@ class Form1BScreen extends StatefulWidget {
 
 class _Form1BScreen extends State<Form1BScreen> {
   int selectedStep = 0;
+  bool isLoading = false;
 
   List<Widget> steps = [
     const HealthyForm1b(),
@@ -175,6 +176,7 @@ class _Form1BScreen extends State<Form1BScreen> {
                             ),
                             Expanded(
                               child: CustomButton(
+                                isLoading: isLoading,
                                 text: selectedStep == steps.length - 1
                                     ? 'Submit Form1B'
                                     : 'Next',
@@ -206,14 +208,20 @@ class _Form1BScreen extends State<Form1BScreen> {
                                                   .startTimeInterview ??
                                               '';
                                         }
+
+                                        setState(() {
+                                          isLoading = true;
+                                        });
                                         bool isFormSaved =
                                             await form1bProvider.saveForm1bData(
                                           form1bProvider.formData,
                                           startInterviewTime,
                                         );
 
+
                                         setState(() {
                                           if (isFormSaved == true) {
+                                            isLoading = false;
                                             if (context.mounted) {
                                               context
                                                   .read<StatsProvider>()

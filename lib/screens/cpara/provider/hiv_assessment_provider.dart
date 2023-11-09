@@ -88,9 +88,8 @@ class HIVAssessmentProvider with ChangeNotifier {
           _hivRiskAssessmentModel,
           _progressMonitoringModel);
 
-      final response =
-          await apiServiceConstructor.postSecData(data, "mobile/hrs/");
-
+      print(data);
+      await apiServiceConstructor.postSecData(data, "mobile/hrs/");
     } catch (e) {
       if (kDebugMode) {
         print(e);
