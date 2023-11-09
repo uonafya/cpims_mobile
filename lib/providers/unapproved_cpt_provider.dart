@@ -119,9 +119,8 @@ class UnapprovedCptProvider {
   }
 
 // function to delete unapproved caseplan data
-  Future<void> deleteUnapprovedCasePlanData(int id) async {
+  Future<void> deleteUnapprovedCasePlanData(Database db, int id) async {
     try {
-      final db = await LocalDb.instance.database;
       await db.delete('unapproved_cpt', where: 'id = ?', whereArgs: [id]);
       await db
           .delete('case_plan_services', where: 'form_id = ?', whereArgs: [id]);
