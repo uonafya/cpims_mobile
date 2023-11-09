@@ -8,6 +8,7 @@ import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
+import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -176,11 +177,12 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
                   onTap: () => handleNext(context),
                 )),
               ]),
-              const SizedBox(
-                height: 40,
-              ),
             ],
           ),
+          const SizedBox(
+            height: 40,
+          ),
+          const Footer(),
         ],
       ),
     );

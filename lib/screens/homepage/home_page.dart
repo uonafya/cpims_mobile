@@ -3,6 +3,7 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/caregiver/caregiver.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/preventive/preventive_assesment_attendance.dart';
 import 'package:cpims_mobile/screens/homepage/provider/stats_provider.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
@@ -407,8 +408,24 @@ class _HomepageState extends State<Homepage> {
                 right: 30,
                 left: 20,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    SizedBox(
+                      width: 140,
+                      child: CustomButton(
+                        onTap: () {
+                          Get.to(
+                            () => const PreventiveAssessment(),
+                            transition: Transition.cupertino,
+                            duration: const Duration(
+                              milliseconds: 200,
+                            ),
+                          );
+                        },
+                        text: "Preventive",
+                        color: Colors.grey,
+                      ),
+                    ),
                     SizedBox(
                       width: 140,
                       child: CustomButton(

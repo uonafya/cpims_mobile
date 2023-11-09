@@ -55,13 +55,11 @@ class CPARADatabase {
   List<SubOvcChild> listOfSubOvcs;
 
   CPARADatabase(
-      {
-        this.cpara_form_id = 0,
-        this.ovc_cpims_id = "",
-        this.date_of_event = "",
-        this.questions = const [],
-        this.childQuestions = const [],
+      {this.cparaFormId = 0,
+      this.ovcCpimsId = "",
+      this.dateOfEvent = "",
+      this.questions = const [],
+      this.childQuestions = const [],
       this.appFormMetaData = const AppFormMetaData(),
-        this.listOfSubOvcs = const []
-      });
+      this.listOfSubOvcs = const []});
 }
