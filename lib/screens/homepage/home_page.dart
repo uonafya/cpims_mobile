@@ -68,9 +68,9 @@ class _HomepageState extends State<Homepage> {
 
   Future<void> postCasePlansToServer() async {
     List<Map<String, dynamic>> caseplanFromDbData =
-        await CasePlanService.getAllCasePlans();
+    await CasePlanService.getAllCasePlans();
     List<CasePlanModel> caseplanFromDb =
-        caseplanFromDbData.map((map) => CasePlanModel.fromJson(map)).toList();
+    caseplanFromDbData.map((map) => CasePlanModel.fromJson(map)).toList();
 
     var prefs = await SharedPreferences.getInstance();
     var accessToken = prefs.getString('access');
@@ -106,7 +106,7 @@ class _HomepageState extends State<Homepage> {
             AlertDialog(
               title: const Text("Session Expired"),
               content:
-                  const Text("Your session has expired. Please log in again"),
+              const Text("Your session has expired. Please log in again"),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -162,9 +162,10 @@ class _HomepageState extends State<Homepage> {
       // submit data
       for (final formData in queryResults) {
         final Response response =
-            await apiServiceConstructor.postSecData(formData, "mobile/hmf/");
+        await apiServiceConstructor.postSecData(formData, "mobile/hmf/");
+        print(response.data);
         if (kDebugMode) {
-          print(response.data);
+          print("Data"+ response.data);
         }
       }
     } catch (e) {
@@ -176,8 +177,8 @@ class _HomepageState extends State<Homepage> {
 
   Future<void> syncWorkflows() async {
     final isConnected =
-        await Provider.of<ConnectivityProvider>(context, listen: false)
-            .checkInternetConnection();
+    await Provider.of<ConnectivityProvider>(context, listen: false)
+        .checkInternetConnection();
     if (isConnected) {
       await submitCparaToUpstream();
       await postCasePlansToServer();
@@ -209,7 +210,7 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     final SummaryDataModel? dashData =
-        context.select((UIProvider provider) => provider.getDashData);
+    context.select((UIProvider provider) => provider.getDashData);
 
     StatsProvider formStats = context.watch<StatsProvider>();
 
@@ -386,7 +387,7 @@ class _HomepageState extends State<Homepage> {
                           secondaryColor: const Color(0xff9A3734),
                           onTap: () {
                             Get.to(
-                              () => const CaregiverScreen(),
+                                  () => const CaregiverScreen(),
                               transition: Transition.cupertino,
                               duration: const Duration(
                                 milliseconds: 200,
@@ -414,7 +415,7 @@ class _HomepageState extends State<Homepage> {
                       child: CustomButton(
                         onTap: () {
                           Get.to(
-                            () => const OVCCareScreen(),
+                                () => const OVCCareScreen(),
                             transition: Transition.cupertino,
                             duration: const Duration(
                               milliseconds: 200,
@@ -497,7 +498,7 @@ class _HomepageState extends State<Homepage> {
             AlertDialog(
               title: const Text("Session Expired"),
               content:
-                  const Text("Your session has expired. Please log in again"),
+              const Text("Your session has expired. Please log in again"),
               actions: [
                 TextButton(
                   onPressed: () {

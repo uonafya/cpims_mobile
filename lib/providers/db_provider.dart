@@ -295,9 +295,9 @@ class LocalDb {
 
   Future<void> insertCparaData(
       {required CparaModel cparaModelDB,
-      required String ovcId,
-      required String startTime,
-      required String careProviderId}) async {
+        required String ovcId,
+        required String startTime,
+        required String careProviderId}) async {
     final db = await instance.database;
     var idForm = 0;
     String selectedDate = cparaModelDB.detail.dateOfAssessment ??
@@ -327,8 +327,8 @@ class LocalDb {
 
   void handleSubmit(
       {required String selectedDate,
-      required int formId,
-      required CparaOvcSubPopulation ovcSub}) async {
+        required int formId,
+        required CparaOvcSubPopulation ovcSub}) async {
     // CparaOvcSubPopulation ovcSub =
     //     context.read<CparaProvider>().cparaOvcSubPopulation ??
     //         CparaOvcSubPopulation();
@@ -565,11 +565,11 @@ class LocalDb {
   // create HIVManagement table
   Future<void> createHMFForms(Database db, int version) async {
     // Define the table schema with all the fields
+    print("-------------------Creating HMF Forms---------------------------");
     const String createTableQuery = '''
-    CREATE TABLE $hmfForms (
+    CREATE TABLE $HMForms (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       ovc_cpims_id TEXT,
-      date_of_event TEXT,
       HIV_MGMT_1_A TEXT,
       HIV_MGMT_1_B TEXT,
       HIV_MGMT_1_C TEXT,
@@ -604,13 +604,15 @@ class LocalDb {
       HIV_MGMT_2_P TEXT,
       HIV_MGMT_2_Q TEXT,
       HIV_MGMT_2_R TEXT,
-      HIV_MGMT_2_S TEXT,
+      HIV_MGMT_2_S TEXT
     )
   ''';
 
     try {
       await db.execute(createTableQuery);
+      print("------------------Function ----Creating HMF Forms---------------------------");
     } catch (e) {
+      print("-------------------Error HMF Forms---------------------------$e");
       if (kDebugMode) {
         print('Error creating table: $e');
       }
@@ -618,16 +620,15 @@ class LocalDb {
   }
 
   Future<void> insertHMFFormData(
-    String cpmisId,
-    ARTTherapyHIVFormModel artTherapyHIVFormModel,
-    HIVVisitationFormModel hivVisitationFormModel,
-  ) async {
+      String cpmisId,
+      ARTTherapyHIVFormModel artTherapyHIVFormModel,
+      HIVVisitationFormModel hivVisitationFormModel,
+      ) async {
     final db = await instance.database;
     await db.insert(
-      hmfForms,
+      HMForms,
       {
         'ovc_cpims_id': cpmisId,
-        'date_of_event': artTherapyHIVFormModel.dateOfEvent,
         'HIV_MGMT_1_A': artTherapyHIVFormModel.dateHIVConfirmedPositive,
         'HIV_MGMT_1_B': artTherapyHIVFormModel.dateTreatmentInitiated,
         'HIV_MGMT_1_C': artTherapyHIVFormModel.baselineHEILoad,
@@ -654,8 +655,8 @@ class LocalDb {
         'HIV_MGMT_2_J': hivVisitationFormModel.detectableViralLoadInterventions,
         'HIV_MGMT_2_K': hivVisitationFormModel.disclosure,
         'HIV_MGMT_2_L_1': hivVisitationFormModel.mUACScore,
-        'HIV_MGMT_2_L_2': hivVisitationFormModel,
-        'HIV_MGMT_2_M': hivVisitationFormModel.nhifEnrollmentStatus,
+        'HIV_MGMT_2_L_2': hivVisitationFormModel.zScore,
+        'HIV_MGMT_2_M': hivVisitationFormModel.nutritionalSupport.join(', '),
         'HIV_MGMT_2_N': hivVisitationFormModel.supportGroupStatus,
         'HIV_MGMT_2_O_1': hivVisitationFormModel.nhifEnrollment,
         'HIV_MGMT_2_O_2': hivVisitationFormModel.nhifEnrollmentStatus,
@@ -669,9 +670,42 @@ class LocalDb {
 
   Future<List<Map<String, dynamic>>> fetchHMFFormData() async {
     final db = await LocalDb.instance.database;
-    final hmfFormData = await db.query(hmfForms);
-    return hmfFormData;
+    final hmfFormData = await db.query(HMForms);
+
+    // Create a new list to store modified records
+    List<Map<String, dynamic>> modifiedFormData = [];
+
+    // Iterate through each record and update the "HIV_MGMT_2_M" field
+    for (var record in hmfFormData) {
+      // Create a copy of the record
+      Map<String, dynamic> modifiedRecord = Map.from(record);
+
+      dynamic nutritionalSupportData = modifiedRecord['HIV_MGMT_2_M'];
+
+      if (nutritionalSupportData is String) {
+        // Remove leading and trailing whitespace and split by comma and space
+        List<String> nutritionalSupportList = nutritionalSupportData
+            .trim()
+            .split(', ')
+            .map((value) => value.replaceAll("'", '')) // Remove single quotes
+            .toList();
+
+        // Update the copy of the record with the new list
+        modifiedRecord['HIV_MGMT_2_M'] = nutritionalSupportList;
+      } else if (nutritionalSupportData is List<String>) {
+        // The data is already a list of strings, do nothing
+      } else {
+        // Handle other types if needed
+      }
+
+      // Add the modified record to the new list
+      modifiedFormData.add(modifiedRecord);
+    }
+
+    print("MODIFIED DATA--------$modifiedFormData");
+    return modifiedFormData;
   }
+
 
   Future<void> insertOvcSubpopulationData(String uuid, String cpimsId,
       String dateOfAssessment, List<CheckboxQuestion> questions) async {
@@ -716,7 +750,7 @@ class LocalDb {
     final db = await instance.database;
     const sql = 'SELECT * FROM $tableFormMetadata WHERE field_name = ?';
     final List<Map<String, dynamic>> results =
-        await db.rawQuery(sql, [fieldName]);
+    await db.rawQuery(sql, [fieldName]);
     return results;
   }
 
@@ -794,7 +828,7 @@ class LocalDb {
       const sql =
           'SELECT * FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
       final List<Map<String, dynamic>> form1Rows =
-          await db.rawQuery(sql, [formType]);
+      await db.rawQuery(sql, [formType]);
 
       List<Map<String, dynamic>> updatedForm1Rows = [];
 
@@ -816,7 +850,7 @@ class LocalDb {
         );
 
         final AppFormMetaData appFormMetaData =
-            await getAppFormMetaData(form1row['uuid']);
+        await getAppFormMetaData(form1row['uuid']);
 
         // Create a new map that includes existing form1row data, services, critical_events, and ID
         Map<String, dynamic> updatedForm1Row = {
@@ -847,7 +881,7 @@ class LocalDb {
       const sql =
           'SELECT COUNT(*) FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
       final List<Map<String, dynamic>> result =
-          await db.rawQuery(sql, [formType]);
+      await db.rawQuery(sql, [formType]);
 
       if (result.isNotEmpty) {
         return Sqflite.firstIntValue(result);
@@ -870,7 +904,7 @@ class LocalDb {
       const sql =
           'SELECT COUNT(*) FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
       final List<Map<String, dynamic>> result =
-          await db.rawQuery(sql, [formType]);
+      await db.rawQuery(sql, [formType]);
 
       if (result.isNotEmpty) {
         controller.add(Sqflite.firstIntValue(result)!);
@@ -1033,12 +1067,12 @@ class LocalDb {
             gapId: serviceRow[CasePlanServices.gapId] as String,
             priorityId: serviceRow[CasePlanServices.priorityId] as String,
             responsibleIds:
-                (serviceRow['responsible_ids'] as String).split(','),
+            (serviceRow['responsible_ids'] as String).split(','),
             // Parse comma-separated responsible IDs
             resultsId: serviceRow[CasePlanServices.resultsId] as String,
             reasonId: serviceRow[CasePlanServices.reasonId] as String,
             completionDate:
-                serviceRow[CasePlanServices.completionDate] as String,
+            serviceRow[CasePlanServices.completionDate] as String,
           ));
         }
 
@@ -1088,11 +1122,11 @@ class LocalDb {
             gapId: serviceRow[CasePlanServices.gapId] as String,
             priorityId: serviceRow[CasePlanServices.priorityId] as String,
             responsibleIds:
-                (serviceRow['responsible_ids'] as String).split(','),
+            (serviceRow['responsible_ids'] as String).split(','),
             resultsId: serviceRow[CasePlanServices.resultsId] as String,
             reasonId: serviceRow[CasePlanServices.reasonId] as String,
             completionDate:
-                serviceRow[CasePlanServices.completionDate] as String,
+            serviceRow[CasePlanServices.completionDate] as String,
           ));
         }
 
@@ -1233,7 +1267,7 @@ const form1CriticalEventsTable = 'form1_critical_events';
 const ovcsubpopulation = 'ovcsubpopulation';
 const cparaForms = 'Form';
 const HRSForms = 'HRSForm';
-const hmfForms = 'HMFForm';
+const HMForms = 'HMFForm';
 const cparaHouseholdAnswers = 'cpara_household_answers';
 const cparaChildAnswers = 'cpara_child_answers';
 

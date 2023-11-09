@@ -9,8 +9,8 @@ import 'package:cpims_mobile/widgets/custom_dynamic_checkbox_widget.dart';
 import 'package:cpims_mobile/widgets/custom_dynamic_radio_button.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/form_section.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HIVVisitationWidget extends StatefulWidget {
@@ -40,7 +40,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   String disclosure = '';
   String mUACScore = '';
   String zScore = '';
-  Set<String> nutritionalSupport = <String>{};
+  Set<String> nutritionalSupport = const <String>{};
   String supportGroupStatus = '';
   String nhifEnrollment = '';
   String nhifEnrollmentStatus = '';
@@ -74,7 +74,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
       height: height,
       mUAC: mUAC,
       arvDrugsAdherence:
-          arvDrugsAdherence.split(' ').where((s) => s.length > 1).join(' '),
+      arvDrugsAdherence.split(' ').where((s) => s.length > 1).join(' '),
       arvDrugsDuration: arvDrugsDuration,
       adherenceCounseling: adherenceCounseling,
       treatmentSupporter: treatmentSupporter,
@@ -87,7 +87,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
       disclosure: disclosure,
       mUACScore: mUACScore,
       zScore: zScore,
-      nutritionalSupport: nutritionalSupport,
+      nutritionalSupport: nutritionalSupport.toList(),
       supportGroupStatus: supportGroupStatus,
       nhifEnrollment: nhifEnrollment,
       nhifEnrollmentStatus: nhifEnrollmentStatus,
@@ -99,10 +99,55 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
 
     Provider.of<HIVManagementFormProvider>(context, listen: false)
         .updateHIVVisitationModel(formData);
+    final isComplete = areAllFieldsFilled();
+
+    if (isComplete) {
+    } else {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Please fill in the required fields"),
+          backgroundColor: Colors.red,
+        ));
+      }
+    }
 
     if (kDebugMode) {
       print(formData.toJson());
     }
+  }
+
+  bool areAllFieldsFilled() {
+    // Define a list of required fields to check if they are filled in
+    final List<String> requiredFields = [
+      visitDate,
+      durationOnARTs,
+      height,
+      mUAC,
+      arvDrugsAdherence,
+      arvDrugsDuration,
+      adherenceCounseling,
+      treatmentSupporter,
+      treatmentSupporterSex,
+      treatmentSupporterAge,
+      treatmentSupporterHIVStatus,
+      viralLoadResults,
+      labInvestigationsDate,
+      detectableViralLoadInterventions,
+      disclosure,
+      mUACScore,
+      zScore,
+      nutritionalSupport.toString(),
+      supportGroupStatus,
+      nhifEnrollment,
+      nhifEnrollmentStatus,
+      referralServices,
+      nextAppointmentDate,
+      peerEducatorName,
+      peerEducatorContact,
+    ];
+
+    // Check if any required field is empty
+    return requiredFields.every((field) => field.isNotEmpty);
   }
 
   @override
@@ -692,6 +737,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             DateTextField(
               label: 'Date',
               enabled: true,
+              allowFutureDates: true,
               identifier: DateTextFieldIdentifier.dateOfAssessment,
               onDateSelected: (DateTime? date) {
                 setState(() {
