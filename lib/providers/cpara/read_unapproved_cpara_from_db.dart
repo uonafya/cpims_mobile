@@ -48,7 +48,7 @@ Future<UnapprovedCparaModel> getUnaprovedCparaFromDb(String formID, String messa
   List<Map<String, dynamic>> formsFetchResult = await db.rawQuery(
       "SELECT question_code, answer_id, ovc_cpims_id FROM UnapprovedCPARAAnswers WHERE form_id = ?", [formID]);
 
-  unaprovedToReturn = fillCparaFromQuestions(unaprovedToReturn, cpms_id, formsFetchResult);
+  unaprovedToReturn = await fillCparaFromQuestions(unaprovedToReturn, cpms_id, formsFetchResult);
   return unaprovedToReturn;
 }
 

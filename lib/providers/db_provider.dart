@@ -6,6 +6,7 @@ import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
 import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
+import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/db_util.dart';
@@ -314,36 +315,46 @@ class LocalDb {
       {required CparaModel cparaModelDB,
       required String ovcId,
       required String startTime,
+      required bool isRejected,
       required String careProviderId}) async {
     final db = await instance.database;
     var idForm = 0;
     String selectedDate = cparaModelDB.detail.dateOfAssessment ??
         DateFormat('yyyy-MM-dd').format(DateTime.now());
-    // Create form
-    cparaModelDB.createForm(db, selectedDate).then((formUUID) {
-      // Get formID
-      cparaModelDB.getLatestFormID(db).then((formData) {
-        var formDate = formData.formDate;
-        var formDateString = formDate.toString().split(' ')[0];
-        var formID = formData.formID;
-        idForm = formID;
-        cparaModelDB
-            .addHouseholdFilledQuestionsToDB(db, formDateString, ovcId, formID)
-            .then((value) {
-          //insert app form metadata
-          insertAppFormMetaData(formUUID, startTime, 'cpara').then((value) =>
-              handleSubmit(
-                  selectedDate: selectedDate,
-                  formId: formID,
-                  ovcSub: cparaModelDB.ovcSubPopulations));
+    if (isRejected == true) {
+      await cparaModelDB.addHouseholdFilledQuestionsToDB(db, selectedDate, ovcId, cparaModelDB.uuid);
+      await insertAppFormMetaData(cparaModelDB.uuid, startTime, 'cpara');
+      handleSubmit(selectedDate: selectedDate, formId: cparaModelDB.uuid, ovcSub: cparaModelDB.ovcSubPopulations);
+
+      // Delete previous entries of unapproved
+      UnapprovedCparaService.deleteUnapprovedCparaForm(cparaModelDB.uuid);
+    } else {
+      // Create form
+      cparaModelDB.createForm(db, selectedDate).then((formUUID) {
+        // Get formID
+        cparaModelDB.getLatestFormID(db).then((formData) {
+          var formDate = formData.formDate;
+          var formDateString = formDate.toString().split(' ')[0];
+          var formID = formData.formID;
+          idForm = formID;
+          cparaModelDB
+              .addHouseholdFilledQuestionsToDB(db, formDateString, ovcId, formID)
+              .then((value) {
+            //insert app form metadata
+            insertAppFormMetaData(formUUID, startTime, 'cpara').then((value) =>
+                handleSubmit(
+                    selectedDate: selectedDate,
+                    formId: formID,
+                    ovcSub: cparaModelDB.ovcSubPopulations));
+          });
         });
       });
-    });
+    }
   }
 
   void handleSubmit(
       {required String selectedDate,
-      required int formId,
+      required formId,
       required CparaOvcSubPopulation ovcSub}) async {
     // CparaOvcSubPopulation ovcSub =
     //     context.read<CparaProvider>().cparaOvcSubPopulation ??
@@ -1276,6 +1287,20 @@ class LocalDb {
       // Handle the case where no metadata is found
       return const AppFormMetaData(); // You should replace this with an appropriate default value or error handling.
     }
+  }
+
+  // Returns the name of the child who has the given ovc cpims id. If given null it returns the empty string
+  Future<String> getFullChildNameFromOVCID(String? ovc_cpmis_id) async{
+    if (ovc_cpmis_id == null) {
+      return "";
+    }
+
+    var db = await database;
+    var fetchResult = await db.rawQuery(
+      "SELECT  ovc_first_name || ' ' || ovc_surname AS name  FROM OVCS WHERE ovc_cpims_id = ?", [ovc_cpmis_id]
+    );
+
+    return fetchResult[0]['name'] as String;
   }
 }
 

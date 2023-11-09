@@ -1,12 +1,20 @@
+import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
+import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
 import 'package:cpims_mobile/widgets/custom_chip.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/app_meta_data_provider.dart';
+import '../cpara/cpara_forms.dart';
 
 class UnapprovedRecordsScreens extends StatefulWidget {
   const UnapprovedRecordsScreens({super.key});
@@ -150,6 +158,42 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                     UnapprovedCparaService.getUnapprovedFromDB();
                   },
                   child: Text("Fetch From DB"),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async{
+                    var forms = await UnapprovedCparaService.getUnapprovedFromDB();
+
+                    if (context.mounted) {
+                      // Get instance of CPARA provider
+                      var cparaProvider = context.read<CparaProvider>();
+
+                      // Populate details
+                      String startDateTime = DateTime.now().toString();
+                      context
+                          .read<AppMetaDataProvider>()
+                          .updateStartTimeInterview(startDateTime);
+                      context.read<CparaProvider>().updateCparaModel(forms[0]);
+                      context.read<CparaProvider>().updateDetailModel(forms[0].detail);
+                      context.read<CparaProvider>().updateHealthModel(forms[0].health);
+                      context.read<CparaProvider>().updateSafeModel(forms[0].safe);
+                      context.read<CparaProvider>().updateSchooledModel(forms[0].schooled);
+                      context.read<CparaProvider>().updateStableModel(forms[0].stable);
+                      context.read<CparaProvider>().updateCparaOvcModel(forms[0].ovcSubPopulations);
+
+                      // Navigate to CPARA
+                      Get.to(() =>
+                          CparaFormsScreen(
+                            caseLoadModel: CaseLoadModel(),
+                            isRejected: true,
+                            rejectedMessage: forms[0].message,
+                            formId: forms[0].uuid,
+                          ));
+                    }
+                  },
+                  child: Text("Display Form"),
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
                   ),

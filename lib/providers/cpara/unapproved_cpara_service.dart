@@ -9,6 +9,7 @@ import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_safe_widget.dart';
 import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
+import 'package:uuid/uuid.dart';
 
 import '../db_provider.dart';
 
@@ -97,6 +98,9 @@ class UnapprovedCparaService {
       }
 
       // Add CPARA form
+      var uuid = Uuid();
+      var formID = uuid.v4();
+      model.uuid = formID;
       var datab = await db.database;
       datab.insert("UnapprovedCPARA", {
         "id": model.uuid,
@@ -123,6 +127,25 @@ class UnapprovedCparaService {
     }
   }
 
+  static deleteUnapprovedCparaForm(String formID) async{
+    try {
+      var db = await LocalDb.instance.database;
+
+      // Delete CPARA table
+      db.rawQuery(
+        "DELETE FROM UnapprovedCPARA WHERE id = ?", [formID]
+      );
+
+      // Delete entries for unapproved table
+      db.rawQuery(
+        "DELETE FROM UnapprovedCPARAAnswers WHERE form_id = ? ", [formID]
+      );
+    } catch(err) {
+      print(err.toString());
+      throw "Could Not Delete Unapproved CPARA";
+    }
+  }
+
   static Future<List<UnapprovedCparaModel>> getUnapprovedFromDB() async{
     var unapprovedForms = await fetchUnapprovedCparaForms();
     List<UnapprovedCparaModel> formsToBeReturned = [];
@@ -141,52 +164,68 @@ class UnapprovedCparaService {
     var entries = [];
     var baseJSON = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
 
-    var question1 = baseJSON;
-    question1.addAll({"question_code": "ovc_q1"});
-    question1.addAll({"answer_id": child.question1});
-    entries.add(question1);
+    if (child.question1 != null) {
+      var question1 = baseJSON;
+      question1.addAll({"question_code": "ovc_q1"});
+      question1.addAll({"answer_id": child.question1});
+      entries.add(question1);
+    }
 
-    var question2 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
-    question2.addAll({"question_code": "ovc_q2"});
-    question2.addAll({"answer_id": child.question2});
-    entries.add(question2);
+    if (child.question2 != null) {
+      var question2 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
+      question2.addAll({"question_code": "ovc_q2"});
+      question2.addAll({"answer_id": child.question2});
+      entries.add(question2);
+    }
 
-    var question3 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
-    question3.addAll({"question_code": "ovc_q3"});
-    question3.addAll({"answer_id": child.question3});
-    entries.add(question3);
+    if (child.question3 != null) {
+      var question3 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
+      question3.addAll({"question_code": "ovc_q3"});
+      question3.addAll({"answer_id": child.question3});
+      entries.add(question3);
+    }
 
-    var question4 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
-    question4.addAll({"question_code": "ovc_q4"});
-    question4.addAll({"answer_id": child.question4});
-    entries.add(question4);
+    if (child.question4 != null) {
+      var question4 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
+      question4.addAll({"question_code": "ovc_q4"});
+      question4.addAll({"answer_id": child.question4});
+      entries.add(question4);
+    }
 
-    var question5 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
-    question5.addAll({"question_code": "ovc_q5"});
-    question5.addAll({"answer_id": child.question5});
-    entries.add(question5);
+    if (child.question5 != null) {
+      var question5 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
+      question5.addAll({"question_code": "ovc_q5"});
+      question5.addAll({"answer_id": child.question5});
+      entries.add(question5);
+    }
 
-    var question6 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
-    question6.addAll({"question_code": "ovc_q6"});
-    question6.addAll({"answer_id": child.question6});
-    entries.add(question6);
+    if (child.question6 != null) {
+      var question6 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
+      question6.addAll({"question_code": "ovc_q6"});
+      question6.addAll({"answer_id": child.question6});
+      entries.add(question6);
+    }
 
-    var question7 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
-    question7.addAll({"question_code": "ovc_q7"});
-    question7.addAll({"answer_id": child.question7});
-    entries.add(question7);
+    if (child.question7 != null) {
+      var question7 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
+      question7.addAll({"question_code": "ovc_q7"});
+      question7.addAll({"answer_id": child.question7});
+      entries.add(question7);
+    }
 
-    var question8 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
-    question8.addAll({"question_code": "ovc_q8"});
-    question8.addAll({"answer_id": child.question8});
-    entries.add(question8);
+    if (child.question8 != null) {
+      var question8 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
+      question8.addAll({"question_code": "ovc_q8"});
+      question8.addAll({"answer_id": child.question8});
+      entries.add(question8);
+    }
 
     return entries;
   }
 }
 
 var testModel = UnapprovedCparaModel(
-    cpmis_id: "30",
+    cpmis_id: "3799369",
     appFormMetaData: AppFormMetaData(
         formId: '1',
         location_lat: '1',
@@ -208,19 +247,19 @@ var testModel = UnapprovedCparaModel(
         childrenQuestions: [
           HealthChild(
               name: "B",
-              id: '3',
+              id: '4027465',
               question1: 'yes',
               question2: 'yes',
               question3: 'yes'),
           HealthChild(
               name: "C",
-              id: '1',
+              id: '3799369',
               question1: 'yes',
               question2: 'yes',
               question3: 'yes'),
           HealthChild(
               name: "A",
-              id: '2',
+              id: '4027475',
               question1: 'yes',
               question2: 'yes',
               question3: 'yes')
@@ -228,13 +267,13 @@ var testModel = UnapprovedCparaModel(
     ovcSubPopulations: CparaOvcSubPopulation(childrenQuestions: [
       CparaOvcChild(
           name: "Y",
-          ovcId: "1",
+          ovcId: "4027475",
           question6: "",
           question7: '',
           question8: ''),
       CparaOvcChild(
           name: "Y",
-          ovcId: "2",
+          ovcId: "3799369",
           question4: "yes",
           question3: "yes",
           question2: "Yes",
@@ -249,9 +288,9 @@ var testModel = UnapprovedCparaModel(
         question2: 'yes',
         question3: 'yes',
         childrenQuestions: [
-          SafeChild(ovcId: '1', name: 'E', question1: 'yes'),
-          SafeChild(ovcId: '2', name: 'B', question1: 'yes'),
-          SafeChild(ovcId: '3', name: 'X', question1: 'yes'),
+          SafeChild(ovcId: '3799369', name: 'E', question1: 'yes'),
+          SafeChild(ovcId: '4027465', name: 'B', question1: 'yes'),
+          SafeChild(ovcId: '4027475', name: 'X', question1: 'yes'),
         ]),
     schooled: SchooledModel(
         mainquestion1: 'yes',
