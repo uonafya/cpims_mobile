@@ -4,22 +4,19 @@ import 'dart:async';
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
-import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
-import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_form.dart';
+import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_form_model.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
-// import '../Models/case_plan_form.dart';
 import '../Models/caseplan_form_model.dart';
 import '../constants.dart';
 import '../screens/forms/form1a/new/form_one_a.dart';
@@ -58,9 +55,7 @@ class LocalDb {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
     const textTypeNull = 'TEXT NULL';
-    const defaultTime = 'DATETIME DEFAULT CURRENT_TIMESTAMP';
     const intType = 'INTEGER';
-    const intTypeNull = 'INTEGER NULL';
 
     await db.execute('''
       CREATE TABLE $caseloadTable (
@@ -140,17 +135,6 @@ class LocalDb {
         ''');
 
     await db.execute('''
-        CREATE TABLE $unapprovedForm1Table (
-          ${Form1.id} $idType,
-          ${Form1.uuid} $textType,
-          ${Form1.ovcCpimsId} $textType,
-          ${Form1.dateOfEvent} $textType,
-          ${Form1.formType} $textType,
-          ${Form1.message} $textType
-        )
-        ''');
-
-    await db.execute('''
         CREATE TABLE $form1Table (
           ${Form1.id} $idType,
           ${Form1.uuid} $textType,
@@ -166,20 +150,20 @@ class LocalDb {
     await db.execute('''
   CREATE TABLE $form1ServicesTable (
     ${Form1Services.id} $idType,
-    ${Form1Services.formId} $intTypeNull,
+    ${Form1Services.formId} $intType,
     ${Form1Services.domainId} $textType,
     ${Form1Services.serviceId} $textType,
-    ${Form1Services.unapprovedFormId} $intTypeNull
+    FOREIGN KEY (${Form1Services.formId}) REFERENCES $form1Table(${Form1.id})
   )
 ''');
 
     await db.execute('''
       CREATE TABLE $form1CriticalEventsTable (
         ${Form1CriticalEvents.id} $idType,
-        ${Form1CriticalEvents.formId} $intTypeNull,
+        ${Form1CriticalEvents.formId} $textType,
         ${Form1CriticalEvents.eventId} $textType,
         ${Form1CriticalEvents.eventDate} $textType,
-        ${Form1CriticalEvents.unapprovedFormId} $intTypeNull
+        FOREIGN KEY (${Form1CriticalEvents.formId}) REFERENCES $form1Table(${Form1.id})
         )
       ''');
 
@@ -187,6 +171,7 @@ class LocalDb {
     await createOvcSubPopulation(db, version);
     await createAppMetaDataTable(db, version);
     await createHRSForms(db, version);
+    await createHMFForms(db, version);
   }
 
   Future<void> createAppMetaDataTable(Database db, int version) async {
@@ -315,27 +300,35 @@ class LocalDb {
       required String careProviderId}) async {
     final db = await instance.database;
     var idForm = 0;
-    String selectedDate = cparaModelDB.detail.dateOfAssessment ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
+    String selectedDate = cparaModelDB.detail.dateOfAssessment ??
+        DateFormat('yyyy-MM-dd').format(DateTime.now());
     // Create form
     cparaModelDB.createForm(db, selectedDate).then((formUUID) {
-
       // Get formID
       cparaModelDB.getLatestFormID(db).then((formData) {
         var formDate = formData.formDate;
         var formDateString = formDate.toString().split(' ')[0];
         var formID = formData.formID;
         idForm = formID;
-        cparaModelDB.addHouseholdFilledQuestionsToDB(
-            db, formDateString, ovcId, formID).then((value) {
-              //insert app form metadata
-              insertAppFormMetaData(formUUID, startTime, 'cpara').then((value) => handleSubmit(selectedDate: selectedDate,
-                  formId: formID, ovcSub: cparaModelDB.ovcSubPopulations));
-            });
+        cparaModelDB
+            .addHouseholdFilledQuestionsToDB(db, formDateString, ovcId, formID)
+            .then((value) {
+          //insert app form metadata
+          insertAppFormMetaData(formUUID, startTime, 'cpara').then((value) =>
+              handleSubmit(
+                  selectedDate: selectedDate,
+                  formId: formID,
+                  ovcSub: cparaModelDB.ovcSubPopulations));
+        });
       });
     });
+    // await handleSubmit(selectedDate: "selectedDate");
   }
 
-  void handleSubmit({required String selectedDate, required int formId, required CparaOvcSubPopulation ovcSub}) async {
+  void handleSubmit(
+      {required String selectedDate,
+      required int formId,
+      required CparaOvcSubPopulation ovcSub}) async {
     // CparaOvcSubPopulation ovcSub =
     //     context.read<CparaProvider>().cparaOvcSubPopulation ??
     //         CparaOvcSubPopulation();
@@ -416,16 +409,13 @@ class LocalDb {
         //     ? DateFormat('yyyy-MM-dd').format(selectedDate)
         //     : null;
         await localDb.insertOvcSubpopulationData(
-            "$formId",
-            "${child.ovcId}",
-            selectedDate,
-            selectedQuestions);
+            "$formId", "${child.ovcId}", selectedDate, selectedQuestions);
       }
       // if(mounted) {
       //   Navigator.pop(context);
       // }
     } catch (error) {
-      throw("Error Occurred");
+      throw ("Error Occurred");
       // if (currentContext.mounted) {
       //   showDialog(
       //     context: currentContext, // Use the local context
@@ -445,7 +435,6 @@ class LocalDb {
       // }
     }
   }
-
 
   Future<void> createOvcSubPopulation(Database db, int version) async {
     try {
@@ -573,6 +562,117 @@ class LocalDb {
     return hrsData;
   }
 
+  // create HIVManagement table
+  Future<void> createHMFForms(Database db, int version) async {
+    // Define the table schema with all the fields
+    const String createTableQuery = '''
+    CREATE TABLE $hmfForms (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      ovc_cpims_id TEXT,
+      date_of_event TEXT,
+      HIV_MGMT_1_A TEXT,
+      HIV_MGMT_1_B TEXT,
+      HIV_MGMT_1_C TEXT,
+      HIV_MGMT_1_D TEXT,
+      HIV_MGMT_1_E TEXT,
+      HIV_MGMT_1_E_DATE TEXT,
+      HIV_MGMT_1_F TEXT,
+      HIV_MGMT_1_F_DATE TEXT,
+      HIV_MGMT_1_G TEXT,
+      HIV_MGMT_1_G_DATE TEXT,
+      HIV_MGMT_2_A TEXT,
+      HIV_MGMT_2_B TEXT,
+      HIV_MGMT_2_C TEXT,
+      HIV_MGMT_2_D TEXT,
+      HIV_MGMT_2_E TEXT,
+      HIV_MGMT_2_F TEXT,
+      HIV_MGMT_2_G TEXT,
+      HIV_MGMT_2_H_2 TEXT,
+      HIV_MGMT_2_H_3 TEXT,
+      HIV_MGMT_2_H_4 TEXT,
+      HIV_MGMT_2_H_5 TEXT,
+      HIV_MGMT_2_I_1 TEXT,
+      HIV_MGMT_2_I_DATE TEXT,
+      HIV_MGMT_2_J TEXT,
+      HIV_MGMT_2_K TEXT,
+      HIV_MGMT_2_L_1 TEXT,
+      HIV_MGMT_2_L_2 TEXT,
+      HIV_MGMT_2_M TEXT,
+      HIV_MGMT_2_N TEXT,
+      HIV_MGMT_2_O_1 TEXT,
+      HIV_MGMT_2_O_2 TEXT,
+      HIV_MGMT_2_P TEXT,
+      HIV_MGMT_2_Q TEXT,
+      HIV_MGMT_2_R TEXT,
+      HIV_MGMT_2_S TEXT,
+    )
+  ''';
+
+    try {
+      await db.execute(createTableQuery);
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error creating table: $e');
+      }
+    }
+  }
+
+  Future<void> insertHMFFormData(
+    String cpmisId,
+    ARTTherapyHIVFormModel artTherapyHIVFormModel,
+    HIVVisitationFormModel hivVisitationFormModel,
+  ) async {
+    final db = await instance.database;
+    await db.insert(
+      hmfForms,
+      {
+        'ovc_cpims_id': cpmisId,
+        'date_of_event': artTherapyHIVFormModel.dateOfEvent,
+        'HIV_MGMT_1_A': artTherapyHIVFormModel.dateHIVConfirmedPositive,
+        'HIV_MGMT_1_B': artTherapyHIVFormModel.dateTreatmentInitiated,
+        'HIV_MGMT_1_C': artTherapyHIVFormModel.baselineHEILoad,
+        'HIV_MGMT_1_D': artTherapyHIVFormModel.dateStartedFirstLine,
+        'HIV_MGMT_1_E': artTherapyHIVFormModel.arvsSubWithFirstLine,
+        'HIV_MGMT_1_E_DATE': artTherapyHIVFormModel.arvsSubWithFirstLineDate,
+        'HIV_MGMT_1_F': artTherapyHIVFormModel.switchToSecondLine,
+        'HIV_MGMT_1_F_DATE': artTherapyHIVFormModel.switchToSecondLineDate,
+        'HIV_MGMT_1_G': artTherapyHIVFormModel.switchToThirdLine,
+        'HIV_MGMT_1_G_DATE': artTherapyHIVFormModel.switchToThirdLineDate,
+        'HIV_MGMT_2_A': hivVisitationFormModel.visitDate,
+        'HIV_MGMT_2_B': hivVisitationFormModel.durationOnARTs,
+        'HIV_MGMT_2_C': hivVisitationFormModel.height,
+        'HIV_MGMT_2_D': hivVisitationFormModel.mUAC,
+        'HIV_MGMT_2_E': hivVisitationFormModel.arvDrugsAdherence,
+        'HIV_MGMT_2_F': hivVisitationFormModel.arvDrugsDuration,
+        'HIV_MGMT_2_G': hivVisitationFormModel.adherenceCounseling,
+        'HIV_MGMT_2_H_2': hivVisitationFormModel.treatmentSupporter,
+        'HIV_MGMT_2_H_3': hivVisitationFormModel.treatmentSupporterSex,
+        'HIV_MGMT_2_H_4': hivVisitationFormModel.treatmentSupporterAge,
+        'HIV_MGMT_2_H_5': hivVisitationFormModel.treatmentSupporterHIVStatus,
+        'HIV_MGMT_2_I_1': hivVisitationFormModel.viralLoadResults,
+        'HIV_MGMT_2_I_DATE': hivVisitationFormModel.labInvestigationsDate,
+        'HIV_MGMT_2_J': hivVisitationFormModel.detectableViralLoadInterventions,
+        'HIV_MGMT_2_K': hivVisitationFormModel.disclosure,
+        'HIV_MGMT_2_L_1': hivVisitationFormModel.mUACScore,
+        'HIV_MGMT_2_L_2': hivVisitationFormModel,
+        'HIV_MGMT_2_M': hivVisitationFormModel.nhifEnrollmentStatus,
+        'HIV_MGMT_2_N': hivVisitationFormModel.supportGroupStatus,
+        'HIV_MGMT_2_O_1': hivVisitationFormModel.nhifEnrollment,
+        'HIV_MGMT_2_O_2': hivVisitationFormModel.nhifEnrollmentStatus,
+        'HIV_MGMT_2_P': hivVisitationFormModel.referralServices,
+        'HIV_MGMT_2_Q': hivVisitationFormModel.nextAppointmentDate,
+        'HIV_MGMT_2_R': hivVisitationFormModel.peerEducatorName,
+        'HIV_MGMT_2_S': hivVisitationFormModel.peerEducatorContact,
+      },
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> fetchHMFFormData() async {
+    final db = await LocalDb.instance.database;
+    final hmfFormData = await db.query(hmfForms);
+    return hmfFormData;
+  }
+
   Future<void> insertOvcSubpopulationData(String uuid, String cpimsId,
       String dateOfAssessment, List<CheckboxQuestion> questions) async {
     final db = await instance.database;
@@ -639,22 +739,6 @@ class LocalDb {
     );
   }
 
-  Future<void> insertUnapprovedAppFormMetaData(uuid, AppFormMetaData metadata, formType) async {
-    final db = await instance.database;
-    await db.insert(
-      appFormMetaDataTable,
-      {
-        'form_id': uuid,
-        'location_lat': metadata.location_lat,
-        'location_long': metadata.location_long,
-        'start_of_interview': metadata.startOfInterview,
-        'end_of_interview': metadata.endOfInterview,
-        'form_type': formType,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
   // insert formData(either form1a or form1b)
   Future<void> insertForm1Data(
       String formType, formData, metadata, uuid) async {
@@ -691,55 +775,6 @@ class LocalDb {
           form1CriticalEventsTable,
           {
             'form_id': formId,
-            'event_id': criticalEvent.eventId,
-            'event_date': criticalEvent.eventDate,
-          },
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error inserting form1 data: $e');
-      }
-    }
-  }
-
-  // insert formData(either form1a or form1b)
-  Future<void> insertUnapprovedForm1Data(
-      String formType,UnapprovedForm1DataModel formData, metadata, uuid) async {
-    try {
-      final db = await instance.database;
-      final formId = await db.insert(
-        unapprovedForm1Table,
-        {
-          'ovc_cpims_id': formData.ovcCpimsId,
-          'date_of_event': formData.dateOfEvent,
-          'form_type': formType,
-          'uuid': uuid,
-          Form1.message : formData.message
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-      //insert app form metadata
-      await insertUnapprovedAppFormMetaData(uuid, metadata, formType);
-
-      // insert services
-      for (var service in formData.services) {
-        await db.insert(
-          form1ServicesTable,
-          {
-            Form1Services.unapprovedFormId : formId,
-            'domain_id': service.domainId,
-            'service_id': service.serviceId,
-          },
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-      }
-      for (var criticalEvent in formData.criticalEvents) {
-        await db.insert(
-          form1CriticalEventsTable,
-          {
-            Form1Services.unapprovedFormId : formId,
             'event_id': criticalEvent.eventId,
             'event_date': criticalEvent.eventDate,
           },
@@ -806,58 +841,6 @@ class LocalDb {
     }
   }
 
-  Future<List<Map<String, dynamic>>> queryAllUnapprovedForm1Rows(String formType) async {
-    try {
-      final db = await instance.database;
-      const sql =
-          'SELECT * FROM $unapprovedForm1Table WHERE form_type = ?';
-      final List<Map<String, dynamic>> form1Rows =
-          await db.rawQuery(sql, [formType]);
-
-      List<Map<String, dynamic>> updatedForm1Rows = [];
-
-      for (var form1row in form1Rows) {
-        int formId = form1row['_id'];
-
-        // Fetch associated services
-        final List<Map<String, dynamic>> services = await db.query(
-          form1ServicesTable,
-          where: '${Form1Services.unapprovedFormId} = ?',
-          whereArgs: [formId],
-        );
-
-        // Fetch associated critical events
-        final List<Map<String, dynamic>> criticalEvents = await db.query(
-          form1CriticalEventsTable,
-          where: '${Form1CriticalEvents.unapprovedFormId} = ?',
-          whereArgs: [formId],
-        );
-
-        final AppFormMetaData appFormMetaData =
-            await getAppFormMetaData(form1row['uuid']);
-
-        // Create a new map that includes existing form1row data, services, critical_events, and ID
-        Map<String, dynamic> updatedForm1Row = {
-          ...form1row,
-          'services': services,
-          'critical_events': criticalEvents,
-          'id': formId,
-          'app_form_metadata': appFormMetaData.toJson(),
-        };
-        // Add the updated map to the list
-        updatedForm1Rows.add(updatedForm1Row);
-      }
-      debugPrint("Updated form1 rows: $updatedForm1Rows");
-
-      return updatedForm1Rows;
-    } catch (e) {
-      if (kDebugMode) {
-        print("Error querying form1 data: $e");
-      }
-      return [];
-    }
-  }
-
   Future<int?> queryForm1UnsyncedForms(String formType) async {
     try {
       final db = await instance.database;
@@ -905,42 +888,6 @@ class LocalDb {
     }
 
     return controller.stream;
-  }
-
-  // get a single row(form 1a or 1b)
-  Future<bool> deleteUnApprovedForm1Data(String formType, int id) async {
-    try {
-      final db = await instance.database;
-      final queryResults = await db.query(
-        unapprovedForm1Table,
-        where: '${Form1.id} = ?',
-        whereArgs: [id],
-      );
-
-      if (queryResults.isNotEmpty) {
-        final form1Id = queryResults.first[Form1.id] as int;
-        await db.delete(
-          form1ServicesTable,
-          where: '${Form1Services.unapprovedFormId} = ?',
-          whereArgs: [form1Id],
-        );
-        await db.delete(
-          form1CriticalEventsTable,
-          where: '${Form1CriticalEvents.unapprovedFormId} = ?',
-          whereArgs: [form1Id],
-        );
-        final rowsAffected = await db.delete(
-          unapprovedForm1Table,
-          where: '${Form1.id} = ?',
-          whereArgs: [form1Id],
-        );
-        return rowsAffected > 0;
-      }
-      return false;
-    } catch (e) {
-      debugPrint("Error deleting form1 data: $e");
-    }
-    return false;
   }
 
   // get a single row(form 1a or 1b)
@@ -1280,13 +1227,13 @@ const tableFormMetadata = 'form_metadata';
 const casePlanTable = 'case_plan';
 const casePlanServicesTable = 'case_plan_services';
 const form1Table = 'form1';
-const unapprovedForm1Table = 'unapproved_form1';
 const appFormMetaDataTable = 'app_form_metadata';
 const form1ServicesTable = 'form1_services';
 const form1CriticalEventsTable = 'form1_critical_events';
 const ovcsubpopulation = 'ovcsubpopulation';
 const cparaForms = 'Form';
 const HRSForms = 'HRSForm';
+const hmfForms = 'HMFForm';
 const cparaHouseholdAnswers = 'cpara_household_answers';
 const cparaChildAnswers = 'cpara_child_answers';
 
@@ -1434,7 +1381,6 @@ class Form1 {
   static const String ovcCpimsId = "ovc_cpims_id";
   static const String dateOfEvent = 'date_of_event';
   static const String formDateSynced = 'form_date_synced';
-  static const String message = 'message';
 }
 
 class Form1Services {
@@ -1447,7 +1393,6 @@ class Form1Services {
 
   static const String id = "_id";
   static const String formId = "form_id";
-  static const String unapprovedFormId = "unapproved_form_id";
   static const String domainId = "domain_id";
   static const String serviceId = "service_id";
 }
@@ -1462,7 +1407,6 @@ class Form1CriticalEvents {
 
   static const String id = "_id";
   static const String formId = "form_id";
-  static const String unapprovedFormId = "unapproved_form_id";
   static const String eventId = "event_id";
   static const String eventDate = "event_date";
 }
