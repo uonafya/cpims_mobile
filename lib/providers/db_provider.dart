@@ -913,7 +913,7 @@ class LocalDb {
   }
 
   // get a single row(form 1a or 1b)
-  Future<bool> deleteUnApprovedForm1Data(String formType, int id) async {
+  Future<bool> deleteUnApprovedForm1Data(int id) async {
     try {
       final db = await instance.database;
       final queryResults = await db.query(

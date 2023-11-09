@@ -87,4 +87,9 @@ class UnapprovedDataService {
     List<UnapprovedCasePlanModel> unapprovedCptList = await unapprovedCpt.getAllUnapprovedCasePlanData(localdb);
     return unapprovedCptList;
   }
+
+  static Future<bool> deleteUnapprovedForm1(int id) async {
+    final db = LocalDb.instance;
+    return await db.deleteUnApprovedForm1Data(id);
+  }
 }

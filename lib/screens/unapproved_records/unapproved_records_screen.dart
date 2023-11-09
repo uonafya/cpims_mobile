@@ -37,6 +37,19 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
   List<UnapprovedForm1DataModel> unapprovedForm1AData = [];
   List<UnapprovedForm1DataModel> unapprovedForm1BData = [];
   List<UnapprovedCasePlanModel> unapprovedCaseplanData = [];
+  
+  void deleteUnapprovedForm1(int id) async {
+    bool success = await UnapprovedDataService.deleteUnapprovedForm1(id);
+    if (success) {
+      setState(() {
+        if (selectedRecord == unapprovedRecords[0]) {
+            unapprovedForm1AData.removeWhere((element) => element.id == id);
+        } else if (selectedRecord == unapprovedRecords[1]) {
+          unapprovedForm1BData.removeWhere((element) => element.id == id);
+        }
+      });
+    }
+  }
 
   void getRecords() async {
     final List<UnapprovedForm1DataModel> form1ARecords =
@@ -93,6 +106,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
               ChildDetailsCard(
                 unapprovedRecords: unapprovedCaseplanData,
                 selectedRecord: selectedRecord,
+                onDelete: deleteUnapprovedForm1,
               ),
             if (selectedRecord == "CPARA")
               const Column(
@@ -103,6 +117,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                 child: FormTab(
                   selectedRecord: selectedRecord,
                   unapprovedForm1aData: unapprovedForm1AData,
+                  onDelete: deleteUnapprovedForm1,
                 ),
               ),
             if (selectedRecord == unapprovedRecords[1])
@@ -110,6 +125,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                 child: FormTab(
                   selectedRecord: selectedRecord,
                   unapprovedForm1aData: unapprovedForm1BData,
+                  onDelete: deleteUnapprovedForm1,
                 ),
               ),
           ],
@@ -122,11 +138,13 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
 class FormTab extends StatelessWidget {
   final String selectedRecord;
   final List<UnapprovedForm1DataModel>? unapprovedForm1aData;
+  final Function(int) onDelete;
 
   const FormTab({
     super.key,
     required this.selectedRecord,
     this.unapprovedForm1aData,
+    required this.onDelete,
   });
 
   @override
@@ -148,6 +166,7 @@ class FormTab extends StatelessWidget {
                     unapprovedData: dataModel,
                     eventOrDomainId: dataModel.services[0].domainId,
                     isService: true,
+                    onDelete: onDelete,
                   );
                 },
               )
@@ -161,11 +180,13 @@ class FormTab extends StatelessWidget {
 class ChildDetailsCard<T> extends StatelessWidget {
   final List<UnapprovedCasePlanModel> unapprovedRecords;
   final String selectedRecord;
+  final Function(int)? onDelete;
 
   const ChildDetailsCard({
     super.key,
     required this.unapprovedRecords,
-    required this.selectedRecord,
+    required this.selectedRecord, 
+    required this.onDelete,
   });
 
   @override
@@ -188,7 +209,10 @@ class ChildDetailsCard<T> extends StatelessWidget {
                     itemBuilder: (BuildContext context, index) {
                       final UnapprovedCasePlanModel unapprovedRecord =
                           unapprovedRecords[index];
-                      return UnapprovedCasePlanFormDetails(unapprovedRecord: unapprovedRecord);
+                      return UnapprovedCasePlanFormDetails(
+                          unapprovedRecord: unapprovedRecord,
+                          onDelete: (int ) {  },
+                      );
                     },
                   ),
                 ],
@@ -204,10 +228,12 @@ class ChildDetailsCard<T> extends StatelessWidget {
 class UnapprovedCasePlanFormDetails extends StatelessWidget {
   const UnapprovedCasePlanFormDetails({
     super.key,
-    required this.unapprovedRecord,
+    required this.unapprovedRecord, 
+    required this.onDelete,
   });
 
   final UnapprovedCasePlanModel unapprovedRecord;
+  final Function(int) onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -237,7 +263,9 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                     onPressed: () {},
                     icon: const Icon(Icons.edit)),
                 IconButton(
-                    onPressed: () {},
+                    onPressed:()async{
+                      await  onDelete(unapprovedRecord.id ?? 0);
+                    },
                     icon: const Icon(Icons.delete)),
               ],
             ),
@@ -450,12 +478,14 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
   final UnapprovedForm1DataModel unapprovedData;
   final String? eventOrDomainId;
   final bool isService;
+  final Function(int) onDelete;
 
   const UnapprovedForm1CardDetails({
     super.key,
     required this.unapprovedData,
     this.eventOrDomainId,
     required this.isService,
+    required this.onDelete,
   });
 
   @override
@@ -483,8 +513,16 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.delete)),
+                IconButton
+                  (onPressed: () {},
+                    icon: const Icon(Icons.edit)
+                ),
+                IconButton(
+                    onPressed:()async{
+                      await  onDelete(unapprovedData.id ?? 0);
+                    },
+                    icon: const Icon(Icons.delete)
+                ),
               ],
             ),
             Column(
