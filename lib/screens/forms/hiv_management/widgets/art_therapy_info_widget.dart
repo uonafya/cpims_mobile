@@ -9,6 +9,7 @@ import 'package:cpims_mobile/utils.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/form_section.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ARTTherapyInfoWidget extends StatefulWidget {
@@ -54,6 +55,13 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
     if (isComplete) {
       final formCompletionStatus = context.read<FormCompletionStatusProvider>();
       formCompletionStatus.setArtTherapyFormCompleted(true);
+    } else {
+      if(context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Please fill in the required fields"),
+          backgroundColor: Colors.red,
+        ));
+      }
     }
   }
 

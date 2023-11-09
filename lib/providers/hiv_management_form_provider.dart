@@ -4,6 +4,8 @@ import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/strings.dart';
+
 class HIVManagementFormProvider extends ChangeNotifier {
   ARTTherapyHIVFormModel _artTherapyFormModel = ARTTherapyHIVFormModel();
 
@@ -81,6 +83,18 @@ class HIVManagementFormProvider extends ChangeNotifier {
         print(_hivVisitationFormModel.nutritionalSupport);
       }
 
+      formData.forEach((key, value) {
+        if (value == "Yes") {
+          formData[key] = convertBooleanStringToDBBoolen("Yes");
+        } else if (value == "No") {
+          formData[key] = convertBooleanStringToDBBoolen("No");
+        }
+      });
+
+      if (kDebugMode) {
+        print(_hivVisitationFormModel.nutritionalSupport);
+      }
+
       // save data locally
       await LocalDb.instance.insertHMFFormData(
         cpimsID!,
@@ -91,6 +105,9 @@ class HIVManagementFormProvider extends ChangeNotifier {
         formType,
         context: context
       );
+
+      //reset form Data
+      clearForms();
     } catch (e) {
       rethrow;
     }
