@@ -511,10 +511,10 @@ class LocalDb {
     try {
       await db.execute(createTableQuery);
     } catch (e) {
-      print('Error creating table: $e');
+              print('Error creating table: $e');
+      }
     }
-  }
-
+  
   Future<void> insertHRSData(
       String cpmisId,
       HIVCurrentStatusModel currentStatus,
@@ -565,11 +565,11 @@ class LocalDb {
   // create HIVManagement table
   Future<void> createHMFForms(Database db, int version) async {
     // Define the table schema with all the fields
+    print("-------------------Creating HMF Forms---------------------------");
     const String createTableQuery = '''
-    CREATE TABLE $hmfForms (
+    CREATE TABLE $HMForms (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       ovc_cpims_id TEXT,
-      date_of_event TEXT,
       HIV_MGMT_1_A TEXT,
       HIV_MGMT_1_B TEXT,
       HIV_MGMT_1_C TEXT,
@@ -604,13 +604,15 @@ class LocalDb {
       HIV_MGMT_2_P TEXT,
       HIV_MGMT_2_Q TEXT,
       HIV_MGMT_2_R TEXT,
-      HIV_MGMT_2_S TEXT,
+      HIV_MGMT_2_S TEXT
     )
   ''';
 
     try {
       await db.execute(createTableQuery);
+      print("------------------Function ----Creating HMF Forms---------------------------");
     } catch (e) {
+      print("-------------------Error HMF Forms---------------------------$e");
       if (kDebugMode) {
         print('Error creating table: $e');
       }
@@ -624,10 +626,9 @@ class LocalDb {
   ) async {
     final db = await instance.database;
     await db.insert(
-      hmfForms,
+      HMForms,
       {
         'ovc_cpims_id': cpmisId,
-        'date_of_event': artTherapyHIVFormModel.dateOfEvent,
         'HIV_MGMT_1_A': artTherapyHIVFormModel.dateHIVConfirmedPositive,
         'HIV_MGMT_1_B': artTherapyHIVFormModel.dateTreatmentInitiated,
         'HIV_MGMT_1_C': artTherapyHIVFormModel.baselineHEILoad,
@@ -654,8 +655,8 @@ class LocalDb {
         'HIV_MGMT_2_J': hivVisitationFormModel.detectableViralLoadInterventions,
         'HIV_MGMT_2_K': hivVisitationFormModel.disclosure,
         'HIV_MGMT_2_L_1': hivVisitationFormModel.mUACScore,
-        'HIV_MGMT_2_L_2': hivVisitationFormModel,
-        'HIV_MGMT_2_M': hivVisitationFormModel.nhifEnrollmentStatus,
+        'HIV_MGMT_2_L_2': hivVisitationFormModel.zScore,
+        'HIV_MGMT_2_M': hivVisitationFormModel.nutritionalSupport.join(', '),
         'HIV_MGMT_2_N': hivVisitationFormModel.supportGroupStatus,
         'HIV_MGMT_2_O_1': hivVisitationFormModel.nhifEnrollment,
         'HIV_MGMT_2_O_2': hivVisitationFormModel.nhifEnrollmentStatus,
@@ -669,7 +670,7 @@ class LocalDb {
 
   Future<List<Map<String, dynamic>>> fetchHMFFormData() async {
     final db = await LocalDb.instance.database;
-    final hmfFormData = await db.query(hmfForms);
+    final hmfFormData = await db.query(HMForms);
     return hmfFormData;
   }
 
@@ -1233,7 +1234,7 @@ const form1CriticalEventsTable = 'form1_critical_events';
 const ovcsubpopulation = 'ovcsubpopulation';
 const cparaForms = 'Form';
 const HRSForms = 'HRSForm';
-const hmfForms = 'HMFForm';
+const HMForms = 'HMFForm';
 const cparaHouseholdAnswers = 'cpara_household_answers';
 const cparaChildAnswers = 'cpara_child_answers';
 
