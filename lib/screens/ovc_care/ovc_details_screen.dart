@@ -139,8 +139,7 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
               workflowName: "Form 1A",
               onClick: () {
                 context
-                    .read<Form1AProvider>()
-                    .updateCaseLoadModel(widget.caseLoadModel);
+                    .read<Form1AProvider>();
                 String startDateTime = DateTime.now().toString();
                 context
                     .read<AppMetaDataProvider>()

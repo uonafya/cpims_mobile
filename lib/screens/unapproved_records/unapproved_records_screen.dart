@@ -1,13 +1,24 @@
+import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
 import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
 import 'package:cpims_mobile/widgets/custom_chip.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:multi_dropdown/models/value_item.dart';
+import 'package:provider/provider.dart';
 
 import '../../Models/unapproved_caseplan_form_model.dart';
+import '../../providers/form1a_provider.dart';
+import '../forms/form1a/new/form_one_a.dart';
+import '../forms/form1a/new/utils/form_one_a_provider.dart';
+import '../forms/form1a/utils/form_1a_options.dart';
+import '../forms/form1b/utils/form1bConstants.dart';
 
 class UnapprovedRecordsScreens extends StatefulWidget {
   const UnapprovedRecordsScreens({super.key});
@@ -43,7 +54,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     if (success) {
       setState(() {
         if (selectedRecord == unapprovedRecords[0]) {
-          unapprovedForm1AData.removeWhere((element) => element.id == id);
+            unapprovedForm1AData.removeWhere((element) => element.id == id);
         } else if (selectedRecord == unapprovedRecords[1]) {
           unapprovedForm1BData.removeWhere((element) => element.id == id);
         }
@@ -78,6 +89,93 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
 
   @override
   Widget build(BuildContext context) {
+    Form1AProviderNew form1aProvider = Provider.of<Form1AProviderNew>(context);
+
+    void editUnapprovedForm1A(UnapprovedForm1DataModel unapprovedForm1A) async {
+      CaseLoadModel caseLoad = CaseLoadModel();
+      caseLoad.cpimsId = unapprovedForm1A.ovcCpimsId;
+      caseLoad.caregiverNames = "Unknown";
+      List<ValueItem> form1StableServices = [];
+      String stableServicesDomain = domainsList[2]['item_id'];
+      List<ValueItem> stableServices = stableServicesOptions.map((service) {
+        return ValueItem(
+            label: service['item_description'], value: service['item_id']);
+      }).toList();
+      for (var form1AService in unapprovedForm1A.services) {
+        if (form1AService.domainId == stableServicesDomain) {
+          var t = stableServices.where((element) => element.value == form1AService.serviceId);
+          if(t.isNotEmpty) {
+            form1StableServices.add(t.first);
+          }
+        }
+      }
+      if (form1StableServices.isNotEmpty) {
+        form1aProvider.setSelectedStableFormDataServices(
+            form1StableServices, stableServicesDomain);
+      }
+      List<ValueItem> form1SchooledServices = [];
+      String schooledServicesDomain = domainsList[0]['item_id'];
+      List<ValueItem> schoolServices = schooledServicesOptions.map((service) {
+        return ValueItem(
+            label: service['item_description'], value: service['item_id']);
+      }).toList();
+      for (var form1AService in unapprovedForm1A.services) {
+        if (form1AService.domainId == schooledServicesDomain) {
+          var t = schoolServices.where((element) => element.value == form1AService.serviceId);
+          if(t.isNotEmpty) {
+            form1SchooledServices.add(t.first);
+          }
+        }
+      }
+      print("form1SchooledServices");
+      print(form1SchooledServices);
+      if (form1SchooledServices.isNotEmpty) {
+        form1aProvider.setSelectedSchooledFormDataServices(
+            form1SchooledServices, schooledServicesDomain);
+      }
+      List<ValueItem> form1HealthyServices = [];
+      String healthyServicesDomain = domainsList[1]['item_id'];
+      List<ValueItem> healthyServices = healthServicesOptions.map((service) {
+        return ValueItem(
+            label: service['item_description'], value: service['item_id']);
+      }).toList();
+      for (var form1AService in unapprovedForm1A.services) {
+        if (form1AService.domainId == healthyServicesDomain) {
+          var t = healthyServices.where((element) => element.value == form1AService.serviceId);
+          if(t.isNotEmpty) {
+            form1HealthyServices.add(t.first);
+          }
+        }
+      }
+      if (form1HealthyServices.isNotEmpty) {
+        form1aProvider.setSelectedHealthServices(
+            form1HealthyServices, healthyServicesDomain);
+      }
+      List<ValueItem> form1SafeServices = [];
+      String safeServicesDomain = domainsList[3]['item_id'];
+      List<ValueItem> safeServicesOptions = safeServices.map((service) {
+        return ValueItem(
+            label: service['item_description'], value: service['item_id']);
+      }).toList();
+      for (var form1AService in unapprovedForm1A.services) {
+        if (form1AService.domainId == safeServicesDomain) {
+          var t = safeServicesOptions.where((element) => element.value == form1AService.serviceId);
+          if(t.isNotEmpty) {
+            form1SafeServices.add(t.first);
+          }
+        }
+      }
+      if (form1SafeServices.isNotEmpty) {
+        form1aProvider.setSelectedSafeFormDataServices(
+            form1SafeServices, safeServicesDomain);
+      }
+
+      // List<> services = unapprovedForm1A.services.map((e) => null);
+      context
+          .read<Form1AProvider>();
+
+      Get.to(() => FomOneA(caseLoadModel: caseLoad));
+    }
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -126,6 +224,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                   selectedRecord: selectedRecord,
                   unapprovedForm1aData: unapprovedForm1AData,
                   onDelete: deleteUnapprovedForm1,
+                  onEdit: editUnapprovedForm1A,
                 ),
               ),
             if (selectedRecord == unapprovedRecords[1])
@@ -134,6 +233,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                   selectedRecord: selectedRecord,
                   unapprovedForm1aData: unapprovedForm1BData,
                   onDelete: deleteUnapprovedForm1,
+                  onEdit: editUnapprovedForm1A,
                 ),
               ),
           ],
@@ -147,12 +247,14 @@ class FormTab extends StatelessWidget {
   final String selectedRecord;
   final List<UnapprovedForm1DataModel>? unapprovedForm1aData;
   final Function(int) onDelete;
+  final Function(UnapprovedForm1DataModel) onEdit;
 
   const FormTab({
     super.key,
     required this.selectedRecord,
     this.unapprovedForm1aData,
     required this.onDelete,
+    required this.onEdit,
   });
 
   @override
@@ -175,6 +277,7 @@ class FormTab extends StatelessWidget {
                     eventOrDomainId: dataModel.services[0].domainId,
                     isService: true,
                     onDelete: onDelete,
+                    onEdit: onEdit,
                   );
                 },
               )
@@ -193,7 +296,7 @@ class ChildDetailsCard<T> extends StatelessWidget {
   const ChildDetailsCard({
     super.key,
     required this.unapprovedRecords,
-    required this.selectedRecord,
+    required this.selectedRecord, 
     required this.onDelete,
   });
 
@@ -269,7 +372,9 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
+                IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.edit)),
                 IconButton(
                     onPressed: () async {
                       await onDelete(unapprovedRecord.id ?? 0);
@@ -475,13 +580,14 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
   final String? eventOrDomainId;
   final bool isService;
   final Function(int) onDelete;
+  final Function(UnapprovedForm1DataModel) onEdit;
 
   const UnapprovedForm1CardDetails({
     super.key,
     required this.unapprovedData,
     this.eventOrDomainId,
     required this.isService,
-    required this.onDelete,
+    required this.onDelete, required this.onEdit,
   });
 
   @override
@@ -509,7 +615,12 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
+                IconButton (
+                    onPressed:()async{
+                      await  onEdit(unapprovedData);
+                    },
+                    icon: const Icon(Icons.edit)
+                ),
                 IconButton(
                     onPressed: () async {
                       await onDelete(unapprovedData.id ?? 0);

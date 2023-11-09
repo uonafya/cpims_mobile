@@ -28,7 +28,7 @@ class _FormOneASchooledState extends State<FormOneASchooled> {
   Widget build(BuildContext context) {
 
     Form1AProviderNew form1aProvider = Provider.of<Form1AProviderNew>(context);
-    selectedSchooledServices = form1aProvider.stableFormData.selectedServices;
+    selectedSchooledServicesOptions = form1aProvider.schooledFormData.selectedServices;
     String domainId = domainsList[0]['item_id'];
 
     return StepsWrapper(
