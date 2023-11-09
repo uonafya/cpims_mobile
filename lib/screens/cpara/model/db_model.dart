@@ -37,7 +37,9 @@ class CPARADatabaseQuestions {
 
   factory CPARADatabaseQuestions.fromJSON(Map<String, dynamic> json) {
     return CPARADatabaseQuestions(
-        questionCode: json['questionid'], answerId: json['answer']);
+      questionCode: json['questionid'],
+      answerId: json['answer'],
+    );
   }
 
   Map<String, dynamic> toJSON() {
@@ -54,12 +56,15 @@ class CPARADatabase {
   AppFormMetaData appFormMetaData;
   List<SubOvcChild> listOfSubOvcs;
 
-  CPARADatabase(
-      {this.cparaFormId = 0,
-      this.ovcCpimsId = "",
-      this.dateOfEvent = "",
-      this.questions = const [],
-      this.childQuestions = const [],
-      this.appFormMetaData = const AppFormMetaData(),
-      this.listOfSubOvcs = const []});
+
+  CPARADatabase({
+    this.cparaFormId = 0,
+    this.ovcCpimsId = "",
+    this.dateOfEvent = "",
+    this.questions = const [],
+    this.childQuestions = const [],
+    this.appFormMetaData = const AppFormMetaData(),
+    this.listOfSubOvcs = const [],
+  });
+
 }
