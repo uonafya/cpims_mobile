@@ -38,7 +38,7 @@ class UnapprovedCptProvider {
           final responsibleIdList = service.responsibleIds.join(',');
 
           await txn.insert("case_plan_services", {
-            'form_id': unapprovedCasePlanId,
+            'unapproved_form_id': unapprovedCasePlanId,
             'domain_id': service.domainId,
             'goal_id': service.goalId,
             'gap_id': service.gapId,
@@ -75,7 +75,7 @@ class UnapprovedCptProvider {
         final unapprovedCasePlanId = result['id'];
 
         final serviceRes = await db.rawQuery('''
-      SELECT * FROM case_plan_services WHERE form_id = $unapprovedCasePlanId
+      SELECT * FROM case_plan_services WHERE unapproved_form_id = $unapprovedCasePlanId
     ''');
 
         print("Service Response $serviceRes");
