@@ -37,10 +37,10 @@ class HIVAssessmentProvider with ChangeNotifier {
 
   void updateHIVCurrentStatusModel(HIVCurrentStatusModel model) {
     _hivCurrentStatusModel = model;
-    if (_hivCurrentStatusModel.hivStatus == "HIV_Positive" &&
-        _hivCurrentStatusModel.dateOfAssessment.isNotEmpty) {
-      updateFormIndex(2);
-    }
+    // if (_hivCurrentStatusModel.hivStatus == "HIV_Positive" &&
+    //     _hivCurrentStatusModel.dateOfAssessment.isNotEmpty) {
+    //   updateFormIndex(2);
+    // }
     if (kDebugMode) {
       print(hivCurrentStatusModel.toJson());
     }
@@ -63,12 +63,12 @@ class HIVAssessmentProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearForms() {
-    _hivRiskAssessmentModel = HIVRiskAssessmentModel();
-    _progressMonitoringModel = ProgressMonitoringModel();
-    _progressMonitoringModel.reasonForNotMakingReferral = "A";
-    notifyListeners();
-  }
+  // void clearForms() {
+  //   _hivRiskAssessmentModel = HIVRiskAssessmentModel();
+  //   _progressMonitoringModel = ProgressMonitoringModel();
+  //   _progressMonitoringModel.reasonForNotMakingReferral = "A";
+  //   notifyListeners();
+  // }
 
   Future<void> submitHIVAssessmentForm(String startTime) async {
     try {
@@ -97,8 +97,7 @@ class HIVAssessmentProvider with ChangeNotifier {
           startTime,
           "HIV Risk Assessment");
 
-      print(data);
-      await apiServiceConstructor.postSecData(data, "mobile/hrs/");
+      resetWholeForm();
     } catch (e) {
       if (kDebugMode) {
         print(e);
