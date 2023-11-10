@@ -24,16 +24,39 @@ class CparaProvider extends ChangeNotifier {
   int schooledBenchmark() {
     int schooledBenchmark = 0;
 
-    if (schooledModel?.question1 == "Yes" &&
-            schooledModel?.question2 == "Yes" &&
-            schooledModel?.question3 == "Yes" &&
-            schooledModel?.question4 == "Yes" ||
-        schooledModel?.question4 == "N/A") {
+    if (isStringYes(schooledModel?.question1) && isStringYes(schooledModel?.question2) &&
+        isStringYes(schooledModel?.question3) && isStringYesOrNa(schooledModel?.question4)) {
       schooledBenchmark = 1;
     } else {
       schooledBenchmark = 0;
     }
     return schooledBenchmark;
+  }
+
+  // Helper function for seeing if string is yes
+  bool isStringYes(String? str) {
+    if (str == null) {
+      return false;
+    } else {
+      if(str.toLowerCase() == "yes") {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  // Returns true if string is yes or na
+  bool isStringYesOrNa(String? str) {
+    if (str == null) {
+      return false;
+    } else {
+      if (str.toLowerCase() == "yes" || str.toLowerCase() == "n/a") {
+        return true;
+      } else {
+        return false;
+      }
+    }
   }
 
   // Calculate healthy benchmark
@@ -57,11 +80,10 @@ class CparaProvider extends ChangeNotifier {
     }
 
 // Health BenchMark 1 result
-    if (healthModel?.question1 == "Yes" &&
-        (healthModel?.question2 == "Yes" || healthModel?.question2 == "N/A") &&
-        (healthModel?.question3 == "Yes" || healthModel?.question3 == "N/A") &&
-        healthModel?.question4 == "Yes" &&
-        (healthModel?.question5 == "Yes" || healthModel?.question5 == "N/A")) {
+    if (isStringYes(healthModel?.question1) && isStringYesOrNa(healthModel?.question2) &&
+        isStringYesOrNa(healthModel?.question3) &&
+        isStringYes(healthModel?.question4) &&
+        isStringYesOrNa(healthModel?.question5)) {
       benchmark1 = 1;
       if (kDebugMode) {
         print("Benchmark 1: $benchmark1");
@@ -74,17 +96,15 @@ class CparaProvider extends ChangeNotifier {
     }
 
 // Health BenchMark 2 result
-    if (healthModel?.question6 == "Yes" &&
-        (healthModel?.question7 == "Yes" || healthModel?.question7 == "N/A") &&
-        healthModel?.question8 == "Yes" &&
-        healthModel?.question9 == "Yes" &&
-        (healthModel?.question10 == "Yes" ||
-            healthModel?.question10 == "N/A") &&
-        healthModel?.question11 == "Yes" &&
-        healthModel?.question12 == "Yes" &&
-        (healthModel?.question13 == "Yes" ||
-            healthModel?.question13 == "N/A") &&
-        healthModel?.question14 == "Yes") {
+    if (isStringYes(healthModel?.question6) &&
+        isStringYesOrNa(healthModel?.question7) &&
+        isStringYes(healthModel?.question8) &&
+        isStringYes(healthModel?.question9) &&
+        isStringYesOrNa(healthModel?.question10) &&
+        isStringYes(healthModel?.question11) &&
+        isStringYes(healthModel?.question12) &&
+        isStringYesOrNa(healthModel?.question13) &&
+        isStringYes(healthModel?.question14)) {
       benchmark2 = 1;
       if (kDebugMode) {
         print("Benchmark 2: $benchmark2");
@@ -97,14 +117,9 @@ class CparaProvider extends ChangeNotifier {
     }
 
 // Health BenchMark 3 result
-    debugPrint("#######################################");
-    debugPrint("HEALTHY BENCHMARK 3:");
-    debugPrint("#######################################");
     // If there are children
     if (healthModel?.childrenQuestions != null &&
         healthModel!.childrenQuestions!.isNotEmpty) {
-      debugPrint("The list of children is not empty");
-      debugPrint(healthModel!.childrenQuestions.toString());
       // Are the answers of all children yes
       if (overallChildrenBenchmark(childrenOptions: firstListOfQuestions)
                   .toLowerCase() ==
@@ -123,8 +138,6 @@ class CparaProvider extends ChangeNotifier {
       }
       // Else benchmark is 0
       else {
-        debugPrint("The list of children is not empty and some are not yes");
-        debugPrint(healthModel!.childrenQuestions.toString());
         benchmark3 = 0;
         if (kDebugMode) {
           print("Benchmark 3 3: $benchmark3");
@@ -146,11 +159,10 @@ class CparaProvider extends ChangeNotifier {
     }
 
     // Health BenchMark 1 result
-    if (healthModel?.question15 == "Yes" &&
-        healthModel?.question16 == "Yes" &&
-        (healthModel?.question17 == "N/A" ||
-            healthModel?.question17 == "Yes") &&
-        healthModel?.question18 == "Yes") {
+    if (isStringYes(healthModel?.question15) &&
+        isStringYes(healthModel?.question16) &&
+        isStringYesOrNa(healthModel?.question17) &&
+        isStringYes(healthModel?.question18)) {
       benchmark4 = 1;
       if (kDebugMode) {
         print("Benchmark 4: $benchmark4");
@@ -163,26 +175,26 @@ class CparaProvider extends ChangeNotifier {
     }
 
     finalScore = benchmark1 + benchmark2 + benchmark3 + benchmark4;
-    if (finalScore == 4) {
-      finalScore = 4;
-    } else if (finalScore == 3) {
-      finalScore = 3;
-    } else if (finalScore == 2) {
-      finalScore = 2;
-    } else if (finalScore == 1) {
-      finalScore = 1;
-    } else if (finalScore == 0) {
-      finalScore = 0;
-    }
+    // if (finalScore == 4) {
+    //   finalScore = 4;
+    // } else if (finalScore == 3) {
+    //   finalScore = 3;
+    // } else if (finalScore == 2) {
+    //   finalScore = 2;
+    // } else if (finalScore == 1) {
+    //   finalScore = 1;
+    // } else if (finalScore == 0) {
+    //   finalScore = 0;
+    // }
     return finalScore;
   }
 
 // Calculate stable benchmark
   int stableBenchMark() {
     int stableBenchmark = 0;
-    if ((stableModel?.question1?.toLowerCase() == "yes" || stableModel?.question1?.toLowerCase() == "n/a") &&
-        (stableModel?.question2?.toLowerCase() == "yes" || stableModel?.question2?.toLowerCase() == "n/a") &&
-        (stableModel?.question3?.toLowerCase() == "yes")) {
+    if (isStringYesOrNa(stableModel?.question1) &&
+        isStringYesOrNa(stableModel?.question2) &&
+        isStringYes(stableModel?.question3)) {
       stableBenchmark = 1;
     } else {
       stableBenchmark = 0;
@@ -192,16 +204,16 @@ class CparaProvider extends ChangeNotifier {
 
 // Calculate safe benchmark
   int safeBenchMark() {
-    int schooledBenchmark = 44;
+    int schooledBenchmark = 0;
     int benchmark1 = 0;
     int benchmark2 = 0;
     int benchmark3 = 0;
 
-    List<String> childQuestions = [];
-
-    for (SafeChild child in safeModel?.childrenQuestions ?? []) {
-      childQuestions.add(child.question1 ?? "No");
-    }
+    // List<String> childQuestions = [];
+    //
+    // for (SafeChild child in safeModel?.childrenQuestions ?? []) {
+    //   childQuestions.add(child.question1 ?? "No");
+    // }
 
     // bool isAllChildrenYes = overallChildrenBenchmark(childrenOptions: childQuestions).toLowerCase() == "yes";
 
@@ -220,19 +232,14 @@ class CparaProvider extends ChangeNotifier {
     // }
 
     // Benchmark 1: 1 if 6.4 and 6.5 are yes
-    if (safeModel?.question3 == "Yes" && safeModel?.question4 == "Yes") {
-      debugPrint("Safe model question 3 is ${safeModel?.question3}");
-      debugPrint("Safe has a benchmark of 1");
-      debugPrint(safeModel.toString());
+    if (isStringYes(safeModel?.question3) && isStringYes(safeModel?.question4)) {
       benchmark1 = 1;
     } else {
-      debugPrint(safeModel.toString());
-      debugPrint("Safe has a benchmark of 0");
       benchmark1 = 0;
     }
 
 // Safe Benchmark 2 result
-    if (safeModel?.question5 == "Yes" && safeModel?.question6 == "Yes") {
+    if (isStringYes(safeModel?.question5) && isStringYes(safeModel?.question6)) {
       debugPrint("Safe benchmark 2 is 1");
       benchmark2 = 1;
     } else {
@@ -241,22 +248,22 @@ class CparaProvider extends ChangeNotifier {
     }
 
 // Safe Benchmark 3 result
-    if (safeModel?.question7 == "Yes") {
+    if (isStringYes(safeModel?.question7)) {
       benchmark3 = 1;
     } else {
       benchmark3 = 0;
     }
 
     schooledBenchmark = benchmark1 + benchmark2 + benchmark3;
-    if (schooledBenchmark == 3) {
-      schooledBenchmark = 3;
-    } else if (schooledBenchmark == 2) {
-      schooledBenchmark = 2;
-    } else if (schooledBenchmark == 1) {
-      schooledBenchmark = 1;
-    } else if (schooledBenchmark == 0) {
-      schooledBenchmark = 0;
-    }
+    // if (schooledBenchmark == 3) {
+    //   schooledBenchmark = 3;
+    // } else if (schooledBenchmark == 2) {
+    //   schooledBenchmark = 2;
+    // } else if (schooledBenchmark == 1) {
+    //   schooledBenchmark = 1;
+    // } else if (schooledBenchmark == 0) {
+    //   schooledBenchmark = 0;
+    // }
     return schooledBenchmark;
   }
 
