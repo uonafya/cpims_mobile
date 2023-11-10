@@ -94,7 +94,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
             ),
             const SizedBox(height: 10),
             if (selectedRecord == 'CPARA')
-              Expanded(child: UnnaprovedCparaScreen(listOfUnnapprovedCparas: unapprovedCparaData,)),
+              const Expanded(child: UnnaprovedCparaScreen()),
             if (selectedRecord != 'CPARA')
               DefaultTabController(
                 length: 2,

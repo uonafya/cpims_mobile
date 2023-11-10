@@ -11,6 +11,10 @@ class UnapprovedRecordsScreenProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<UnapprovedCparaModel> get unapprovedCparas {
+    return _unapprovedCparas ?? [];
+  }
+
   // Remove an item from list of CPARAs
   void removeUnapprovedCpara(UnapprovedCparaModel cparaModel) {
     if (_unapprovedCparas == null) {
