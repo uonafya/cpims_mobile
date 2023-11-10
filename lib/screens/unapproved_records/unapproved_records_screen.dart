@@ -3,6 +3,7 @@ import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/cpara/unapproved_cpara_database.dart';
 import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
+import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/services/unapproved_data_service.dart';
@@ -51,9 +52,14 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     final List<UnapprovedForm1DataModel> records =
         await UnapprovedDataService.fetchLocalUnapprovedForm1AData();
     final List<UnapprovedCparaModel> cparaRecords = await UnapprovedCparaService.getUnapprovedFromDB();
+
+    // Update unapprovedCparaData
+    unapprovedCparaData = cparaRecords;
+    if (context.mounted) {
+      context.read<UnapprovedRecordsScreenProvider>().unapprovedCparas = cparaRecords;
+    }
     setState(() {
       unapprovedForm1Data = records;
-      unapprovedCparaData = cparaRecords;
     });
   }
 
