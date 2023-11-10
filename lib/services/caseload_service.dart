@@ -144,7 +144,7 @@ class CaseLoadService {
 
     try {
       final Response response =
-          await dio.get('caseload', queryParameters: {'deviceID': deviceID});
+          await dio.get('api/caseload', queryParameters: {'deviceID': deviceID});
 
       if (response.statusCode == 200) {
         final List<CaseLoadModel> caseLoadModelList = (response.data as List)

@@ -83,9 +83,9 @@ class HIVAssessmentProvider with ChangeNotifier {
       //Replace all Yes string with true and No string with false
       data.forEach((key, value) {
         if (value == "Yes") {
-          data[key] = convertBooleanStringToDBBoolen("Yes");
+          data[key] = convertBooleanStringToDBBoolen("AYES");
         } else if (value == "No") {
-          data[key] = convertBooleanStringToDBBoolen("No");
+          data[key] = convertBooleanStringToDBBoolen("ANNO");
         }
       });
       String formUuid = const Uuid().v4();
