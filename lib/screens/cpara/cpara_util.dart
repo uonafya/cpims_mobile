@@ -350,12 +350,16 @@ HealthModel fetchHealth({required UnapprovedCparaDatabase cparaDatabase}){
   Set<String> numberOfCpims = fetchNumberOfChildren(children: cparaDatabase.childQuestions);
 
   for(String childId in numberOfCpims){
+    var question1 = childQuestionResponse(questions: cparaDatabase.childQuestions, questionId: CparaRemoteQuestionIds.healthGoal3ChildQuestion1, childId: childId);
+    var question2 = childQuestionResponse(questions: cparaDatabase.childQuestions, questionId: CparaRemoteQuestionIds.healthGoal3ChildQuestion2, childId: childId);
+    var question3 = childQuestionResponse(questions: cparaDatabase.childQuestions, questionId: CparaRemoteQuestionIds.healthGoal3ChildQuestion3, childId: childId);
+
     children.add(HealthChild(
         name: "name",
         id: childId,
-        question1: childQuestionResponse(questions: cparaDatabase.childQuestions, questionId: CparaRemoteQuestionIds.healthGoal3ChildQuestion1, childId: childId),
-        question2: childQuestionResponse(questions: cparaDatabase.childQuestions, questionId: CparaRemoteQuestionIds.healthGoal3ChildQuestion2, childId: childId),
-        question3: childQuestionResponse(questions: cparaDatabase.childQuestions, questionId: CparaRemoteQuestionIds.healthGoal3ChildQuestion3, childId: childId),
+        question1: question1,
+        question2: question2,
+        question3: question3,
     ));
   }
 
@@ -430,7 +434,8 @@ SafeModel fetchSafe({required UnapprovedCparaDatabase cparaDatabase}){
   Set<String> numberOfCpims = fetchNumberOfChildren(children: cparaDatabase.childQuestions);
 
   for(String childId in numberOfCpims){
-    children.add(SafeChild(ovcId: childId, name: "name", question1: CparaRemoteQuestionIds.safeChildQuestion1));
+    var question1 = childQuestionResponse(questions: cparaDatabase.childQuestions, questionId: CparaRemoteQuestionIds.safeChildQuestion1, childId: childId);
+    children.add(SafeChild(ovcId: childId, name: "name", question1: question1));
   }
   SafeModel model = SafeModel(
     question1: mainQuestionResponse(questions: cparaDatabase.questions, questionId: CparaRemoteQuestionIds.safeQuestion1),
