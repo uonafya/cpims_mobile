@@ -64,6 +64,7 @@ Future<void> locationMissingDialog(BuildContext context) async {
                   ),
                   child: Text(
                     'PLease turn on location settings to be able to use the app',
+
                     textAlign: TextAlign.center,
                   ),
                 ),
