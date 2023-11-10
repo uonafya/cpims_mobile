@@ -61,22 +61,26 @@ class UnapprovedDataService {
       //   // Handle CasePlan template
       // }
       //   else
-          if (endpoint == endpoints[3]) {
+      if (endpoint == endpoints[3]) {
 //         // Handle CPara
 //         List<UnaprovedRemoteData> list = unaprovedRemoteDataFromJson(
 //             '[{"ovc_cpims_id": "3799369", "date_of_event": "2023-10-28", "questions": [{"question_code": "CP1d", "answer_id": "AYES"}, {"question_code": "CP3d", "answer_id": "AYES"}, {"question_code": "CP4d", "answer_id": "AYES"}, {"question_code": "CP5d", "answer_id": "AYES"}, {"question_code": "qd1", "answer_id": "AYES"}, {"question_code": "qd3", "answer_id": "AYES"}, {"question_code": "CP1q", "answer_id": "AYES"}, {"question_code": "CP2q", "answer_id": "AYES"}, {"question_code": "CP3q", "answer_id": "AYES"}, {"question_code": "CP4q", "answer_id": "AYES"}, {"question_code": "CP5q", "answer_id": "AYES"}, {"question_code": "CP6q", "answer_id": "AYES"}, {"question_code": "CP7q", "answer_id": "AYES"}, {"question_code": "CP8q", "answer_id": "AYES"}, {"question_code": "CP9q", "answer_id": "AYES"}, {"question_code": "CP10q", "answer_id": "AYES"}, {"question_code": "CP11q", "answer_id": "AYES"}, {"question_code": "CP12q", "answer_id": "AYES"}, {"question_code": "CP13q", "answer_id": "AYES"}, {"question_code": "CP14q", "answer_id": "AYES"}, {"question_code": "CP18q", "answer_id": "AYES"}, {"question_code": "CP19q", "answer_id": "AYES"}, {"question_code": "CP20q", "answer_id": "AYES"}, {"question_code": "CP21q", "answer_id": "AYES"}, {"question_code": "CP25q", "answer_id": "AYES"}, {"question_code": "CP26q", "answer_id": "AYES"}, {"question_code": "CP28q", "answer_id": "AYES"}, {"question_code": "CP29q", "answer_id": "AYES"}, {"question_code": "CP30q", "answer_id": "AYES"}, {"question_code": "CP31q", "answer_id": "AYES"}, {"question_code": "CP32q", "answer_id": "AYES"}, {"question_code": "CP33q", "answer_id": "AYES"}, {"question_code": "CP34q", "answer_id": "AYES"}, {"question_code": "CP35q", "answer_id": "AYES"}, {"question_code": "CP36q", "answer_id": "AYES"}, {"question_code": "CP22q", "answer_id": "AYES"}, {"question_code": "CP23q", "answer_id": "AYES"}, {"question_code": "CP24q", "answer_id": "AYES"}], "individual_questions": [{"question_code": "CP15q", "answer_id": "AYES", "ovc_cpims_id": "3799369"}, {"question_code": "CP16q", "answer_id": "AYES", "ovc_cpims_id": "3799369"}, {"question_code": "CP17q", "answer_id": "AYES", "ovc_cpims_id": "3799369"}, {"question_code": "CP15q", "answer_id": "AYES", "ovc_cpims_id": "3437286"}, {"question_code": "CP16q", "answer_id": "AYES", "ovc_cpims_id": "3437286"}, {"question_code": "CP17q", "answer_id": "AYES", "ovc_cpims_id": "3437286"}, {"question_code": "CP15q", "answer_id": "AYES", "ovc_cpims_id": "3437297"}, {"question_code": "CP16q", "answer_id": "AYES", "ovc_cpims_id": "3437297"}, {"question_code": "CP17q", "answer_id": "AYES", "ovc_cpims_id": "3437297"}, {"question_code": "CP15q", "answer_id": "AYES", "ovc_cpims_id": "3437278"}, {"question_code": "CP16q", "answer_id": "AYES", "ovc_cpims_id": "3437278"}, {"question_code": "CP17q", "answer_id": "AYES", "ovc_cpims_id": "3437278"}, {"question_code": "CP15q", "answer_id": "AYES", "ovc_cpims_id": "3437238"}, {"question_code": "CP16q", "answer_id": "AYES", "ovc_cpims_id": "3437238"}, {"question_code": "CP17q", "answer_id": "AYES", "ovc_cpims_id": "3437238"}, {"question_code": "CP27q", "answer_id": "AYES", "ovc_cpims_id": "3799369"}, {"question_code": "CP27q", "answer_id": "AYES", "ovc_cpims_id": "3437286"}, {"question_code": "CP27q", "answer_id": "AYES", "ovc_cpims_id": "3437297"}, {"question_code": "CP27q", "answer_id": "AYES", "ovc_cpims_id": "3437278"}, {"question_code": "CP27q", "answer_id": "AYES", "ovc_cpims_id": "3437238"}], "scores": {"b1": "1", "b2": "1", "b3": "1", "b4": "1", "b5": "1", "b6": "1", "b7": "1", "b8": "1", "b9": "1"}}]');
-// var info = await fetchRemoteUnapprovedCparaData(baseUrl: endpoint);
-// List<UnaprovedRemoteData> lists = unaprovedRemoteDataFromJson(json.encode(info));
-List<UnaprovedRemoteData> list = unaprovedRemoteDataFromJson(
-            '[{"ovc_cpims_id": "3799369", "date_of_event": "2023-10-28", "questions": [{"question_code": "CP1d", "answer_id": "AYES"}, {"question_code": "CP3d", "answer_id": "AYES"}, {"question_code": "CP4d", "answer_id": "AYES"}, {"question_code": "CP5d", "answer_id": "AYES"}, {"question_code": "qd1", "answer_id": "AYES"}, {"question_code": "qd3", "answer_id": "AYES"}, {"question_code": "CP1q", "answer_id": "AYES"}, {"question_code": "CP2q", "answer_id": "AYES"}, {"question_code": "CP3q", "answer_id": "AYES"}, {"question_code": "CP4q", "answer_id": "AYES"}, {"question_code": "CP5q", "answer_id": "AYES"}, {"question_code": "CP6q", "answer_id": "AYES"}, {"question_code": "CP7q", "answer_id": "AYES"}, {"question_code": "CP8q", "answer_id": "AYES"}, {"question_code": "CP9q", "answer_id": "AYES"}, {"question_code": "CP10q", "answer_id": "AYES"}, {"question_code": "CP11q", "answer_id": "AYES"}, {"question_code": "CP12q", "answer_id": "AYES"}, {"question_code": "CP13q", "answer_id": "AYES"}, {"question_code": "CP14q", "answer_id": "AYES"}, {"question_code": "CP18q", "answer_id": "AYES"}, {"question_code": "CP19q", "answer_id": "AYES"}, {"question_code": "CP20q", "answer_id": "AYES"}, {"question_code": "CP21q", "answer_id": "AYES"}, {"question_code": "CP25q", "answer_id": "AYES"}, {"question_code": "CP26q", "answer_id": "AYES"}, {"question_code": "CP28q", "answer_id": "AYES"}, {"question_code": "CP29q", "answer_id": "AYES"}, {"question_code": "CP30q", "answer_id": "AYES"}, {"question_code": "CP31q", "answer_id": "AYES"}, {"question_code": "CP32q", "answer_id": "AYES"}, {"question_code": "CP33q", "answer_id": "AYES"}, {"question_code": "CP34q", "answer_id": "AYES"}, {"question_code": "CP35q", "answer_id": "AYES"}, {"question_code": "CP36q", "answer_id": "AYES"}, {"question_code": "CP22q", "answer_id": "AYES"}, {"question_code": "CP23q", "answer_id": "AYES"}, {"question_code": "CP24q", "answer_id": "AYES"}], "individual_questions": [{"question_code": "CP15q", "answer_id": "AYES", "ovc_cpims_id": "3799369"}, {"question_code": "CP16q", "answer_id": "AYES", "ovc_cpims_id": "3799369"}, {"question_code": "CP17q", "answer_id": "AYES", "ovc_cpims_id": "3799369"}, {"question_code": "CP15q", "answer_id": "AYES", "ovc_cpims_id": "3437286"}, {"question_code": "CP16q", "answer_id": "AYES", "ovc_cpims_id": "3437286"}, {"question_code": "CP17q", "answer_id": "AYES", "ovc_cpims_id": "3437286"}, {"question_code": "CP15q", "answer_id": "AYES", "ovc_cpims_id": "3437297"}, {"question_code": "CP16q", "answer_id": "AYES", "ovc_cpims_id": "3437297"}, {"question_code": "CP17q", "answer_id": "AYES", "ovc_cpims_id": "3437297"}, {"question_code": "CP15q", "answer_id": "AYES", "ovc_cpims_id": "3437278"}, {"question_code": "CP16q", "answer_id": "AYES", "ovc_cpims_id": "3437278"}, {"question_code": "CP17q", "answer_id": "AYES", "ovc_cpims_id": "3437278"}, {"question_code": "CP15q", "answer_id": "AYES", "ovc_cpims_id": "3437238"}, {"question_code": "CP16q", "answer_id": "AYES", "ovc_cpims_id": "3437238"}, {"question_code": "CP17q", "answer_id": "AYES", "ovc_cpims_id": "3437238"}, {"question_code": "CP27q", "answer_id": "AYES", "ovc_cpims_id": "3799369"}, {"question_code": "CP27q", "answer_id": "AYES", "ovc_cpims_id": "3437286"}, {"question_code": "CP27q", "answer_id": "AYES", "ovc_cpims_id": "3437297"}, {"question_code": "CP27q", "answer_id": "AYES", "ovc_cpims_id": "3437278"}, {"question_code": "CP27q", "answer_id": "AYES", "ovc_cpims_id": "3437238"}], "scores": {"b1": "1", "b2": "1", "b3": "1", "b4": "1", "b5": "1", "b6": "1", "b7": "1", "b8": "1", "b9": "1"}}]');
+        var info = await fetchRemoteUnapprovedCparaData(baseUrl: endpoint);
+        var rawData = '[{"ovc_cpims_id": "3799369", "date_of_event": "2023-10-28", "questions": [{"question_code": "CP1d", "answer_id": "AYES"}, {"question_code": "CP3d", "answer_id": "AYES"}, {"question_code": "CP4d", "answer_id": "AYES"}, {"question_code": "CP5d", "answer_id": "AYES"}, {"question_code": "qd1", "answer_id": "AYES"}, {"question_code": "qd3", "answer_id": "AYES"}, {"question_code": "CP1q", "answer_id": "AYES"}, {"question_code": "CP2q", "answer_id": "AYES"}, {"question_code": "CP3q", "answer_id": "AYES"}, {"question_code": "CP4q", "answer_id": "AYES"}, {"question_code": "CP5q", "answer_id": "AYES"}, {"question_code": "CP6q", "answer_id": "AYES"}, {"question_code": "CP7q", "answer_id": "AYES"}, {"question_code": "CP8q", "answer_id": "AYES"}, {"question_code": "CP9q", "answer_id": "AYES"}, {"question_code": "CP10q", "answer_id": "AYES"}, {"question_code": "CP11q", "answer_id": "AYES"}, {"question_code": "CP12q", "answer_id": "AYES"}, {"question_code": "CP13q", "answer_id": "AYES"}, {"question_code": "CP14q", "answer_id": "AYES"}, {"question_code": "CP18q", "answer_id": "AYES"}, {"question_code": "CP19q", "answer_id": "AYES"}, {"question_code": "CP20q", "answer_id": "AYES"}, {"question_code": "CP21q", "answer_id": "AYES"}, {"question_code": "CP25q", "answer_id": "AYES"}, {"question_code": "CP26q", "answer_id": "AYES"}, {"question_code": "CP28q", "answer_id": "AYES"}, {"question_code": "CP29q", "answer_id": "AYES"}, {"question_code": "CP30q", "answer_id": "AYES"}, {"question_code": "CP31q", "answer_id": "AYES"}, {"question_code": "CP32q", "answer_id": "AYES"}, {"question_code": "CP33q", "answer_id": "AYES"}, {"question_code": "CP34q", "answer_id": "AYES"}, {"question_code": "CP35q", "answer_id": "AYES"}, {"question_code": "CP36q", "answer_id": "AYES"}, {"question_code": "CP22q", "answer_id": "AYES"}, {"question_code": "CP23q", "answer_id": "AYES"}, {"question_code": "CP24q", "answer_id": "AYES"}], "individual_questions": [{"question_code": "CP15q", "answer_id": "AYES", "ovc_cpims_id": "3799369"}, {"question_code": "CP16q", "answer_id": "AYES", "ovc_cpims_id": "3799369"}, {"question_code": "CP17q", "answer_id": "AYES", "ovc_cpims_id": "3799369"}, {"question_code": "CP15q", "answer_id": "AYES", "ovc_cpims_id": "3437286"}, {"question_code": "CP16q", "answer_id": "AYES", "ovc_cpims_id": "3437286"}, {"question_code": "CP17q", "answer_id": "AYES", "ovc_cpims_id": "3437286"}, {"question_code": "CP15q", "answer_id": "AYES", "ovc_cpims_id": "3437297"}, {"question_code": "CP16q", "answer_id": "AYES", "ovc_cpims_id": "3437297"}, {"question_code": "CP17q", "answer_id": "AYES", "ovc_cpims_id": "3437297"}, {"question_code": "CP15q", "answer_id": "AYES", "ovc_cpims_id": "3437278"}, {"question_code": "CP16q", "answer_id": "AYES", "ovc_cpims_id": "3437278"}, {"question_code": "CP17q", "answer_id": "AYES", "ovc_cpims_id": "3437278"}, {"question_code": "CP15q", "answer_id": "AYES", "ovc_cpims_id": "3437238"}, {"question_code": "CP16q", "answer_id": "AYES", "ovc_cpims_id": "3437238"}, {"question_code": "CP17q", "answer_id": "AYES", "ovc_cpims_id": "3437238"}, {"question_code": "CP27q", "answer_id": "AYES", "ovc_cpims_id": "3799369"}, {"question_code": "CP27q", "answer_id": "AYES", "ovc_cpims_id": "3437286"}, {"question_code": "CP27q", "answer_id": "AYES", "ovc_cpims_id": "3437297"}, {"question_code": "CP27q", "answer_id": "AYES", "ovc_cpims_id": "3437278"}, {"question_code": "CP27q", "answer_id": "AYES", "ovc_cpims_id": "3437238"}], "scores": {"b1": "1", "b2": "1", "b3": "1", "b4": "1", "b5": "1", "b6": "1", "b7": "1", "b8": "1", "b9": "1"}}]';
+        var list  = jsonDecode(rawData);
 //todo: test the replacements
+//         List<UnapprovedCparaDatabase> listOfUnaprovedCparas =
+//             listOfUnapprovedCparas(remoteData: info);
+
+        // Expects a map i.e decoded JSON
         List<UnapprovedCparaDatabase> listOfUnaprovedCparas =
-            listOfUnapprovedCparas(remoteData: jsonData);
-        listOfUnaprovedCparas = [listOfUnaprovedCparas.last];
+            listOfUnapprovedCparas(remoteData: list);
+        // listOfUnaprovedCparas = [listOfUnaprovedCparas.last];
         for (UnapprovedCparaDatabase unapprovedCpara in listOfUnaprovedCparas) {
           UnapprovedCparaModel model =
               fetchUnaprovedCpara(cparaDatabase: unapprovedCpara);
           debugPrint("");
+
           // Insert UnapprovedCparaModel
           final db = LocalDb.instance;
           var localDB = await db.database;
@@ -85,10 +89,10 @@ List<UnaprovedRemoteData> list = unaprovedRemoteDataFromJson(
           db.insertUnapprovedAppFormMetaData(
               model.uuid, model.appFormMetaData, 'cpara');
 
-         final storeInDB = await UnapprovedCparaService.storeInDB(
-           localDB,
-           model,
-         );
+          final storeInDB = await UnapprovedCparaService.storeInDB(
+            localDB,
+            model,
+          );
         }
       }
       return;
@@ -128,7 +132,9 @@ List<UnaprovedRemoteData> list = unaprovedRemoteDataFromJson(
     return await UnapprovedDataService.fetchLocalUnapprovedCparaData();
   }
 
-  static Future<dynamic> fetchRemoteUnapprovedCparaData({required String baseUrl,}) async {
+  static Future<dynamic> fetchRemoteUnapprovedCparaData({
+    required String baseUrl,
+  }) async {
     var prefs = await SharedPreferences.getInstance();
     var accessToken = prefs.getString('access');
     String bearerAuth = "Bearer $accessToken";
@@ -136,10 +142,9 @@ List<UnaprovedRemoteData> list = unaprovedRemoteDataFromJson(
         options: Options(headers: {"Authorization": bearerAuth}));
 
     if (response.statusCode == 200) {
-     return response.data;
-    }
-    else{
-      throw("Could not fetch unapproved cparas");
+      return response.data;
+    } else {
+      throw ("Could not fetch unapproved cparas");
     }
   }
 }
