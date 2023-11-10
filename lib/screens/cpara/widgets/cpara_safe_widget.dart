@@ -9,7 +9,10 @@ import 'package:provider/provider.dart';
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
 
 class CparaSafeWidget extends StatefulWidget {
-  const CparaSafeWidget({super.key});
+  final bool isRejected;
+  const CparaSafeWidget({
+    required this.isRejected,
+    super.key});
 
   @override
   State<CparaSafeWidget> createState() => _CparaSafeWidgetState();
@@ -267,19 +270,25 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
       return age;
     }
 
-    for (CaseLoadModel model in models) {
-      final DateTime? birthDate = DateTime.tryParse(model.dateOfBirth ?? "");
-      if (birthDate != null) {
-        final age = calculateAge(birthDate);
-        if (age > 11) {
-          // Only add children with age less than 12
-          children.add(
-            SafeChild(
-              ovcId: model.cpimsId ?? "",
-              question1: "",
-              name: "${model.ovcFirstName} ${model.ovcSurname}",
-            ),
-          );
+    if (widget.isRejected == true) {
+      for (SafeChild child in safeModel.childrenQuestions ?? []) {
+        children.add(child);
+      }
+    } else {
+      for (CaseLoadModel model in models) {
+        final DateTime? birthDate = DateTime.tryParse(model.dateOfBirth ?? "");
+        if (birthDate != null) {
+          final age = calculateAge(birthDate);
+          if (age > 11) {
+            // Only add children with age less than 12
+            children.add(
+              SafeChild(
+                ovcId: model.cpimsId ?? "",
+                question1: "",
+                name: "${model.ovcFirstName} ${model.ovcSurname}",
+              ),
+            );
+          }
         }
       }
     }

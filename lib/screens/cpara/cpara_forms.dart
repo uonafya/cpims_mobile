@@ -57,14 +57,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
   final ScrollController _scrollController = ScrollController();
   int selectedStep = 0;
 
-  List<Widget> steps = [
-    const CparaDetailsWidget(),
-    const CparaHealthyWidget(),
-    const CparaStableWidget(),
-    const CparaSafeWidget(),
-    const CparaSchooledWidget(),
-  ];
-
   Database? database;
 
   // Initialize database
@@ -98,6 +90,14 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> steps = [
+      const CparaDetailsWidget(),
+      const CparaHealthyWidget(),
+      const CparaStableWidget(),
+      CparaSafeWidget(isRejected: widget.isRejected),
+      const CparaSchooledWidget(),
+    ];
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
