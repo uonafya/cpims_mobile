@@ -30,6 +30,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../Models/case_load_model.dart';
+import '../../widgets/location_dialog.dart';
 import 'model/ovc_model.dart';
 
 class CparaFormsScreen extends StatefulWidget {
@@ -255,7 +256,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                             .updateHealthModel(healthModel);
                                       }
 
-                                      try {
                                         String? ovsId = cparaProvider
                                             .caseLoadModel?.cpimsId;
 
@@ -278,17 +278,8 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                             cparaModelDB: cparaModelDB,
                                             ovcId: ovcpmisid,
                                             startTime: startTime,
-                                            careProviderId: ovcpmisid);
-                                        // //todo: call ovc
-                                        // if (context.mounted) {
-                                        //   DateTime? date = DateTime.tryParse(
-                                        //       detailModel.dateOfAssessment ??
-                                        //           "");
-                                        //   handleSubmit(
-                                        //       context: context,
-                                        //       selectedDate:
-                                        //           date ?? DateTime.now());
-                                        // }
+                                            careProviderId: ovcpmisid,
+                                        );
 
                                         if (context.mounted) {
                                           cparaProvider.clearCparaProvider();
@@ -304,22 +295,20 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           );
                                           Navigator.pop(context);
                                         }
-                                      } catch (err) {
+                                    } catch (e) {
+                                      if(e.toString() == locationDisabled || e.toString() == locationDenied){
+                                        if(context.mounted) {
+                                          locationMissingDialog(context);
+                                        }
+                                      }
+                                      else {
                                         Get.snackbar(
-                                          'Success',
-                                          'Successfully saved CPARA form',
+                                          'Error',
+                                          e.toString(),
                                           backgroundColor: Colors.red,
                                           colorText: Colors.white,
                                         );
                                       }
-                                    } catch (e) {
-                                      // showErrorSnackbar();
-                                      Get.snackbar(
-                                        'Error',
-                                        e.toString(),
-                                        backgroundColor: Colors.red,
-                                        colorText: Colors.white,
-                                      );
                                     }
                                   }
 

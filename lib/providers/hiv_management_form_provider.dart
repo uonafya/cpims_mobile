@@ -2,6 +2,7 @@ import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_form_model.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class HIVManagementFormProvider extends ChangeNotifier {
   ARTTherapyHIVFormModel _artTherapyFormModel = ARTTherapyHIVFormModel();
@@ -40,7 +41,7 @@ class HIVManagementFormProvider extends ChangeNotifier {
   }
 
   // submit form
-  Future<void> submitHIVManagementForm(String? cpimsID,uuid,startTimeInterview,formType) async {
+  Future<void> submitHIVManagementForm(String? cpimsID,uuid,startTimeInterview,formType, {required BuildContext context}) async {
     try {
       final formData = {
         'ovc_cpims_id': cpimsID,
@@ -87,12 +88,11 @@ class HIVManagementFormProvider extends ChangeNotifier {
         _hivVisitationFormModel,
         uuid,
         startTimeInterview,
-        formType
+        formType,
+        context: context
       );
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
+      rethrow;
     }
   }
 }

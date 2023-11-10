@@ -16,6 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import '../../../constants.dart';
+import '../../../widgets/location_dialog.dart';
+
 bool disableSubsquentHIVAssessmentFieldsAndSubmit(BuildContext context) {
   final currentStatus =
       Provider.of<HIVAssessmentProvider>(context).hivCurrentStatusModel;
@@ -96,9 +99,11 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         setState(() {
           isLoading = false;
         });
-        if (kDebugMode) {
-          print(e);
-        }
+       if(e.toString() == locationDisabled || e.toString() == locationDenied){
+         if(context.mounted) {
+           locationMissingDialog(context);
+         }
+       }
       }
 
       return;

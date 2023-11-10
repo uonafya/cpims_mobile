@@ -6,6 +6,7 @@ import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_fo
 import 'package:cpims_mobile/services/api_service.dart';
 import 'package:cpims_mobile/utils/strings.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class HIVAssessmentProvider with ChangeNotifier {
@@ -87,7 +88,7 @@ class HIVAssessmentProvider with ChangeNotifier {
           data[key] = convertBooleanStringToDBBoolen("No");
         }
       });
-      String formUuid = Uuid().v4();
+      String formUuid = const Uuid().v4();
       await LocalDb.instance.insertHRSData(
           caseLoadModel.cpimsId!,
           _hivCurrentStatusModel,
@@ -95,13 +96,12 @@ class HIVAssessmentProvider with ChangeNotifier {
           _progressMonitoringModel,
           formUuid,
           startTime,
-          "HIV Risk Assessment");
+          "HIV Risk Assessment"
+      );
 
       resetWholeForm();
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
+      rethrow;
     }
   }
 

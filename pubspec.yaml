@@ -64,6 +64,7 @@ dependencies:
   permission_handler:
   foundation:
   percent_indicator:
+  app_settings: ^5.1.1
 
 
 dev_dependencies:

@@ -302,9 +302,9 @@ class CparaModel {
   }
 
   // Create Form in database
-  Future<String> createForm(Database? db, String assessmentDate) async {
+  Future<String> createForm(Database? db, String assessmentDate, String formUUID) async {
     try {
-      String formUUID = const Uuid().v4();
+
       // Insert entry to db
       db!.insert("Form",
           {"date": assessmentDate, "uuid": formUUID});

@@ -17,10 +17,12 @@ import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_form_model.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:uuid/uuid.dart';
 import '../Models/caseplan_form_model.dart';
 import '../constants.dart';
 import '../screens/forms/form1a/new/form_one_a.dart';
@@ -317,31 +319,43 @@ class LocalDb {
       {required CparaModel cparaModelDB,
       required String ovcId,
       required String startTime,
-      required String careProviderId}) async {
-    final db = await instance.database;
-    var idForm = 0;
-    String selectedDate = cparaModelDB.detail.dateOfAssessment ??
-        DateFormat('yyyy-MM-dd').format(DateTime.now());
-    // Create form
-    cparaModelDB.createForm(db, selectedDate).then((formUUID) {
-      // Get formID
-      cparaModelDB.getLatestFormID(db).then((formData) {
-        var formDate = formData.formDate;
-        var formDateString = formDate.toString().split(' ')[0];
-        var formID = formData.formID;
-        idForm = formID;
-        cparaModelDB
-            .addHouseholdFilledQuestionsToDB(db, formDateString, ovcId, formID)
-            .then((value) {
-          //insert app form metadata
-          insertAppFormMetaData(formUUID, startTime, 'cpara').then((value) =>
-              handleSubmit(
-                  selectedDate: selectedDate,
-                  formId: formID,
-                  ovcSub: cparaModelDB.ovcSubPopulations));
-        });
-      });
-    });
+      required String careProviderId,
+        // required BuildContext context
+      }) async {
+    try{
+
+      final db = await instance.database;
+      var idForm = 0;
+      String selectedDate = cparaModelDB.detail.dateOfAssessment ??
+          DateFormat('yyyy-MM-dd').format(DateTime.now());
+      String formUUID = const Uuid().v4();
+      // Create form
+      await insertAppFormMetaData(formUUID, startTime, 'cpara',);
+      cparaModelDB.createForm(db, selectedDate, formUUID).then((formUUID) {
+            // Get formID
+            cparaModelDB.getLatestFormID(db).then((formData) {
+              var formDate = formData.formDate;
+              var formDateString = formDate.toString().split(' ')[0];
+              var formID = formData.formID;
+              idForm = formID;
+              cparaModelDB
+                  .addHouseholdFilledQuestionsToDB(db, formDateString, ovcId, formID)
+                  .then((value) {
+                //insert app form metadata
+                insertAppFormMetaData(formUUID, startTime, 'cpara',
+                  // context: context
+                ).then((value) =>
+                    handleSubmit(
+                        selectedDate: selectedDate,
+                        formId: formID,
+                        ovcSub: cparaModelDB.ovcSubPopulations));
+              });
+            });
+          });
+    }catch(e){
+     rethrow;
+    }
+
   }
 
   void handleSubmit(
@@ -667,8 +681,9 @@ class LocalDb {
       HIVVisitationFormModel hivVisitationFormModel,
       String uuid,
       String startTimeInterview,
-      String formType) async {
+      String formType, {required BuildContext context}) async {
     final db = await instance.database;
+    await insertAppFormMetaData(uuid, startTimeInterview, formType);
     await db.insert(
       HMForms,
       {
@@ -713,7 +728,6 @@ class LocalDb {
       },
     );
 
-    await insertAppFormMetaData(uuid, startTimeInterview, formType);
   }
 
   Future<List<Map<String, dynamic>>> fetchHMFFormData() async {
@@ -769,23 +783,33 @@ class LocalDb {
     return results;
   }
 
-  Future<void> insertAppFormMetaData(uuid, startOfInterview, formType) async {
+  Future<void> insertAppFormMetaData(uuid, startOfInterview, formType,
+      // {required BuildContext context}
+      ) async {
     final db = await instance.database;
-    Position userLocation = await getUserLocation(); // Await the location here
-    String lat = userLocation.latitude.toString();
-    String longitude = userLocation.longitude.toString();
-    await db.insert(
-      appFormMetaDataTable,
-      {
-        'form_id': uuid,
-        'location_lat': lat,
-        'location_long': longitude,
-        'start_of_interview': startOfInterview,
-        'end_of_interview': DateTime.now().toIso8601String(),
-        'form_type': formType,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+   // if(context.mounted){
+     try{
+       Position userLocation = await getUserLocation(
+           // context: context
+       ); // Await the location here
+       String lat = userLocation.latitude.toString();
+       String longitude = userLocation.longitude.toString();
+       await db.insert(
+         appFormMetaDataTable,
+         {
+           'form_id': uuid,
+           'location_lat': lat,
+           'location_long': longitude,
+           'start_of_interview': startOfInterview,
+           'end_of_interview': DateTime.now().toIso8601String(),
+           'form_type': formType,
+         },
+         conflictAlgorithm: ConflictAlgorithm.replace,
+       );
+     }
+     catch(e){
+       rethrow;
+     }
   }
 
   Future<void> insertUnapprovedAppFormMetaData(
@@ -807,9 +831,14 @@ class LocalDb {
 
   // insert formData(either form1a or form1b)
   Future<void> insertForm1Data(
-      String formType, formData, metadata, uuid) async {
+      String formType, formData, metadata, uuid,) async {
     try {
       final db = await instance.database;
+
+      //insert app form metadata
+      await insertAppFormMetaData(uuid, metadata.startOfInterview, formType,
+        // context: context
+      );
       final formId = await db.insert(
         form1Table,
         {
@@ -821,8 +850,10 @@ class LocalDb {
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      //insert app form metadata
-      await insertAppFormMetaData(uuid, metadata.startOfInterview, formType);
+      // //insert app form metadata
+      // await insertAppFormMetaData(uuid, metadata.startOfInterview, formType,
+      //     // context: context
+      // );
 
       // insert services
       for (var service in formData.services) {
@@ -841,16 +872,17 @@ class LocalDb {
           form1CriticalEventsTable,
           {
             'form_id': formId,
-            'event_id': criticalEvent.event_id,
-            'event_date': criticalEvent.event_date,
+            'event_id': criticalEvent.eventId,
+            'event_date': criticalEvent.eventDate,
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('Error inserting form1 data: $e');
-      }
+      // if (kDebugMode) {
+      //   print('Error inserting form1 data: $e');
+      // }
+      rethrow;
     }
   }
 
