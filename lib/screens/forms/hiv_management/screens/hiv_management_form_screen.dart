@@ -15,6 +15,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import '../../../../widgets/location_dialog.dart';
 
 class HIVManagementForm extends StatefulWidget {
   final CaseLoadModel caseLoad;
@@ -49,11 +50,9 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
       String formUUid = Uuid().v4();
       await Provider.of<HIVManagementFormProvider>(context, listen: false)
           .submitHIVManagementForm(widget.caseLoad.cpimsId, formUUid,
-              startInterviewTime, "HIV Management Form");
+              startInterviewTime, "HIV Management Form", context: context);
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
+      rethrow;
     }
   }
 
@@ -192,7 +191,11 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                   setState(() {
                                     isLoading = false;
                                   });
-                                  print(e);
+                                  if(e.toString() == locationDisabled || e.toString() == locationDenied){
+                                    if(context.mounted) {
+                                      locationMissingDialog(context);
+                                    }
+                                  }
                                 }
                               },
                               color: kPrimaryColor,

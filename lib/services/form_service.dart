@@ -7,6 +7,7 @@ import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/services/api_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../constants.dart';
@@ -24,9 +25,10 @@ class Form1Service {
       await db.insertForm1Data(formType, formData, metadata, uuid);
       return true;
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
+      // if (kDebugMode) {
+      //   print(e);
+      // }
+      rethrow;
     }
     return false;
   }
