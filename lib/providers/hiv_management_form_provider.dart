@@ -70,14 +70,6 @@ class HIVManagementFormProvider extends ChangeNotifier {
         print(_hivVisitationFormModel.nutritionalSupport);
       }
 
-      formData.forEach((key, value) {
-        if (value == "Yes") {
-          formData[key] = convertBooleanStringToDBBoolen("Yes");
-        } else if (value == "No") {
-          formData[key] = convertBooleanStringToDBBoolen("No");
-        }
-      });
-
       // save data locally
       await LocalDb.instance.insertHMFFormData(
         cpimsID!,
