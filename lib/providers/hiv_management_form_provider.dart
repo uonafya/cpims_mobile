@@ -9,7 +9,7 @@ import '../utils/strings.dart';
 class HIVManagementFormProvider extends ChangeNotifier {
   ARTTherapyHIVFormModel _artTherapyFormModel = ARTTherapyHIVFormModel();
 
-  ARTTherapyHIVFormModel get hIVManagementFormModel => _artTherapyFormModel;
+  ARTTherapyHIVFormModel get artTherapyFormModel => _artTherapyFormModel;
 
   HIVVisitationFormModel _hivVisitationFormModel = HIVVisitationFormModel();
 
@@ -43,7 +43,9 @@ class HIVManagementFormProvider extends ChangeNotifier {
   }
 
   // submit form
-  Future<void> submitHIVManagementForm(String? cpimsID,uuid,startTimeInterview,formType, {required BuildContext context}) async {
+  Future<void> submitHIVManagementForm(
+      String? cpimsID, uuid, startTimeInterview, formType,
+      {required BuildContext context}) async {
     try {
       final formData = {
         'ovc_cpims_id': cpimsID,
@@ -77,15 +79,9 @@ class HIVManagementFormProvider extends ChangeNotifier {
       });
 
       // save data locally
-      await LocalDb.instance.insertHMFFormData(
-        cpimsID!,
-        _artTherapyFormModel,
-        _hivVisitationFormModel,
-        uuid,
-        startTimeInterview,
-        formType,
-        context: context
-      );
+      await LocalDb.instance.insertHMFFormData(cpimsID!, _artTherapyFormModel,
+          _hivVisitationFormModel, uuid, startTimeInterview, formType,
+          context: context);
 
       //reset form Data
       clearForms();
