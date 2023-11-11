@@ -110,7 +110,8 @@ class LocalDb {
         ${CasePlan.id} $idType,
         ${CasePlan.ovcCpimsId} $textType,
         ${CasePlan.dateOfEvent} $textType,
-        ${CasePlan.formDateSynced} $textTypeNull
+        ${CasePlan.formDateSynced} $textTypeNull,
+        ${CasePlan.uuid} $textType
       )
       ''');
 
@@ -1255,9 +1256,12 @@ class LocalDb {
   }
 
   //new insert case plan
-  Future<bool> insertCasePlanNew(CasePlanModel casePlan) async {
+  Future<bool> insertCasePlanNew(CasePlanModel casePlan,String formUuid,String startTimeOfInterview) async {
     try {
       final db = await instance.database;
+
+      await insertAppFormMetaData(formUuid, startTimeOfInterview, "caseplan");
+
       await db.transaction((txn) async {
         final casePlanId = await txn.insert(
           casePlanTable,
@@ -1265,6 +1269,7 @@ class LocalDb {
             'ovc_cpims_id': casePlan.ovcCpimsId,
             'date_of_event': casePlan.dateOfEvent,
             'form_date_synced': null,
+            'uuid': formUuid,
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
@@ -1633,16 +1638,18 @@ class CasePlan {
     id,
     ovcCpimsId,
     dateOfEvent,
-    formDateSynced
+    formDateSynced,
+    uuid
   ];
 
   static const String id = 'id';
   static const String ovcCpimsId = 'ovc_cpims_id';
   static const String dateOfEvent = 'date_of_event';
   static const String formDateSynced = 'form_date_synced';
+  static const String uuid = 'uuid';
 }
-
 class CasePlanServices {
+
   static final List<String> values = [
     id,
     formId,

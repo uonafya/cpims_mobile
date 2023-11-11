@@ -222,11 +222,11 @@ class Form1Service {
 
 class CasePlanService {
   // save form to local storage
-  static saveCasePlanLocal(formData) async {
+  static saveCasePlanLocal(formData,formUuid,startTimeOfInterview) async {
 //save the form data that is in the form of a map to  a local database
     final db = LocalDb.instance;
     try {
-      await db.insertCasePlanNew(formData);
+      await db.insertCasePlanNew(formData,formUuid,startTimeOfInterview);
       return true;
     } catch (e) {
       if (kDebugMode) {
