@@ -52,29 +52,14 @@ class HIVManagementFormProvider extends ChangeNotifier {
       };
 
       // Loop through the formData map and apply modifications
-      // formData.forEach((key, value) {
-      //   if (value is String) {
-      //     // Combine values with 2 or more characters into one
-      //     formData[key] = value.split(' ').where((s) => s.length > 1).join(' ');
-      //     if (kDebugMode) {
-      //       print(formData[value]);
-      //     }
-      //
-      //     // Combine the first words before "if"
-      //     formData[key] = formData[key]
-      //         .split(' ')
-      //         .map((value) =>
-      //             value.contains('if') ? value.split('if')[0] : value)
-      //         .join(' ');
-      //     if (kDebugMode) {
-      //       print(formData[value]);
-      //     }
-      //   } else {
-      //     if (kDebugMode) {
-      //       print("Hello");
-      //     }
-      //   }
-      // });
+      formData.forEach((key, value) {
+        if (value == "Yes") {
+          formData[key] = convertBooleanStringToDBBoolen("Yes");
+        } else if (value == "No") {
+          formData[key] = convertBooleanStringToDBBoolen("No");
+        }
+      });
+
       if (kDebugMode) {
         print(formData);
       }
@@ -91,10 +76,6 @@ class HIVManagementFormProvider extends ChangeNotifier {
         }
       });
 
-      if (kDebugMode) {
-        print(_hivVisitationFormModel.nutritionalSupport);
-      }
-
       // save data locally
       await LocalDb.instance.insertHMFFormData(
         cpimsID!,
@@ -108,8 +89,13 @@ class HIVManagementFormProvider extends ChangeNotifier {
 
       //reset form Data
       clearForms();
+
+      //reset form Data
+      clearForms();
     } catch (e) {
-      rethrow;
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 }

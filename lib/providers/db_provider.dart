@@ -318,9 +318,9 @@ class LocalDb {
 
   Future<void> insertCparaData({
     required CparaModel cparaModelDB,
-    required String ovcId,
-    required String startTime,
-    required String careProviderId,
+      required String ovcId,
+      required String startTime,
+      required String careProviderId,
     // required BuildContext context
   }) async {
     try {
@@ -364,8 +364,8 @@ class LocalDb {
 
   void handleSubmit(
       {required String selectedDate,
-      required int formId,
-      required CparaOvcSubPopulation ovcSub}) async {
+        required int formId,
+        required CparaOvcSubPopulation ovcSub}) async {
     // CparaOvcSubPopulation ovcSub =
     //     context.read<CparaProvider>().cparaOvcSubPopulation ??
     //         CparaOvcSubPopulation();
@@ -652,7 +652,9 @@ class LocalDb {
   Future<void> createHMFForms(Database db, int version) async {
     // Define the table schema with all the fields
     print("-------------------Creating HMF Forms---------------------------");
+    print("-------------------Creating HMF Forms---------------------------");
     const String createTableQuery = '''
+    CREATE TABLE $HMForms (
     CREATE TABLE $HMForms (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       ovc_cpims_id TEXT,
@@ -690,7 +692,7 @@ class LocalDb {
       HIV_MGMT_2_P TEXT,
       HIV_MGMT_2_Q TEXT,
       HIV_MGMT_2_R TEXT,
-      HIV_MGMT_2_S TEXT,
+      HIV_MGMT_2_S TEXT
       uuid TEXT,
       form_date_synced TEXT NULL
     )
@@ -700,7 +702,9 @@ class LocalDb {
       await db.execute(createTableQuery);
       print(
           "------------------Function ----Creating HMF Forms---------------------------");
+      print("------------------Function ----Creating HMF Forms---------------------------");
     } catch (e) {
+      print("-------------------Error HMF Forms---------------------------$e");
       print("-------------------Error HMF Forms---------------------------$e");
       if (kDebugMode) {
         print('Error creating table: $e');
@@ -709,10 +713,10 @@ class LocalDb {
   }
 
   Future<void> insertHMFFormData(
-      String cpmisId,
-      ARTTherapyHIVFormModel artTherapyHIVFormModel,
-      HIVVisitationFormModel hivVisitationFormModel,
-      String uuid,
+        String cpmisId,
+        ARTTherapyHIVFormModel artTherapyHIVFormModel,
+        HIVVisitationFormModel hivVisitationFormModel,
+          String uuid,
       String startTimeInterview,
       String formType,
       {required BuildContext context}) async {
@@ -858,7 +862,7 @@ class LocalDb {
     final db = await instance.database;
     const sql = 'SELECT * FROM $tableFormMetadata WHERE field_name = ?';
     final List<Map<String, dynamic>> results =
-        await db.rawQuery(sql, [fieldName]);
+    await db.rawQuery(sql, [fieldName]);
     return results;
   }
 
@@ -1027,7 +1031,7 @@ class LocalDb {
       const sql =
           'SELECT * FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
       final List<Map<String, dynamic>> form1Rows =
-          await db.rawQuery(sql, [formType]);
+      await db.rawQuery(sql, [formType]);
 
       List<Map<String, dynamic>> updatedForm1Rows = [];
 
@@ -1049,7 +1053,7 @@ class LocalDb {
         );
 
         final AppFormMetaData appFormMetaData =
-            await getAppFormMetaData(form1row['uuid']);
+        await getAppFormMetaData(form1row['uuid']);
 
         // Create a new map that includes existing form1row data, services, critical_events, and ID
         Map<String, dynamic> updatedForm1Row = {
@@ -1132,7 +1136,7 @@ class LocalDb {
       const sql =
           'SELECT COUNT(*) FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
       final List<Map<String, dynamic>> result =
-          await db.rawQuery(sql, [formType]);
+      await db.rawQuery(sql, [formType]);
 
       if (result.isNotEmpty) {
         return Sqflite.firstIntValue(result);
@@ -1155,7 +1159,7 @@ class LocalDb {
       const sql =
           'SELECT COUNT(*) FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
       final List<Map<String, dynamic>> result =
-          await db.rawQuery(sql, [formType]);
+      await db.rawQuery(sql, [formType]);
 
       if (result.isNotEmpty) {
         controller.add(Sqflite.firstIntValue(result)!);
@@ -1359,12 +1363,12 @@ class LocalDb {
             gapId: serviceRow[CasePlanServices.gapId] as String,
             priorityId: serviceRow[CasePlanServices.priorityId] as String,
             responsibleIds:
-                (serviceRow['responsible_ids'] as String).split(','),
+            (serviceRow['responsible_ids'] as String).split(','),
             // Parse comma-separated responsible IDs
             resultsId: serviceRow[CasePlanServices.resultsId] as String,
             reasonId: serviceRow[CasePlanServices.reasonId] as String,
             completionDate:
-                serviceRow[CasePlanServices.completionDate] as String,
+            serviceRow[CasePlanServices.completionDate] as String,
           ));
         }
 
@@ -1414,11 +1418,11 @@ class LocalDb {
             gapId: serviceRow[CasePlanServices.gapId] as String,
             priorityId: serviceRow[CasePlanServices.priorityId] as String,
             responsibleIds:
-                (serviceRow['responsible_ids'] as String).split(','),
+            (serviceRow['responsible_ids'] as String).split(','),
             resultsId: serviceRow[CasePlanServices.resultsId] as String,
             reasonId: serviceRow[CasePlanServices.reasonId] as String,
             completionDate:
-                serviceRow[CasePlanServices.completionDate] as String,
+            serviceRow[CasePlanServices.completionDate] as String,
           ));
         }
 

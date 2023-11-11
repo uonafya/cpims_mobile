@@ -14,6 +14,7 @@ import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../widgets/location_dialog.dart';
@@ -52,6 +53,9 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
       await Provider.of<HIVManagementFormProvider>(context, listen: false)
           .submitHIVManagementForm(widget.caseLoad.cpimsId, formUUid,
               startInterviewTime, "HIV Management Form", context: context);
+      if (context.mounted) {
+        Get.back();
+      }
       if (context.mounted) {
         Get.back();
       }
