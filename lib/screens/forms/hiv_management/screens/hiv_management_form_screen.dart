@@ -11,8 +11,8 @@ import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../widgets/location_dialog.dart';
@@ -47,10 +47,14 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
   // submit hivmanagementform
   void submitHIVManagementForm(String startInterviewTime) async {
     try {
-      String formUUid = Uuid().v4();
+      String formUUid = const Uuid().v4();
       await Provider.of<HIVManagementFormProvider>(context, listen: false)
           .submitHIVManagementForm(widget.caseLoad.cpimsId, formUUid,
-              startInterviewTime, "HIV Management Form", context: context);
+              startInterviewTime, "HIV Management Form",
+              context: context);
+      if (context.mounted) {
+        Get.back();
+      }
     } catch (e) {
       rethrow;
     }
@@ -191,8 +195,9 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                   setState(() {
                                     isLoading = false;
                                   });
-                                  if(e.toString() == locationDisabled || e.toString() == locationDenied){
-                                    if(context.mounted) {
+                                  if (e.toString() == locationDisabled ||
+                                      e.toString() == locationDenied) {
+                                    if (context.mounted) {
                                       locationMissingDialog(context);
                                     }
                                   }

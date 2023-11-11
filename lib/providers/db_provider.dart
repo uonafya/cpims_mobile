@@ -651,7 +651,10 @@ class LocalDb {
   // create HIVManagement table
   Future<void> createHMFForms(Database db, int version) async {
     // Define the table schema with all the fields
+    print("-------------------Creating HMF Forms---------------------------");
+    print("-------------------Creating HMF Forms---------------------------");
     const String createTableQuery = '''
+    CREATE TABLE $HMForms (
     CREATE TABLE $HMForms (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       ovc_cpims_id TEXT,
@@ -697,12 +700,14 @@ class LocalDb {
 
     try {
       await db.execute(createTableQuery);
-      print(
-          "------------------Function ----Creating HMF Forms---------------------------");
-    } catch (e) {
-      print("-------------------Error HMF Forms---------------------------$e");
       if (kDebugMode) {
-        print('Error creating table: $e');
+        print(
+            "------------------Function ----Creating HMF Forms---------------------------");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(
+            "-------------------Error HMF Forms---------------------------$e");
       }
     }
   }
@@ -774,6 +779,24 @@ class LocalDb {
       for (Map hmfDataRow in hmfFormData) {
         String uuid = hmfDataRow['uuid'];
 
+        // restructure nutrition support field
+        dynamic nutritionalSupportData = hmfDataRow['HIV_MGMT_2_M'];
+
+        if (nutritionalSupportData is String) {
+          // Remove leading and trailing whitespace and split by comma and space
+          List<String> nutritionalSupportList = nutritionalSupportData
+              .trim()
+              .split(', ')
+              .map((value) => value.replaceAll("'", '')) // Remove single quotes
+              .toList();
+
+          // Update the copy of the record with the new list
+          hmfDataRow['HIV_MGMT_2_M'] = nutritionalSupportList;
+        } else if (nutritionalSupportData is List<String>) {
+          // The data is already a list of strings, do nothing
+        } else {
+          // Handle other types if needed
+        }
         // Fetch associated AppFormMetaData
         final AppFormMetaData appFormMetaData = await getAppFormMetaData(uuid);
 
@@ -787,7 +810,6 @@ class LocalDb {
       }
 
       debugPrint("Updated HMF form data: $updatedHMFFormData");
-
       return updatedHMFFormData;
     } catch (e) {
       if (kDebugMode) {

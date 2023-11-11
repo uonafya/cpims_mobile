@@ -158,7 +158,7 @@ class _HomepageState extends State<Homepage> {
   }
 
   Future<void> syncHMFFormData() async {
-    final db = await LocalDb.instance;
+    final db = LocalDb.instance;
     try {
       // read from localdb
       final queryResults = await db.fetchHMFFormData();
@@ -167,7 +167,7 @@ class _HomepageState extends State<Homepage> {
         final Response response =
             await apiServiceConstructor.postSecData(formData, "mobile/hmf/");
         if (kDebugMode) {
-          print(response.data);
+          print("Data ${response.data}");
         }
       }
     } catch (e) {

@@ -9,8 +9,8 @@ import 'package:cpims_mobile/widgets/custom_dynamic_checkbox_widget.dart';
 import 'package:cpims_mobile/widgets/custom_dynamic_radio_button.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/form_section.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HIVVisitationWidget extends StatefulWidget {
@@ -99,14 +99,61 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
 
     Provider.of<HIVManagementFormProvider>(context, listen: false)
         .updateHIVVisitationModel(formData);
+    final isComplete = areAllFieldsFilled();
+
+    if (isComplete) {
+    } else {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Please fill in the required fields"),
+          backgroundColor: Colors.red,
+        ));
+      }
+    }
 
     if (kDebugMode) {
       print(formData.toJson());
     }
   }
 
+  bool areAllFieldsFilled() {
+    // Define a list of required fields to check if they are filled in
+    final List<String> requiredFields = [
+      visitDate,
+      durationOnARTs,
+      height,
+      mUAC,
+      arvDrugsAdherence,
+      arvDrugsDuration,
+      adherenceCounseling,
+      treatmentSupporter,
+      treatmentSupporterSex,
+      treatmentSupporterAge,
+      treatmentSupporterHIVStatus,
+      viralLoadResults,
+      labInvestigationsDate,
+      detectableViralLoadInterventions,
+      disclosure,
+      mUACScore,
+      zScore,
+      nutritionalSupport.toString(),
+      supportGroupStatus,
+      nhifEnrollment,
+      nhifEnrollmentStatus,
+      referralServices,
+      nextAppointmentDate,
+      peerEducatorName,
+      peerEducatorContact,
+    ];
+
+    // Check if any required field is empty
+    return requiredFields.every((field) => field.isNotEmpty);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final hivVisitationFormData =
+        Provider.of<HIVManagementFormProvider>(context).hIVVisitationFormModel;
     return StepsWrapper(
       title: '2. Visitation',
       children: [
@@ -120,7 +167,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             DateTextField(
-              label: 'Date',
+              label: hivVisitationFormData.visitDate.isNotEmpty
+                  ? hivVisitationFormData.visitDate
+                  : 'Date',
               enabled: true,
               onDateSelected: (date) {
                 setState(() {
@@ -146,6 +195,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomTextField(
               controller: durationOnARTsController,
+              initialValue: hivVisitationFormData.durationOnARTs,
               onChanged: (val) {
                 setState(() {
                   durationOnARTs = durationOnARTsController.text;
@@ -169,6 +219,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomTextField(
               controller: heightController,
+              initialValue: hivVisitationFormData.height,
               onChanged: (val) {
                 setState(() {
                   height = heightController.text;
@@ -192,6 +243,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomTextField(
               controller: muACController,
+              initialValue: hivVisitationFormData.mUAC,
               onChanged: (val) {
                 setState(() {
                   mUAC = muACController.text;
@@ -215,6 +267,11 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomDynamicRadioButton(
               isNaAvailable: false,
+              option: hivVisitationFormData.arvDrugsAdherence.isNotEmpty
+                  ? convertingStringToRadioButtonOptions(
+                          hivVisitationFormData.arvDrugsAdherence)
+                      .toString()
+                  : null,
               optionSelected: (String? option) {
                 setState(() {
                   arvDrugsAdherence = option!;
@@ -239,6 +296,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomTextField(
               controller: arvDrugsDurationController,
+              initialValue: hivVisitationFormData.arvDrugsDuration,
               onChanged: (val) {
                 setState(() {
                   arvDrugsDuration = arvDrugsDurationController.text;
@@ -262,6 +320,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomDynamicRadioButton(
               isNaAvailable: false,
+              option: hivVisitationFormData.adherenceCounseling.isNotEmpty
+                  ? hivVisitationFormData.adherenceCounseling
+                  : null,
               optionSelected: (String? option) {
                 setState(() {
                   adherenceCounseling = option!;
@@ -290,6 +351,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomDynamicRadioButton(
               isNaAvailable: false,
+              option: hivVisitationFormData.treatmentSupporter.isNotEmpty
+                  ? hivVisitationFormData.treatmentSupporter
+                  : null,
               optionSelected: (String? option) {
                 setState(() {
                   treatmentSupporter = option!;
@@ -320,6 +384,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomDynamicRadioButton(
               isNaAvailable: false,
+              option: hivVisitationFormData.treatmentSupporterSex.isNotEmpty
+                  ? hivVisitationFormData.treatmentSupporterSex
+                  : null,
               optionSelected: (String? option) {
                 setState(() {
                   treatmentSupporterSex = option!;
@@ -348,6 +415,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             CustomTextField(
               hintText: 'Age',
               controller: treatmentSupportAgeController,
+              initialValue:
+                  hivVisitationFormData.treatmentSupporterAge.isNotEmpty
+                      ? hivVisitationFormData.treatmentSupporterAge
+                      : null,
               onChanged: (val) {
                 setState(() {
                   treatmentSupporterAge = treatmentSupportAgeController.text;
@@ -371,6 +442,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomDynamicRadioButton(
               isNaAvailable: false,
+              option:
+                  hivVisitationFormData.treatmentSupporterHIVStatus.isNotEmpty
+                      ? hivVisitationFormData.treatmentSupporterHIVStatus
+                      : null,
               optionSelected: (String? option) {
                 setState(() {
                   treatmentSupporterHIVStatus = option!;
@@ -399,6 +474,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             CustomTextField(
               hintText: 'Viral Load Results (if LDL enter 1)',
               controller: viralLoadResultsController,
+              initialValue: hivVisitationFormData.viralLoadResults,
               onChanged: (val) {
                 setState(() {
                   viralLoadResults = viralLoadResultsController.text;
@@ -420,7 +496,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             DateTextField(
-              label: 'Date',
+              label: hivVisitationFormData.labInvestigationsDate.isNotEmpty
+                  ? hivVisitationFormData.labInvestigationsDate
+                  : 'Date',
               enabled: true,
               onDateSelected: (date) {
                 setState(() {
@@ -446,6 +524,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomDynamicRadioButton(
               isNaAvailable: false,
+              option: hivVisitationFormData
+                      .detectableViralLoadInterventions.isNotEmpty
+                  ? hivVisitationFormData.detectableViralLoadInterventions
+                  : null,
               optionSelected: (String? option) {
                 setState(() {
                   detectableViralLoadInterventions = option!;
@@ -483,6 +565,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomDynamicRadioButton(
               isNaAvailable: false,
+              option: hivVisitationFormData.disclosure.isNotEmpty
+                  ? hivVisitationFormData.disclosure
+                  : null,
               optionSelected: (String? option) {
                 setState(() {
                   disclosure = option!;
@@ -514,6 +599,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomDynamicRadioButton(
               isNaAvailable: false,
+              option: hivVisitationFormData.mUACScore.isNotEmpty
+                  ? hivVisitationFormData.mUACScore
+                  : null,
               optionSelected: (String? option) {
                 setState(() {
                   mUACScore = option!;
@@ -543,6 +631,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             CustomTextField(
               hintText: 'nutritional assessment',
               controller: zScoreController,
+              initialValue: hivVisitationFormData.zScore,
               onChanged: (val) {
                 setState(() {
                   zScore = zScoreController.text;
@@ -573,7 +662,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                 'ExclusiveReplacementFeeding',
                 'Mixed Feeding'
               ],
-              selectedOptions: selectedOptions,
+              selectedOptions:
+                  hivVisitationFormData.nutritionalSupport.isNotEmpty
+                      ? hivVisitationFormData.nutritionalSupport.toSet()
+                      : selectedOptions,
               optionsSelected: handleOptionsSelected,
             ),
           ],
@@ -596,6 +688,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                 'Dormant',
                 'Not Enrolled',
               ],
+              option: hivVisitationFormData.supportGroupStatus.isNotEmpty
+                  ? hivVisitationFormData.supportGroupStatus
+                  : null,
               isNaAvailable: false,
               optionSelected: (String? option) {
                 supportGroupStatus = option!;
@@ -623,6 +718,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                   handleOnSave();
                 });
               },
+              option: hivVisitationFormData.nhifEnrollment.isNotEmpty
+                  ? convertingStringToRadioButtonOptions(
+                      hivVisitationFormData.nhifEnrollment)
+                  : null,
               isNaAvailable: false,
             ),
           ],
@@ -645,6 +744,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                 'Dormant',
               ],
               isNaAvailable: false,
+              option: hivVisitationFormData.nhifEnrollmentStatus.isNotEmpty
+                  ? hivVisitationFormData.nhifEnrollmentStatus
+                  : null,
               optionSelected: (String? option) {
                 setState(() {
                   nhifEnrollmentStatus = option!;
@@ -668,6 +770,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             CustomTextField(
               hintText: 'Services',
               controller: referralServicesController,
+              initialValue: hivVisitationFormData.referralServices,
               onChanged: (val) {
                 setState(() {
                   referralServices = referralServicesController.text;
@@ -690,7 +793,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             DateTextField(
-              label: 'Date',
+              label: hivVisitationFormData.nextAppointmentDate.isNotEmpty
+                  ? hivVisitationFormData.nextAppointmentDate
+                  : 'Date',
               enabled: true,
               allowFutureDates: true,
               identifier: DateTextFieldIdentifier.dateOfAssessment,
@@ -717,6 +822,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomTextField(
               controller: peerEducatorNameController,
+              initialValue: hivVisitationFormData.peerEducatorName,
               onChanged: (val) {
                 setState(() {
                   peerEducatorName = peerEducatorNameController.text;
@@ -740,6 +846,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomTextField(
               controller: peerEducatorContactController,
+              initialValue: hivVisitationFormData.peerEducatorContact,
               onChanged: (val) {
                 setState(() {
                   peerEducatorContact = peerEducatorContactController.text;
