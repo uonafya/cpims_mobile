@@ -49,13 +49,11 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
   // submit hivmanagementform
   void submitHIVManagementForm(String startInterviewTime) async {
     try {
-      String formUUid = Uuid().v4();
+      String formUUid = const Uuid().v4();
       await Provider.of<HIVManagementFormProvider>(context, listen: false)
           .submitHIVManagementForm(widget.caseLoad.cpimsId, formUUid,
-              startInterviewTime, "HIV Management Form", context: context);
-      if (context.mounted) {
-        Get.back();
-      }
+              startInterviewTime, "HIV Management Form",
+              context: context);
       if (context.mounted) {
         Get.back();
       }
@@ -199,8 +197,9 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                   setState(() {
                                     isLoading = false;
                                   });
-                                  if(e.toString() == locationDisabled || e.toString() == locationDenied){
-                                    if(context.mounted) {
+                                  if (e.toString() == locationDisabled ||
+                                      e.toString() == locationDenied) {
+                                    if (context.mounted) {
                                       locationMissingDialog(context);
                                     }
                                   }
