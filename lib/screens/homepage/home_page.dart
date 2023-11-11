@@ -176,21 +176,41 @@ class _HomepageState extends State<Homepage> {
   }
 
   Future<void> syncHRSFormData() async {
+    var prefs = await SharedPreferences.getInstance();
+    var bearerToken = prefs.getString('access');
+
+    if (bearerToken == null) {
+      // Handle the case where the token is not available.
+      return;
+    }
     final db = await LocalDb.instance;
     try {
-      // read from localdb
       final queryResults = await db.fetchHRSFormData();
-      // submit data
+      final Dio dio = Dio();
+      dio.options.headers['Authorization'] = 'Bearer $bearerToken';
+      dio.interceptors.add(LogInterceptor());
+
+      // Submit data
       for (final formData in queryResults) {
-        final response =
-            await apiServiceConstructor.postSecData(formData, "mobile/hrs/");
-        if (kDebugMode) {
-          print(response);
+        try {
+          final response =
+              await dio.post('${cpimsApiUrl}mobile/hrs/', data: formData);
+          if (kDebugMode) {
+            print(response.toString());
+          }
+
+          if (response.statusCode == 201) {
+            await db.updateHRSData(formData['uuid']);
+          }
+        } catch (error) {
+          // Handle the error, you may want to retry or log it
+          if (kDebugMode) {
+            print(error);
+          }
         }
-        //Remove from localdb
-        await db.updateHRSData(formData['uuid']);
       }
     } catch (e) {
+      // Handle the error, you may want to retry or log it
       if (kDebugMode) {
         print(e);
       }
@@ -204,7 +224,6 @@ class _HomepageState extends State<Homepage> {
     if (isConnected) {
       await submitCparaToUpstream();
       await postCasePlansToServer();
-      // await fetchAndPostToServerOvcSubpopulationDataNew();
       await postFormOneToServer();
       await showCountUnsyncedForms();
       await syncHRSFormData();

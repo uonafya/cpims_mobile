@@ -222,20 +222,20 @@ class CasePlanProvider extends ChangeNotifier {
     return payload;
   }
 
-  Future<bool> saveCasePlanLocally(String ovcCpimsId) async {
-    Map<String, dynamic> payload = generatePayload(ovcCpimsId);
-
-    bool isFormSaved = await CasePlanService.saveCasePlanLocal(
-        CasePlanModel.fromJson(payload));
-
-    if (isFormSaved == true) {
-      resetFormData();
-      CustomToastWidget.showToast("Saving...");
-      notifyListeners();
-    }
-
-    return isFormSaved;
-  }
+  // Future<bool> saveCasePlanLocally(String ovcCpimsId) async {
+  //   Map<String, dynamic> payload = generatePayload(ovcCpimsId);
+  //
+  //   bool isFormSaved = await CasePlanService.saveCasePlanLocal(
+  //       CasePlanModel.fromJson(payload));
+  //
+  //   if (isFormSaved == true) {
+  //     resetFormData();
+  //     CustomToastWidget.showToast("Saving...");
+  //     notifyListeners();
+  //   }
+  //
+  //   return;
+  // }
 
   void resetFormData() {
     _casePlanModelData.selectedDomain.clear();

@@ -194,6 +194,10 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             ChildDetailsWorkflowButton(
               workflowName: "Case Plan Template",
               onClick: () {
+                String startDateTime = DateTime.now().toString();
+                context
+                    .read<AppMetaDataProvider>()
+                    .updateStartTimeInterview(startDateTime);
                 Get.to(
                     () => CasePlanTemplateForm(caseLoad: widget.caseLoadModel));
               },
