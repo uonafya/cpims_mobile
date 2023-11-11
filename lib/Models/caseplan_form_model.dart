@@ -55,7 +55,7 @@ class CasePlanModel {
       'ovc_cpims_id': ovcCpimsId,
       'date_of_event': dateOfEvent,
       'services': services.map((service) => service.toJson()).toList(),
-      'appFormMetaData': appFormMetaData.toJson(),
+      'app_form_metadata': appFormMetaData.toJson(),
     };
   }
 
