@@ -84,6 +84,7 @@ class _HomepageState extends State<Homepage> {
 
     for (var caseplan in caseplanFromDb) {
       var payload = caseplan.toJson();
+      print("The payload is $payload");
       try {
         const cptEndpoint = "mobile/cpt/";
         var response = await dio.post("$cpimsApiUrl$cptEndpoint",
@@ -92,6 +93,7 @@ class _HomepageState extends State<Homepage> {
 
         if (response.statusCode == 201) {
           updateFormCasePlanDateSync(caseplan.id!, db);
+          debugPrint("Data posted  successfully to server is $payload");
           //clear caseplan data in provider
           successfulFormCount++;
           if (successfulFormCount == caseplanFromDb.length) {

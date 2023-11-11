@@ -1256,7 +1256,8 @@ class LocalDb {
   }
 
   //new insert case plan
-  Future<bool> insertCasePlanNew(CasePlanModel casePlan,String formUuid,String startTimeOfInterview) async {
+  Future<bool> insertCasePlanNew(CasePlanModel casePlan, String formUuid,
+      String startTimeOfInterview) async {
     try {
       final db = await instance.database;
 
@@ -1379,6 +1380,12 @@ class LocalDb {
       for (var row in queryResult) {
         final casePlanId = row[CasePlan.id] as int;
 
+        // Fetch associated AppFormMetaData
+        final AppFormMetaData appFormMetaData =
+            await getAppFormMetaData(row[CasePlan.uuid] as String);
+        debugPrint("The id is ${row[CasePlan.uuid]}");
+        debugPrint("tHE app form meatdata is ${appFormMetaData.toJson()}");
+
         // Retrieve the associated services
         final serviceQueryResult = await db.query(
           casePlanServicesTable,
@@ -1403,13 +1410,24 @@ class LocalDb {
           ));
         }
 
+        // casePlans.add(CasePlanModel(
+        //   id: row[CasePlan.id] as int,
+        //   ovcCpimsId: row[CasePlan.ovcCpimsId] as String,
+        //   dateOfEvent: row[CasePlan.dateOfEvent] as String,
+        //   services: services,
+        //   appFormMetaData: appFormMetaData,
+        // ));
+
         casePlans.add(CasePlanModel(
           id: row[CasePlan.id] as int,
           ovcCpimsId: row[CasePlan.ovcCpimsId] as String,
           dateOfEvent: row[CasePlan.dateOfEvent] as String,
           services: services,
+          appFormMetaData: appFormMetaData,
         ));
       }
+
+      debugPrint("Case plans are: ${casePlans.toString()}");
 
       return casePlans;
     } catch (e) {
@@ -1648,8 +1666,8 @@ class CasePlan {
   static const String formDateSynced = 'form_date_synced';
   static const String uuid = 'uuid';
 }
-class CasePlanServices {
 
+class CasePlanServices {
   static final List<String> values = [
     id,
     formId,
