@@ -46,6 +46,8 @@ class _HomepageState extends State<Homepage> {
   late int cparaCount = 0;
   late int ovcSubpopulatoiCount = 0;
   late int cptCount = 0;
+  late int hmfFormCount = 0;
+  late int hrsFormCount = 0;
 
   // late int
   int? updatedCountA = 0;
@@ -53,6 +55,8 @@ class _HomepageState extends State<Homepage> {
   int? updatedCountCpara = 0;
   int? updatedCountOvcSubpopulation = 0;
   int? updatedCptCount = 0;
+  int? updatedHrsCount = 0;
+  int? updatedHmfCount = 0;
 
   @override
   void initState() {
@@ -242,6 +246,9 @@ class _HomepageState extends State<Homepage> {
     updatedCountCpara = (await Form1Service.getCountAllFormCpara())!;
     updatedCountOvcSubpopulation = await Form1Service.ovcSubCount();
     updatedCptCount = await CasePlanService.getCaseplanUnsyncedCount();
+    updatedHrsCount = await CasePlanService.getCountOfHmfForms();
+    updatedHmfCount = await CasePlanService.getCountOfHRSForms();
+
     setState(() {
       formOneACount = updatedCountA!;
       formOneBCount = updatedCountB!;
@@ -332,6 +339,8 @@ class _HomepageState extends State<Homepage> {
                       form1BCount: formStats.formOneBCount,
                       cpaCount: formStats.cptCount,
                       cparaCount: formStats.cparaCount,
+                      hrsCount: formStats.hrsCount,
+                      hmfCount: formStats.hmfCount,
                       onClick: () {},
                     ),
                     StatisticsItem(
@@ -343,6 +352,8 @@ class _HomepageState extends State<Homepage> {
                       form1BCount: dashData.unapprovedF1B,
                       cpaCount: dashData.unapprovedCPR,
                       cparaCount: dashData.unapprovedCPT,
+                      hrsCount: dashData.unapprovedHRS,
+                      hmfCount: dashData.unapprovedHMF,
                       onClick: () {
                         Get.to(() => const UnapprovedRecordsScreens());
                       },

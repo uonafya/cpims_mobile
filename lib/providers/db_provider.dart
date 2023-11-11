@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
@@ -207,7 +208,8 @@ class LocalDb {
         location_long TEXT,
         start_of_interview TEXT,
         end_of_interview TEXT,
-        form_type TEXT
+        form_type TEXT,
+        device_id TEXT
       )
     ''');
     } catch (err) {
@@ -626,7 +628,7 @@ class LocalDb {
         updatedHRSData.add(updatedHRSDataRow);
       }
 
-      debugPrint("Updated HRS form data: $updatedHRSData");
+      debugPrint("Updated HRS form data: ${jsonEncode(updatedHRSData)}");
 
       return updatedHRSData;
     } catch (e) {
@@ -634,6 +636,22 @@ class LocalDb {
         print("Error fetching HRS form data: $e");
       }
       return [];
+    }
+  }
+
+  Future<int> countHRSFormData() async {
+    try {
+      final db = await LocalDb.instance.database;
+
+      final count = Sqflite.firstIntValue(await db.rawQuery(
+          'SELECT COUNT(*) FROM $HRSForms WHERE form_date_synced IS NULL OR form_date_synced = ""'));
+
+      return count ?? 0;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error counting HRS form data: $e");
+      }
+      return 0;
     }
   }
 
@@ -654,7 +672,6 @@ class LocalDb {
     print("-------------------Creating HMF Forms---------------------------");
     print("-------------------Creating HMF Forms---------------------------");
     const String createTableQuery = '''
-    CREATE TABLE $HMForms (
     CREATE TABLE $HMForms (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       ovc_cpims_id TEXT,
@@ -819,6 +836,24 @@ class LocalDb {
     }
   }
 
+
+  Future<int> countHMFFormData() async {
+    try {
+      final db = await LocalDb.instance.database;
+
+      final count = Sqflite.firstIntValue(await db.rawQuery(
+          'SELECT COUNT(*) FROM $HMForms WHERE form_date_synced IS NULL OR form_date_synced = ""'));
+
+      return count ?? 0;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error counting HMF form data: $e");
+      }
+      return 0;
+    }
+  }
+
+
   Future<void> insertOvcSubpopulationData(String uuid, String cpimsId,
       String dateOfAssessment, List<CheckboxQuestion> questions) async {
     final db = await instance.database;
@@ -880,6 +915,7 @@ class LocalDb {
           ); // Await the location here
       String lat = userLocation.latitude.toString();
       String longitude = userLocation.longitude.toString();
+      String deviceId= await getDeviceId();
       await db.insert(
         appFormMetaDataTable,
         {
@@ -889,6 +925,7 @@ class LocalDb {
           'start_of_interview': startOfInterview,
           'end_of_interview': DateTime.now().toIso8601String(),
           'form_type': formType,
+          'device_id': deviceId
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -1557,6 +1594,7 @@ class LocalDb {
       where: 'form_id = ?',
       whereArgs: [uuid],
     );
+
 
     if (metaDataList.isNotEmpty) {
       return AppFormMetaData.fromJson(metaDataList.first);

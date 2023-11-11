@@ -200,14 +200,11 @@ class _FomOneAState extends State<FomOneA> {
                                   } else {
                                     try {
                                       String startInterviewTime = '';
-                                      String endTimeInterview = '';
                                       if (context.mounted) {
                                         startInterviewTime = context
                                                 .read<AppMetaDataProvider>()
                                                 .startTimeInterview ??
                                             '';
-                                        endTimeInterview =
-                                            DateTime.now().toIso8601String();
                                       }
                                       setState(() {
                                         isLoading = true;
@@ -274,6 +271,7 @@ class _FomOneAState extends State<FomOneA> {
                       const SizedBox(
                         height: 30,
                       ),
+
                       // ... your other widgets
                     ],
                   ),

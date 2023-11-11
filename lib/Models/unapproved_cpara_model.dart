@@ -45,7 +45,7 @@ class UnapprovedCparaModel extends CparaModel {
       health: HealthModel.fromJson(json['health']),
       ovcSubPopulations: json['ovc_subpopulation'],
       uuid: json['uuid'],
-      appFormMetaData: AppFormMetaData.fromJson(json['appFormMetaData']),
+      appFormMetaData: AppFormMetaData.fromJson(json['app_form_metadata']),
       message: json['message'],
     );
   }

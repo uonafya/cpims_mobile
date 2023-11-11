@@ -11,6 +11,8 @@ class StatisticsItem extends StatelessWidget {
       required this.form1BCount,
       required this.cpaCount,
       required this.cparaCount,
+      required this.hrsCount,
+      required this.hmfCount,
       required this.onClick})
       : super(key: key);
   final String title;
@@ -21,6 +23,8 @@ class StatisticsItem extends StatelessWidget {
   final int form1BCount;
   final int cpaCount;
   final int cparaCount;
+  final int hrsCount;
+  final int hmfCount;
   final VoidCallback onClick;
 
   @override
@@ -30,7 +34,7 @@ class StatisticsItem extends StatelessWidget {
         onClick();
       },
       child: Container(
-        height: 200,
+        height: 220,
         width: double.infinity,
         color: color,
         margin: const EdgeInsets.symmetric(vertical: 7.5),
@@ -103,7 +107,28 @@ class StatisticsItem extends StatelessWidget {
                               fontWeight: FontWeight.w600),
                         ),
                         const Spacer(),
-                      ])
+                      ]),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(children: [
+                        Text(
+                          "HRS Form ($hrsCount)",
+                          style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        const Spacer(),
+                        Text(
+                          "HMF Form ($hmfCount)",
+                          style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        const Spacer(),
+                      ]),
                     ],
                   ),
                 ),
@@ -146,16 +171,14 @@ class StatisticsItem extends StatelessWidget {
   }
 }
 
-
 class InfoCard extends StatelessWidget {
-  const InfoCard(
-      {Key? key,
-        required this.title,
-        required this.icon,
-        required this.color,
-        required this.secondaryColor,
-       })
-      : super(key: key);
+  const InfoCard({
+    Key? key,
+    required this.title,
+    required this.icon,
+    required this.color,
+    required this.secondaryColor,
+  }) : super(key: key);
   final String title;
   final IconData icon;
   final Color color;
@@ -164,34 +187,34 @@ class InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 60,
-        width: double.infinity,
-        color: color,
-        margin: const EdgeInsets.symmetric(vertical: 5.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(15),
-              child: Row(children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ],
-                  ),
+      height: 60,
+      width: double.infinity,
+      color: color,
+      margin: const EdgeInsets.symmetric(vertical: 5.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Row(children: [
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ],
                 ),
-              ]),
-            ),
-          ],
-        ),
+              ),
+            ]),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -5,7 +5,7 @@ class AppFormMetaData {
   final String? startOfInterview;
   final String? endOfInterview;
   final String? formType;
-
+  final String? device_id;
   const AppFormMetaData({
     this.formId,
     this.location_lat,
@@ -13,6 +13,7 @@ class AppFormMetaData {
     this.startOfInterview,
     this.endOfInterview,
     this.formType,
+    this.device_id,
   });
 
   factory AppFormMetaData.fromJson(Map<String, dynamic> json) {
@@ -23,6 +24,7 @@ class AppFormMetaData {
       startOfInterview: (json['start_of_interview'] ?? "") as String,
       endOfInterview: (json['end_of_interview'] ?? "") as String,
       formType: (json['form_type'] ?? "") as String,
+      device_id: (json['device_id'] ?? "") as String,
     );
   }
 
@@ -34,6 +36,7 @@ class AppFormMetaData {
       'start_of_interview': startOfInterview,
       'end_of_interview': endOfInterview,
       'form_type': formType,
+      'device_id': device_id,
     };
   }
 

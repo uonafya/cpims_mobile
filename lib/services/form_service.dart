@@ -316,4 +316,40 @@ class CasePlanService {
     }
     return 0; // Return 0 if there is an error.
   }
+
+  static getCountOfHmfForms() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.countHMFFormData();
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error on getCountOfHmfForms: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
+  }
+
+  static getCountOfHRSForms() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.countHRSFormData();
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error on getCountOfHmfForms: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
+  }
+
 }
+
