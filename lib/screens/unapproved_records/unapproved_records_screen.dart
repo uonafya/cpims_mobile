@@ -51,9 +51,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     if (success) {
       setState(() {
         if (selectedRecord == unapprovedRecords[0]) {
-            unapprovedForm1AData.removeWhere((element) => element.id == id);
+            unapprovedForm1AData.removeWhere((element) => element.localId == id);
         } else if (selectedRecord == unapprovedRecords[1]) {
-          unapprovedForm1BData.removeWhere((element) => element.id == id);
+          unapprovedForm1BData.removeWhere((element) => element.localId == id);
         }
       });
     }
@@ -636,7 +636,7 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
                 ),
                 IconButton(
                     onPressed: () async {
-                      await onDelete(unapprovedData.id ?? 0);
+                      await onDelete(unapprovedData.localId ?? 0);
                     },
                     icon: const Icon(Icons.delete)),
               ],

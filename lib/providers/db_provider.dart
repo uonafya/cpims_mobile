@@ -1073,7 +1073,7 @@ class LocalDb {
       List<Map<String, dynamic>> updatedForm1Rows = [];
 
       for (var form1row in form1Rows) {
-        int formId = form1row['_id'];
+        int formId = form1row['local_id'];
 
         // Fetch associated services
         final List<Map<String, dynamic>> services = await db.query(
@@ -1126,7 +1126,7 @@ class LocalDb {
       List<Map<String, dynamic>> updatedForm1Rows = [];
 
       for (var form1row in form1Rows) {
-        int formId = form1row['_id'];
+        int formId = form1row['local_id'];
 
         // Fetch associated services
         final List<Map<String, dynamic>> services = await db.query(
@@ -1764,7 +1764,7 @@ class Form1 {
     dateOfEvent,
   ];
 
-  static const String id = "_id";
+  static const String id = "local_id";
   static const String uuid = "uuid";
   static const String formType = "form_type";
   static const String ovcCpimsId = "ovc_cpims_id";

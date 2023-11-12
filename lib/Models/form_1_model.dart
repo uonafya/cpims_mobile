@@ -3,7 +3,7 @@ import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 
 class Form1DataModel {
-  final int? id;
+  final int? localId;
   final String uuid;
   final String ovcCpimsId;
   final String dateOfEvent;
@@ -14,7 +14,7 @@ class Form1DataModel {
 
   Form1DataModel({
     required this.uuid,
-    this.id,
+    this.localId,
     required this.ovcCpimsId,
     required this.dateOfEvent,
     required this.services,
@@ -44,7 +44,7 @@ class Form1DataModel {
     }
 
     return Form1DataModel(
-      id: json['id'] as int,
+      localId: json['local_id'] as int,
       uuid: json['uuid'] as String,
       ovcCpimsId: json['ovc_cpims_id'] as String,
       dateOfEvent: json['date_of_event'] as String,

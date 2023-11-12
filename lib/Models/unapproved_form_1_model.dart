@@ -5,7 +5,7 @@ class UnapprovedForm1DataModel extends Form1DataModel {
   final String message;
 
   UnapprovedForm1DataModel({
-    super.id,
+    super.localId,
     required super.uuid,
     required super.ovcCpimsId,
     required super.dateOfEvent,
@@ -32,7 +32,7 @@ class UnapprovedForm1DataModel extends Form1DataModel {
     }
 
     return UnapprovedForm1DataModel(
-      id: json['id'] as int?,
+      localId: json['id'] as int?,
       uuid: json['uuid'] as String,
       ovcCpimsId: json['ovc_cpims_id'] as String,
       dateOfEvent: json['date_of_event'] as String,
