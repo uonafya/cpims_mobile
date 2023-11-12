@@ -244,7 +244,7 @@ class CparaModel {
   }
 
   // Create Form in database
-  Future<String> createForm(Database? db, String assessmentDate, String? uuid) async {
+  Future<String> createForm(Database? db, String assessmentDate, String? uuid, Uint8List signature, bool isRejected) async {
     try {
       String formUUID;
       if (uuid == null) {
@@ -254,7 +254,12 @@ class CparaModel {
       }
       // Insert entry to db
       db!.insert("Form",
-          {"date": assessmentDate, "uuid": formUUID});
+          {
+            "date": assessmentDate,
+            "uuid": formUUID,
+            "signature": signature,
+            "is_rejected": isRejected == true ? 1 : 0,
+          });
       // db!.insert("Form",
       //     {"date": DateTime.now().toString().split(' ')[0], "uuid": formUUID});
 

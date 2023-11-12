@@ -315,6 +315,7 @@ class LocalDb {
       {required CparaModel cparaModelDB,
       required String ovcId,
       required String startTime,
+        required Uint8List signature,
       required bool isRejected,
       required String careProviderId}) async {
     final db = await instance.database;
@@ -322,7 +323,7 @@ class LocalDb {
     String selectedDate = cparaModelDB.detail.dateOfAssessment ??
         DateFormat('yyyy-MM-dd').format(DateTime.now());
     if (isRejected == true) {
-      var formUUID = await cparaModelDB.createForm(db, selectedDate, cparaModelDB.uuid);
+      var formUUID = await cparaModelDB.createForm(db, selectedDate, cparaModelDB.uuid, signature, isRejected);
       var formData = await cparaModelDB.getLatestFormID(db);
       var formDate = formData.formDate;
       var formDateString = formDate.toString().split(' ')[0];
@@ -335,7 +336,7 @@ class LocalDb {
       UnapprovedCparaService.deleteUnapprovedCparaForm(cparaModelDB.uuid);
     } else {
       // Create form
-      cparaModelDB.createForm(db, selectedDate, null).then((formUUID) {
+      cparaModelDB.createForm(db, selectedDate, null, signature, isRejected).then((formUUID) {
         // Get formID
         cparaModelDB.getLatestFormID(db).then((formData) {
           var formDate = formData.formDate;
@@ -494,7 +495,9 @@ class LocalDb {
         form_id INTEGER,
         date TEXT,
         uuid TEXT,
-        form_date_synced TEXT NULL
+        form_date_synced TEXT NULL,
+        is_rejected INTEGER DEFAULT 0,
+        signature BLOB
       )
     ''');
     } catch (err) {
@@ -1305,7 +1308,11 @@ class LocalDb {
       "SELECT  ovc_first_name || ' ' || ovc_surname AS name  FROM OVCS WHERE ovc_cpims_id = ?", [ovc_cpmis_id]
     );
 
-    return fetchResult[0]['name'] as String;
+    if (fetchResult.isEmpty) {
+      return "";
+    }
+
+    return fetchResult[0]['name'] != null ? fetchResult[0]['name'] as String : "";
   }
 }
 

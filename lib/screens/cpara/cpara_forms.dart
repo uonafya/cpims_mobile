@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
@@ -26,6 +28,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:signature/signature.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 
@@ -59,10 +62,33 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
 
   Database? database;
 
+  final SignatureController _signature_controller = SignatureController(
+    penStrokeWidth: 1,
+    penColor: Colors.red,
+    exportBackgroundColor: Colors.transparent,
+    exportPenColor: Colors.black,
+    // onDrawStart: () => log('onDrawStart called!'),
+    // onDrawEnd: () => log('onDrawEnd called!'),
+  );
+
   // Initialize database
   @override
   void initState() {
     super.initState();
+  }
+
+  Future<Uint8List?> exportSignature() async {
+    final exportController = SignatureController(
+      penStrokeWidth: 2,
+      exportBackgroundColor: Colors.white,
+      penColor: Colors.black,
+      points: _signature_controller!.points,
+    );
+    //converting the signature to png bytes
+    final signature = exportController.toPngBytes();
+    //clean up the memory
+    exportController.dispose();
+    return signature;
   }
 
   fetchChildren(caseList) async {
@@ -285,6 +311,59 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                         if (ovsId == null) {
                                           throw ("No CPMSID found");
                                         }
+                                        
+                                        // Show signature
+                                        Uint8List blob = await showDialog(
+                                          barrierDismissible: false,
+                                          context: context,
+                                          builder: (context) {
+                                            return Center(
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Signature(
+                                                    controller: _signature_controller,
+                                                    height: 300,
+                                                    width: 350,
+                                                    backgroundColor: Colors.grey[200]!,
+                                                  ),
+                                                  Container(
+                                                    width: 350,
+                                                    color: Colors.white,
+                                                    padding: const EdgeInsets.symmetric(vertical: 20),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                      children: [
+                                                        TextButton(onPressed: () async{
+                                                          var signatureData = await exportSignature();
+                                                          if (context.mounted) {
+                                                            Navigator.of(context).pop(signatureData);
+                                                          }
+                                                        }, child: Text(
+                                                          "Done",
+                                                          style: TextStyle(
+                                                            color: Colors.blue,
+                                                            fontSize: 16.sp
+                                                          ),
+                                                        )),
+                                                        TextButton(onPressed: (){
+                                                          setState(() => _signature_controller.clear());
+                                                        }, child: Text(
+                                                            "Clear",
+                                                          style: TextStyle(
+                                                            fontSize: 16.sp,
+                                                            color: Colors.red
+                                                          ),
+                                                        ))
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          }
+                                        );
+                                        
                                         String ovcpmisid = ovsId;
                                         // Insert to db
                                         CparaModel cparaModelDB = CparaModel(
@@ -303,6 +382,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                             ovcId: ovcpmisid,
                                             startTime: startTime,
                                             isRejected: widget.isRejected,
+                                            signature: blob,
                                             careProviderId: ovcpmisid);
 
                                         if (context.mounted) {
@@ -651,5 +731,12 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
       colorText: Colors.white,
     );
     return;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _signature_controller.dispose();
+    super.dispose();
   }
 }

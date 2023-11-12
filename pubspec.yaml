@@ -63,6 +63,7 @@ dependencies:
   geolocator:
   permission_handler:
   foundation:
+  signature: ^5.3.0
 
 
 dev_dependencies:
