@@ -1102,9 +1102,13 @@ RadioButtonOptions allShouldBeOnlyYes(
     List<RadioButtonOptions?> members, String message) {
   debugPrint(members.toString() + message);
   // If all the values are yes return RadioButtonOptions.yes, if not return RadioButtonOptions.no
-  if (members.isEmpty) {
+  if (members == null) {
     return RadioButtonOptions.no;
-  } else if (members.any((element) => element != RadioButtonOptions.yes)) {
+  }
+  else if (members == []) {
+    return RadioButtonOptions.yes;
+  }
+  else if (members.any((element) => element != RadioButtonOptions.yes)) {
     return RadioButtonOptions.no;
   } else {
     return RadioButtonOptions.yes;
