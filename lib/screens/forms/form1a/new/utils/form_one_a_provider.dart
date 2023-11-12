@@ -162,7 +162,7 @@ class Form1AProviderNew extends ChangeNotifier {
       dateOfEvent: finalServicesFormData.date_of_event,
       services: servicesList,
       criticalEvents: criticalEventsList,
-      uuid: formUUID,
+      id: formUUID,
     );
     String data = jsonEncode(toDbData);
     if (kDebugMode) {

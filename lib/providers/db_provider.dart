@@ -147,8 +147,8 @@ class LocalDb {
 
     await db.execute('''
         CREATE TABLE $unapprovedForm1Table (
-          ${Form1.id} $idType,
-          ${Form1.uuid} $textType,
+          ${Form1.localId} $idType,
+          ${Form1.id} $textType,
           ${Form1.ovcCpimsId} $textType,
           ${Form1.dateOfEvent} $textType,
           ${Form1.formType} $textType,
@@ -158,8 +158,8 @@ class LocalDb {
 
     await db.execute('''
         CREATE TABLE $form1Table (
-          ${Form1.id} $idType,
-          ${Form1.uuid} $textType,
+          ${Form1.localId} $idType,
+          ${Form1.id} $textType,
           ${Form1.ovcCpimsId} $textType,
           ${Form1.dateOfEvent} $textType,
           ${Form1.formType} $textType,
@@ -956,14 +956,14 @@ class LocalDb {
     String formType,
     formData,
     metadata,
-    uuid,
+    id,
   ) async {
     try {
       final db = await instance.database;
 
       //insert app form metadata
       await insertAppFormMetaData(
-        uuid, metadata.startOfInterview, formType,
+        id, metadata.startOfInterview, formType,
         // context: context
       );
       final formId = await db.insert(
@@ -973,7 +973,7 @@ class LocalDb {
           'date_of_event': formData.dateOfEvent,
           'form_type': formType,
           'form_date_synced': null,
-          'uuid': uuid,
+          'id': id,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -1015,7 +1015,7 @@ class LocalDb {
 
   // insert formData(either form1a or form1b)
   Future<void> insertUnapprovedForm1Data(String formType,
-      UnapprovedForm1DataModel formData, metadata, uuid) async {
+      UnapprovedForm1DataModel formData, metadata, id) async {
     try {
       final db = await instance.database;
       final formId = await db.insert(
@@ -1024,13 +1024,13 @@ class LocalDb {
           'ovc_cpims_id': formData.ovcCpimsId,
           'date_of_event': formData.dateOfEvent,
           'form_type': formType,
-          'uuid': uuid,
+          'id': id,
           Form1.message: formData.message
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
       //insert app form metadata
-      await insertUnapprovedAppFormMetaData(uuid, metadata, formType);
+      await insertUnapprovedAppFormMetaData(id, metadata, formType);
 
       // insert services
       for (var service in formData.services) {
@@ -1090,14 +1090,13 @@ class LocalDb {
         );
 
         final AppFormMetaData appFormMetaData =
-            await getAppFormMetaData(form1row['uuid']);
+            await getAppFormMetaData(form1row['id']);
 
         // Create a new map that includes existing form1row data, services, critical_events, and ID
         Map<String, dynamic> updatedForm1Row = {
           ...form1row,
           'services': services,
           'critical_events': criticalEvents,
-          'id': formId,
           'app_form_metadata': appFormMetaData.toJson(),
           'device_id': await getDeviceId(),
         };
@@ -1143,15 +1142,15 @@ class LocalDb {
         );
 
         final AppFormMetaData appFormMetaData =
-            await getAppFormMetaData(form1row['uuid']);
+            await getAppFormMetaData(form1row['id']);
 
         // Create a new map that includes existing form1row data, services, critical_events, and ID
         Map<String, dynamic> updatedForm1Row = {
           ...form1row,
           'services': services,
           'critical_events': criticalEvents,
-          'id': formId,
           'app_form_metadata': appFormMetaData.toJson(),
+          'device_id': await getDeviceId(),
         };
         // Add the updated map to the list
         updatedForm1Rows.add(updatedForm1Row);
@@ -1222,12 +1221,12 @@ class LocalDb {
       final db = await instance.database;
       final queryResults = await db.query(
         unapprovedForm1Table,
-        where: '${Form1.id} = ?',
+        where: '${Form1.localId} = ?',
         whereArgs: [id],
       );
 
       if (queryResults.isNotEmpty) {
-        final form1Id = queryResults.first[Form1.id] as int;
+        final form1Id = queryResults.first[Form1.localId] as int;
         await db.delete(
           form1ServicesTable,
           where: '${Form1Services.unapprovedFormId} = ?',
@@ -1240,7 +1239,7 @@ class LocalDb {
         );
         final rowsAffected = await db.delete(
           unapprovedForm1Table,
-          where: '${Form1.id} = ?',
+          where: '${Form1.localId} = ?',
           whereArgs: [form1Id],
         );
         return rowsAffected > 0;
@@ -1258,12 +1257,12 @@ class LocalDb {
       final db = await instance.database;
       final queryResults = await db.query(
         form1Table,
-        where: '${Form1.id} = ?',
+        where: '${Form1.localId} = ?',
         whereArgs: [id],
       );
 
       if (queryResults.isNotEmpty) {
-        final form1Id = queryResults.first[Form1.id] as int;
+        final form1Id = queryResults.first[Form1.localId] as int;
         await db.delete(
           form1ServicesTable,
           where: 'form_id = ?',
@@ -1276,7 +1275,7 @@ class LocalDb {
         );
         final rowsAffected = await db.delete(
           form1Table,
-          where: '${Form1.id} = ?',
+          where: '${Form1.localId} = ?',
           whereArgs: [form1Id],
         );
         return rowsAffected > 0;
@@ -1294,18 +1293,18 @@ class LocalDb {
       final db = await instance.database;
       final queryResults = await db.query(
         form1Table,
-        where: '${Form1.id} = ?',
+        where: '${Form1.localId} = ?',
         whereArgs: [id],
       );
 
       if (queryResults.isNotEmpty) {
-        final form1Id = queryResults.first[Form1.id] as int;
+        final form1Id = queryResults.first[Form1.localId] as int;
         await db.update(
           form1Table,
           {
             'form_date_synced': DateTime.now().toString(),
           },
-          where: '${Form1.id} = ?',
+          where: '${Form1.localId} = ?',
           whereArgs: [form1Id],
         );
       }
@@ -1757,15 +1756,15 @@ class CasePlanServices {
 
 class Form1 {
   static final List<String> values = [
+    localId,
     id,
-    uuid,
     formType,
     ovcCpimsId,
     dateOfEvent,
   ];
 
-  static const String id = "local_id";
-  static const String uuid = "uuid";
+  static const String localId = "local_id";
+  static const String id = "id";
   static const String formType = "form_type";
   static const String ovcCpimsId = "ovc_cpims_id";
   static const String dateOfEvent = 'date_of_event';
