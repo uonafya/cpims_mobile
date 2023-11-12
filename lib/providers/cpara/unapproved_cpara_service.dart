@@ -86,9 +86,11 @@ class UnapprovedCparaService {
       }
 
       // Add CPARA form
-      var uuid = const Uuid();
-      var formID = uuid.v4();
-      model.uuid = formID;
+      if (model.uuid == null || model.uuid == "") {
+        var uuid = const Uuid();
+        var formID = uuid.v4();
+        model.uuid = formID;
+      }
       db.insert("UnapprovedCPARA", {
         "id": model.uuid,
         "date_of_event": model.detail.dateOfAssessment,

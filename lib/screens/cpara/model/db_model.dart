@@ -53,10 +53,12 @@ class CPARADatabase {
   List<CPARAChildQuestions> childQuestions;
   AppFormMetaData appFormMetaData;
   List<SubOvcChild> listOfSubOvcs;
+  bool isRejected;
 
   CPARADatabase(
       {this.cparaFormId = "",
       this.ovcCpimsId = "",
+        this.isRejected = false,
       this.dateOfEvent = "",
       this.questions = const [],
       this.childQuestions = const [],
