@@ -791,6 +791,8 @@ class LocalDb {
     );
   }
 
+  // todo check on this function
+
   Future<List<Map<String, dynamic>>> fetchHMFFormData() async {
     try {
       final db = await LocalDb.instance.database;
@@ -800,11 +802,18 @@ class LocalDb {
 
       List<Map<String, dynamic>> updatedHMFFormData = [];
 
-      for (Map hmfDataRow in hmfFormData) {
-        String uuid = hmfDataRow['uuid'];
+      for (Map<String, dynamic> hmfDataRow in hmfFormData) {
+        // Create a mutable copy of hmfDataRow
+        Map<String, dynamic> mutableHmfDataRow = Map.from(hmfDataRow);
+
+        // Convert "Yes" to "AYES" and "No" to "ANO" for specific fields
+        _convertYesNoToAYESANO(mutableHmfDataRow, 'your_field_name');
+        // Add more fields if needed
+
+        String uuid = mutableHmfDataRow['uuid'];
 
         // restructure nutrition support field
-        dynamic nutritionalSupportData = hmfDataRow['HIV_MGMT_2_M'];
+        dynamic nutritionalSupportData = mutableHmfDataRow['HIV_MGMT_2_M'];
 
         if (nutritionalSupportData is String) {
           // Remove leading and trailing whitespace and split by comma and space
@@ -815,17 +824,18 @@ class LocalDb {
               .toList();
 
           // Update the copy of the record with the new list
-          hmfDataRow['HIV_MGMT_2_M'] = nutritionalSupportList;
+          mutableHmfDataRow['HIV_MGMT_2_M'] = nutritionalSupportList;
         } else if (nutritionalSupportData is List<String>) {
           // The data is already a list of strings, do nothing
         } else {
           // Handle other types if needed
         }
+
         // Fetch associated AppFormMetaData
         final AppFormMetaData appFormMetaData = await getAppFormMetaData(uuid);
 
         Map<String, dynamic> updatedHMFDataRow = {
-          ...hmfDataRow,
+          ...mutableHmfDataRow,
           'app_form_metadata': appFormMetaData.toJson(),
         };
 
@@ -842,6 +852,20 @@ class LocalDb {
       return [];
     }
   }
+
+// Function to convert "Yes" to "AYES" and "No" to "ANO" for specific field
+  void _convertYesNoToAYESANO(Map<String, dynamic> data, String fieldName) {
+    if (data.containsKey(fieldName) && data[fieldName] is String) {
+      if (data[fieldName].toLowerCase() == 'yes') {
+        data[fieldName] = 'AYES';
+      } else if (data[fieldName].toLowerCase() == 'no') {
+        data[fieldName] = 'ANO';
+      }
+    }
+  }
+
+
+
 
 
   Future<int> countHMFFormData() async {

@@ -161,20 +161,61 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
+  // Future<void> syncHMFFormData() async {
+  //   final db = LocalDb.instance;
+  //   try {
+  //     // read from localdb
+  //     final queryResults = await db.fetchHMFFormData();
+  //     // submit data
+  //     for (final formData in queryResults) {
+  //       final Response response =
+  //           await apiServiceConstructor.postSecData(formData, "mobile/hmf/");
+  //       if (kDebugMode) {
+  //         print("Data ${response.data}");
+  //       }
+  //     }
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print(e);
+  //     }
+  //   }
+  // }
+
   Future<void> syncHMFFormData() async {
-    final db = LocalDb.instance;
+    var prefs = await SharedPreferences.getInstance();
+    var bearerToken = prefs.getString('access');
+
+    if (bearerToken == null) {
+      return;
+    }
+    final db = await LocalDb.instance;
     try {
-      // read from localdb
       final queryResults = await db.fetchHMFFormData();
-      // submit data
+      final Dio dio = Dio();
+      dio.options.headers['Authorization'] = 'Bearer $bearerToken';
+      dio.interceptors.add(LogInterceptor());
+
+      // Submit data
       for (final formData in queryResults) {
-        final Response response =
-            await apiServiceConstructor.postSecData(formData, "mobile/hmf/");
-        if (kDebugMode) {
-          print("Data ${response.data}");
+        try {
+          final response =
+          await dio.post('${cpimsApiUrl}mobile/hmf/', data: formData);
+          if (kDebugMode) {
+            print(response.toString());
+          }
+
+          if (response.statusCode == 201) {
+            await db.updateHRSData(formData['uuid']);
+          }
+        } catch (error) {
+          // Handle the error, you may want to retry or log it
+          if (kDebugMode) {
+            print(error);
+          }
         }
       }
     } catch (e) {
+      // Handle the error, you may want to retry or log it
       if (kDebugMode) {
         print(e);
       }

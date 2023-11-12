@@ -151,13 +151,14 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               height: 10,
             ),
             CustomTextField(
-              controller: baselineHEILoadController,
               initialValue: artTherapyInfoFormData.baselineHEILoad,
               onChanged: (String val) {
-                setState(() {
-                  baselineHEILoad = baselineHEILoadController.text;
-                  handleOnSave();
-                });
+                baselineHEILoad=val;
+                handleOnSave();
+                // setState(() {
+                //   baselineHEILoad = baselineHEILoadController.text;
+                //   handleOnSave();
+                // });
               },
             ),
           ],

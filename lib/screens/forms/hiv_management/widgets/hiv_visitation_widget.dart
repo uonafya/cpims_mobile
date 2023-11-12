@@ -194,13 +194,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
-              controller: durationOnARTsController,
               initialValue: hivVisitationFormData.durationOnARTs,
               onChanged: (val) {
-                setState(() {
-                  durationOnARTs = durationOnARTsController.text;
-                  handleOnSave();
-                });
+                durationOnARTs = durationOnARTsController.text;
+                handleOnSave();
               },
             ),
           ],
@@ -218,13 +215,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
-              controller: heightController,
               initialValue: hivVisitationFormData.height,
               onChanged: (val) {
-                setState(() {
-                  height = heightController.text;
-                  handleOnSave();
-                });
+                height = heightController.text;
+                handleOnSave();
               },
             ),
           ],
@@ -242,7 +236,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
-              controller: muACController,
               initialValue: hivVisitationFormData.mUAC,
               onChanged: (val) {
                 setState(() {
@@ -295,7 +288,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
-              controller: arvDrugsDurationController,
               initialValue: hivVisitationFormData.arvDrugsDuration,
               onChanged: (val) {
                 setState(() {
@@ -414,7 +406,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomTextField(
               hintText: 'Age',
-              controller: treatmentSupportAgeController,
               initialValue:
                   hivVisitationFormData.treatmentSupporterAge.isNotEmpty
                       ? hivVisitationFormData.treatmentSupporterAge
@@ -473,7 +464,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomTextField(
               hintText: 'Viral Load Results (if LDL enter 1)',
-              controller: viralLoadResultsController,
               initialValue: hivVisitationFormData.viralLoadResults,
               onChanged: (val) {
                 setState(() {
@@ -630,7 +620,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomTextField(
               hintText: 'nutritional assessment',
-              controller: zScoreController,
               initialValue: hivVisitationFormData.zScore,
               onChanged: (val) {
                 setState(() {
@@ -769,7 +758,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomTextField(
               hintText: 'Services',
-              controller: referralServicesController,
               initialValue: hivVisitationFormData.referralServices,
               onChanged: (val) {
                 setState(() {
@@ -821,7 +809,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
-              controller: peerEducatorNameController,
               initialValue: hivVisitationFormData.peerEducatorName,
               onChanged: (val) {
                 setState(() {
@@ -845,7 +832,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
-              controller: peerEducatorContactController,
               initialValue: hivVisitationFormData.peerEducatorContact,
               onChanged: (val) {
                 setState(() {
