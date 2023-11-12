@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 
 import '../../Models/unapproved_caseplan_form_model.dart';
 import '../../Models/unapproved_form_1_model.dart';
+import '../../providers/db_provider.dart';
 import '../../providers/form1a_provider.dart';
 import '../forms/form1a/new/form_one_a.dart';
 import '../forms/form1a/new/utils/form_one_a_provider.dart';
@@ -90,9 +91,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
 
     void editUnapprovedForm1A(UnapprovedForm1DataModel unapprovedForm1A) async {
       // TODO : Refactor for efficiency
-      CaseLoadModel caseLoad = CaseLoadModel();
-      caseLoad.cpimsId = unapprovedForm1A.ovcCpimsId;
-      caseLoad.caregiverNames = "Unknown";
+      final db = LocalDb.instance;
+      CaseLoadModel caseLoad = await db.getCaseLoad(int.parse(unapprovedForm1A.ovcCpimsId));
       List<ValueItem> form1CriticalEvents = [];
       List<ValueItem> criticalEventsOptions = formOneACriticalEvents.map((service) {
         return ValueItem(
@@ -187,7 +187,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       context
           .read<Form1AProvider>();
 
-      Get.to(() => FomOneA(caseLoadModel: caseLoad));
+      Get.to(() => FomOneA(caseLoadModel: caseLoad, unapprovedForm1: unapprovedForm1A,));
     }
     return Scaffold(
       appBar: customAppBar(),

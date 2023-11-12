@@ -907,22 +907,35 @@ class LocalDb {
     formType,
     // {required BuildContext context}
   ) async {
+    AppFormMetaData appFormMetaData = AppFormMetaData(
+      formId: uuid,
+      startOfInterview: startOfInterview
+    );
+
+    await insertAppFormMetaDataFromMetaData(appFormMetaData, formType);
+  }
+
+  Future<void> insertAppFormMetaDataFromMetaData(
+      AppFormMetaData appFormMetaData,
+      formType,
+      // {required BuildContext context}
+      )async {
     final db = await instance.database;
     // if(context.mounted){
     try {
       Position userLocation = await getUserLocation(
           // context: context
           ); // Await the location here
-      String lat = userLocation.latitude.toString();
-      String longitude = userLocation.longitude.toString();
-      String deviceId= await getDeviceId();
+      String lat = appFormMetaData.location_lat ?? userLocation.latitude.toString();
+      String longitude = appFormMetaData.location_long ?? userLocation.longitude.toString();
+      String deviceId= appFormMetaData.device_id ?? await getDeviceId();
       await db.insert(
         appFormMetaDataTable,
         {
-          'form_id': uuid,
+          'form_id': appFormMetaData.formId,
           'location_lat': lat,
           'location_long': longitude,
-          'start_of_interview': startOfInterview,
+          'start_of_interview': appFormMetaData.startOfInterview,
           'end_of_interview': DateTime.now().toIso8601String(),
           'form_type': formType,
           'device_id': deviceId
@@ -962,8 +975,8 @@ class LocalDb {
       final db = await instance.database;
 
       //insert app form metadata
-      await insertAppFormMetaData(
-        id, metadata.startOfInterview, formType,
+      await insertAppFormMetaDataFromMetaData(
+        metadata, formType
         // context: context
       );
       final formId = await db.insert(
@@ -1163,6 +1176,24 @@ class LocalDb {
         print("Error querying form1 data: $e");
       }
       return [];
+    }
+  }
+
+  Future<CaseLoadModel> getCaseLoad(
+      int id
+  ) async {
+    try {
+      final db = await instance.database;
+      const sql = 'SELECT * FROM $caseloadTable WHERE ${OvcFields.cboID} = ?';
+      final List<Map<String, dynamic>> form1Rows =
+          await db.rawQuery(sql, [id]);
+
+      return CaseLoadModel.fromJson(form1Rows.first);
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error querying form1 data: $e");
+      }
+      return CaseLoadModel();
     }
   }
 
