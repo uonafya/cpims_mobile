@@ -5,6 +5,9 @@ import 'package:cpims_mobile/widgets/form_section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Models/case_load_model.dart';
+import '../../ovc_care/ovc_care_screen.dart';
+
 class HIVRiskAssessmentModel {
   final String biologicalFather;
   final String malnourished;
@@ -49,7 +52,7 @@ class HIVRiskAssessmentModel {
 }
 
 class HIVRiskAssesmentForm extends StatefulWidget {
-  const HIVRiskAssesmentForm({super.key});
+  const HIVRiskAssesmentForm({Key? key}) : super(key: key);
 
   @override
   State<HIVRiskAssesmentForm> createState() => _HIVRiskAssesmentFormState();
@@ -92,10 +95,14 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
         Provider.of<HIVAssessmentProvider>(context).hivCurrentStatusModel;
     final riskAssessment =
         Provider.of<HIVAssessmentProvider>(context).hivRiskAssessmentModel;
+
+    int age = context.read<HIVAssessmentProvider>().ovcAge;
+    debugPrint("age is of ovc is  $age");
+
     return Container(
       padding: const EdgeInsets.only(top: 20),
       child: FormSection(
-        isVisibleCondition: (){
+        isVisibleCondition: () {
           return (currentStatus.statusOfChild == "Yes" &&
               currentStatus.hivStatus == "HIV_Negative" &&
               currentStatus.hivTestDone == "No");
@@ -120,6 +127,9 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               ),
               const SizedBox(height: 10),
               FormSection(
+                isVisibleCondition: () {
+                  return age < 15;
+                },
                 children: [
                   const Text(
                       "Q1. Is the biological father/mother/siblings of the child living/ lived with HIV?"),
@@ -140,6 +150,9 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               ),
               const SizedBox(height: 10),
               FormSection(
+                isVisibleCondition: () {
+                  return age < 15;
+                },
                 children: [
                   const Text(
                       "Q2. Has the child been persistently sick/malnourished/Failure to trive in the past 3 months without improvement?"),
@@ -160,6 +173,9 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               ),
               const SizedBox(height: 10),
               FormSection(
+                isVisibleCondition: () {
+                  return age < 15;
+                },
                 children: [
                   const Text(
                       "Q3. Is the child exposed to sexual abuse (defiled/raped) ?	"),
@@ -180,6 +196,9 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               ),
               const SizedBox(height: 10),
               FormSection(
+                isVisibleCondition: () {
+                  return age < 15;
+                },
                 children: [
                   const Text(
                       "Q4. Has the child been subjected to traditional/non medical procedures (eg scarification/tattooing, traditional circumcision) ?	"),
@@ -208,6 +227,9 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               ),
               const SizedBox(height: 10),
               FormSection(
+                isVisibleCondition: () {
+                  return age > 15;
+                },
                 children: [
                   const Text(
                       "Q5. Have you been persistently sick in the past 3 months without improvement?"),
@@ -228,6 +250,9 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               ),
               const SizedBox(height: 10),
               FormSection(
+                isVisibleCondition: () {
+                  return age > 15;
+                },
                 children: [
                   const Text("Q6. Have you had TB in the last 12 months?"),
                   CustomRadioButton(
@@ -246,6 +271,9 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               ),
               const SizedBox(height: 10),
               FormSection(
+                isVisibleCondition: () {
+                  return age > 15;
+                },
                 children: [
                   const Text(
                       "Q7. Have you been sexually abuse (defiled) or been physically forced to have sexual intercouse?"),
@@ -266,6 +294,9 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               ),
               const SizedBox(height: 10),
               FormSection(
+                isVisibleCondition: () {
+                  return age > 15;
+                },
                 children: [
                   const Text(
                       "Q8. Have you had unprotected sexual intercourse in the past 6 months?"),
@@ -286,6 +317,9 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               ),
               const SizedBox(height: 10),
               FormSection(
+                isVisibleCondition: () {
+                  return age > 15;
+                },
                 children: [
                   const Text(
                       "Q9. Do you have any Symptoms of sexually transmitted infections? {Penial/Vaginal sores, unusual discharge or Pain) ?"),
@@ -306,6 +340,9 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               ),
               const SizedBox(height: 10),
               FormSection(
+                isVisibleCondition: () {
+                  return age > 15;
+                },
                 children: [
                   const Text("Q10. Are you an IV drug user sharing needles?"),
                   CustomRadioButton(

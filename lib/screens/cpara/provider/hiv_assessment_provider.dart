@@ -26,6 +26,19 @@ class HIVAssessmentProvider with ChangeNotifier {
 
   int formIndex = 0;
 
+  int ovcAge = 0;
+
+  void updateOvcAge(int age) {
+    ovcAge = age;
+    notifyListeners();
+  }
+
+  //clear ovc age
+  void clearOvcAge() {
+    ovcAge = 0;
+    notifyListeners();
+  }
+
   void updateFormIndex(int index) {
     formIndex = index;
     notifyListeners();
@@ -100,15 +113,13 @@ class HIVAssessmentProvider with ChangeNotifier {
           _progressMonitoringModel,
           formUuid,
           startTime,
-          "HIV Risk Assessment"
-      );
+          "HIV Risk Assessment");
 
       resetWholeForm();
     } catch (e) {
       rethrow;
     }
   }
-
 
   void resetWholeForm() {
     _hivCurrentStatusModel = HIVCurrentStatusModel();

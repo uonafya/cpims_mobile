@@ -4,6 +4,7 @@ import 'package:cpims_mobile/screens/cpara/provider/hiv_assessment_provider.dart
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_form.dart';
+import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
@@ -88,15 +89,15 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         await Provider.of<HIVAssessmentProvider>(context, listen: false)
             .submitHIVAssessmentForm(startTime);
 
-
-        if(context.mounted){
+        if (context.mounted) {
           setState(() {
             isLoading = false;
           });
           context.read<StatsProvider>().updateHrsStats();
+          context.read<HIVAssessmentProvider>().clearOvcAge();
+
           Navigator.pop(context);
         }
-
 
         Get.snackbar("HRS Form submitted", "HRS Form submitted successfully",
             snackPosition: SnackPosition.TOP,
@@ -106,11 +107,12 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         setState(() {
           isLoading = false;
         });
-       if(e.toString() == locationDisabled || e.toString() == locationDenied){
-         if(context.mounted) {
-           locationMissingDialog(context);
-         }
-       }
+        if (e.toString() == locationDisabled ||
+            e.toString() == locationDenied) {
+          if (context.mounted) {
+            locationMissingDialog(context);
+          }
+        }
       }
 
       return;
@@ -142,6 +144,10 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         Provider.of<HIVAssessmentProvider>(context, listen: false)
             .resetWholeForm();
       }
+      int ovcAge = calculateAgeInt(widget.caseLoadModel.dateOfBirth!);
+
+      Provider.of<HIVAssessmentProvider>(context, listen: false)
+          .updateOvcAge(ovcAge);
 
       Provider.of<HIVAssessmentProvider>(context, listen: false)
           .updateCaseLoadModel(widget.caseLoadModel);
