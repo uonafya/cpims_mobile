@@ -117,7 +117,9 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                 }),
           ]),
           FormSection(
-            isDisabled: hivAssessmentProvider.statusOfChild == "No",
+            isVisibleCondition: () {
+              return statusOfChild == "Yes";
+            },
             children: [
               const Text("What is the HIV Status *"),
               const SizedBox(
@@ -146,7 +148,9 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
           ),
           const Divider(),
           FormSection(
-            isDisabled: statusOfChild == "No" || hivStatus == "HIV_Positive",
+            isVisibleCondition: () {
+              return statusOfChild == "Yes"  && hivStatus == "HIV_Negative";
+            },
             children: [
               const Text("1c) Was the HIV test done less than 6 months ago?	*"),
               const SizedBox(height: 10),
