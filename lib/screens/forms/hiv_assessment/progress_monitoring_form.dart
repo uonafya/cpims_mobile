@@ -103,11 +103,17 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
   Widget build(BuildContext context) {
     final formData =
         Provider.of<HIVAssessmentProvider>(context).progressMonitoringModel;
+    final currentStatus =
+        Provider.of<HIVAssessmentProvider>(context).hivCurrentStatusModel;
 
     return Container(
       padding: const EdgeInsets.only(top: 20),
       child: FormSection(
-        isDisabled: disableSubsquentHIVAssessmentFieldsAndSubmit(context),
+        isVisibleCondition: () {
+          return (currentStatus.statusOfChild == "Yes" &&
+              currentStatus.hivStatus == "HIV_Negative" &&
+              currentStatus.hivTestDone == "No");
+        },
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,7 +160,6 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
               const Text("2. Was a formal referral made for HIV testing?"),
               CustomRadioButton(
                 isNaAvailable: false,
-
                 option: formData.formalReferralMade.isNotEmpty
                     ? convertingStringToRadioButtonOptions(
                         formData.formalReferralMade)
@@ -252,11 +257,10 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                   const SizedBox(height: 10),
                   CustomRadioButton(
                     isNaAvailable: false,
-                    option:
-                        formData.referredForArt.isNotEmpty
-                            ? convertingStringToRadioButtonOptions(
-                                formData.referredForArt)
-                            : null,
+                    option: formData.referredForArt.isNotEmpty
+                        ? convertingStringToRadioButtonOptions(
+                            formData.referredForArt)
+                        : null,
                     optionSelected: (val) {
                       referredForArt =
                           convertingRadioButtonOptionsToString(val);

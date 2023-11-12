@@ -95,9 +95,11 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
     return Container(
       padding: const EdgeInsets.only(top: 20),
       child: FormSection(
-        isDisabled: (currentStatus.statusOfChild == "No" ||
-            currentStatus.hivStatus == "HIV_Positive" ||
-            currentStatus.hivTestDone == "Yes"),
+        isVisibleCondition: (){
+          return (currentStatus.statusOfChild == "Yes" &&
+              currentStatus.hivStatus == "HIV_Negative" &&
+              currentStatus.hivTestDone == "No");
+        },
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
