@@ -237,6 +237,8 @@ class _HomepageState extends State<Homepage> {
       if (mounted) {
         context.read<StatsProvider>().updateFormStats();
       }
+    }else{
+      await showCountUnsyncedForms();
     }
   }
 

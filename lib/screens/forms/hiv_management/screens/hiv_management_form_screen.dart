@@ -16,6 +16,7 @@ import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../widgets/location_dialog.dart';
+import '../../../homepage/provider/stats_provider.dart';
 
 class HIVManagementForm extends StatefulWidget {
   final CaseLoadModel caseLoad;
@@ -53,7 +54,8 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
               startInterviewTime, "HIV Management Form",
               context: context);
       if (context.mounted) {
-        Get.back();
+        context.read<StatsProvider>().updateHmfStats();
+        Navigator.pop(context);
       }
     } catch (e) {
       rethrow;

@@ -59,7 +59,7 @@ class StatisticsItem extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        (form1ACount + form1BCount + cpaCount + cparaCount)
+                        (form1ACount + form1BCount + cpaCount + cparaCount+hrsCount+hmfCount)
                             .toString(),
                         style: const TextStyle(
                           fontSize: 24,

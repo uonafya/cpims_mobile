@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 
 import '../../../constants.dart';
 import '../../../widgets/location_dialog.dart';
+import '../../homepage/provider/stats_provider.dart';
 
 bool disableSubsquentHIVAssessmentFieldsAndSubmit(BuildContext context) {
   final currentStatus =
@@ -86,13 +87,19 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
             DateTime.now().toIso8601String();
         await Provider.of<HIVAssessmentProvider>(context, listen: false)
             .submitHIVAssessmentForm(startTime);
-        setState(() {
-          isLoading = false;
-        });
-        Navigator.pop(context);
+
+
+        if(context.mounted){
+          setState(() {
+            isLoading = false;
+          });
+          context.read<StatsProvider>().updateHrsStats();
+          Navigator.pop(context);
+        }
+
 
         Get.snackbar("HRS Form submitted", "HRS Form submitted successfully",
-            snackPosition: SnackPosition.BOTTOM,
+            snackPosition: SnackPosition.TOP,
             backgroundColor: Colors.green,
             colorText: Colors.white);
       } catch (e) {

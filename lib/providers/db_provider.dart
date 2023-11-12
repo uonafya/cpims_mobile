@@ -347,16 +347,10 @@ class LocalDb {
           cparaModelDB
               .addHouseholdFilledQuestionsToDB(
                   db, formDateString, ovcId, formID)
-              .then((value) {
-            //insert app form metadata
-            insertAppFormMetaData(
-              formUUID, startTime, 'cpara',
-              // context: context
-            ).then((value) => handleSubmit(
+              .then((value) => handleSubmit(
                 selectedDate: selectedDate,
                 formId: formID,
                 ovcSub: cparaModelDB.ovcSubPopulations));
-          });
         });
       });
     } catch (e) {
@@ -613,14 +607,26 @@ class LocalDb {
       List<Map<String, dynamic>> updatedHRSData = [];
 
       for (Map hrsDataRow in hrsData) {
-        String uuid = hrsDataRow['uuid'];
+        // Modify values in the HRS form data
+        Map<String, dynamic> modifiedHRSDataRow = Map.from(hrsDataRow);
+        for (String key in modifiedHRSDataRow.keys) {
+          if (modifiedHRSDataRow[key] is String) {
+            if (modifiedHRSDataRow[key].toLowerCase() == 'yes') {
+              modifiedHRSDataRow[key] = 'AYES';
+            } else if (modifiedHRSDataRow[key].toLowerCase() == 'no') {
+              modifiedHRSDataRow[key] = 'ANNO';
+            }
+          }
+        }
+
+        String uuid = modifiedHRSDataRow['uuid'];
 
         // Fetch associated AppFormMetaData
         final AppFormMetaData appFormMetaData = await getAppFormMetaData(uuid);
 
-        // Create a new map that includes existing HRS form data and AppFormMetaData
+        // Create a new map that includes modified HRS form data and AppFormMetaData
         Map<String, dynamic> updatedHRSDataRow = {
-          ...hrsDataRow,
+          ...modifiedHRSDataRow,
           'app_form_metadata': appFormMetaData.toJson(),
         };
 
@@ -638,6 +644,7 @@ class LocalDb {
       return [];
     }
   }
+
 
   Future<int> countHRSFormData() async {
     try {

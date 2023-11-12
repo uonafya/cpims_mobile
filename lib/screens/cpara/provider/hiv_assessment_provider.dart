@@ -70,7 +70,6 @@ class HIVAssessmentProvider with ChangeNotifier {
   //   _progressMonitoringModel.reasonForNotMakingReferral = "A";
   //   notifyListeners();
   // }
-
   Future<void> submitHIVAssessmentForm(String startTime) async {
     try {
       final data = {
@@ -80,14 +79,19 @@ class HIVAssessmentProvider with ChangeNotifier {
         ..._progressMonitoringModel.toJson(),
       };
 
-      //Replace all Yes string with true and No string with false
+      // Convert "Yes" to "AYES" and "No" to "ANO"
       data.forEach((key, value) {
-        if (value == "Yes") {
-          data[key] = convertBooleanStringToDBBoolen("AYES");
-        } else if (value == "No") {
-          data[key] = convertBooleanStringToDBBoolen("ANNO");
+        if (value is String) {
+          if (value.toLowerCase() == 'yes') {
+            data[key] = 'AYES';
+          } else if (value.toLowerCase() == 'no') {
+            data[key] = 'ANO';
+          }
         }
       });
+
+      debugPrint("HIV Assessment Data: $data");
+
       String formUuid = const Uuid().v4();
       await LocalDb.instance.insertHRSData(
           caseLoadModel.cpimsId!,
@@ -104,6 +108,7 @@ class HIVAssessmentProvider with ChangeNotifier {
       rethrow;
     }
   }
+
 
   void resetWholeForm() {
     _hivCurrentStatusModel = HIVCurrentStatusModel();
