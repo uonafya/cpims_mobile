@@ -2,10 +2,14 @@ import 'package:cpims_mobile/providers/cpara/read_unapproved_cpara_from_db.dart'
 import 'package:cpims_mobile/providers/cpara/unapproved_cpara_database.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
 import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
-
+import '../../constants.dart';
 import '../db_provider.dart';
+
+var dio = Dio();
 
 class UnapprovedCparaService {
   static Future<void> storeInDB(Database db, UnapprovedCparaModel model) async {
@@ -213,6 +217,19 @@ class UnapprovedCparaService {
     }
 
     return entries;
+  }
+
+  static void informUpstreamOfStoredUnapproved(String formID) async{
+    var baseUrl = "mobile/unaccepted_records/cpara/";
+
+    var prefs = await SharedPreferences.getInstance();
+    var accessToken = prefs.getString('access');
+    String bearerAuth = "Bearer $accessToken";
+    var response = await dio.post("$cpimsApiUrl$baseUrl",
+        data: {
+          "id": formID
+        },
+        options: Options(headers: {"Authorization": bearerAuth}));
   }
 }
 

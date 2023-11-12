@@ -216,7 +216,10 @@ Future<void> singleCparaFormSubmission(
   var fetchResult = await db.rawQuery(
     "SELECT signature FROM Form WHERE uuid = ?", [cparaForm.cparaFormId]
   );
-  var signature = fetchResult[0]['signature'] ?? [];
+  var signature = (fetchResult[0]['signature'] ?? []) as Uint8List;
+  var encodedBlob = base64Encode(signature);
+  // var uint8Signature = Uint
+  // var blobSignature = ByteData.sublistView(signature);
 
 // household questions
   final houseHoldQuestions = [];
@@ -277,7 +280,7 @@ Future<void> singleCparaFormSubmission(
       "app_form_metadata": cparaForm.appFormMetaData.toJson(),
       "sub_population": List<dynamic>.from(cparaForm.listOfSubOvcs.map((x) => x.toJson())),
       "device_id": await getDeviceId(),
-      "signature": signature,
+      "signature": encodedBlob,
     };
   } else {
     cparaMapData = {
@@ -289,7 +292,7 @@ Future<void> singleCparaFormSubmission(
       "app_form_metadata": cparaForm.appFormMetaData.toJson(),
       "sub_population": List<dynamic>.from(cparaForm.listOfSubOvcs.map((x) => x.toJson())),
       "device_id": await getDeviceId(),
-      "signature": signature,
+      "signature": encodedBlob,
     };
   }
 
