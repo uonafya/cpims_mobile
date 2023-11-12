@@ -17,12 +17,12 @@ class AppFormMetaData {
 
   factory AppFormMetaData.fromJson(Map<String, dynamic> json) {
     return AppFormMetaData(
-      formId: json['form_id'] as String,
-      location_lat: json['location_lat'] as String,
-      location_long: json['location_long'] as String,
-      startOfInterview: json['start_of_interview'] as String,
-      endOfInterview: json['end_of_interview'] as String,
-      formType: json['form_type'] as String,
+      formId: json['form_id'] != null ? json['form_id'] as String : "",
+      location_lat: json['location_lat'] != null ? json['location_lat'] as String : "",
+      location_long: json['location_long'] != null ? json['location_long'] as String : "",
+      startOfInterview: json['start_of_interview'] != null ? json['start_of_interview'] as String : "",
+      endOfInterview: json['end_of_interview'] != null ? json['end_of_interview'] as String : "",
+      formType: json['form_type'] != null ? json['form_type'] as String : "",
     );
   }
 
