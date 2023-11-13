@@ -78,24 +78,28 @@ class UnapprovedDataService {
           final db = LocalDb.instance;
           var localDB = await db.database;
 
-          // Store metadata
-          db.insertUnapprovedAppFormMetaData(
-              model.uuid, model.appFormMetaData, 'cpara');
-
           // Check if form has already been stored in db
           var fetchResult = await localDB.rawQuery(
             "SELECT * FROM UnapprovedCPARA WHERE id = ?", [model.uuid]
           );
 
           if (fetchResult == null || fetchResult.isEmpty) {
-            // Insert in DB
-            await UnapprovedCparaService.storeInDB(
-              localDB,
-              model,
-            );
+            try {
+              // Store metadata
+              db.insertUnapprovedAppFormMetaData(
+                  model.uuid, model.appFormMetaData, 'cpara');
+
+              // Insert in DB
+              await UnapprovedCparaService.storeInDB(
+                localDB,
+                model,
+              );
+            } catch(e) {
+              UnapprovedCparaService.informUpstreamOfStoredUnapproved(model.uuid, false);
+            }
           }
           // Tell Upstream that I have stored the form
-          // UnapprovedCparaService.informUpstreamOfStoredUnapproved(model.uuid);
+          UnapprovedCparaService.informUpstreamOfStoredUnapproved(model.uuid, true);
         }
       }
       return;
