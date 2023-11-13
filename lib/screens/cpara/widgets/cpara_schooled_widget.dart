@@ -463,12 +463,13 @@ String convertingRadioButtonOptionsToString(
     case RadioButtonOptions.na:
       return 'N/A';
     case RadioButtonOptions.no:
-    default:
       return 'No';
+    default:
+      return '';
   }
 }
 
-RadioButtonOptions convertingStringToRadioButtonOptions(
+RadioButtonOptions? convertingStringToRadioButtonOptions(
     String savedRadioButtonOptions) {
   switch (savedRadioButtonOptions.toLowerCase()) {
     case "yes":
@@ -476,8 +477,9 @@ RadioButtonOptions convertingStringToRadioButtonOptions(
     case "n/a":
       return RadioButtonOptions.na;
     case "no":
-    default:
       return RadioButtonOptions.no;
+    default:
+      return null;
   }
 }
 
