@@ -32,8 +32,6 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
   String switchToThirdLine = '';
   String switchToThirdLineDate = '';
 
-  TextEditingController baselineHEILoadController = TextEditingController();
-
   void handleOnSave() {
     final formData = ARTTherapyHIVFormModel(
       dateHIVConfirmedPositive: dateHIVConfirmedPositive,
@@ -51,16 +49,12 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
         .updateARTTheraphyHIVModel(formData);
 
     final isComplete = areAllFieldsFilled();
+    final formCompletionStatus = context.read<FormCompletionStatusProvider>();
+
     if (isComplete) {
-      final formCompletionStatus = context.read<FormCompletionStatusProvider>();
       formCompletionStatus.setArtTherapyFormCompleted(true);
     } else {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Please fill in the required fields"),
-          backgroundColor: Colors.red,
-        ));
-      }
+      formCompletionStatus.setArtTherapyFormCompleted(false);
     }
   }
 
@@ -153,12 +147,10 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
             CustomTextField(
               initialValue: artTherapyInfoFormData.baselineHEILoad,
               onChanged: (String val) {
-                baselineHEILoad=val;
-                handleOnSave();
-                // setState(() {
-                //   baselineHEILoad = baselineHEILoadController.text;
-                //   handleOnSave();
-                // });
+                setState(() {
+                  baselineHEILoad = val;
+                  handleOnSave();
+                });
               },
             ),
           ],
