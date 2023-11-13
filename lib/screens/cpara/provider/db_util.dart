@@ -16,6 +16,31 @@ import '../model/cpara_model.dart';
 import '../model/sub_ovc_child.dart';
 import '../widgets/cpara_stable_widget.dart';
 
+// Code for creating unapproved CPARA tables
+Future<void> createUnapprovedCparaTables(Database db, int version) async {
+  // Creating table to store unapproved CPARA form
+  await db.execute('''
+    CREATE TABLE IF NOT EXISTS UnapprovedCPARA(
+      id TEXT PRIMARY KEY,
+      date_of_event TEXT,
+      message TEXT,
+      ovc_id TEXT
+    )
+    ''');
+
+  // Creating table to store answers of the form
+  await db.execute('''
+    CREATE TABLE IF NOT EXISTS UnapprovedCPARAAnswers(
+      id INTEGER PRIMARY KEY,
+      question_code TEXT,
+      answer_id TEXT,
+      ovc_cpims_id TEXT,
+      form_id INTEGER,
+      FOREIGN KEY (form_id) REFERENCES UnapprovedCPARA(id)
+    )
+    ''');
+}
+
 Future<List<CPARADatabase>> getUnsyncedForms(Database db) async {
   try {
     List<CPARADatabase> forms = [];
@@ -52,13 +77,15 @@ Future<CPARADatabase> getFormFromDB(int formID, Database? db) async {
   try {
     CPARADatabase form = CPARADatabase();
     List<Map<String, dynamic>> fetchResult1 = await db!.rawQuery(
-        "SELECT formID, householdid, date, questionid, answer, form.uuid "
+        "SELECT formID, householdid, date, questionid, answer, form.uuid, is_rejected "
         "FROM HouseholdAnswer "
         "INNER JOIN Form ON Form.id = HouseholdAnswer.formID "
         "WHERE formID =  $formID");
 
-    form.cparaFormId = formID;
+    var is_rejected = fetchResult1[0]['is_rejected'] == 1 ? true : false;
     var uuid = fetchResult1[0]['uuid'];
+    form.cparaFormId = "$uuid";
+    form.isRejected = is_rejected;
     var ovcpmisID = fetchResult1[0]['houseHoldID'];
     form.ovcCpimsId = ovcpmisID;
     if (kDebugMode) {
@@ -120,10 +147,10 @@ Future<void> purgeForm(int formID, Database db) async {
 }
 
 //update form date time for sync
-Future<void> updateFormDateSynced(int formID, Database db) async {
+Future<void> updateFormDateSynced(String formID, Database db) async {
   try {
     DateTime now = DateTime.now();
-    await db.rawUpdate("UPDATE Form SET form_date_synced = ? WHERE id = ?",
+    await db.rawUpdate("UPDATE Form SET form_date_synced = ? WHERE uuid = ?",
         [now.toUtc().toIso8601String(), formID]);
   } catch (err) {
     debugPrint("Error updating date_synced: $err");
@@ -185,6 +212,17 @@ Future<void> submitCparaToUpstream() async {
 
 Future<void> singleCparaFormSubmission(
     {required CPARADatabase cparaForm, required String authorization}) async {
+
+  // Get signature from payload
+  Database db = await LocalDb.instance.database;
+  var fetchResult = await db.rawQuery(
+    "SELECT signature FROM Form WHERE uuid = ?", [cparaForm.cparaFormId]
+  );
+  var signature = (fetchResult[0]['signature'] ?? []) as Uint8List;
+  var encodedBlob = base64Encode(signature);
+  // var uint8Signature = Uint
+  // var blobSignature = ByteData.sublistView(signature);
+
 // household questions
   final houseHoldQuestions = [];
   for (int i = 0; i < cparaForm.questions.length; i++) {
@@ -230,18 +268,36 @@ Future<void> singleCparaFormSubmission(
       "b${i + 1}": "${scoreConversion(text: scores[i])}",
     });
   }
+  var cparaMapData = {};
 
-  var cparaMapData = {
-    "ovc_cpims_id": cparaForm.ovcCpimsId,
-    "date_of_event": cparaForm.dateOfEvent,
-    "questions": houseHoldQuestions,
-    "individual_questions": individualQuestions,
-    "scores": scoreList,
-    "app_form_metadata": cparaForm.appFormMetaData.toJson(),
-    "sub_population":
-        List<dynamic>.from(cparaForm.listOfSubOvcs.map((x) => x.toJson())),
-    "device_id": await getDeviceId(),
-  };
+  // Only adds form id to json if cpara form is rejected
+  if (cparaForm.isRejected == true) {
+    cparaMapData = {
+      "id": cparaForm.cparaFormId,
+      "ovc_cpims_id": cparaForm.ovcCpimsId,
+      "date_of_event": cparaForm.dateOfEvent,
+      "questions": houseHoldQuestions,
+      "individual_questions": individualQuestions,
+      "scores": scoreList,
+      "app_form_metadata": cparaForm.appFormMetaData.toJson(),
+      "sub_population": List<dynamic>.from(cparaForm.listOfSubOvcs.map((x) => x.toJson())),
+      "device_id": await getDeviceId(),
+      "signature": encodedBlob,
+    };
+  } else {
+    cparaMapData = {
+      "ovc_cpims_id": cparaForm.ovcCpimsId,
+      "date_of_event": cparaForm.dateOfEvent,
+      "questions": houseHoldQuestions,
+      "individual_questions": individualQuestions,
+      "scores": scoreList,
+      "app_form_metadata": cparaForm.appFormMetaData.toJson(),
+      "sub_population": List<dynamic>.from(cparaForm.listOfSubOvcs.map((x) => x.toJson())),
+      "device_id": await getDeviceId(),
+      "signature": encodedBlob,
+    };
+  }
+
   debugPrint(json.encode(cparaMapData));
 
   dio.interceptors.add(LogInterceptor());
@@ -252,9 +308,7 @@ Future<void> singleCparaFormSubmission(
           contentType: 'application/json',
           headers: {"Authorization": authorization}));
 
-  if (response.statusCode != 201) {
-    throw ("Submission to upstream failed");
-  } else if (response.statusCode == 403) {
+if (response.statusCode == 403) {
     Get.dialog(
       AlertDialog(
         title: const Text("Session Expired"),
@@ -269,9 +323,10 @@ Future<void> singleCparaFormSubmission(
         ],
       ),
     );
+  } else if (response.statusCode != 201) {
+    throw ("Submission to upstream failed");
   }
-  debugPrint("${response.statusCode}");
-  debugPrint(response.data.toString());
+
   if (kDebugMode) {
     print("Data sent to server was $cparaMapData");
   }

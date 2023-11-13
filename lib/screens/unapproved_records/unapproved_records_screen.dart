@@ -1,4 +1,11 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
+import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
+import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/cpara/unapproved_cpara_database.dart';
+import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
+import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.dart';
+import 'package:cpims_mobile/providers/db_provider.dart';
+import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
@@ -6,9 +13,13 @@ import 'package:cpims_mobile/widgets/custom_chip.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:provider/provider.dart';
+import '../../providers/app_meta_data_provider.dart';
+import '../cpara/cpara_forms.dart';
+import '../cpara/model/unnaproved_cpara_screen.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import 'package:provider/provider.dart';
-
 import '../../Models/unapproved_caseplan_form_model.dart';
 import '../../Models/unapproved_form_1_model.dart';
 import '../../providers/form1a_provider.dart';
@@ -45,6 +56,38 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
   List<UnapprovedForm1DataModel> unapprovedForm1AData = [];
   List<UnapprovedForm1DataModel> unapprovedForm1BData = [];
   List<UnapprovedCasePlanModel> unapprovedCaseplanData = [];
+  List<UnapprovedForm1DataModel> unapprovedForm1Data = [];
+  List<UnapprovedCparaModel> unapprovedCparaData = [];
+
+  void getRecords() async {
+    final List<UnapprovedForm1DataModel> records = await UnapprovedDataService
+        .fetchLocalUnapprovedForm1AData();
+    final List<
+        UnapprovedForm1DataModel> form1ARecords = await UnapprovedDataService
+        .fetchLocalUnapprovedForm1AData();
+    final List<
+        UnapprovedForm1DataModel> form1BRecords = await UnapprovedDataService
+        .fetchLocalUnapprovedForm1BData();
+    final List<
+        UnapprovedCasePlanModel> unapprovedCaseplanRecords = await UnapprovedDataService
+        .fetchLocalUnapprovedCasePlanData();
+    final List<UnapprovedCparaModel> cparaRecords = await UnapprovedCparaService
+        .getUnapprovedFromDB();
+    // Update unapprovedCparaData
+    unapprovedCparaData = cparaRecords;
+    if (context.mounted) {
+      context
+          .read<UnapprovedRecordsScreenProvider>()
+          .unapprovedCparas = cparaRecords;
+    }
+
+    setState(() {
+      unapprovedForm1AData = form1ARecords;
+      unapprovedForm1BData = form1BRecords;
+      unapprovedCaseplanData = unapprovedCaseplanRecords;
+    });
+  }
+
 
   void deleteUnapprovedForm1(int id) async {
     bool success = await UnapprovedDataService.deleteUnapprovedForm1(id);
@@ -68,19 +111,6 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     }
   }
 
-  void getRecords() async {
-    final List<UnapprovedForm1DataModel> form1ARecords =
-        await UnapprovedDataService.fetchLocalUnapprovedForm1AData();
-    final List<UnapprovedForm1DataModel> form1BRecords =
-        await UnapprovedDataService.fetchLocalUnapprovedForm1BData();
-    final List<UnapprovedCasePlanModel> unapprovedCaseplanRecords =
-        await UnapprovedDataService.fetchLocalUnapprovedCasePlanData();
-    setState(() {
-      unapprovedForm1AData = form1ARecords;
-      unapprovedForm1BData = form1BRecords;
-      unapprovedCaseplanData = unapprovedCaseplanRecords;
-    });
-  }
 
   String selectedRecord = 'Form 1A';
 
@@ -215,7 +245,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                 ),
                 itemCount: unapprovedRecords.length,
                 separatorBuilder: (BuildContext context, int index) =>
-                const SizedBox(
+                    const SizedBox(
                   width: 12,
                 ),
               ),
@@ -228,9 +258,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                 onDelete: deleteUnapprovedCPT,
               ),
             if (selectedRecord == "CPARA")
-              const Column(
-                children: [Text('Hello')],
-              ),
+    const Expanded(child: UnnaprovedCparaScreen()),
             if (selectedRecord == unapprovedRecords[0])
               Expanded(
                 child: FormTab(
@@ -294,10 +322,30 @@ class FormTab extends StatelessWidget {
                   );
                 },
               )
-          ],
-        ),
+            else if (selectedRecord == "CPT")
+              const Column(
+                children: [
+                  Text(
+                    'Not Implemented',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              )
+            else
+              const Column(children: [
+                Text(
+                  'Not Implemented',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+              ])
       ],
-    );
+    )]);
   }
 }
 

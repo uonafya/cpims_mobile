@@ -1,18 +1,18 @@
 import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
 
 class SafeModel {
-  final String? question1;
-  final String? question2;
-  final String? question3;
-  final String? question4;
-  final String? question5;
-  final String? question6;
-  final String? question7;
+  String? question1;
+  String? question2;
+  String? question3;
+  String? question4;
+  String? question5;
+  String? question6;
+  String? question7;
   // final String? question8;
 
   final String? overallQuestion1;
   final String? overallQuestion2;
-  final List<SafeChild>? childrenQuestions;
+  List<SafeChild>? childrenQuestions;
 
   SafeModel({
     this.question1,

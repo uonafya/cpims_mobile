@@ -12,4 +12,12 @@ class SubOvcChild{
       "answer_id": "$answer",
     };
   }
+
+  static SubOvcChild fromJson(Map<String, dynamic> json){
+    return SubOvcChild(
+      cpimsId: "${json["ovc_cpims_id"]}",
+      questionId: "${json["criteria"]}",
+      answer: "${json["answer_id"]}"
+    );
+  }
 }

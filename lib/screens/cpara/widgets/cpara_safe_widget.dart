@@ -9,7 +9,10 @@ import 'package:provider/provider.dart';
 import '../../registry/organisation_units/widgets/steps_wrapper.dart';
 
 class CparaSafeWidget extends StatefulWidget {
-  const CparaSafeWidget({super.key});
+  final bool isRejected;
+  const CparaSafeWidget({
+    required this.isRejected,
+    super.key});
 
   @override
   State<CparaSafeWidget> createState() => _CparaSafeWidgetState();
@@ -119,11 +122,21 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
           if (value == RadioButtonOptions.no) {
             // Set values of radio buttons for questions 6.3 and 6.5 to yes
             exposedToViolence = RadioButtonOptions.yes;
+            List<SafeChild> newChildren = List.from(children);
+            newChildren.forEach((element) {
+              element.question1 = "yes";
+            });
+            children = newChildren;
             // _no_siblings_over_10 = RadioButtonOptions.yes;
           }
           if (value == RadioButtonOptions.yes) {
             // Set values of radio buttons for questions 6.3 and 6.5 to null
             exposedToViolence = null;
+            List<SafeChild> newChildren = List.from(children);
+            newChildren.forEach((element) {
+              element.question1 = "";
+            });
+            children = newChildren;
             // _no_siblings_over_10 = null;
           }
         });
@@ -267,19 +280,25 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
       return age;
     }
 
-    for (CaseLoadModel model in models) {
-      final DateTime? birthDate = DateTime.tryParse(model.dateOfBirth ?? "");
-      if (birthDate != null) {
-        final age = calculateAge(birthDate);
-        if (age > 11) {
-          // Only add children with age less than 12
-          children.add(
-            SafeChild(
-              ovcId: model.cpimsId ?? "",
-              question1: "",
-              name: "${model.ovcFirstName} ${model.ovcSurname}",
-            ),
-          );
+    if (widget.isRejected == true) {
+      for (SafeChild child in safeModel.childrenQuestions ?? []) {
+        children.add(child);
+      }
+    } else {
+      for (CaseLoadModel model in models) {
+        final DateTime? birthDate = DateTime.tryParse(model.dateOfBirth ?? "");
+        if (birthDate != null) {
+          final age = calculateAge(birthDate);
+          if (age > 11) {
+            // Only add children with age less than 12
+            children.add(
+              SafeChild(
+                ovcId: model.cpimsId ?? "",
+                question1: "",
+                name: "${model.ovcFirstName} ${model.ovcSurname}",
+              ),
+            );
+          }
         }
       }
     }
@@ -515,7 +534,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                 const SkipQuestion()
               else
                 OtherQuestions(
-                  groupValue: childrenQuestionsOptions[i],
+                  groupValue: convertingStringToRadioButtonOptions(children[i].question1 ?? ""),
                   otherQuestion:
                       "6.3 Have you been exposed to violence, abuse (sexual, physical or emotional), neglect, or exploitation in the last six months?",
                   selectedOption: (value) {
@@ -535,6 +554,11 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                           question1: selectedOption,
                           ovcId: children[i].ovcId,
                           name: children[i].name);
+
+                      children[i].question1 = convertingRadioButtonOptionsToString(value);
+                      setState(() {
+                        children = children;
+                      });
                     } catch (e) {
                       if (e is RangeError) {
                         childrenQuestions.add(SafeChild(
@@ -703,7 +727,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
 // Benchmak 7 results
         BenchMarkQuestion(
-            groupValue: allShouldBeYes(
+            groupValue: allShouldBeOnlyYes(
                 [caregiverLived12months, primaryCaregiver], "Benchmark 7"),
             benchmarkQuestion: "Has the household achieved this benchmarks?",
             selectedOption: (value) {}),
@@ -739,7 +763,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
 // Benchmak 7 results
         BenchMarkQuestion(
-          groupValue: allShouldBeYes([legalDocuments], "Benchmark mark 8"),
+          groupValue: allShouldBeOnlyYes([legalDocuments], "Benchmark mark 8"),
           benchmarkQuestion: "Has the household achieved this benchmarks?",
           selectedOption: (value) {},
         ),
@@ -1093,9 +1117,13 @@ RadioButtonOptions allShouldBeOnlyYes(
     List<RadioButtonOptions?> members, String message) {
   debugPrint(members.toString() + message);
   // If all the values are yes return RadioButtonOptions.yes, if not return RadioButtonOptions.no
-  if (members.isEmpty) {
+  if (members == null) {
     return RadioButtonOptions.no;
-  } else if (members.any((element) => element != RadioButtonOptions.yes)) {
+  }
+  else if (members == []) {
+    return RadioButtonOptions.yes;
+  }
+  else if (members.any((element) => element != RadioButtonOptions.yes)) {
     return RadioButtonOptions.no;
   } else {
     return RadioButtonOptions.yes;

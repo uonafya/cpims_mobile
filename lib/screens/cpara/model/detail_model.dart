@@ -1,12 +1,12 @@
 import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
 
 class DetailModel {
-  final String? isFirstAssessment;
-  final String? isChildHeaded;
-  final String? hasHivExposedInfant;
-  final String? hasPregnantOrBreastfeedingWoman;
-  final String? dateOfAssessment;
-  final String? dateOfLastAssessment;
+  String? isFirstAssessment;
+  String? isChildHeaded;
+  String? hasHivExposedInfant;
+  String? hasPregnantOrBreastfeedingWoman;
+  String? dateOfAssessment;
+  String? dateOfLastAssessment;
 
   DetailModel({
     this.isFirstAssessment,

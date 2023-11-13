@@ -301,7 +301,7 @@ class _CparaSchooledWidgetState extends State<CparaSchooledWidget> {
 
 // Benchmark score
           BenchMarkQuestion(
-            groupValue: allShouldBeYes(
+            groupValue: allShouldBeOnlyYes(
               [
                 q91ChildrenEnrolledInSchool,
                 q92ChildrenAttendingSchoolRegularly,
@@ -463,12 +463,13 @@ String convertingRadioButtonOptionsToString(
     case RadioButtonOptions.na:
       return 'N/A';
     case RadioButtonOptions.no:
-    default:
       return 'No';
+    default:
+      return '';
   }
 }
 
-RadioButtonOptions convertingStringToRadioButtonOptions(
+RadioButtonOptions? convertingStringToRadioButtonOptions(
     String savedRadioButtonOptions) {
   switch (savedRadioButtonOptions.toLowerCase()) {
     case "yes":
@@ -476,203 +477,201 @@ RadioButtonOptions convertingStringToRadioButtonOptions(
     case "n/a":
       return RadioButtonOptions.na;
     case "no":
-    default:
       return RadioButtonOptions.no;
+    default:
+      return null;
   }
 }
 
 // if (_children_adolecent_caregiver == RadioButtonOptions.no || _adolescents_older_than_12 == RadioButtonOptions.no)
 
-class FinalBenchMark extends StatefulWidget {
+class FinalBenchMark extends StatelessWidget {
   const FinalBenchMark({super.key});
 
   @override
-  State<FinalBenchMark> createState() => _FinalBenchMarkState();
-}
-
-class _FinalBenchMarkState extends State<FinalBenchMark> {
-  @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      const Center(
-        child: Text(
-          'Overall number of points from all DOMAINS:',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-      ),
-      Text(
-        "Score: ${Provider.of<CparaProvider>(context).finalScore()} / (9 points)",
-        style: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w800,
-        ),
-      ),
-      DataTable(
-        dataRowMaxHeight: 60.0,
-        dataRowMinHeight: 40.0,
-        horizontalMargin: 10.0,
-        columns: const [
-          DataColumn(
-              label: Expanded(
-            child: FittedBox(
-              child: Text('Domain',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: FittedBox(
-              child: Text('Max Score',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: FittedBox(
-              child: Text('HH Score',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            ),
-          )),
-        ],
-        rows: [
-          DataRow(cells: [
-            const DataCell(Text('Healthy')),
-            const DataCell(Text('4')),
-            DataCell(Text(
-                '${Provider.of<CparaProvider>(context).healthyBenchmark()}')),
-          ]),
-          DataRow(cells: [
-            const DataCell(Text('Stable')),
-            const DataCell(Text('1')),
-            DataCell(Text(
-                '${Provider.of<CparaProvider>(context).stableBenchMark()}')),
-          ]),
-          DataRow(cells: [
-            const DataCell(Text('Safe')),
-            const DataCell(Text('3')),
-            DataCell(
-                Text('${Provider.of<CparaProvider>(context).safeBenchMark()}')),
-          ]),
-          DataRow(cells: [
-            const DataCell(Text('Schooled')),
-            const DataCell(Text('1')),
-            DataCell(Text(
-                '${Provider.of<CparaProvider>(context).schooledBenchmark()}')),
-          ]),
-          DataRow(cells: [
-            const DataCell(Text('Total')),
-            const DataCell(Text('9')),
-            DataCell(
-                Text('${Provider.of<CparaProvider>(context).finalScore()}')),
-          ]),
-        ],
-      ),
-      const SizedBox(
-        height: 25,
-      ),
-      DataTable(
-        dataRowColor: MaterialStateColor.resolveWith((states) => lightBlue),
-        dataRowMaxHeight: 60.0,
-        dataRowMinHeight: 40.0,
-        horizontalMargin: 10.0,
-        columns: const [
-          DataColumn(
-            label: Text(
-              'KEY',
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue),
+    return Consumer<CparaProvider>(
+      builder: (context, model, _) {
+        var healthBenchmark = model.healthyBenchmark();
+        var stableBenchmark = model.stableBenchMark();
+        var schooledBenchmark = model.schooledBenchmark();
+        var safeBenchmark = model.safeBenchMark();
+        var finalBenchmark = model.finalScore();
+
+        return Column(children: [
+          const Center(
+            child: Text(
+              'Overall number of points from all DOMAINS:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
-        ],
-        rows: [
-          DataRow(
-            color: MaterialStateProperty.resolveWith<Color?>(
-              (Set<MaterialState> states) {
-                if (states.contains(MaterialState.selected)) {
-                  // Return the color for selected state.
-                  return Colors.grey;
-                } else {
-                  final score =
-                      Provider.of<CparaProvider>(context).finalScore();
-                  if (score < 5) {
-                    return Colors.blue;
-                  }
-                  // Return the default color for other states.
-                  return null; // You can use null to apply the default color.
-                }
-              },
+          Text(
+            "Score: $finalBenchmark / (9 points)",
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w800,
             ),
-            cells: const [
-              DataCell(Text('Highly Vulnerable 0-4 ')),
+          ),
+          DataTable(
+            dataRowMaxHeight: 60.0,
+            dataRowMinHeight: 40.0,
+            horizontalMargin: 10.0,
+            columns: const [
+              DataColumn(
+                  label: Expanded(
+                    child: FittedBox(
+                      child: Text('Domain',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    ),
+                  )),
+              DataColumn(
+                  label: Expanded(
+                    child: FittedBox(
+                      child: Text('Max Score',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    ),
+                  )),
+              DataColumn(
+                  label: Expanded(
+                    child: FittedBox(
+                      child: Text('HH Score',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    ),
+                  )),
+            ],
+            rows: [
+              DataRow(cells: [
+                const DataCell(Text('Healthy')),
+                const DataCell(Text('4')),
+                DataCell(Text(
+                    '$healthBenchmark')),
+              ]),
+              DataRow(cells: [
+                const DataCell(Text('Stable')),
+                const DataCell(Text('1')),
+                DataCell(Text(
+                    '$stableBenchmark')),
+              ]),
+              DataRow(cells: [
+                const DataCell(Text('Safe')),
+                const DataCell(Text('3')),
+                DataCell(
+                    Text('$safeBenchmark')),
+              ]),
+              DataRow(cells: [
+                const DataCell(Text('Schooled')),
+                const DataCell(Text('1')),
+                DataCell(Text(
+                    '$schooledBenchmark')),
+              ]),
+              DataRow(cells: [
+                const DataCell(Text('Total')),
+                const DataCell(Text('9')),
+                DataCell(
+                    Text('$finalBenchmark')),
+              ]),
             ],
           ),
-          DataRow(
-            color: MaterialStateProperty.resolveWith<Color?>(
-              (Set<MaterialState> states) {
-                if (states.contains(MaterialState.selected)) {
-                  // Return the color for selected state.
-                  return Colors.grey;
-                } else {
-                  final score =
-                      Provider.of<CparaProvider>(context).finalScore();
-                  if (score >= 5 && score < 8) {
-                    return Colors.blue;
-                  }
-                  // Return the default color for other states.
-                  return null; // You can use null to apply the default color.
-                }
-              },
-            ),
-            cells: const [
-              DataCell(Text('Medium vulnerability 5-7')),
+          const SizedBox(
+            height: 25,
+          ),
+          DataTable(
+            dataRowColor: MaterialStateColor.resolveWith((states) => lightBlue),
+            dataRowMaxHeight: 60.0,
+            dataRowMinHeight: 40.0,
+            horizontalMargin: 10.0,
+            columns: const [
+              DataColumn(
+                label: Text(
+                  'KEY',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue),
+                ),
+              ),
+            ],
+            rows: [
+              DataRow(
+                color: MaterialStateProperty.resolveWith<Color?>(
+                      (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.selected)) {
+                      // Return the color for selected state.
+                      return Colors.grey;
+                    } else {
+                      if (finalBenchmark < 5) {
+                        return Colors.blue;
+                      }
+                      // Return the default color for other states.
+                      return null; // You can use null to apply the default color.
+                    }
+                  },
+                ),
+                cells: const [
+                  DataCell(Text('Highly Vulnerable 0-4 ')),
+                ],
+              ),
+              DataRow(
+                color: MaterialStateProperty.resolveWith<Color?>(
+                      (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.selected)) {
+                      // Return the color for selected state.
+                      return Colors.grey;
+                    } else {
+                      if (finalBenchmark >= 5 && finalBenchmark < 8) {
+                        return Colors.blue;
+                      }
+                      // Return the default color for other states.
+                      return null; // You can use null to apply the default color.
+                    }
+                  },
+                ),
+                cells: const [
+                  DataCell(Text('Medium vulnerability 5-7')),
+                ],
+              ),
+              DataRow(
+                color: MaterialStateProperty.resolveWith<Color?>(
+                      (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.selected)) {
+                      // Return the color for selected state.
+                      return Colors.grey;
+                    } else {
+                      if (finalBenchmark == 8) {
+                        return Colors.blue;
+                      }
+                      // Return the default color for other states.
+                      return null; // You can use null to apply the default color.
+                    }
+                  },
+                ),
+                cells: const [
+                  DataCell(Text(' Low vulnerability 8 ')),
+                ],
+              ),
+              DataRow(
+                color: MaterialStateProperty.resolveWith<Color?>(
+                      (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.selected)) {
+                      // Return the color for selected state.
+                      return Colors.grey;
+                    } else {
+                      if (finalBenchmark == 9) {
+                        return Colors.blue;
+                      }
+                      // Return the default color for other states.
+                      return null; // You can use null to apply the default color.
+                    }
+                  },
+                ),
+                cells: const [
+                  DataCell(Text(' Ready to graduate 9 ')),
+                ],
+              ),
             ],
           ),
-          DataRow(
-            color: MaterialStateProperty.resolveWith<Color?>(
-              (Set<MaterialState> states) {
-                if (states.contains(MaterialState.selected)) {
-                  // Return the color for selected state.
-                  return Colors.grey;
-                } else {
-                  final score =
-                      Provider.of<CparaProvider>(context).finalScore();
-                  if (score == 8) {
-                    return Colors.blue;
-                  }
-                  // Return the default color for other states.
-                  return null; // You can use null to apply the default color.
-                }
-              },
-            ),
-            cells: const [
-              DataCell(Text(' Low vulnerability 8 ')),
-            ],
-          ),
-          DataRow(
-            color: MaterialStateProperty.resolveWith<Color?>(
-              (Set<MaterialState> states) {
-                if (states.contains(MaterialState.selected)) {
-                  // Return the color for selected state.
-                  return Colors.grey;
-                } else {
-                  final score =
-                      Provider.of<CparaProvider>(context).finalScore();
-                  if (score == 9) {
-                    return Colors.blue;
-                  }
-                  // Return the default color for other states.
-                  return null; // You can use null to apply the default color.
-                }
-              },
-            ),
-            cells: const [
-              DataCell(Text(' Ready to graduate 9 ')),
-            ],
-          ),
-        ],
-      ),
-    ]);
+        ]);
+      }
+    );
   }
 }
