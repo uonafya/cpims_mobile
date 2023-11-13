@@ -175,17 +175,6 @@ class CparaProvider extends ChangeNotifier {
     }
 
     finalScore = benchmark1 + benchmark2 + benchmark3 + benchmark4;
-    // if (finalScore == 4) {
-    //   finalScore = 4;
-    // } else if (finalScore == 3) {
-    //   finalScore = 3;
-    // } else if (finalScore == 2) {
-    //   finalScore = 2;
-    // } else if (finalScore == 1) {
-    //   finalScore = 1;
-    // } else if (finalScore == 0) {
-    //   finalScore = 0;
-    // }
     return finalScore;
   }
 
