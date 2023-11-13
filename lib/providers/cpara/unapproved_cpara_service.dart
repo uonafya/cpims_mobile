@@ -219,16 +219,30 @@ class UnapprovedCparaService {
     return entries;
   }
 
-  static void informUpstreamOfStoredUnapproved(String formID) async{
+  static void informUpstreamOfStoredUnapproved(String formID, bool saved) async{
     var baseUrl = "mobile/unaccepted_records/cpara/";
 
     var prefs = await SharedPreferences.getInstance();
     var accessToken = prefs.getString('access');
     String bearerAuth = "Bearer $accessToken";
+    var responseData = {};
+
+    if (saved == true) {
+      responseData = {
+        "id": formID,
+        "saved": 1,
+        "form_type": "cpara"
+      };
+    } else {
+      responseData = {
+        "id": formID,
+        "saved": 0,
+        "form_type": "cpara"
+      };
+    }
+
     var response = await dio.post("$cpimsApiUrl$baseUrl",
-        data: {
-          "id": formID
-        },
+        data: responseData,
         options: Options(headers: {"Authorization": bearerAuth}));
   }
 }
