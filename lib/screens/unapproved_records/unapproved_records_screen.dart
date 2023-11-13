@@ -1,4 +1,12 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
+import 'package:cpims_mobile/providers/case_plan_provider.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/healthy_cpt_model.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/safe_cpt_model.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/schooled_cpt_model.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/stable_cpt_model.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_case_plan_template.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/utils/case_plan_dummy_data.dart';
 import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
@@ -52,7 +60,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     if (success) {
       setState(() {
         if (selectedRecord == unapprovedRecords[0]) {
-            unapprovedForm1AData.removeWhere((element) => element.localId == id);
+          unapprovedForm1AData.removeWhere((element) => element.localId == id);
         } else if (selectedRecord == unapprovedRecords[1]) {
           unapprovedForm1BData.removeWhere((element) => element.localId == id);
         }
@@ -92,15 +100,18 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     void editUnapprovedForm1A(UnapprovedForm1DataModel unapprovedForm1A) async {
       // TODO : Refactor for efficiency
       final db = LocalDb.instance;
-      CaseLoadModel caseLoad = await db.getCaseLoad(int.parse(unapprovedForm1A.ovcCpimsId));
+      CaseLoadModel caseLoad =
+          await db.getCaseLoad(int.parse(unapprovedForm1A.ovcCpimsId));
       List<ValueItem> form1CriticalEvents = [];
-      List<ValueItem> criticalEventsOptions = formOneACriticalEvents.map((service) {
+      List<ValueItem> criticalEventsOptions =
+          formOneACriticalEvents.map((service) {
         return ValueItem(
             label: service['event_description'], value: service['event_id']);
       }).toList();
       for (var form1ACriticalEvent in unapprovedForm1A.criticalEvents) {
-        var t = criticalEventsOptions.where((element) => element.value == form1ACriticalEvent.eventId);
-        if(t.isNotEmpty) {
+        var t = criticalEventsOptions
+            .where((element) => element.value == form1ACriticalEvent.eventId);
+        if (t.isNotEmpty) {
           form1CriticalEvents.add(t.first);
         }
       }
@@ -116,8 +127,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       }).toList();
       for (var form1AService in unapprovedForm1A.services) {
         if (form1AService.domainId == stableServicesDomain) {
-          var t = stableServices.where((element) => element.value == form1AService.serviceId);
-          if(t.isNotEmpty) {
+          var t = stableServices
+              .where((element) => element.value == form1AService.serviceId);
+          if (t.isNotEmpty) {
             form1StableServices.add(t.first);
           }
         }
@@ -134,14 +146,13 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       }).toList();
       for (var form1AService in unapprovedForm1A.services) {
         if (form1AService.domainId == schooledServicesDomain) {
-          var t = schoolServices.where((element) => element.value == form1AService.serviceId);
-          if(t.isNotEmpty) {
+          var t = schoolServices
+              .where((element) => element.value == form1AService.serviceId);
+          if (t.isNotEmpty) {
             form1SchooledServices.add(t.first);
           }
         }
       }
-      print("form1SchooledServices");
-      print(form1SchooledServices);
       if (form1SchooledServices.isNotEmpty) {
         form1aProvider.setSelectedSchooledFormDataServices(
             form1SchooledServices, schooledServicesDomain);
@@ -154,8 +165,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       }).toList();
       for (var form1AService in unapprovedForm1A.services) {
         if (form1AService.domainId == healthyServicesDomain) {
-          var t = healthyServices.where((element) => element.value == form1AService.serviceId);
-          if(t.isNotEmpty) {
+          var t = healthyServices
+              .where((element) => element.value == form1AService.serviceId);
+          if (t.isNotEmpty) {
             form1HealthyServices.add(t.first);
           }
         }
@@ -172,8 +184,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       }).toList();
       for (var form1AService in unapprovedForm1A.services) {
         if (form1AService.domainId == safeServicesDomain) {
-          var t = safeServicesOptions.where((element) => element.value == form1AService.serviceId);
-          if(t.isNotEmpty) {
+          var t = safeServicesOptions
+              .where((element) => element.value == form1AService.serviceId);
+          if (t.isNotEmpty) {
             form1SafeServices.add(t.first);
           }
         }
@@ -184,11 +197,113 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       }
 
       // List<> services = unapprovedForm1A.services.map((e) => null);
-      context
-          .read<Form1AProvider>();
+      context.read<Form1AProvider>();
 
-      Get.to(() => FomOneA(caseLoadModel: caseLoad, unapprovedForm1: unapprovedForm1A,));
+      Get.to(() => FomOneA(
+            caseLoadModel: caseLoad,
+            unapprovedForm1: unapprovedForm1A,
+          ));
     }
+
+    void editUnapprovedCptForm(UnapprovedCasePlanModel unapprovedCpt) async {
+      // TODO : Refactor for efficiency
+      final db = LocalDb.instance;
+      CaseLoadModel caseLoad =
+          await db.getCaseLoad(int.parse(unapprovedCpt.ovcCpimsId));
+
+      // Healthy Services
+      CptHealthFormData cptHealtFormData =
+          context.read<CptProvider>().cptHealthFormData ?? CptHealthFormData();
+      String healthyServicesDomain = allDomains[1]['item_id'];
+      for (var cptService in unapprovedCpt.services) {
+        if (cptService.domainId == healthyServicesDomain) {
+          context.read<CptProvider>().updateCptFormData(
+                cptHealtFormData.copyWith(
+                  domainId: cptService.domainId,
+                  goalId: cptService.goalId,
+                  gapId: cptService.gapId,
+                  priorityId: cptService.priorityId,
+                  resultsId: cptService.resultsId,
+                  reasonId: cptService.reasonId,
+                  serviceIds: cptService.serviceIds,
+                  responsibleIds: cptService.responsibleIds,
+                ),
+              );
+        }
+      }
+
+      // Safe Services
+      CptSafeFormData cptSafeFormData =
+          context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
+      String safeServicesDomain = allDomains[3]['item_id'];
+      for (var cptService in unapprovedCpt.services) {
+        if (cptService.domainId == safeServicesDomain) {
+          context
+              .read<CptProvider>()
+              .updateCptSafeFormData(cptSafeFormData.copyWith(
+                domainId: cptService.domainId,
+                goalId: cptService.goalId,
+                gapId: cptService.gapId,
+                priorityId: cptService.priorityId,
+                resultsId: cptService.resultsId,
+                reasonId: cptService.reasonId,
+                serviceIds: cptService.serviceIds,
+                responsibleIds: cptService.responsibleIds,
+              ));
+        }
+      }
+
+      // Schooled Services
+      CptschooledFormData cptschooledFormData =
+          context.read<CptProvider>().cptschooledFormData ??
+              CptschooledFormData();
+      String schooledServicesDomain = allDomains[0]['item_id'];
+      for (var cptService in unapprovedCpt.services) {
+        if (cptService.domainId == schooledServicesDomain) {
+          context
+              .read<CptProvider>()
+              .updateCptSchooledFormData(cptschooledFormData.copyWith(
+                domainId: cptService.domainId,
+                goalId: cptService.goalId,
+                gapId: cptService.gapId,
+                priorityId: cptService.priorityId,
+                resultsId: cptService.resultsId,
+                reasonId: cptService.reasonId,
+                serviceIds: cptService.serviceIds,
+                responsibleIds: cptService.responsibleIds,
+              ));
+        }
+      }
+
+      // Stable Services
+      CptStableFormData cptStableFormData =
+          context.read<CptProvider>().cptStableFormData ?? CptStableFormData();
+      String stableServicesDomain = allDomains[2]['item_id'];
+      for (var cptService in unapprovedCpt.services) {
+        if (cptService.domainId == stableServicesDomain) {
+          context
+              .read<CptProvider>()
+              .updateCptStableFormData(cptStableFormData.copyWith(
+                domainId: cptService.domainId,
+                goalId: cptService.goalId,
+                gapId: cptService.gapId,
+                priorityId: cptService.priorityId,
+                resultsId: cptService.resultsId,
+                reasonId: cptService.reasonId,
+                serviceIds: cptService.serviceIds,
+                responsibleIds: cptService.responsibleIds,
+              ));
+        }
+      }
+
+      context.read<CasePlanProvider>();
+      Get.to(
+        () => CasePlanTemplateForm(
+          caseLoad: caseLoad,
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -215,7 +330,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                 ),
                 itemCount: unapprovedRecords.length,
                 separatorBuilder: (BuildContext context, int index) =>
-                const SizedBox(
+                    const SizedBox(
                   width: 12,
                 ),
               ),
@@ -226,6 +341,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                 unapprovedRecords: unapprovedCaseplanData,
                 selectedRecord: selectedRecord,
                 onDelete: deleteUnapprovedCPT,
+                onEdit: editUnapprovedCptForm,
               ),
             if (selectedRecord == "CPARA")
               const Column(
@@ -305,12 +421,14 @@ class ChildDetailsCard<T> extends StatelessWidget {
   final List<UnapprovedCasePlanModel> unapprovedRecords;
   final String selectedRecord;
   final Function(int)? onDelete;
+  final Function(UnapprovedCasePlanModel) onEdit;
 
   const ChildDetailsCard({
     super.key,
     required this.unapprovedRecords,
     required this.selectedRecord,
     required this.onDelete,
+    required this.onEdit,
   });
 
   @override
@@ -338,6 +456,7 @@ class ChildDetailsCard<T> extends StatelessWidget {
                         onDelete: (int) {
                           onDelete!(int);
                         },
+                        onEdit: onEdit,
                       );
                     },
                   ),
@@ -352,14 +471,16 @@ class ChildDetailsCard<T> extends StatelessWidget {
 }
 
 class UnapprovedCasePlanFormDetails extends StatelessWidget {
+  final UnapprovedCasePlanModel unapprovedRecord;
+  final Function(int) onDelete;
+  final Function(UnapprovedCasePlanModel) onEdit;
+
   const UnapprovedCasePlanFormDetails({
     super.key,
     required this.unapprovedRecord,
     required this.onDelete,
+    required this.onEdit,
   });
-
-  final UnapprovedCasePlanModel unapprovedRecord;
-  final Function(int) onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -386,7 +507,9 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                 ),
                 const Spacer(),
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await onEdit(unapprovedRecord);
+                    },
                     icon: const Icon(Icons.edit)),
                 IconButton(
                     onPressed: () async {
@@ -600,7 +723,8 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
     required this.unapprovedData,
     this.eventOrDomainId,
     required this.isService,
-    required this.onDelete, required this.onEdit,
+    required this.onDelete,
+    required this.onEdit,
   });
 
   @override
@@ -628,12 +752,11 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                IconButton (
-                    onPressed:()async{
-                      await  onEdit(unapprovedData);
+                IconButton(
+                    onPressed: () async {
+                      await onEdit(unapprovedData);
                     },
-                    icon: const Icon(Icons.edit)
-                ),
+                    icon: const Icon(Icons.edit)),
                 IconButton(
                     onPressed: () async {
                       await onDelete(unapprovedData.localId ?? 0);
