@@ -460,3 +460,6 @@ List<Map<String, dynamic>> unapprovedItems = [
     's_color': const Color(0xff9A3734),
   },
 ];
+
+const String locationDisabled = "Location services are disabled";
+const String locationDenied = "Location services are denied";

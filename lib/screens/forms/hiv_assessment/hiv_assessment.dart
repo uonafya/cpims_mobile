@@ -1,16 +1,24 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
+import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/screens/cpara/provider/hiv_assessment_provider.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_form.dart';
+import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
+import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+
+import '../../../constants.dart';
+import '../../../widgets/location_dialog.dart';
+import '../../homepage/provider/stats_provider.dart';
 
 bool disableSubsquentHIVAssessmentFieldsAndSubmit(BuildContext context) {
   final currentStatus =
@@ -22,6 +30,7 @@ bool disableSubsquentHIVAssessmentFieldsAndSubmit(BuildContext context) {
 
 class HIVAssessmentScreen extends StatefulWidget {
   const HIVAssessmentScreen({super.key, required this.caseLoadModel});
+
   final CaseLoadModel caseLoadModel;
 
   @override
@@ -60,30 +69,48 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         Provider.of<HIVAssessmentProvider>(context, listen: false)
             .hivCurrentStatusModel;
 
-    if (formIndex == 0 &&
-        (hivCurrentStatusModel.dateOfAssessment.isEmpty ||
-            hivCurrentStatusModel.statusOfChild.isEmpty)) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Please fill in the required fields"),
-        backgroundColor: Colors.red,
-      ));
-      return;
-    }
-
     if (formIndex == hivAssessmentTitles.length - 1) {
       try {
         setState(() {
           isLoading = true;
         });
+        if (hivCurrentStatusModel.dateOfAssessment.isEmpty ||
+            hivCurrentStatusModel.statusOfChild.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Please fill in the required fields"),
+            backgroundColor: Colors.red,
+          ));
+        }
+        AppMetaDataProvider appMetaDataProvider =
+            Provider.of<AppMetaDataProvider>(context, listen: false);
+        String startTime = appMetaDataProvider.startTimeInterview ??
+            DateTime.now().toIso8601String();
         await Provider.of<HIVAssessmentProvider>(context, listen: false)
-            .submitHIVAssessmentForm();
+            .submitHIVAssessmentForm(startTime);
+
+
+        if(context.mounted){
+          setState(() {
+            isLoading = false;
+          });
+          context.read<StatsProvider>().updateHrsStats();
+          Navigator.pop(context);
+        }
+
+
+        Get.snackbar("HRS Form submitted", "HRS Form submitted successfully",
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.green,
+            colorText: Colors.white);
+      } catch (e) {
         setState(() {
           isLoading = false;
         });
-      } catch (e) {
-        if (kDebugMode) {
-          print(e);
-        }
+       if(e.toString() == locationDisabled || e.toString() == locationDenied){
+         if(context.mounted) {
+           locationMissingDialog(context);
+         }
+       }
       }
 
       return;
@@ -170,11 +197,12 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
                   onTap: () => handleNext(context),
                 )),
               ]),
-              const SizedBox(
-                height: 40,
-              ),
             ],
           ),
+          const SizedBox(
+            height: 40,
+          ),
+          const Footer(),
         ],
       ),
     );

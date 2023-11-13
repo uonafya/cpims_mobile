@@ -1,9 +1,11 @@
 // ignore_for_file: depend_on_referenced_packages
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
+import 'package:cpims_mobile/providers/unapproved_cpt_provider.dart';
 import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
 import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
@@ -14,14 +16,16 @@ import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart'
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_form.dart';
+import 'package:cpims_mobile/services/caseload_service.dart';
+import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_form_model.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
-// import '../Models/case_plan_form.dart';
+import 'package:uuid/uuid.dart';
 import '../Models/caseplan_form_model.dart';
 import '../constants.dart';
 import '../screens/forms/form1a/new/form_one_a.dart';
@@ -109,14 +113,16 @@ class LocalDb {
         ${CasePlan.id} $idType,
         ${CasePlan.ovcCpimsId} $textType,
         ${CasePlan.dateOfEvent} $textType,
-        ${CasePlan.formDateSynced} $textTypeNull
+        ${CasePlan.formDateSynced} $textTypeNull,
+        ${CasePlan.uuid} $textType
       )
       ''');
 
     await db.execute('''
         CREATE TABLE $casePlanServicesTable (
           ${CasePlanServices.id} $idType,
-          ${CasePlanServices.formId} $intType,
+          ${CasePlanServices.formId} $intTypeNull,
+          ${CasePlanServices.unapprovedFormId} $intTypeNull,
           ${CasePlanServices.domainId} $textType,
           ${CasePlanServices.goalId} $textType,
           ${CasePlanServices.priorityId} $textType,
@@ -190,6 +196,9 @@ class LocalDb {
     await createAppMetaDataTable(db, version);
     await createHRSForms(db, version);
     await createUnapprovedCparaTables(db, version);
+    await createHMFForms(db, version);
+    final unapprovedCptDb = UnapprovedCptProvider();
+    await unapprovedCptDb.createTable(db, version);
   }
 
   Future<void> createAppMetaDataTable(Database db, int version) async {
@@ -202,7 +211,8 @@ class LocalDb {
         location_long TEXT,
         start_of_interview TEXT,
         end_of_interview TEXT,
-        form_type TEXT
+        form_type TEXT,
+        device_id TEXT
       )
     ''');
     } catch (err) {
@@ -318,11 +328,19 @@ class LocalDb {
         required Uint8List signature,
       required bool isRejected,
       required String careProviderId}) async {
+    try {
     final db = await instance.database;
     var idForm = 0;
     String selectedDate = cparaModelDB.detail.dateOfAssessment ??
         DateFormat('yyyy-MM-dd').format(DateTime.now());
+
     if (isRejected == true) {
+      // Create form
+      await insertAppFormMetaData(
+        cparaModelDB.uuid,
+        startTime,
+        'cpara',
+      );
       var formUUID = await cparaModelDB.createForm(db, selectedDate, cparaModelDB.uuid, signature, isRejected);
       var formData = await cparaModelDB.getLatestFormID(db);
       var formDate = formData.formDate;
@@ -335,8 +353,16 @@ class LocalDb {
       // Delete previous entries of unapproved
       UnapprovedCparaService.deleteUnapprovedCparaForm(cparaModelDB.uuid);
     } else {
+      String formUUID = const Uuid().v4();
       // Create form
-      cparaModelDB.createForm(db, selectedDate, null, signature, isRejected).then((formUUID) {
+      await insertAppFormMetaData(
+        formUUID,
+        startTime,
+        'cpara',
+      );
+      // Create form
+      cparaModelDB.createForm(db, selectedDate, formUUID, signature, isRejected)
+          .then((formUUID) {
         // Get formID
         cparaModelDB.getLatestFormID(db).then((formData) {
           var formDate = formData.formDate;
@@ -344,23 +370,24 @@ class LocalDb {
           var formID = formData.formID;
           idForm = formID;
           cparaModelDB
-              .addHouseholdFilledQuestionsToDB(db, formDateString, ovcId, formID)
-              .then((value) {
-            //insert app form metadata
-            insertAppFormMetaData(formUUID, startTime, 'cpara').then((value) =>
-                handleSubmit(
-                    selectedDate: selectedDate,
-                    formId: formID,
-                    ovcSub: cparaModelDB.ovcSubPopulations));
-          });
+              .addHouseholdFilledQuestionsToDB(
+              db, formDateString, ovcId, formID)
+              .then((value) =>
+              handleSubmit(
+                  selectedDate: selectedDate,
+                  formId: "$formID",
+                  ovcSub: cparaModelDB.ovcSubPopulations));
         });
       });
+    }
+    } catch (e) {
+      rethrow;
     }
   }
 
   void handleSubmit(
       {required String selectedDate,
-      required formId,
+      required String formId,
       required CparaOvcSubPopulation ovcSub}) async {
     // CparaOvcSubPopulation ovcSub =
     //     context.read<CparaProvider>().cparaOvcSubPopulation ??
@@ -539,7 +566,9 @@ class LocalDb {
       HIV_RS_22 TEXT,
       HIV_RS_23 TEXT,
       HIV_RS_24 TEXT,
-      HIV_RA_3Q6 TEXT
+      HIV_RA_3Q6 TEXT,
+      uuid TEXT,
+      form_date_synced TEXT NULL
     )
   ''';
 
@@ -554,8 +583,12 @@ class LocalDb {
       String cpmisId,
       HIVCurrentStatusModel currentStatus,
       HIVRiskAssessmentModel assessment,
-      ProgressMonitoringModel progress) async {
+      ProgressMonitoringModel progress,
+      String uuid,
+      String startOfInterview,
+      String formType) async {
     final db = await instance.database;
+    await insertAppFormMetaData(uuid, startOfInterview, formType);
     await db.insert(
       HRSForms,
       {
@@ -587,15 +620,275 @@ class LocalDb {
         'HIV_RS_23': progress.artReferralCompleted,
         'HIV_RS_24': progress.artReferralCompletedDate,
         'HIV_RA_3Q6': progress.facilityOfArtEnrollment,
+        'uuid': uuid,
+        'form_date_synced': null,
       },
     );
   }
 
   Future<List<Map<String, dynamic>>> fetchHRSFormData() async {
-    final db = await LocalDb.instance.database;
-    final hrsData = await db.query(HRSForms);
-    return hrsData;
+    try {
+      final db = await LocalDb.instance.database;
+
+      final hrsData = await db.query(HRSForms,
+          where: 'form_date_synced IS NULL OR form_date_synced = ""');
+
+      List<Map<String, dynamic>> updatedHRSData = [];
+
+      for (Map hrsDataRow in hrsData) {
+        // Modify values in the HRS form data
+        Map<String, dynamic> modifiedHRSDataRow = Map.from(hrsDataRow);
+        for (String key in modifiedHRSDataRow.keys) {
+          if (modifiedHRSDataRow[key] is String) {
+            if (modifiedHRSDataRow[key].toLowerCase() == 'yes') {
+              modifiedHRSDataRow[key] = 'AYES';
+            } else if (modifiedHRSDataRow[key].toLowerCase() == 'no') {
+              modifiedHRSDataRow[key] = 'ANNO';
+            }
+          }
+        }
+
+        String uuid = modifiedHRSDataRow['uuid'];
+
+        // Fetch associated AppFormMetaData
+        final AppFormMetaData appFormMetaData = await getAppFormMetaData(uuid);
+
+        // Create a new map that includes modified HRS form data and AppFormMetaData
+        Map<String, dynamic> updatedHRSDataRow = {
+          ...modifiedHRSDataRow,
+          'app_form_metadata': appFormMetaData.toJson(),
+        };
+
+        // Add the updated map to the list
+        updatedHRSData.add(updatedHRSDataRow);
+      }
+
+      debugPrint("Updated HRS form data: ${jsonEncode(updatedHRSData)}");
+
+      return updatedHRSData;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error fetching HRS form data: $e");
+      }
+      return [];
+    }
   }
+
+
+  Future<int> countHRSFormData() async {
+    try {
+      final db = await LocalDb.instance.database;
+
+      final count = Sqflite.firstIntValue(await db.rawQuery(
+          'SELECT COUNT(*) FROM $HRSForms WHERE form_date_synced IS NULL OR form_date_synced = ""'));
+
+      return count ?? 0;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error counting HRS form data: $e");
+      }
+      return 0;
+    }
+  }
+
+  Future<void> deleteHRSData(String id) async {
+    final db = await LocalDb.instance.database;
+    await db.delete(HRSForms, where: 'uuid = ?', whereArgs: [id]);
+  }
+
+  Future<void> updateHRSData(String id) async {
+    final db = await LocalDb.instance.database;
+    await db.update(HRSForms, {'form_date_synced': DateTime.now().toString()},
+        where: 'uuid = ?', whereArgs: [id]);
+  }
+
+  // create HIVManagement table
+  Future<void> createHMFForms(Database db, int version) async {
+    // Define the table schema with all the fields
+    print("-------------------Creating HMF Forms---------------------------");
+    print("-------------------Creating HMF Forms---------------------------");
+    const String createTableQuery = '''
+    CREATE TABLE $HMForms (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      ovc_cpims_id TEXT,
+      HIV_MGMT_1_A TEXT,
+      HIV_MGMT_1_B TEXT,
+      HIV_MGMT_1_C TEXT,
+      HIV_MGMT_1_D TEXT,
+      HIV_MGMT_1_E TEXT,
+      HIV_MGMT_1_E_DATE TEXT,
+      HIV_MGMT_1_F TEXT,
+      HIV_MGMT_1_F_DATE TEXT,
+      HIV_MGMT_1_G TEXT,
+      HIV_MGMT_1_G_DATE TEXT,
+      HIV_MGMT_2_A TEXT,
+      HIV_MGMT_2_B TEXT,
+      HIV_MGMT_2_C TEXT,
+      HIV_MGMT_2_D TEXT,
+      HIV_MGMT_2_E TEXT,
+      HIV_MGMT_2_F TEXT,
+      HIV_MGMT_2_G TEXT,
+      HIV_MGMT_2_H_2 TEXT,
+      HIV_MGMT_2_H_3 TEXT,
+      HIV_MGMT_2_H_4 TEXT,
+      HIV_MGMT_2_H_5 TEXT,
+      HIV_MGMT_2_I_1 TEXT,
+      HIV_MGMT_2_I_DATE TEXT,
+      HIV_MGMT_2_J TEXT,
+      HIV_MGMT_2_K TEXT,
+      HIV_MGMT_2_L_1 TEXT,
+      HIV_MGMT_2_L_2 TEXT,
+      HIV_MGMT_2_M TEXT,
+      HIV_MGMT_2_N TEXT,
+      HIV_MGMT_2_O_1 TEXT,
+      HIV_MGMT_2_O_2 TEXT,
+      HIV_MGMT_2_P TEXT,
+      HIV_MGMT_2_Q TEXT,
+      HIV_MGMT_2_R TEXT,
+      HIV_MGMT_2_S TEXT,
+      uuid TEXT,
+      form_date_synced TEXT NULL
+    )
+  ''';
+
+    try {
+      await db.execute(createTableQuery);
+      if (kDebugMode) {
+        print(
+            "------------------Function ----Creating HMF Forms---------------------------");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(
+            "-------------------Error HMF Forms---------------------------$e");
+      }
+    }
+  }
+
+  Future<void> insertHMFFormData(
+      String cpmisId,
+      ARTTherapyHIVFormModel artTherapyHIVFormModel,
+      HIVVisitationFormModel hivVisitationFormModel,
+      String uuid,
+      String startTimeInterview,
+      String formType,
+      {required BuildContext context}) async {
+    final db = await instance.database;
+    await insertAppFormMetaData(uuid, startTimeInterview, formType);
+    await db.insert(
+      HMForms,
+      {
+        'ovc_cpims_id': cpmisId,
+        'HIV_MGMT_1_A': artTherapyHIVFormModel.dateHIVConfirmedPositive,
+        'HIV_MGMT_1_B': artTherapyHIVFormModel.dateTreatmentInitiated,
+        'HIV_MGMT_1_C': artTherapyHIVFormModel.baselineHEILoad,
+        'HIV_MGMT_1_D': artTherapyHIVFormModel.dateStartedFirstLine,
+        'HIV_MGMT_1_E': artTherapyHIVFormModel.arvsSubWithFirstLine,
+        'HIV_MGMT_1_E_DATE': artTherapyHIVFormModel.arvsSubWithFirstLineDate,
+        'HIV_MGMT_1_F': artTherapyHIVFormModel.switchToSecondLine,
+        'HIV_MGMT_1_F_DATE': artTherapyHIVFormModel.switchToSecondLineDate,
+        'HIV_MGMT_1_G': artTherapyHIVFormModel.switchToThirdLine,
+        'HIV_MGMT_1_G_DATE': artTherapyHIVFormModel.switchToThirdLineDate,
+        'HIV_MGMT_2_A': hivVisitationFormModel.visitDate,
+        'HIV_MGMT_2_B': hivVisitationFormModel.durationOnARTs,
+        'HIV_MGMT_2_C': hivVisitationFormModel.height,
+        'HIV_MGMT_2_D': hivVisitationFormModel.mUAC,
+        'HIV_MGMT_2_E': hivVisitationFormModel.arvDrugsAdherence,
+        'HIV_MGMT_2_F': hivVisitationFormModel.arvDrugsDuration,
+        'HIV_MGMT_2_G': hivVisitationFormModel.adherenceCounseling,
+        'HIV_MGMT_2_H_2': hivVisitationFormModel.treatmentSupporter,
+        'HIV_MGMT_2_H_3': hivVisitationFormModel.treatmentSupporterSex,
+        'HIV_MGMT_2_H_4': hivVisitationFormModel.treatmentSupporterAge,
+        'HIV_MGMT_2_H_5': hivVisitationFormModel.treatmentSupporterHIVStatus,
+        'HIV_MGMT_2_I_1': hivVisitationFormModel.viralLoadResults,
+        'HIV_MGMT_2_I_DATE': hivVisitationFormModel.labInvestigationsDate,
+        'HIV_MGMT_2_J': hivVisitationFormModel.detectableViralLoadInterventions,
+        'HIV_MGMT_2_K': hivVisitationFormModel.disclosure,
+        'HIV_MGMT_2_L_1': hivVisitationFormModel.mUACScore,
+        'HIV_MGMT_2_L_2': hivVisitationFormModel.zScore,
+        'HIV_MGMT_2_M': hivVisitationFormModel.nutritionalSupport.join(', '),
+        'HIV_MGMT_2_N': hivVisitationFormModel.supportGroupStatus,
+        'HIV_MGMT_2_O_1': hivVisitationFormModel.nhifEnrollment,
+        'HIV_MGMT_2_O_2': hivVisitationFormModel.nhifEnrollmentStatus,
+        'HIV_MGMT_2_P': hivVisitationFormModel.referralServices,
+        'HIV_MGMT_2_Q': hivVisitationFormModel.nextAppointmentDate,
+        'HIV_MGMT_2_R': hivVisitationFormModel.peerEducatorName,
+        'HIV_MGMT_2_S': hivVisitationFormModel.peerEducatorContact,
+        'uuid': uuid,
+        'form_date_synced': null,
+      },
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> fetchHMFFormData() async {
+    try {
+      final db = await LocalDb.instance.database;
+
+      final hmfFormData = await db.query(HMForms,
+          where: 'form_date_synced IS NULL OR form_date_synced = ""');
+
+      List<Map<String, dynamic>> updatedHMFFormData = [];
+
+      for (Map hmfDataRow in hmfFormData) {
+        String uuid = hmfDataRow['uuid'];
+
+        // restructure nutrition support field
+        dynamic nutritionalSupportData = hmfDataRow['HIV_MGMT_2_M'];
+
+        if (nutritionalSupportData is String) {
+          // Remove leading and trailing whitespace and split by comma and space
+          List<String> nutritionalSupportList = nutritionalSupportData
+              .trim()
+              .split(', ')
+              .map((value) => value.replaceAll("'", '')) // Remove single quotes
+              .toList();
+
+          // Update the copy of the record with the new list
+          hmfDataRow['HIV_MGMT_2_M'] = nutritionalSupportList;
+        } else if (nutritionalSupportData is List<String>) {
+          // The data is already a list of strings, do nothing
+        } else {
+          // Handle other types if needed
+        }
+        // Fetch associated AppFormMetaData
+        final AppFormMetaData appFormMetaData = await getAppFormMetaData(uuid);
+
+        Map<String, dynamic> updatedHMFDataRow = {
+          ...hmfDataRow,
+          'app_form_metadata': appFormMetaData.toJson(),
+        };
+
+        // Add the updated map to the list
+        updatedHMFFormData.add(updatedHMFDataRow);
+      }
+
+      debugPrint("Updated HMF form data: $updatedHMFFormData");
+      return updatedHMFFormData;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error fetching HMF form data: $e");
+      }
+      return [];
+    }
+  }
+
+
+  Future<int> countHMFFormData() async {
+    try {
+      final db = await LocalDb.instance.database;
+
+      final count = Sqflite.firstIntValue(await db.rawQuery(
+          'SELECT COUNT(*) FROM $HMForms WHERE form_date_synced IS NULL OR form_date_synced = ""'));
+
+      return count ?? 0;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error counting HMF form data: $e");
+      }
+      return 0;
+    }
+  }
+
 
   Future<void> insertOvcSubpopulationData(String uuid, String cpimsId,
       String dateOfAssessment, List<CheckboxQuestion> questions) async {
@@ -644,23 +937,37 @@ class LocalDb {
     return results;
   }
 
-  Future<void> insertAppFormMetaData(uuid, startOfInterview, formType) async {
+  Future<void> insertAppFormMetaData(
+    uuid,
+    startOfInterview,
+    formType,
+    // {required BuildContext context}
+  ) async {
     final db = await instance.database;
-    Position userLocation = await getUserLocation(); // Await the location here
-    String lat = userLocation.latitude.toString();
-    String longitude = userLocation.longitude.toString();
-    await db.insert(
-      appFormMetaDataTable,
-      {
-        'form_id': uuid,
-        'location_lat': lat,
-        'location_long': longitude,
-        'start_of_interview': startOfInterview,
-        'end_of_interview': DateTime.now().toIso8601String(),
-        'form_type': formType,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    // if(context.mounted){
+    try {
+      Position userLocation = await getUserLocation(
+          // context: context
+          ); // Await the location here
+      String lat = userLocation.latitude.toString();
+      String longitude = userLocation.longitude.toString();
+      String deviceId= await getDeviceId();
+      await db.insert(
+        appFormMetaDataTable,
+        {
+          'form_id': uuid,
+          'location_lat': lat,
+          'location_long': longitude,
+          'start_of_interview': startOfInterview,
+          'end_of_interview': DateTime.now().toIso8601String(),
+          'form_type': formType,
+          'device_id': deviceId
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<void> insertUnapprovedAppFormMetaData(
@@ -682,22 +989,34 @@ class LocalDb {
 
   // insert formData(either form1a or form1b)
   Future<void> insertForm1Data(
-      String formType, formData, metadata, uuid) async {
+    String formType,
+    formData,
+    metadata,
+    uuid,
+  ) async {
     try {
       final db = await instance.database;
+
+      //insert app form metadata
+      await insertAppFormMetaData(
+        uuid, metadata.startOfInterview, formType,
+        // context: context
+      );
       final formId = await db.insert(
         form1Table,
         {
           'ovc_cpims_id': formData.ovcCpimsId,
-          'date_of_event': formData.date_of_event,
+          'date_of_event': formData.dateOfEvent,
           'form_type': formType,
           'form_date_synced': null,
           'uuid': uuid,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      //insert app form metadata
-      await insertAppFormMetaData(uuid, metadata.startOfInterview, formType);
+      // //insert app form metadata
+      // await insertAppFormMetaData(uuid, metadata.startOfInterview, formType,
+      //     // context: context
+      // );
 
       // insert services
       for (var service in formData.services) {
@@ -716,16 +1035,17 @@ class LocalDb {
           form1CriticalEventsTable,
           {
             'form_id': formId,
-            'event_id': criticalEvent.event_id,
-            'event_date': criticalEvent.event_date,
+            'event_id': criticalEvent.eventId,
+            'event_date': criticalEvent.eventDate,
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('Error inserting form1 data: $e');
-      }
+      // if (kDebugMode) {
+      //   print('Error inserting form1 data: $e');
+      // }
+      rethrow;
     }
   }
 
@@ -933,7 +1253,7 @@ class LocalDb {
   }
 
   // get a single row(form 1a or 1b)
-  Future<bool> deleteUnApprovedForm1Data(String formType, int id) async {
+  Future<bool> deleteUnApprovedForm1Data(int id) async {
     try {
       final db = await instance.database;
       final queryResults = await db.query(
@@ -1031,9 +1351,13 @@ class LocalDb {
   }
 
   //new insert case plan
-  Future<bool> insertCasePlanNew(CasePlanModel casePlan) async {
+  Future<bool> insertCasePlanNew(CasePlanModel casePlan, String formUuid,
+      String startTimeOfInterview) async {
     try {
       final db = await instance.database;
+
+      await insertAppFormMetaData(formUuid, startTimeOfInterview, "caseplan");
+
       await db.transaction((txn) async {
         final casePlanId = await txn.insert(
           casePlanTable,
@@ -1041,6 +1365,7 @@ class LocalDb {
             'ovc_cpims_id': casePlan.ovcCpimsId,
             'date_of_event': casePlan.dateOfEvent,
             'form_date_synced': null,
+            'uuid': formUuid,
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
@@ -1150,6 +1475,12 @@ class LocalDb {
       for (var row in queryResult) {
         final casePlanId = row[CasePlan.id] as int;
 
+        // Fetch associated AppFormMetaData
+        final AppFormMetaData appFormMetaData =
+            await getAppFormMetaData(row[CasePlan.uuid] as String);
+        debugPrint("The id is ${row[CasePlan.uuid]}");
+        debugPrint("tHE app form meatdata is ${appFormMetaData.toJson()}");
+
         // Retrieve the associated services
         final serviceQueryResult = await db.query(
           casePlanServicesTable,
@@ -1174,13 +1505,24 @@ class LocalDb {
           ));
         }
 
+        // casePlans.add(CasePlanModel(
+        //   id: row[CasePlan.id] as int,
+        //   ovcCpimsId: row[CasePlan.ovcCpimsId] as String,
+        //   dateOfEvent: row[CasePlan.dateOfEvent] as String,
+        //   services: services,
+        //   appFormMetaData: appFormMetaData,
+        // ));
+
         casePlans.add(CasePlanModel(
           id: row[CasePlan.id] as int,
           ovcCpimsId: row[CasePlan.ovcCpimsId] as String,
           dateOfEvent: row[CasePlan.dateOfEvent] as String,
           services: services,
+          appFormMetaData: appFormMetaData,
         ));
       }
+
+      debugPrint("Case plans are: ${casePlans.toString()}");
 
       return casePlans;
     } catch (e) {
@@ -1289,6 +1631,7 @@ class LocalDb {
       whereArgs: [uuid],
     );
 
+
     if (metaDataList.isNotEmpty) {
       return AppFormMetaData.fromJson(metaDataList.first);
     } else {
@@ -1330,6 +1673,7 @@ const form1CriticalEventsTable = 'form1_critical_events';
 const ovcsubpopulation = 'ovcsubpopulation';
 const cparaForms = 'Form';
 const HRSForms = 'HRSForm';
+const HMForms = 'HMFForm';
 const cparaHouseholdAnswers = 'cpara_household_answers';
 const cparaChildAnswers = 'cpara_child_answers';
 
@@ -1426,13 +1770,15 @@ class CasePlan {
     id,
     ovcCpimsId,
     dateOfEvent,
-    formDateSynced
+    formDateSynced,
+    uuid
   ];
 
   static const String id = 'id';
   static const String ovcCpimsId = 'ovc_cpims_id';
   static const String dateOfEvent = 'date_of_event';
   static const String formDateSynced = 'form_date_synced';
+  static const String uuid = 'uuid';
 }
 
 class CasePlanServices {
@@ -1451,6 +1797,7 @@ class CasePlanServices {
   ];
   static const String id = 'id';
   static const String formId = 'form_id';
+  static const String unapprovedFormId = 'unapproved_form_id';
   static const String domainId = 'domain_id';
   static const String goalId = 'goal_id';
   static const String priorityId = 'priority_id';

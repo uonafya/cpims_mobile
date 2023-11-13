@@ -116,9 +116,11 @@ Future<CPARADatabase> getFormFromDB(int formID, Database? db) async {
     }
 
     form.childQuestions = childQuestions;
-   AppFormMetaData appFormMetaData = await LocalDb.instance.getAppFormMetaData(uuid);
-   form.appFormMetaData = appFormMetaData;
-    var listOfOvcSub = await fetchAndPostToServerOvcSubpopulationDataNew(formId: "$formID");
+    AppFormMetaData appFormMetaData =
+        await LocalDb.instance.getAppFormMetaData(uuid);
+    form.appFormMetaData = appFormMetaData;
+    var listOfOvcSub =
+        await fetchAndPostToServerOvcSubpopulationDataNew(formId: "$formID");
     form.listOfSubOvcs = listOfOvcSub;
     return form;
   } catch (err) {
@@ -296,6 +298,8 @@ Future<void> singleCparaFormSubmission(
     };
   }
 
+  debugPrint(json.encode(cparaMapData));
+
   dio.interceptors.add(LogInterceptor());
   const cparaUrl = "mobile/cpara/";
   var response = await dio.post("$cpimsApiUrl$cparaUrl",
@@ -338,7 +342,8 @@ Future<List<Map<String, dynamic>>> fetchQuestionsForOvc(
   return result;
 }
 
-Future<List<SubOvcChild>> fetchAndPostToServerOvcSubpopulationDataNew({required String formId}) async {
+Future<List<SubOvcChild>> fetchAndPostToServerOvcSubpopulationDataNew(
+    {required String formId}) async {
   // var prefs = await SharedPreferences.getInstance();
   // var accessToken = prefs.getString('access');
   // String bearerAuth = "Bearer $accessToken";
@@ -352,12 +357,8 @@ Future<List<SubOvcChild>> fetchAndPostToServerOvcSubpopulationDataNew({required 
     var ovcCpimsId = row['cpims_id'];
     var criteria = row['criteria'];
     // var dateOfEvent = row['date_of_event'];
-    childSub.add(SubOvcChild(
-      cpimsId: ovcCpimsId,
-      answer: "AYES",
-      questionId: criteria
-    ));
-
+    childSub.add(
+        SubOvcChild(cpimsId: ovcCpimsId, answer: "AYES", questionId: criteria));
   }
   return childSub;
 }

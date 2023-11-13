@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/constants_prod.dart';
+import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/providers/hiv_management_form_provider.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/utils/hiv_management_form_constants.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/utils/hiv_management_form_status_provider.dart';
@@ -10,9 +11,12 @@ import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+import '../../../../widgets/location_dialog.dart';
+import '../../../homepage/provider/stats_provider.dart';
 
 class HIVManagementForm extends StatefulWidget {
   final CaseLoadModel caseLoad;
@@ -30,6 +34,7 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
   int selectedStep = 0;
   List<Widget> steps = [];
   bool isStep1Completed = false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -41,14 +46,19 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
   }
 
   // submit hivmanagementform
-  void submitHIVManagementForm() async {
+  void submitHIVManagementForm(String startInterviewTime) async {
     try {
+      String formUUid = const Uuid().v4();
       await Provider.of<HIVManagementFormProvider>(context, listen: false)
-          .submitHIVManagementForm(widget.caseLoad.cpimsId);
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
+          .submitHIVManagementForm(widget.caseLoad.cpimsId, formUUid,
+              startInterviewTime, "HIV Management Form",
+              context: context);
+      if (context.mounted) {
+        context.read<StatsProvider>().updateHmfStats();
+        Navigator.pop(context);
       }
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -149,16 +159,50 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                   ? 'Submit Form'
                                   : 'Next',
                               onTap: () {
-                                if (selectedStep == steps.length - 1) {
-                                  // logic for verifying form and submitting
-                                  submitHIVManagementForm();
-                                } else {
+                                try {
+                                  if (selectedStep == steps.length - 1) {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    // logic for verifying form and submitting
+                                    AppMetaDataProvider appMetaDataProvider =
+                                        Provider.of<AppMetaDataProvider>(
+                                            context,
+                                            listen: false);
+                                    String startInterviewTime =
+                                        appMetaDataProvider
+                                                .startTimeInterview ??
+                                            DateTime.now().toIso8601String();
+                                    submitHIVManagementForm(startInterviewTime);
+
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    HIVManagementFormProvider
+                                        hivManagementFormProvider =
+                                        Provider.of<HIVManagementFormProvider>(
+                                            context,
+                                            listen: false);
+                                    hivManagementFormProvider.clearForms();
+                                    Navigator.pop(context);
+                                  } else {
+                                    setState(() {
+                                      if (selectedStep < steps.length - 1 &&
+                                          formCompletionStatus == true) {
+                                        selectedStep++;
+                                      }
+                                    });
+                                  }
+                                } catch (e) {
                                   setState(() {
-                                    if (selectedStep < steps.length - 1 &&
-                                        formCompletionStatus == true) {
-                                      selectedStep++;
-                                    }
+                                    isLoading = false;
                                   });
+                                  if (e.toString() == locationDisabled ||
+                                      e.toString() == locationDenied) {
+                                    if (context.mounted) {
+                                      locationMissingDialog(context);
+                                    }
+                                  }
                                 }
                               },
                               color: kPrimaryColor,

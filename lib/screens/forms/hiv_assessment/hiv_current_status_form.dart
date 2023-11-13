@@ -84,7 +84,9 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                 height: 10,
               ),
               DateTextField(
-                label: "Date of assessment",
+                label: hivAssessmentProvider.dateOfAssessment.isNotEmpty
+                    ? hivAssessmentProvider.dateOfAssessment
+                    : "Date of assessment",
                 enabled: true,
                 onDateSelected: (date) {
                   setState(() {
@@ -115,7 +117,7 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                 }),
           ]),
           FormSection(
-            isDisabled: statusOfChild == "No",
+            isDisabled: hivAssessmentProvider.statusOfChild == "No",
             children: [
               const Text("What is the HIV Status *"),
               const SizedBox(
@@ -127,10 +129,6 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                   setState(() {
                     hivStatus = val!;
                     handleOnFormSaved();
-                    if (hivStatus == "HIV_Positive") {
-                      Provider.of<HIVAssessmentProvider>(context, listen: false)
-                          .clearForms();
-                    }
                   });
                 },
                 option: hivAssessmentProvider.hivStatus.isNotEmpty
@@ -162,11 +160,11 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                     setState(() {
                       hivTestDone = convertingRadioButtonOptionsToString(val);
                       handleOnFormSaved();
-                      if (hivTestDone == "Yes") {
-                        Provider.of<HIVAssessmentProvider>(context,
-                                listen: false)
-                            .clearForms();
-                      }
+                      // if (hivTestDone == "Yes") {
+                      //   Provider.of<HIVAssessmentProvider>(context,
+                      //           listen: false)
+                      //       .clearForms();
+                      // }
                     });
                   }),
             ],

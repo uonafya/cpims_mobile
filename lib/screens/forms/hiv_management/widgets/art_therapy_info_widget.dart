@@ -8,7 +8,7 @@ import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_w
 import 'package:cpims_mobile/utils.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/form_section.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ARTTherapyInfoWidget extends StatefulWidget {
@@ -21,7 +21,6 @@ class ARTTherapyInfoWidget extends StatefulWidget {
 }
 
 class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
-  String dateOfEvent = '';
   String dateHIVConfirmedPositive = '';
   String dateTreatmentInitiated = '';
   String baselineHEILoad = '';
@@ -37,7 +36,6 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
 
   void handleOnSave() {
     final formData = ARTTherapyHIVFormModel(
-      dateOfEvent: dateOfEvent,
       dateHIVConfirmedPositive: dateHIVConfirmedPositive,
       dateTreatmentInitiated: dateTreatmentInitiated,
       baselineHEILoad: baselineHEILoad,
@@ -56,13 +54,19 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
     if (isComplete) {
       final formCompletionStatus = context.read<FormCompletionStatusProvider>();
       formCompletionStatus.setArtTherapyFormCompleted(true);
+    } else {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Please fill in the required fields"),
+          backgroundColor: Colors.red,
+        ));
+      }
     }
   }
 
   bool areAllFieldsFilled() {
     // Define a list of required fields to check if they are filled in
     final requiredFields = [
-      dateOfEvent,
       dateHIVConfirmedPositive,
       dateTreatmentInitiated,
       baselineHEILoad,
@@ -78,34 +82,11 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final artTherapyInfoFormData =
+        Provider.of<HIVManagementFormProvider>(context).artTherapyFormModel;
     return StepsWrapper(
       title: '1. ARV Therapy Info',
       children: [
-        FormSection(
-          children: [
-            const Text(
-              'Date',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            DateTextField(
-              label: 'Date of record',
-              enabled: true,
-              onDateSelected: (date) {
-                setState(() {
-                  dateOfEvent = formattedDate(date!);
-                  handleOnSave();
-                });
-              },
-              identifier: DateTextFieldIdentifier.dateOfAssessment,
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 15,
-        ),
         FormSection(
           children: [
             const Text(
@@ -116,7 +97,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               height: 10,
             ),
             DateTextField(
-              label: 'Date',
+              label: artTherapyInfoFormData.dateHIVConfirmedPositive.isNotEmpty
+                  ? artTherapyInfoFormData.dateHIVConfirmedPositive
+                  : 'Date',
               enabled: true,
               onDateSelected: (date) {
                 setState(() {
@@ -141,7 +124,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               height: 10,
             ),
             DateTextField(
-              label: 'Date',
+              label: artTherapyInfoFormData.dateTreatmentInitiated.isNotEmpty
+                  ? artTherapyInfoFormData.dateTreatmentInitiated
+                  : 'Date',
               enabled: true,
               onDateSelected: (date) {
                 setState(() {
@@ -167,6 +152,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
             ),
             CustomTextField(
               controller: baselineHEILoadController,
+              initialValue: artTherapyInfoFormData.baselineHEILoad,
               onChanged: (String val) {
                 setState(() {
                   baselineHEILoad = baselineHEILoadController.text;
@@ -189,7 +175,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               height: 10,
             ),
             DateTextField(
-              label: 'Date',
+              label: artTherapyInfoFormData.dateStartedFirstLine.isNotEmpty
+                  ? artTherapyInfoFormData.dateStartedFirstLine
+                  : 'Date',
               enabled: true,
               onDateSelected: (date) {
                 setState(() {
@@ -215,6 +203,10 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
             ),
             CustomRadioButton(
               isNaAvailable: false,
+              option: artTherapyInfoFormData.arvsSubWithFirstLine.isNotEmpty
+                  ? convertingStringToRadioButtonOptions(
+                      artTherapyInfoFormData.arvsSubWithFirstLine)
+                  : null,
               optionSelected: (options) {
                 setState(() {
                   arvsSubWithFirstLine =
@@ -227,7 +219,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               },
             ),
             DateTextField(
-              label: 'If Yes, Date',
+              label: artTherapyInfoFormData.arvsSubWithFirstLineDate.isNotEmpty
+                  ? artTherapyInfoFormData.arvsSubWithFirstLineDate
+                  : 'If Yes, Date',
               enabled: arvsSubWithFirstLine == "Yes",
               onDateSelected: (date) {
                 setState(() {
@@ -253,6 +247,10 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
             ),
             CustomRadioButton(
               isNaAvailable: false,
+              option: artTherapyInfoFormData.switchToSecondLine.isNotEmpty
+                  ? convertingStringToRadioButtonOptions(
+                      artTherapyInfoFormData.switchToSecondLine)
+                  : null,
               optionSelected: (RadioButtonOptions? options) {
                 setState(() {
                   switchToSecondLine =
@@ -265,7 +263,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               },
             ),
             DateTextField(
-              label: 'If Yes, Date',
+              label: artTherapyInfoFormData.switchToSecondLineDate.isNotEmpty
+                  ? artTherapyInfoFormData.switchToSecondLineDate
+                  : 'If Yes, Date',
               enabled: switchToSecondLine == "Yes",
               onDateSelected: (date) {
                 setState(() {
@@ -291,6 +291,10 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
             ),
             CustomRadioButton(
               isNaAvailable: false,
+              option: artTherapyInfoFormData.switchToThirdLine.isNotEmpty
+                  ? convertingStringToRadioButtonOptions(
+                      artTherapyInfoFormData.switchToThirdLine)
+                  : null,
               optionSelected: (RadioButtonOptions? options) {
                 setState(() {
                   switchToThirdLine =
@@ -303,7 +307,9 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               },
             ),
             DateTextField(
-              label: 'If Yes, Date',
+              label: artTherapyInfoFormData.switchToThirdLineDate.isNotEmpty
+                  ? artTherapyInfoFormData.switchToThirdLineDate
+                  : 'If Yes, Date',
               enabled: switchToThirdLine == "Yes",
               onDateSelected: (date) {
                 setState(() {

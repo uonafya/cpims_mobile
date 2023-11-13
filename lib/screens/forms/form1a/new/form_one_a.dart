@@ -5,6 +5,7 @@ import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_safe.dar
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_stable.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/form_one_a_healthy.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/form_one_a_schooled.dart';
+import 'package:cpims_mobile/widgets/location_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -33,6 +34,7 @@ class FomOneA extends StatefulWidget {
 
 class _FomOneAState extends State<FomOneA> {
   int selectedStep = 0;
+  bool isLoading = false;
 
   List<Widget> steps = [
     const FormOneAHealthy(),
@@ -179,6 +181,7 @@ class _FomOneAState extends State<FomOneA> {
                           ),
                           Expanded(
                             child: CustomButton(
+                              isLoading: isLoading,
                               text: isLastStep ? 'Submit Form1A' : 'Next',
                               onTap: () async {
                                 if (isLastStep) {
@@ -197,21 +200,23 @@ class _FomOneAState extends State<FomOneA> {
                                   } else {
                                     try {
                                       String startInterviewTime = '';
-                                      String endTimeInterview = '';
                                       if (context.mounted) {
                                         startInterviewTime = context
                                                 .read<AppMetaDataProvider>()
                                                 .startTimeInterview ??
                                             '';
-                                        endTimeInterview =
-                                            DateTime.now().toIso8601String();
                                       }
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+
                                       bool isFormSaved =
                                           await form1AProvider.saveForm1AData(
                                               form1AProvider.formData,
                                               startInterviewTime);
                                       setState(() {
                                         if (isFormSaved == true) {
+                                          isLoading = false;
                                           if (context.mounted) {
                                             context
                                                 .read<StatsProvider>()
@@ -236,10 +241,18 @@ class _FomOneAState extends State<FomOneA> {
                                         }
                                       });
                                     } catch (e) {
+                                      setState(() {
+                                        isLoading = false;
+                                      });
                                       if (kDebugMode) {
                                         print(
                                           "Error getting user location: $e",
                                         );
+                                      }
+                                      if(e.toString() == locationDisabled || e.toString() == locationDenied){
+                                        if(context.mounted) {
+                                          locationMissingDialog(context);
+                                        }
                                       }
                                     }
                                   }
@@ -258,6 +271,7 @@ class _FomOneAState extends State<FomOneA> {
                       const SizedBox(
                         height: 30,
                       ),
+
                       // ... your other widgets
                     ],
                   ),
@@ -272,21 +286,29 @@ class _FomOneAState extends State<FomOneA> {
   }
 }
 
-Future<Position> getUserLocation() async {
-  bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    throw Exception('Location services are disabled.');
-  }
-  LocationPermission permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
-      return Future.error("Location permissions denied");
+Future<Position> getUserLocation(
+    // {required BuildContext context}
+    ) async {
+  // try{
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      throw (locationDisabled);
     }
-  }
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        throw(locationDenied);
+      }
+    }
 
-  if (permission == LocationPermission.deniedForever) {
-    return Future.error('Location denied again.Please turn on location');
-  }
-  return await Geolocator.getCurrentPosition();
+    if (permission == LocationPermission.deniedForever) {
+      throw(locationDenied);
+    }
+    return await Geolocator.getCurrentPosition();
+  // }
+  // catch(e){
+  //   locationMissingDialog(context);
+  //   // return Future.error('Error getting user location');
+  // }
 }

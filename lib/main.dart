@@ -4,6 +4,7 @@ import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.
 import 'package:cpims_mobile/providers/form1a_provider.dart';
 import 'package:cpims_mobile/providers/form1b_provider.dart';
 import 'package:cpims_mobile/providers/hiv_management_form_provider.dart';
+import 'package:cpims_mobile/providers/preventive_assesment_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
@@ -50,6 +51,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => FormCompletionStatusProvider()),
         ChangeNotifierProvider(create: (_) => AppMetaDataProvider()),
         ChangeNotifierProvider(create: (_) => UnapprovedRecordsScreenProvider()),
+        ChangeNotifierProvider(create: (_) => PreventiveAssessmentProvider()),
       ],
       child: const CPIMS(),
     ),
@@ -121,5 +123,9 @@ Future<Map<String, dynamic>> intialSetup(BuildContext context) async {
 
   final lockApp = await AuthProvider.getAppLock();
 
-  return {'hasConnection': hasConnection, 'isAuthenticated': isAuthenticated, 'isAppLocked' : lockApp};
+  return {
+    'hasConnection': hasConnection,
+    'isAuthenticated': isAuthenticated,
+    'isAppLocked': lockApp
+  };
 }

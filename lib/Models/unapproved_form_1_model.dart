@@ -2,7 +2,6 @@ import '../utils/app_form_metadata.dart';
 import 'form_1_model.dart';
 
 class UnapprovedForm1DataModel extends Form1DataModel {
-
   final String message;
 
   UnapprovedForm1DataModel({

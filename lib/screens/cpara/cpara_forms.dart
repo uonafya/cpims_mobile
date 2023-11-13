@@ -33,6 +33,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../Models/case_load_model.dart';
+import '../../widgets/location_dialog.dart';
 import 'model/ovc_model.dart';
 
 class CparaFormsScreen extends StatefulWidget {
@@ -299,7 +300,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                             .updateHealthModel(healthModel);
                                       }
 
-                                      try {
                                         String? ovsId;
                                         if (widget.isRejected == true) {
                                           ovsId = widget.cpmisID;
@@ -399,23 +399,20 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           );
                                           Navigator.pop(context);
                                         }
-                                      } catch (err) {
-                                        debugPrint(err.toString());
+                                    } catch (e) {
+                                      if(e.toString() == locationDisabled || e.toString() == locationDenied){
+                                        if(context.mounted) {
+                                          locationMissingDialog(context);
+                                        }
+                                      }
+                                      else {
                                         Get.snackbar(
-                                          'Failed',
-                                          'Failed to save CPARA form',
+                                          'Error',
+                                          e.toString(),
                                           backgroundColor: Colors.red,
                                           colorText: Colors.white,
                                         );
                                       }
-                                    } catch (e) {
-                                      // showErrorSnackbar();
-                                      Get.snackbar(
-                                        'Error',
-                                        e.toString(),
-                                        backgroundColor: Colors.red,
-                                        colorText: Colors.white,
-                                      );
                                     }
                                   }
 

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class ARTTherapyHIVFormModel {
   final String dateOfEvent;
   final String dateHIVConfirmedPositive;
@@ -27,7 +29,6 @@ class ARTTherapyHIVFormModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'HIV_MGMT_2_A': dateOfEvent,
       'HIV_MGMT_1_A': dateHIVConfirmedPositive,
       'HIV_MGMT_1_B': dateTreatmentInitiated,
       'HIV_MGMT_1_C': baselineHEILoad,
@@ -43,7 +44,6 @@ class ARTTherapyHIVFormModel {
 
   factory ARTTherapyHIVFormModel.fromJson(Map<String, dynamic> json) {
     return ARTTherapyHIVFormModel(
-      dateOfEvent: json['HIV_MGMT_2_A'] ?? '',
       dateHIVConfirmedPositive: json['HIV_MGMT_1_A'] ?? '',
       dateTreatmentInitiated: json['HIV_MGMT_1_B'] ?? '',
       baselineHEILoad: json['HIV_MGMT_1_C'] ?? '',
@@ -76,7 +76,7 @@ class HIVVisitationFormModel {
   final String disclosure;
   final String mUACScore;
   final String zScore;
-  final Set<String> nutritionalSupport;
+  final List<String> nutritionalSupport;
   final String supportGroupStatus;
   final String nhifEnrollment;
   final String nhifEnrollmentStatus;
@@ -103,7 +103,7 @@ class HIVVisitationFormModel {
     this.disclosure = '',
     this.mUACScore = '',
     this.zScore = '',
-    this.nutritionalSupport = const <String>{},
+    this.nutritionalSupport = const [],
     this.supportGroupStatus = '',
     this.nhifEnrollment = '',
     this.nhifEnrollmentStatus = '',
@@ -114,7 +114,9 @@ class HIVVisitationFormModel {
   });
 
   Map<String, dynamic> toJson() {
-    List<dynamic>? nutritionalSupportList = nutritionalSupport.toList();
+    // List<dynamic>? nutritionalSupportList = nutritionalSupport.toList();
+
+    String nutritionalSupportList = nutritionalSupport.map((item) => "'$item'").join(',');
 
     return {
       'HIV_MGMT_2_A': visitDate,
@@ -146,9 +148,15 @@ class HIVVisitationFormModel {
   }
 
   factory HIVVisitationFormModel.fromJson(Map<String, dynamic> json) {
-    Set<String> nutritionalSupport = (json['HIV_MGMT_2_M'] as List<dynamic>)
-        .map((e) => e.toString())
-        .toSet();
+    // Set<String> nutritionalSupport = (json['HIV_MGMT_2_M'] as List<dynamic>)
+    //     .map((e) => e.toString())
+    //     .toSet();
+
+    String nutritionalSupportString = json['HIV_MGMT_2_M'] ?? '';
+
+    List<String> nutritionalSupportList = nutritionalSupportString.split(',');
+
+
     return HIVVisitationFormModel(
       visitDate: json['HIV_MGMT_2_A'] ?? '',
       durationOnARTs: json['HIV_MGMT_2_B'] ?? '',
@@ -167,7 +175,7 @@ class HIVVisitationFormModel {
       disclosure: json['HIV_MGMT_2_K'] ?? '',
       mUACScore: json['HIV_MGMT_2_L_1'] ?? '',
       zScore: json['HIV_MGMT_2_L_2'] ?? '',
-      nutritionalSupport: nutritionalSupport,
+      nutritionalSupport: nutritionalSupportList,
       supportGroupStatus: json['HIV_MGMT_2_N'] ?? '',
       nhifEnrollment: json['HIV_MGMT_2_O_1'] ?? '',
       nhifEnrollmentStatus: json['HIV_MGMT_2_O_2'] ?? '',

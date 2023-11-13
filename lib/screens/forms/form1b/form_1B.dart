@@ -19,6 +19,7 @@ import '../../../providers/app_meta_data_provider.dart';
 import '../../../providers/form1b_provider.dart';
 import '../../../widgets/custom_forms_date_picker.dart';
 import '../../../widgets/custom_toast.dart';
+import '../../../widgets/location_dialog.dart';
 import '../../homepage/provider/stats_provider.dart';
 
 class Form1BScreen extends StatefulWidget {
@@ -32,6 +33,7 @@ class Form1BScreen extends StatefulWidget {
 
 class _Form1BScreen extends State<Form1BScreen> {
   int selectedStep = 0;
+  bool isLoading = false;
 
   List<Widget> steps = [
     const HealthyForm1b(),
@@ -175,77 +177,98 @@ class _Form1BScreen extends State<Form1BScreen> {
                             ),
                             Expanded(
                               child: CustomButton(
+                                isLoading: isLoading,
                                 text: selectedStep == steps.length - 1
                                     ? 'Submit Form1B'
                                     : 'Next',
                                 onTap: () async {
-                                  if (selectedStep == steps.length - 1) {
-                                    if (form1bProvider.formData.selectedDate ==
-                                        null) {
-                                      CustomToastWidget.showToast(
-                                          "Please select date of event");
-                                      return;
-                                    } else {
-                                      if (isFormInvalid()) {
-                                        Get.snackbar(
-                                          'Error',
-                                          'Please fill all the information',
-                                          duration: const Duration(seconds: 2),
-                                          snackPosition: SnackPosition.TOP,
-                                          backgroundColor: Colors.red,
-                                          colorText: Colors.white,
-                                          margin: const EdgeInsets.all(16),
-                                          borderRadius: 8,
-                                        );
+                                  try {
+                                    if (selectedStep == steps.length - 1) {
+                                      if (form1bProvider
+                                              .formData.selectedDate ==
+                                          null) {
+                                        CustomToastWidget.showToast(
+                                            "Please select date of event");
                                         return;
                                       } else {
-                                        String startInterviewTime = '';
-                                        if (context.mounted) {
-                                          startInterviewTime = context
-                                                  .read<AppMetaDataProvider>()
-                                                  .startTimeInterview ??
-                                              '';
-                                        }
-                                        bool isFormSaved =
-                                            await form1bProvider.saveForm1bData(
-                                          form1bProvider.formData,
-                                          startInterviewTime,
-                                        );
-
-                                        setState(() {
-                                          if (isFormSaved == true) {
-                                            if (context.mounted) {
-                                              context
-                                                  .read<StatsProvider>()
-                                                  .updateFormOneBStats();
-                                              context
-                                                  .read<AppMetaDataProvider>()
-                                                  .clearFormMetaData();
-                                            }
-                                            Get.snackbar(
-                                              'Success',
-                                              'Form1B data saved successfully.',
-                                              duration:
-                                                  const Duration(seconds: 2),
-                                              snackPosition: SnackPosition.TOP,
-                                              // Display at the top of the screen
-                                              backgroundColor: Colors.green,
-                                              colorText: Colors.white,
-                                              margin: const EdgeInsets.all(16),
-                                              borderRadius: 8,
-                                            );
-                                            Navigator.pop(context);
-                                            selectedStep = 0;
+                                        if (isFormInvalid()) {
+                                          Get.snackbar(
+                                            'Error',
+                                            'Please fill all the information',
+                                            duration:
+                                                const Duration(seconds: 2),
+                                            snackPosition: SnackPosition.TOP,
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white,
+                                            margin: const EdgeInsets.all(16),
+                                            borderRadius: 8,
+                                          );
+                                          return;
+                                        } else {
+                                          String startInterviewTime = '';
+                                          if (context.mounted) {
+                                            startInterviewTime = context
+                                                    .read<AppMetaDataProvider>()
+                                                    .startTimeInterview ??
+                                                '';
                                           }
-                                        });
+
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+                                          bool isFormSaved =
+                                              await form1bProvider
+                                                  .saveForm1bData(
+                                            form1bProvider.formData,
+                                            startInterviewTime,
+                                                context,
+                                          );
+
+                                          setState(() {
+                                            if (isFormSaved == true) {
+                                              isLoading = false;
+                                              if (context.mounted) {
+                                                context
+                                                    .read<StatsProvider>()
+                                                    .updateFormOneBStats();
+                                                context
+                                                    .read<AppMetaDataProvider>()
+                                                    .clearFormMetaData();
+                                              }
+                                              Get.snackbar(
+                                                'Success',
+                                                'Form1B data saved successfully.',
+                                                duration:
+                                                    const Duration(seconds: 2),
+                                                snackPosition:
+                                                    SnackPosition.TOP,
+                                                // Display at the top of the screen
+                                                backgroundColor: Colors.green,
+                                                colorText: Colors.white,
+                                                margin:
+                                                    const EdgeInsets.all(16),
+                                                borderRadius: 8,
+                                              );
+                                              Navigator.pop(context);
+                                              selectedStep = 0;
+                                            }
+                                          });
+                                        }
+                                      }
+                                    } else {
+                                      setState(() {
+                                        isLoading = false;
+                                        if (selectedStep < steps.length - 1) {
+                                          selectedStep++;
+                                        }
+                                      });
+                                    }
+                                  } catch (e) {
+                                    if(e.toString() == locationDisabled || e.toString() == locationDenied){
+                                      if(context.mounted) {
+                                        locationMissingDialog(context);
                                       }
                                     }
-                                  } else {
-                                    setState(() {
-                                      if (selectedStep < steps.length - 1) {
-                                        selectedStep++;
-                                      }
-                                    });
                                   }
                                 },
                               ),

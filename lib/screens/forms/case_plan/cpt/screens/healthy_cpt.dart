@@ -1,6 +1,7 @@
 import 'dart:core';
 
 import 'package:cpims_mobile/Models/case_load_model.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/add_cpt_button.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -483,58 +484,6 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           },
         ),
         const SizedBox(height: 10),
-        //BUTTON TO SAVE
-        // Row(
-        //   children: [
-        //     Expanded(
-        //         child: CustomButton(
-        //       onTap: () async {
-        //         String ovcId = widget.caseLoadModel!.cpimsId ?? "";
-        //         reasonForNotAchievingCasePlan =
-        //             textEditingController.text.toString();
-        //
-        //         CptHealthFormData cptHealthFormData =
-        //             context.read<CptProvider>().cptHealthFormData ??
-        //                 CptHealthFormData();
-        //
-        //         // Update all the fields at once
-        //         CptHealthFormData updatedFormData = cptHealthFormData.copyWith(
-        //           reasonId: reasonForNotAchievingCasePlan,
-        //           ovcCpimsId: ovcId,
-        //           domainId: casePlanProviderDomainList[0].value,
-        //         );
-        //
-        //         context.read<CptProvider>().updateCptFormData(updatedFormData);
-        //
-        //         // Retrieve the updated CptHealthFormData
-        //         CptHealthFormData? healthCptFormData =
-        //             context.read<CptProvider>().cptHealthFormData;
-        //
-        //         // Map the updated CptHealthFormData to CasePlanHealthyModel
-        //         CasePlanHealthyModel casePlanModel =
-        //             mapCptHealthFormDataToCasePlan(healthCptFormData!);
-        //
-        //         //map caseplan healthyModelToCasePlanFormModel
-        //         CasePlanModel casePlanFormModel =
-        //             mapCasePlanHealthyToCasePlan(casePlanModel);
-        //
-        //         bool isFormSaved =
-        //             await CasePlanService.saveCasePlanLocal(casePlanFormModel);
-        //         if (isFormSaved) {
-        //           Get.snackbar(
-        //             'Success',
-        //             'Health Case Plan Saved Successfully',
-        //             snackPosition: SnackPosition.BOTTOM,
-        //             backgroundColor: Colors.green,
-        //             colorText: Colors.white,
-        //             duration: const Duration(seconds: 2),
-        //           );
-        //         }
-        //       },
-        //       text: 'Save',
-        //     )),
-        //   ],
-        // ),
       ],
     );
   }

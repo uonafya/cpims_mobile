@@ -6,15 +6,21 @@ import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_fo
 import 'package:cpims_mobile/services/api_service.dart';
 import 'package:cpims_mobile/utils/strings.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class HIVAssessmentProvider with ChangeNotifier {
   CaseLoadModel _caseLoadModel = CaseLoadModel();
+
   CaseLoadModel get caseLoadModel => _caseLoadModel;
   HIVCurrentStatusModel _hivCurrentStatusModel = HIVCurrentStatusModel();
+
   HIVCurrentStatusModel get hivCurrentStatusModel => _hivCurrentStatusModel;
   HIVRiskAssessmentModel _hivRiskAssessmentModel = HIVRiskAssessmentModel();
+
   HIVRiskAssessmentModel get hivRiskAssessmentModel => _hivRiskAssessmentModel;
   ProgressMonitoringModel _progressMonitoringModel = ProgressMonitoringModel();
+
   ProgressMonitoringModel get progressMonitoringModel =>
       _progressMonitoringModel;
 
@@ -32,10 +38,10 @@ class HIVAssessmentProvider with ChangeNotifier {
 
   void updateHIVCurrentStatusModel(HIVCurrentStatusModel model) {
     _hivCurrentStatusModel = model;
-    if (_hivCurrentStatusModel.hivStatus == "HIV_Positive" &&
-        _hivCurrentStatusModel.dateOfAssessment.isNotEmpty) {
-      updateFormIndex(2);
-    }
+    // if (_hivCurrentStatusModel.hivStatus == "HIV_Positive" &&
+    //     _hivCurrentStatusModel.dateOfAssessment.isNotEmpty) {
+    //   updateFormIndex(2);
+    // }
     if (kDebugMode) {
       print(hivCurrentStatusModel.toJson());
     }
@@ -58,14 +64,13 @@ class HIVAssessmentProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearForms() {
-    _hivRiskAssessmentModel = HIVRiskAssessmentModel();
-    _progressMonitoringModel = ProgressMonitoringModel();
-    _progressMonitoringModel.reasonForNotMakingReferral = "A";
-    notifyListeners();
-  }
-
-  Future<void> submitHIVAssessmentForm() async {
+  // void clearForms() {
+  //   _hivRiskAssessmentModel = HIVRiskAssessmentModel();
+  //   _progressMonitoringModel = ProgressMonitoringModel();
+  //   _progressMonitoringModel.reasonForNotMakingReferral = "A";
+  //   notifyListeners();
+  // }
+  Future<void> submitHIVAssessmentForm(String startTime) async {
     try {
       final data = {
         'ovc_cpims_id': caseLoadModel.cpimsId,
@@ -74,27 +79,36 @@ class HIVAssessmentProvider with ChangeNotifier {
         ..._progressMonitoringModel.toJson(),
       };
 
-      //Replace all Yes string with true and No string with false
+      // Convert "Yes" to "AYES" and "No" to "ANO"
       data.forEach((key, value) {
-        if (value == "Yes") {
-          data[key] = convertBooleanStringToDBBoolen("Yes");
-        } else if (value == "No") {
-          data[key] = convertBooleanStringToDBBoolen("No");
+        if (value is String) {
+          if (value.toLowerCase() == 'yes') {
+            data[key] = 'AYES';
+          } else if (value.toLowerCase() == 'no') {
+            data[key] = 'ANO';
+          }
         }
       });
+
+      debugPrint("HIV Assessment Data: $data");
+
+      String formUuid = const Uuid().v4();
       await LocalDb.instance.insertHRSData(
           caseLoadModel.cpimsId!,
           _hivCurrentStatusModel,
           _hivRiskAssessmentModel,
-          _progressMonitoringModel);
+          _progressMonitoringModel,
+          formUuid,
+          startTime,
+          "HIV Risk Assessment"
+      );
 
-      await apiServiceConstructor.postSecData(data, "mobile/hrs/");
+      resetWholeForm();
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
+      rethrow;
     }
   }
+
 
   void resetWholeForm() {
     _hivCurrentStatusModel = HIVCurrentStatusModel();

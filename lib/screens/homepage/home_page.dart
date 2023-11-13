@@ -3,11 +3,13 @@ import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/caregiver/caregiver.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/preventive/preventive_assesment_attendance.dart';
 import 'package:cpims_mobile/screens/homepage/provider/stats_provider.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
+import 'package:cpims_mobile/services/api_service.dart';
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
@@ -44,6 +46,8 @@ class _HomepageState extends State<Homepage> {
   late int cparaCount = 0;
   late int ovcSubpopulatoiCount = 0;
   late int cptCount = 0;
+  late int hmfFormCount = 0;
+  late int hrsFormCount = 0;
 
   // late int
   int? updatedCountA = 0;
@@ -51,6 +55,8 @@ class _HomepageState extends State<Homepage> {
   int? updatedCountCpara = 0;
   int? updatedCountOvcSubpopulation = 0;
   int? updatedCptCount = 0;
+  int? updatedHrsCount = 0;
+  int? updatedHmfCount = 0;
 
   @override
   void initState() {
@@ -82,6 +88,7 @@ class _HomepageState extends State<Homepage> {
 
     for (var caseplan in caseplanFromDb) {
       var payload = caseplan.toJson();
+      print("The payload is $payload");
       try {
         const cptEndpoint = "mobile/cpt/";
         var response = await dio.post("$cpimsApiUrl$cptEndpoint",
@@ -90,6 +97,7 @@ class _HomepageState extends State<Homepage> {
 
         if (response.statusCode == 201) {
           updateFormCasePlanDateSync(caseplan.id!, db);
+          debugPrint("Data posted  successfully to server is $payload");
           //clear caseplan data in provider
           successfulFormCount++;
           if (successfulFormCount == caseplanFromDb.length) {
@@ -153,6 +161,68 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
+  Future<void> syncHMFFormData() async {
+    final db = LocalDb.instance;
+    try {
+      // read from localdb
+      final queryResults = await db.fetchHMFFormData();
+      // submit data
+      for (final formData in queryResults) {
+        final Response response =
+            await apiServiceConstructor.postSecData(formData, "mobile/hmf/");
+        if (kDebugMode) {
+          print("Data ${response.data}");
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
+  Future<void> syncHRSFormData() async {
+    var prefs = await SharedPreferences.getInstance();
+    var bearerToken = prefs.getString('access');
+
+    if (bearerToken == null) {
+      // Handle the case where the token is not available.
+      return;
+    }
+    final db = await LocalDb.instance;
+    try {
+      final queryResults = await db.fetchHRSFormData();
+      final Dio dio = Dio();
+      dio.options.headers['Authorization'] = 'Bearer $bearerToken';
+      dio.interceptors.add(LogInterceptor());
+
+      // Submit data
+      for (final formData in queryResults) {
+        try {
+          final response =
+              await dio.post('${cpimsApiUrl}mobile/hrs/', data: formData);
+          if (kDebugMode) {
+            print(response.toString());
+          }
+
+          if (response.statusCode == 201) {
+            await db.updateHRSData(formData['uuid']);
+          }
+        } catch (error) {
+          // Handle the error, you may want to retry or log it
+          if (kDebugMode) {
+            print(error);
+          }
+        }
+      }
+    } catch (e) {
+      // Handle the error, you may want to retry or log it
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
   Future<void> syncWorkflows() async {
     final isConnected =
         await Provider.of<ConnectivityProvider>(context, listen: false)
@@ -160,12 +230,15 @@ class _HomepageState extends State<Homepage> {
     if (isConnected) {
       await submitCparaToUpstream();
       await postCasePlansToServer();
-      // await fetchAndPostToServerOvcSubpopulationDataNew();
       await postFormOneToServer();
       await showCountUnsyncedForms();
+      await syncHRSFormData();
+      await syncHMFFormData();
       if (mounted) {
         context.read<StatsProvider>().updateFormStats();
       }
+    }else{
+      await showCountUnsyncedForms();
     }
   }
 
@@ -175,6 +248,9 @@ class _HomepageState extends State<Homepage> {
     updatedCountCpara = (await Form1Service.getCountAllFormCpara())!;
     updatedCountOvcSubpopulation = await Form1Service.ovcSubCount();
     updatedCptCount = await CasePlanService.getCaseplanUnsyncedCount();
+    updatedHrsCount = await CasePlanService.getCountOfHmfForms();
+    updatedHmfCount = await CasePlanService.getCountOfHRSForms();
+
     setState(() {
       formOneACount = updatedCountA!;
       formOneBCount = updatedCountB!;
@@ -265,6 +341,8 @@ class _HomepageState extends State<Homepage> {
                       form1BCount: formStats.formOneBCount,
                       cpaCount: formStats.cptCount,
                       cparaCount: formStats.cparaCount,
+                      hrsCount: formStats.hrsCount,
+                      hmfCount: formStats.hmfCount,
                       onClick: () {},
                     ),
                     StatisticsItem(
@@ -276,6 +354,8 @@ class _HomepageState extends State<Homepage> {
                       form1BCount: dashData.unapprovedF1B,
                       cpaCount: dashData.unapprovedCPR,
                       cparaCount: dashData.unapprovedCPT,
+                      hrsCount: dashData.unapprovedHRS,
+                      hmfCount: dashData.unapprovedHMF,
                       onClick: () {
                         Get.to(() => const UnapprovedRecordsScreens());
                       },
@@ -385,8 +465,24 @@ class _HomepageState extends State<Homepage> {
                 right: 30,
                 left: 20,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    SizedBox(
+                      width: 140,
+                      child: CustomButton(
+                        onTap: () {
+                          Get.to(
+                            () => const PreventiveAssessment(),
+                            transition: Transition.cupertino,
+                            duration: const Duration(
+                              milliseconds: 200,
+                            ),
+                          );
+                        },
+                        text: "Preventive",
+                        color: Colors.grey,
+                      ),
+                    ),
                     SizedBox(
                       width: 140,
                       child: CustomButton(

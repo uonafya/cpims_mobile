@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:cpims_mobile/Models/caseplan_form_model.dart';
 import 'package:cpims_mobile/Models/form_1_model.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/services/api_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../constants.dart';
@@ -24,9 +24,10 @@ class Form1Service {
       await db.insertForm1Data(formType, formData, metadata, uuid);
       return true;
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
+      // if (kDebugMode) {
+      //   print(e);
+      // }
+      rethrow;
     }
     return false;
   }
@@ -220,11 +221,11 @@ class Form1Service {
 
 class CasePlanService {
   // save form to local storage
-  static saveCasePlanLocal(formData) async {
+  static saveCasePlanLocal(formData,formUuid,startTimeOfInterview) async {
 //save the form data that is in the form of a map to  a local database
     final db = LocalDb.instance;
     try {
-      await db.insertCasePlanNew(formData);
+      await db.insertCasePlanNew(formData,formUuid,startTimeOfInterview);
       return true;
     } catch (e) {
       if (kDebugMode) {
@@ -314,4 +315,40 @@ class CasePlanService {
     }
     return 0; // Return 0 if there is an error.
   }
+
+  static getCountOfHmfForms() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.countHMFFormData();
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error on getCountOfHmfForms: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
+  }
+
+  static getCountOfHRSForms() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.countHRSFormData();
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error on getCountOfHmfForms: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
+  }
+
 }
+
