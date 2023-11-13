@@ -64,8 +64,7 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
 
   @override
   Widget build(BuildContext context) {
-    final formCompletionStatus =
-        context.watch<FormCompletionStatusProvider>().artTherapyFormCompleted;
+    final formCompletionStatus = context.watch<FormCompletionStatusProvider>();
 
     return Scaffold(
       appBar: customAppBar(),
@@ -165,33 +164,66 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                       isLoading = true;
                                     });
                                     // logic for verifying form and submitting
-                                    AppMetaDataProvider appMetaDataProvider =
-                                        Provider.of<AppMetaDataProvider>(
-                                            context,
-                                            listen: false);
-                                    String startInterviewTime =
-                                        appMetaDataProvider
-                                                .startTimeInterview ??
-                                            DateTime.now().toIso8601String();
-                                    submitHIVManagementForm(startInterviewTime);
+                                    if (formCompletionStatus
+                                            .hivVisitationFormCompleted ==
+                                        true) {
+                                      AppMetaDataProvider appMetaDataProvider =
+                                          Provider.of<AppMetaDataProvider>(
+                                              context,
+                                              listen: false);
+                                      String startInterviewTime =
+                                          appMetaDataProvider
+                                                  .startTimeInterview ??
+                                              DateTime.now().toIso8601String();
+                                      submitHIVManagementForm(
+                                          startInterviewTime);
 
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                    HIVManagementFormProvider
-                                        hivManagementFormProvider =
-                                        Provider.of<HIVManagementFormProvider>(
-                                            context,
-                                            listen: false);
-                                    hivManagementFormProvider.clearForms();
-                                    Navigator.pop(context);
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                      HIVManagementFormProvider
+                                          hivManagementFormProvider = Provider
+                                              .of<HIVManagementFormProvider>(
+                                        context,
+                                        listen: false,
+                                      );
+                                      hivManagementFormProvider.clearForms();
+                                      Navigator.pop(context);
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              "Please fill in the required fields"),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                      return;
+                                    }
                                   } else {
-                                    setState(() {
-                                      if (selectedStep < steps.length - 1 &&
-                                          formCompletionStatus == true) {
-                                        selectedStep++;
-                                      }
-                                    });
+                                    setState(
+                                      () {
+                                        if (selectedStep < steps.length - 1 &&
+                                            formCompletionStatus
+                                                    .artTherapyFormCompleted ==
+                                                true) {
+                                          selectedStep++;
+                                        } else if (selectedStep <
+                                                steps.length - 1 &&
+                                            formCompletionStatus
+                                                    .artTherapyFormCompleted ==
+                                                false) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  "Please fill in the required fields"),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    );
                                   }
                                 } catch (e) {
                                   setState(() {
