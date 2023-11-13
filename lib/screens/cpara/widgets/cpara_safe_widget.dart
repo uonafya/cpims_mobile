@@ -122,11 +122,21 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
           if (value == RadioButtonOptions.no) {
             // Set values of radio buttons for questions 6.3 and 6.5 to yes
             exposedToViolence = RadioButtonOptions.yes;
+            List<SafeChild> newChildren = List.from(children);
+            newChildren.forEach((element) {
+              element.question1 = "yes";
+            });
+            children = newChildren;
             // _no_siblings_over_10 = RadioButtonOptions.yes;
           }
           if (value == RadioButtonOptions.yes) {
             // Set values of radio buttons for questions 6.3 and 6.5 to null
             exposedToViolence = null;
+            List<SafeChild> newChildren = List.from(children);
+            newChildren.forEach((element) {
+              element.question1 = "";
+            });
+            children = newChildren;
             // _no_siblings_over_10 = null;
           }
         });
@@ -524,7 +534,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                 const SkipQuestion()
               else
                 OtherQuestions(
-                  groupValue: childrenQuestionsOptions[i],
+                  groupValue: convertingStringToRadioButtonOptions(children[i].question1 ?? ""),
                   otherQuestion:
                       "6.3 Have you been exposed to violence, abuse (sexual, physical or emotional), neglect, or exploitation in the last six months?",
                   selectedOption: (value) {
@@ -544,6 +554,11 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
                           question1: selectedOption,
                           ovcId: children[i].ovcId,
                           name: children[i].name);
+
+                      children[i].question1 = convertingRadioButtonOptionsToString(value);
+                      setState(() {
+                        children = children;
+                      });
                     } catch (e) {
                       if (e is RangeError) {
                         childrenQuestions.add(SafeChild(
