@@ -131,9 +131,10 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
             }
           }
           Get.off(() => const Homepage());
-        } catch (e) {
+        } catch (e, stackTrace) {
           if (kDebugMode) {
             print("Error in init load: $e");
+            print('Stack trace: $stackTrace');
           }
         }
       },
