@@ -57,7 +57,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
   List<UnapprovedForm1DataModel> unapprovedForm1BData = [];
   List<UnapprovedCasePlanModel> unapprovedCaseplanData = [];
   List<UnapprovedForm1DataModel> unapprovedForm1Data = [];
-  List<UnapprovedCparaModel> unapprovedCparaData = [];
+  // List<UnapprovedCparaModel> unapprovedCparaData = [];
 
   void getRecords() async {
     final List<UnapprovedForm1DataModel> records = await UnapprovedDataService
@@ -71,15 +71,15 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     final List<
         UnapprovedCasePlanModel> unapprovedCaseplanRecords = await UnapprovedDataService
         .fetchLocalUnapprovedCasePlanData();
-    final List<UnapprovedCparaModel> cparaRecords = await UnapprovedCparaService
-        .getUnapprovedFromDB();
+    // final List<UnapprovedCparaModel> cparaRecords = await UnapprovedCparaService
+    //     .getUnapprovedFromDB();
     // Update unapprovedCparaData
-    unapprovedCparaData = cparaRecords;
-    if (context.mounted) {
-      context
-          .read<UnapprovedRecordsScreenProvider>()
-          .unapprovedCparas = cparaRecords;
-    }
+    // unapprovedCparaData = cparaRecords;
+    // if (context.mounted) {
+    //   context
+    //       .read<UnapprovedRecordsScreenProvider>()
+    //       .unapprovedCparas = cparaRecords;
+    // }
 
     setState(() {
       unapprovedForm1AData = form1ARecords;

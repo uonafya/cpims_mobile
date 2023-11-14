@@ -3,6 +3,9 @@
 import 'package:android_id/android_id.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
+import 'package:cpims_mobile/providers/cpara/unapproved_cpara_database.dart';
+import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
+import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/auth/login_screen.dart';
 import 'package:cpims_mobile/screens/biometric_information_screen.dart';
@@ -119,8 +122,17 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
 
               await UnapprovedDataService.fetchRemoteUnapprovedData(accessToken);
 
-              await Provider.of<UIProvider>(context, listen: false)
-                  .setCaseLoadData();
+              // fetch unapproved data from local db
+              final List<UnapprovedCparaModel> cparaRecords = await UnapprovedCparaService
+                  .getUnapprovedFromDB();
+             if(mounted){
+               context
+                   .read<UnapprovedRecordsScreenProvider>()
+                   .unapprovedCparas = cparaRecords;
+
+               await Provider.of<UIProvider>(context, listen: false)
+                   .setCaseLoadData();
+             }
               try {
                 await MetadataService.fetchMetadata();
               } catch (e) {

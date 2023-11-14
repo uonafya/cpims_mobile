@@ -75,6 +75,8 @@ class UnapprovedDataService {
         var info = await fetchRemoteUnapprovedCparaData(baseUrl: endpoint);
       List<UnapprovedCparaDatabase> listOfUnaprovedCparas =
       listOfUnapprovedCparas(remoteData: info);
+      // // todo: remove after testing
+      // listOfUnaprovedCparas = [listOfUnaprovedCparas.elementAt(4)];
 
       // Expects a map i.e decoded JSON
       for (UnapprovedCparaDatabase unapprovedCpara in listOfUnaprovedCparas) {
@@ -82,7 +84,6 @@ class UnapprovedDataService {
       fetchUnaprovedCpara(cparaDatabase: unapprovedCpara);
 
       // Insert UnapprovedCparaModel
-      // final db = LocalDb.instance;
       var localDB = await db.database;
 
       // Check if form has already been stored in db
@@ -92,11 +93,6 @@ class UnapprovedDataService {
 
       if (fetchResult == null || fetchResult.isEmpty) {
       try {
-      // Store metadata
-      db.insertUnapprovedAppFormMetaData(
-      model.uuid, model.appFormMetaData, 'cpara');
-
-      // Insert in DB
       await UnapprovedCparaService.storeInDB(
       localDB,
       model,

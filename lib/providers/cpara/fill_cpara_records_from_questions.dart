@@ -26,7 +26,7 @@ Future<UnapprovedCparaModel> fillCparaFromQuestions(
         model.stable.question2 = form['answer_id'] ?? "";
         break;
       case CparaQuestionIds.stableQuestion3:
-        model.stable.question2 = form['answer_id'] ?? "";
+        model.stable.question3 = form['answer_id'] ?? "";
         break;
       // Schooled
       case CparaQuestionIds.schooledQuestion1:
