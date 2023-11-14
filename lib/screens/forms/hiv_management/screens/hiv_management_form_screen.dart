@@ -53,9 +53,17 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
           .submitHIVManagementForm(widget.caseLoad.cpimsId, formUUid,
               startInterviewTime, "HIV Management Form",
               context: context);
+
       if (context.mounted) {
         context.read<StatsProvider>().updateHmfStats();
         Navigator.pop(context);
+        Get.snackbar(
+          'Success',
+          'HIV Management Form submitted successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
       }
     } catch (e) {
       rethrow;
