@@ -644,7 +644,7 @@ class _HomepageState extends State<Homepage> {
       Get.snackbar('Info', 'No Form1A and Form1B forms to sync',
           backgroundColor: Colors.orange,
           colorText: Colors.black,
-          snackPosition: SnackPosition.BOTTOM);
+          snackPosition: SnackPosition.TOP);
     }
     if (mounted) {
       Get.closeAllSnackbars();

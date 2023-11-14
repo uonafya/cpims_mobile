@@ -13,6 +13,7 @@ import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/app_meta_data_provider.dart';
@@ -20,6 +21,7 @@ import '../../../providers/form1b_provider.dart';
 import '../../../widgets/custom_forms_date_picker.dart';
 import '../../../widgets/custom_toast.dart';
 import '../../../widgets/location_dialog.dart';
+import '../../cpara/widgets/cpara_details_widget.dart';
 import '../../homepage/provider/stats_provider.dart';
 
 class Form1BScreen extends StatefulWidget {
@@ -34,6 +36,7 @@ class Form1BScreen extends StatefulWidget {
 class _Form1BScreen extends State<Form1BScreen> {
   int selectedStep = 0;
   bool isLoading = false;
+  String dateOfEvent = '';
 
   List<Widget> steps = [
     const HealthyForm1b(),
@@ -60,7 +63,7 @@ class _Form1BScreen extends State<Form1BScreen> {
         Provider.of<Form1bProvider>(context, listen: false);
 
     bool isFormInvalid() {
-      return ((form1bProvider.formData.selectedDate == null) ||
+      return ((form1bProvider.formData.selectedDate == null) &&
           (form1bProvider.formData.selectedServices.isBlank! &&
               form1bProvider.safeFormData.selectedServices.isBlank! &&
               form1bProvider.stableFormData.selectedServices.isBlank! &&
@@ -138,14 +141,22 @@ class _Form1BScreen extends State<Form1BScreen> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 10),
-                                CustomFormsDatePicker(
-                                    allowFutureDates: false,
-                                    hintText: 'Select the date',
-                                    selectedDateTime:
-                                        form1bProvider.formData.selectedDate,
-                                    onDateSelected: (selectedDate) {
-                                      form1bProvider
-                                          .setSelectedDate(selectedDate);
+                                DateTextField(
+                                    label: dateOfEvent.isNotEmpty
+                                        ? dateOfEvent
+                                        : 'Select the date',
+                                    enabled: true,
+                                    identifier: DateTextFieldIdentifier
+                                        .dateOfAssessment,
+                                    onDateSelected: (value) {
+                                      setState(() {
+                                        dateOfEvent = DateFormat("yyyy-MM-dd")
+                                            .format(value!);
+                                        if (dateOfEvent.isNotEmpty) {
+                                          form1bProvider
+                                              .setSelectedDate(dateOfEvent);
+                                        }
+                                      });
                                     }),
                                 const SizedBox(
                                   height: 15,
@@ -186,9 +197,20 @@ class _Form1BScreen extends State<Form1BScreen> {
                                     if (selectedStep == steps.length - 1) {
                                       if (form1bProvider
                                               .formData.selectedDate ==
-                                          null) {
-                                        CustomToastWidget.showToast(
-                                            "Please select date of event");
+                                          "") {
+                                        Get.snackbar(
+                                          'Error',
+                                          'Please select date of event',
+                                          duration: const Duration(seconds: 2),
+                                          snackPosition: SnackPosition.TOP,
+                                          backgroundColor: Colors.red,
+                                          colorText: Colors.white,
+                                          margin: const EdgeInsets.all(16),
+                                          borderRadius: 8,
+                                        );
+                                        setState(() {
+                                          isLoading = false;
+                                        });
                                         return;
                                       } else {
                                         if (isFormInvalid()) {
@@ -203,6 +225,9 @@ class _Form1BScreen extends State<Form1BScreen> {
                                             margin: const EdgeInsets.all(16),
                                             borderRadius: 8,
                                           );
+                                          setState(() {
+                                            isLoading = false;
+                                          });
                                           return;
                                         } else {
                                           String startInterviewTime = '';
@@ -211,6 +236,22 @@ class _Form1BScreen extends State<Form1BScreen> {
                                                     .read<AppMetaDataProvider>()
                                                     .startTimeInterview ??
                                                 '';
+                                          }
+                                          if (dateOfEvent.isEmpty && form1bProvider.formData.selectedDate == "") {
+                                            Get.snackbar(
+                                              'Error',
+                                              'Please select date of event',
+                                              duration:
+                                                  const Duration(seconds: 2),
+                                              snackPosition: SnackPosition.TOP,
+                                              backgroundColor: Colors.red,
+                                              colorText: Colors.white,
+                                              margin: const EdgeInsets.all(16),
+                                              borderRadius: 8,
+                                            );
+                                            setState(() {
+                                              isLoading = false;
+                                            });
                                           }
 
                                           setState(() {
@@ -221,7 +262,7 @@ class _Form1BScreen extends State<Form1BScreen> {
                                                   .saveForm1bData(
                                             form1bProvider.formData,
                                             startInterviewTime,
-                                                context,
+                                            context,
                                           );
 
                                           setState(() {
@@ -264,8 +305,9 @@ class _Form1BScreen extends State<Form1BScreen> {
                                       });
                                     }
                                   } catch (e) {
-                                    if(e.toString() == locationDisabled || e.toString() == locationDenied){
-                                      if(context.mounted) {
+                                    if (e.toString() == locationDisabled ||
+                                        e.toString() == locationDenied) {
+                                      if (context.mounted) {
                                         locationMissingDialog(context);
                                       }
                                     }

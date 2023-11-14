@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/utils/form_one_a_provider.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_critical.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_safe.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Models/case_load_model.dart';
@@ -35,7 +37,7 @@ class FomOneA extends StatefulWidget {
 class _FomOneAState extends State<FomOneA> {
   int selectedStep = 0;
   bool isLoading = false;
-
+  String dateOfEvent = '';
   List<Widget> steps = [
     const FormOneAHealthy(),
     const FormOneASafe(),
@@ -139,14 +141,24 @@ class _FomOneAState extends State<FomOneA> {
                                     fontSize: 12, fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 10),
-                              CustomFormsDatePicker(
-                                  hintText: 'Select the date',
-                                  selectedDateTime:
-                                      form1AProvider.formData.selectedDate,
-                                  allowFutureDates: false,
-                                  onDateSelected: (selectedDate) {
-                                    form1AProvider
-                                        .setSelectedDate(selectedDate);
+                              DateTextField(
+                                  label: dateOfEvent.isNotEmpty
+                                      ? dateOfEvent
+                                      : 'Select the date',
+                                  enabled: true,
+                                  identifier:
+                                      DateTextFieldIdentifier.dateOfAssessment,
+                                  onDateSelected: (value) {
+                                    setState(() {
+                                      dateOfEvent = DateFormat("yyyy-MM-dd")
+                                          .format(value!);
+                                      debugPrint(
+                                          "The selected date is $value and date of event is $dateOfEvent");
+                                      if (dateOfEvent.isNotEmpty) {
+                                        form1AProvider.setSelectedDateOfEvent(
+                                            dateOfEvent);
+                                      }
+                                    });
                                   }),
                               const SizedBox(
                                 height: 15,
@@ -210,6 +222,25 @@ class _FomOneAState extends State<FomOneA> {
                                         isLoading = true;
                                       });
 
+                                      //check if date of event is empty
+                                      if (dateOfEvent.isEmpty &&
+                                          form1AProvider
+                                                  .formData.selectedDate ==
+                                              "") {
+                                        Get.snackbar(
+                                          'Error',
+                                          'Please select date of event',
+                                          backgroundColor: Colors.red,
+                                          colorText: Colors.white,
+                                        );
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                      } else {
+                                        form1AProvider.setSelectedDateOfEvent(
+                                            dateOfEvent);
+                                      }
+
                                       bool isFormSaved =
                                           await form1AProvider.saveForm1AData(
                                               form1AProvider.formData,
@@ -249,8 +280,9 @@ class _FomOneAState extends State<FomOneA> {
                                           "Error getting user location: $e",
                                         );
                                       }
-                                      if(e.toString() == locationDisabled || e.toString() == locationDenied){
-                                        if(context.mounted) {
+                                      if (e.toString() == locationDisabled ||
+                                          e.toString() == locationDenied) {
+                                        if (context.mounted) {
                                           locationMissingDialog(context);
                                         }
                                       }
@@ -286,26 +318,25 @@ class _FomOneAState extends State<FomOneA> {
   }
 }
 
-Future<Position> getUserLocation(
-    // {required BuildContext context}
+Future<Position> getUserLocation(// {required BuildContext context}
     ) async {
   // try{
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw (locationDisabled);
-    }
-    LocationPermission permission = await Geolocator.checkPermission();
+  bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    throw (locationDisabled);
+  }
+  LocationPermission permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        throw(locationDenied);
-      }
+      throw (locationDenied);
     }
+  }
 
-    if (permission == LocationPermission.deniedForever) {
-      throw(locationDenied);
-    }
-    return await Geolocator.getCurrentPosition();
+  if (permission == LocationPermission.deniedForever) {
+    throw (locationDenied);
+  }
+  return await Geolocator.getCurrentPosition();
   // }
   // catch(e){
   //   locationMissingDialog(context);

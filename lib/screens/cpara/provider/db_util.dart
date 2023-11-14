@@ -196,7 +196,7 @@ Future<void> submitCparaToUpstream() async {
         Get.snackbar(
           "Success",
           "CPARA Forms synced successfully",
-          snackPosition: SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.green,
           colorText: Colors.white,
           duration: const Duration(seconds: 3),

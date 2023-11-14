@@ -21,7 +21,7 @@ import 'connection_provider.dart';
 
 class Form1bProvider extends ChangeNotifier {
   final HealthFormData _formData = HealthFormData(
-      selectedServices: [], selectedDate: DateTime.now(), domainId: "");
+      selectedServices: [], selectedDate:"", domainId: "");
   final StableFormData _stableFormData =
       StableFormData(selectedServices: [], domainId: "");
   final SafeFormData _safeFormData =
@@ -35,7 +35,7 @@ class Form1bProvider extends ChangeNotifier {
   final CriticalEventDataForm1b _criticalEventDataForm1b =
       CriticalEventDataForm1b(
     selectedEvents: [],
-    selectedDate: DateTime.now(),
+    selectedDate: "",
   );
 
   HealthFormData get formData => _formData;
@@ -73,13 +73,12 @@ class Form1bProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setSelectedDate(DateTime? selectedDate) {
-    // CustomToastWidget.showToast(selectedDate);
+  void setSelectedDate(String selectedDate) {
     _formData.selectedDate = selectedDate;
     notifyListeners();
   }
 
-  void setCriticalEventsSelectedDate(DateTime selectedDate) {
+  void setCriticalEventsSelectedDate(String selectedDate) {
     _criticalEventDataForm1b.selectedDate = selectedDate;
     notifyListeners();
   }
@@ -95,9 +94,8 @@ class Form1bProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setFinalFormDataDOE(DateTime dateOfEvent) {
-    _finalServicesFormData.date_of_event =
-        DateFormat('yyyy-MM-dd').format(dateOfEvent);
+  void setFinalFormDataDOE(String dateOfEvent) {
+    _finalServicesFormData.date_of_event =dateOfEvent;
     _criticalEventDataForm1b.selectedDate = dateOfEvent;
     notifyListeners();
   }
@@ -216,12 +214,13 @@ class Form1bProvider extends ChangeNotifier {
 
     for (int i = 0; i < criticalEventDataForm1b.selectedEvents.length; i++) {
       final eventId = criticalEventDataForm1b.selectedEvents[i].value;
-      final eventDate =
-          DateFormat('yyyy-MM-dd').format(criticalEventDataForm1b.selectedDate);
+      final eventDate =criticalEventDataForm1b.selectedDate;
 
-      eventsList.add(
-        Form1CriticalEventsModel(eventId: eventId!, eventDate: eventDate),
-      );
+      if(eventDate != ""){
+        eventsList.add(
+          Form1CriticalEventsModel(eventId: eventId!, eventDate: eventDate),
+        );
+      }
     }
 
     return eventsList;
@@ -231,7 +230,7 @@ class Form1bProvider extends ChangeNotifier {
 
   void resetFormData() {
     _formData.selectedServices.clear();
-    _formData.selectedDate = DateTime.now();
+    _formData.selectedDate = "";
     _formData.domainId = '1234';
 
     _stableFormData.selectedServices.clear();
@@ -246,7 +245,7 @@ class Form1bProvider extends ChangeNotifier {
     _finalServicesFormData.ovc_cpims_id = '';
 
     _criticalEventDataForm1b.selectedEvents.clear();
-    _criticalEventDataForm1b.selectedDate = DateTime.now();
+    _criticalEventDataForm1b.selectedDate = "";
 
     notifyListeners();
   }
