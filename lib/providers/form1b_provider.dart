@@ -20,8 +20,8 @@ import '../screens/forms/form1b/utils/StableForm1bModel.dart';
 import 'connection_provider.dart';
 
 class Form1bProvider extends ChangeNotifier {
-  final HealthFormData _formData = HealthFormData(
-      selectedServices: [], selectedDate:"", domainId: "");
+  final HealthFormData _formData =
+      HealthFormData(selectedServices: [], selectedDate: "", domainId: "");
   final StableFormData _stableFormData =
       StableFormData(selectedServices: [], domainId: "");
   final SafeFormData _safeFormData =
@@ -95,7 +95,7 @@ class Form1bProvider extends ChangeNotifier {
   }
 
   void setFinalFormDataDOE(String dateOfEvent) {
-    _finalServicesFormData.date_of_event =dateOfEvent;
+    _finalServicesFormData.date_of_event = dateOfEvent;
     _criticalEventDataForm1b.selectedDate = dateOfEvent;
     notifyListeners();
   }
@@ -115,7 +115,7 @@ class Form1bProvider extends ChangeNotifier {
   Future<bool> saveForm1bData(
     HealthFormData healthFormData,
     String startInterviewTime,
-      BuildContext context,
+    BuildContext context,
   ) async {
     List<MasterServicesFormData> masterServicesList =
         convertToMasterServicesFormData();
@@ -150,25 +150,28 @@ class Form1bProvider extends ChangeNotifier {
       startOfInterview: startInterviewTime,
     );
 
-    Form1DataModel toDbData = Form1DataModel(
-      uuid: formUuid,
-      ovcCpimsId: finalServicesFormData.ovc_cpims_id,
-      dateOfEvent: finalServicesFormData.date_of_event,
-      services: servicesList,
-      criticalEvents: criticalEventsList,
-    );
+    if (!(finalServicesFormData.date_of_event == '')) {
+      Form1DataModel toDbData = Form1DataModel(
+        uuid: formUuid,
+        ovcCpimsId: finalServicesFormData.ovc_cpims_id,
+        dateOfEvent: finalServicesFormData.date_of_event,
+        services: servicesList,
+        criticalEvents: criticalEventsList,
+      );
 
-    bool isFormSaved = await Form1Service.saveFormLocal(
-      "form1b",
-      toDbData,
-      appFormMetaData,
-      formUuid,
-    );
-    if (isFormSaved == true) {
-      resetFormData();
-      notifyListeners();
+      bool isFormSaved = await Form1Service.saveFormLocal(
+        "form1b",
+        toDbData,
+        appFormMetaData,
+        formUuid,
+      );
+      if (isFormSaved == true) {
+        resetFormData();
+        notifyListeners();
+      }
+      return isFormSaved;
     }
-    return isFormSaved;
+    return false;
   }
 
   //converting the various services from the domains into one Services list with domain id and service id
@@ -214,9 +217,9 @@ class Form1bProvider extends ChangeNotifier {
 
     for (int i = 0; i < criticalEventDataForm1b.selectedEvents.length; i++) {
       final eventId = criticalEventDataForm1b.selectedEvents[i].value;
-      final eventDate =criticalEventDataForm1b.selectedDate;
+      final eventDate = criticalEventDataForm1b.selectedDate;
 
-      if(eventDate != ""){
+      if (eventDate != "") {
         eventsList.add(
           Form1CriticalEventsModel(eventId: eventId!, eventDate: eventDate),
         );

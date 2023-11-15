@@ -165,7 +165,35 @@ class Form1AProviderNew extends ChangeNotifier {
       formType: "form1a",
     );
 
-    if (finalServicesFormData.date_of_event == "") {
+    if (!(finalServicesFormData.date_of_event == "")) {
+      Form1DataModel toDbData = Form1DataModel(
+        ovcCpimsId: finalServicesFormData.ovc_cpims_id,
+        dateOfEvent: finalServicesFormData.date_of_event,
+        services: servicesList,
+        criticalEvents: criticalEventsList,
+        uuid: formUUID,
+      );
+      String data = jsonEncode(toDbData);
+      if (kDebugMode) {
+        print("The json data for form 1 a is $data");
+      }
+      if (kDebugMode) {
+        print("form1b payload:==========>$criticalEventsList");
+      }
+
+      bool isFormSaved = await Form1Service.saveFormLocal(
+        "form1a",
+        toDbData,
+        appFormMetaData,
+        formUUID,
+      );
+      if (isFormSaved == true) {
+        resetFormData();
+        notifyListeners();
+      }
+
+      return isFormSaved;
+    } else {
       Get.snackbar(
         'Error',
         'Please select date of event',
@@ -177,34 +205,7 @@ class Form1AProviderNew extends ChangeNotifier {
         borderRadius: 8,
       );
     }
-
-    Form1DataModel toDbData = Form1DataModel(
-      ovcCpimsId: finalServicesFormData.ovc_cpims_id,
-      dateOfEvent: finalServicesFormData.date_of_event,
-      services: servicesList,
-      criticalEvents: criticalEventsList,
-      uuid: formUUID,
-    );
-    String data = jsonEncode(toDbData);
-    if (kDebugMode) {
-      print("The json data for form 1 a is $data");
-    }
-    if (kDebugMode) {
-      print("form1b payload:==========>$criticalEventsList");
-    }
-
-    bool isFormSaved = await Form1Service.saveFormLocal(
-      "form1a",
-      toDbData,
-      appFormMetaData,
-      formUUID,
-    );
-    if (isFormSaved == true) {
-      resetFormData();
-      notifyListeners();
-    }
-
-    return isFormSaved;
+    return false;
   }
 
   //converting the various services from the domains into one Services list with domain id and service id
