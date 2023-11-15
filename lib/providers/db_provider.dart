@@ -17,6 +17,7 @@ import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_fo
 import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_form_model.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
+import 'package:cpims_mobile/utils/strings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -348,9 +349,9 @@ class LocalDb {
               .addHouseholdFilledQuestionsToDB(
                   db, formDateString, ovcId, formID)
               .then((value) => handleSubmit(
-                selectedDate: selectedDate,
-                formId: formID,
-                ovcSub: cparaModelDB.ovcSubPopulations));
+                  selectedDate: selectedDate,
+                  formId: formID,
+                  ovcSub: cparaModelDB.ovcSubPopulations));
         });
       });
     } catch (e) {
@@ -645,7 +646,6 @@ class LocalDb {
     }
   }
 
-
   Future<int> countHRSFormData() async {
     try {
       final db = await LocalDb.instance.database;
@@ -806,6 +806,15 @@ class LocalDb {
         // Create a mutable copy of hmfDataRow
         Map<String, dynamic> mutableHmfDataRow = Map.from(hmfDataRow);
 
+        // Loop through the formData map and apply modifications
+        mutableHmfDataRow.forEach((key, value) {
+          if (value == "Yes") {
+            mutableHmfDataRow[key] = convertBooleanStringToDBBoolen("Yes");
+          } else if (value == "No") {
+            mutableHmfDataRow[key] = convertBooleanStringToDBBoolen("No");
+          }
+        });
+
         // Convert "Yes" to "AYES" and "No" to "ANO" for specific fields
         _convertYesNoToAYESANO(mutableHmfDataRow, 'your_field_name');
         // Add more fields if needed
@@ -864,10 +873,6 @@ class LocalDb {
     }
   }
 
-
-
-
-
   Future<int> countHMFFormData() async {
     try {
       final db = await LocalDb.instance.database;
@@ -883,7 +888,6 @@ class LocalDb {
       return 0;
     }
   }
-
 
   Future<void> insertOvcSubpopulationData(String uuid, String cpimsId,
       String dateOfAssessment, List<CheckboxQuestion> questions) async {
@@ -946,7 +950,7 @@ class LocalDb {
           ); // Await the location here
       String lat = userLocation.latitude.toString();
       String longitude = userLocation.longitude.toString();
-      String deviceId= await getDeviceId();
+      String deviceId = await getDeviceId();
       await db.insert(
         appFormMetaDataTable,
         {
@@ -1625,7 +1629,6 @@ class LocalDb {
       where: 'form_id = ?',
       whereArgs: [uuid],
     );
-
 
     if (metaDataList.isNotEmpty) {
       return AppFormMetaData.fromJson(metaDataList.first);
