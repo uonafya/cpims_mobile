@@ -63,7 +63,7 @@ class _Form1BScreen extends State<Form1BScreen> {
         Provider.of<Form1bProvider>(context, listen: false);
 
     bool isFormInvalid() {
-      return ((form1bProvider.formData.selectedDate == null) &&
+      return ((form1bProvider.formData.selectedDate == null || form1bProvider.formData.selectedDate=='') &&
           (form1bProvider.formData.selectedServices.isBlank! &&
               form1bProvider.safeFormData.selectedServices.isBlank! &&
               form1bProvider.stableFormData.selectedServices.isBlank! &&
@@ -195,9 +195,7 @@ class _Form1BScreen extends State<Form1BScreen> {
                                 onTap: () async {
                                   try {
                                     if (selectedStep == steps.length - 1) {
-                                      if (form1bProvider
-                                              .formData.selectedDate ==
-                                          "") {
+                                      if (form1bProvider.formData.selectedDate == "") {
                                         Get.snackbar(
                                           'Error',
                                           'Please select date of event',

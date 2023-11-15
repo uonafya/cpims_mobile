@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
@@ -163,6 +164,19 @@ class Form1AProviderNew extends ChangeNotifier {
       startOfInterview: startInterviewTime,
       formType: "form1a",
     );
+
+    if (finalServicesFormData.date_of_event == "") {
+      Get.snackbar(
+        'Error',
+        'Please select date of event',
+        duration: const Duration(seconds: 2),
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        margin: const EdgeInsets.all(16),
+        borderRadius: 8,
+      );
+    }
 
     Form1DataModel toDbData = Form1DataModel(
       ovcCpimsId: finalServicesFormData.ovc_cpims_id,

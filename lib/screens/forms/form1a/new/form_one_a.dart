@@ -63,7 +63,8 @@ class _FomOneAState extends State<FomOneA> {
     bool isLastStep = selectedStep == steps.length - 1;
 
     bool isFormInvalid() {
-      return (form1AProvider.formData.selectedDate == null) ||
+      return (form1AProvider.formData.selectedDate == null ||
+              form1AProvider.formData.selectedDate == '') &&
           (form1AProvider.formData.selectedServices.isBlank! &&
               form1AProvider.safeFormData.selectedServices.isBlank! &&
               form1AProvider.stableFormData.selectedServices.isBlank! &&
@@ -142,9 +143,7 @@ class _FomOneAState extends State<FomOneA> {
                               ),
                               const SizedBox(height: 10),
                               DateTextField(
-                                  label: dateOfEvent.isNotEmpty
-                                      ? dateOfEvent
-                                      : 'Select the date',
+                                  label: dateOfEvent,
                                   enabled: true,
                                   identifier:
                                       DateTextFieldIdentifier.dateOfAssessment,
@@ -208,6 +207,9 @@ class _FomOneAState extends State<FomOneA> {
                                       margin: const EdgeInsets.all(16),
                                       borderRadius: 8,
                                     );
+                                    setState(() {
+                                      isLoading = false;
+                                    });
                                     return;
                                   } else {
                                     try {
@@ -227,20 +229,17 @@ class _FomOneAState extends State<FomOneA> {
                                           form1AProvider
                                                   .formData.selectedDate ==
                                               "") {
-                                        Get.snackbar(
-                                          'Error',
-                                          'Please select date of event',
-                                          backgroundColor: Colors.red,
-                                          colorText: Colors.white,
-                                        );
+                                        debugPrint("Missing date of event");
+                                        // Get.snackbar(
+                                        //   'Error',
+                                        //   'Please select date of event',
+                                        //   backgroundColor: Colors.red,
+                                        //   colorText: Colors.white,
+                                        // );
                                         setState(() {
                                           isLoading = false;
                                         });
-                                      } else {
-                                        form1AProvider.setSelectedDateOfEvent(
-                                            dateOfEvent);
                                       }
-
                                       bool isFormSaved =
                                           await form1AProvider.saveForm1AData(
                                               form1AProvider.formData,
