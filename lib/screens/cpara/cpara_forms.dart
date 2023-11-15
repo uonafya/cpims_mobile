@@ -10,6 +10,7 @@ import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/cpara/provider/unnaproved_cparas_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_healthy_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_safe_widget.dart';
@@ -33,6 +34,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../Models/case_load_model.dart';
+import '../../providers/cpara/unapproved_records_screen_provider.dart';
 import '../../widgets/location_dialog.dart';
 import 'model/ovc_model.dart';
 
@@ -386,6 +388,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                             careProviderId: ovcpmisid);
 
                                         if (context.mounted) {
+                                          if(widget.isRejected){
+                                            context.read<UnapprovedRecordsScreenProvider>().updateUnnapprovedCparas();
+                                          }
                                           cparaProvider.clearCparaProvider();
                                           context
                                               .read<StatsProvider>()

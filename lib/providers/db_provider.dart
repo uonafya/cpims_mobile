@@ -347,11 +347,11 @@ class LocalDb {
       var formDateString = formDate.toString().split(' ')[0];
       var formID = formData.formID;
       await cparaModelDB.addHouseholdFilledQuestionsToDB(db, selectedDate, ovcId, formID);
-      await insertAppFormMetaData(cparaModelDB.uuid, startTime, 'cpara');
+      // await insertAppFormMetaData(cparaModelDB.uuid, startTime, 'cpara');
       handleSubmit(selectedDate: selectedDate, formId: cparaModelDB.uuid, ovcSub: cparaModelDB.ovcSubPopulations);
 
       // Delete previous entries of unapproved
-      UnapprovedCparaService.deleteUnapprovedCparaForm(cparaModelDB.uuid);
+      await UnapprovedCparaService.deleteUnapprovedCparaForm(cparaModelDB.uuid);
     } else {
       String formUUID = const Uuid().v4();
       // Create form

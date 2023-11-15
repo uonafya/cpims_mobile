@@ -349,6 +349,5 @@ class CasePlanService {
     }
     return 0; // Return 0 if there is an error.
   }
-
 }
 

@@ -3,6 +3,7 @@ import 'package:cpims_mobile/providers/cpara/unapproved_cpara_database.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
 import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
@@ -59,32 +60,33 @@ class UnapprovedCparaService {
         });
       });
 
-      // Add health children
+      /// Add health children
       for (Map i in healtChildren) {
-        var jsonToAdd = {'form_id': model.uuid};
-        // Go through every question
+        // getting data for each child
+
         i.forEach((key, value) {
           if (key != "id") {
-            jsonToAdd['question_code'] = key;
-            jsonToAdd['answer_id'] = value;
-            jsonToAdd['ovc_cpims_id'] = i['id'];
-
-            questions.add(jsonToAdd);
+            questions.add({
+              "question_code": key,
+              "answer_id": value,
+              "ovc_cpims_id": i['id'],
+              "form_id": model.uuid
+            });
           }
         });
       }
 
-      // Add safe children
+      /// Add safe children
       for (Map i in safeChildren) {
-        var jsonToAdd = {'form_id': model.uuid};
-        // Go through every question
+        // getting data for each child
         i.forEach((key, value) {
           if (key != "id") {
-            jsonToAdd['question_code'] = key;
-            jsonToAdd['answer_id'] = value;
-            jsonToAdd['ovc_cpims_id'] = i['id'];
-
-            questions.add(jsonToAdd);
+            questions.add({
+              "question_code": key,
+              "answer_id": value,
+              "ovc_cpims_id": i['id'],
+              "form_id": model.uuid
+            });
           }
         });
       }
@@ -115,7 +117,7 @@ class UnapprovedCparaService {
       await batch.commit(noResult: true);
 
     } catch (err) {
-      print(err.toString());
+      debugPrint(err.toString());
       throw (cannot_store_unapproved_cpara);
     }
   }
@@ -220,30 +222,36 @@ class UnapprovedCparaService {
   }
 
   static void informUpstreamOfStoredUnapproved(String formID, bool saved) async{
-    var baseUrl = "mobile/unaccepted_records/cpara/";
+    try{
+      var baseUrl = "mobile/unaccepted_records/cpara/";
 
-    var prefs = await SharedPreferences.getInstance();
-    var accessToken = prefs.getString('access');
-    String bearerAuth = "Bearer $accessToken";
-    var responseData = {};
+      var prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getString('access');
+      String bearerAuth = "Bearer $accessToken";
+      var responseData = {};
 
-    if (saved == true) {
-      responseData = {
-        "id": formID,
-        "saved": 1,
-        "form_type": "cpara"
-      };
-    } else {
-      responseData = {
-        "id": formID,
-        "saved": 0,
-        "form_type": "cpara"
-      };
+      if (saved == true) {
+        responseData = {
+          "id": formID,
+          "saved": 1,
+          "form_type": "cpara"
+        };
+      } else {
+        responseData = {
+          "id": formID,
+          "saved": 0,
+          "form_type": "cpara"
+        };
+      }
+
+      var response = await dio.post("$cpimsApiUrl$baseUrl",
+          data: responseData,
+          options: Options(headers: {"Authorization": bearerAuth}));
     }
-
-    var response = await dio.post("$cpimsApiUrl$baseUrl",
-        data: responseData,
-        options: Options(headers: {"Authorization": bearerAuth}));
+    catch(err){
+      debugPrint(err.toString());
+      // throw "Could Not Inform Upstream of Stored Unapproved";
+    }
   }
 }
 

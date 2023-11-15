@@ -1,6 +1,7 @@
 import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../Models/case_load_model.dart';
 import '../../../providers/app_meta_data_provider.dart';
 import '../../../providers/cpara/unapproved_cpara_database.dart';
+import '../../../providers/ui_provider.dart';
 import '../cpara_forms.dart';
 import '../provider/cpara_provider.dart';
 
@@ -19,14 +21,20 @@ class UnnaprovedCparaScreen extends StatelessWidget {
     // Get Unapproved CPARAs from Provider
     return Consumer<UnapprovedRecordsScreenProvider>(
       builder: (context, model, _) {
-        return ListView.builder(
+        return
+          model.unapprovedCparas.isEmpty
+              ? const Center(
+                  child: Text("No unapproved CPARAs"),
+                )
+              :
+          ListView.builder(
             itemCount: model.unapprovedCparas.length,
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: UnnaprovedCparaRecordCard(
-                    removeCparaUnapprovedItem: () => model
-                        .removeUnapprovedCpara(model.unapprovedCparas[index]),
+                    // removeCparaUnapprovedItem: () => model
+                    //     .removeUnapprovedCpara(model.unapprovedCparas[index]),
                     model: model.unapprovedCparas[index]),
               );
             });
@@ -39,10 +47,10 @@ typedef RemoveCparaUnapprovedItem = Function();
 
 class UnnaprovedCparaRecordCard extends StatefulWidget {
   final UnapprovedCparaModel model;
-  final RemoveCparaUnapprovedItem removeCparaUnapprovedItem;
+  // final RemoveCparaUnapprovedItem removeCparaUnapprovedItem;
   const UnnaprovedCparaRecordCard(
       {super.key,
-      required this.removeCparaUnapprovedItem,
+      // required this.removeCparaUnapprovedItem,
       required this.model});
 
   @override
@@ -54,15 +62,50 @@ class _UnnaprovedCparaRecordCardState extends State<UnnaprovedCparaRecordCard> {
   @override
   void initState() {
     super.initState();
-    fetchChildName();
+      fetchInitialInfo();
   }
-
+  late CaseLoadModel caseLoadModel;
   String childName = "";
-  fetchChildName() async {
-    String name =
-        await LocalDb.instance.getFullChildNameFromOVCID(widget.model.cpmis_id);
+  // fetchChildName() async {
+    // String name = await LocalDb.instance.getFullChildNameFromOVCID(widget.model.cpmis_id);
+    // setState(() {
+    //   childName = name;
+    // });
+  // }
+fetchInitialInfo(){
+  SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    fetchChildCaseLoad();
+  });
+}
+  fetchChildCaseLoad(){
+    // fetch caseLoadData from provider
+    final caseLoadData = Provider.of<UIProvider>(context, listen: false).caseLoadData ?? [];
+    // fetch caregiver cpims id from caseLoadData
+    CaseLoadModel model = caseLoadData.firstWhere((element) => element.cpimsId == widget.model.cpmis_id);
+    final caregiverCpimsId = model.caregiverCpimsId;
+    final List<CaseLoadModel> children = caseLoadData
+        .where((element) =>
+    element.caregiverCpimsId == caregiverCpimsId)
+        .toList();
+
+    var oldCpimsId =
+        context.read<CparaProvider>().caseLoadModel?.cpimsId;
+
+    // Add check here
+    if (model.cpimsId != oldCpimsId) {
+      // Clear previous CPARA data
+      context.read<CparaProvider>().clearCparaProvider();
+    }
+    context
+        .read<CparaProvider>()
+        .updateCaseLoadModel(model);
+    context
+        .read<CparaProvider>()
+        .updateChildren(children ?? []);
+    
     setState(() {
-      childName = name;
+      childName = "${model.ovcFirstName} ${model.ovcSurname}";
+      caseLoadModel = model;
     });
   }
 
@@ -79,24 +122,22 @@ class _UnnaprovedCparaRecordCardState extends State<UnnaprovedCparaRecordCard> {
           context
               .read<AppMetaDataProvider>()
               .updateStartTimeInterview(startDateTime);
-          context.read<CparaProvider>().updateCparaModel(widget.model);
-          context.read<CparaProvider>().updateDetailModel(widget.model.detail);
-          context.read<CparaProvider>().updateHealthModel(widget.model.health);
-          context.read<CparaProvider>().updateSafeModel(widget.model.safe);
-          context
-              .read<CparaProvider>()
+          cparaProvider.updateCparaModel(widget.model);
+          cparaProvider.updateDetailModel(widget.model.detail);
+          cparaProvider.updateHealthModel(widget.model.health);
+          cparaProvider.updateSafeModel(widget.model.safe);
+          cparaProvider
               .updateSchooledModel(widget.model.schooled);
-          context.read<CparaProvider>().updateStableModel(widget.model.stable);
-          context
-              .read<CparaProvider>()
+          cparaProvider.updateStableModel(widget.model.stable);
+          cparaProvider
               .updateCparaOvcModel(widget.model.ovcSubPopulations);
 
-          // Remove widget from listing
-          widget.removeCparaUnapprovedItem();
+          // // Remove widget from listing
+          // widget.removeCparaUnapprovedItem();
 
           // Navigate to CPARA
           Get.to(() => CparaFormsScreen(
-                caseLoadModel: CaseLoadModel(ovcFirstName: childName),
+                caseLoadModel: caseLoadModel,
                 isRejected: true,
                 rejectedMessage: widget.model.message,
                 formId: widget.model.uuid,
