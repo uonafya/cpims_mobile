@@ -297,6 +297,7 @@ class DateTextField2 extends StatelessWidget {
   final bool enabled;
   final TextEditingController controller;
   final String initialValue;
+
   // final DateTextFieldIdentifier identifier;
   // final Function(DateTime?) onDateSelected;
   final UpdateDate updateDate;
@@ -363,6 +364,7 @@ class DateTextField extends StatefulWidget {
 
   final String label;
   final bool enabled;
+
   // final String initialValue;
   final DateTextFieldIdentifier identifier;
   final Function(DateTime?)? onDateSelected;
@@ -430,6 +432,7 @@ class TextViewsColumn extends StatefulWidget {
 
 class _TextViewsColumnState extends State<TextViewsColumn> {
   CaseLoadModel caseLoadModel = CaseLoadModel();
+
   // SummaryDataModel dashData = SummaryDataModel();
   @override
   void initState() {
@@ -502,6 +505,7 @@ class _TextViewsColumnState extends State<TextViewsColumn> {
 
 class ChildCard extends StatelessWidget {
   const ChildCard({Key? key, required this.childDetails}) : super(key: key);
+
   // CaseLoadModel caseLoadModel = CaseLoadModel();
   final CaseLoadModel childDetails;
 
@@ -584,6 +588,21 @@ class ChildCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Yes"),
+              ],
+            ),
+            const SizedBox(
+              height: 2,
+            ),
+            const Divider(
+              color: Colors.grey,
+            ),
+            const SizedBox(
+              height: 2,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("${childDetails.ovchivstatus}"),
               ],
             ),
           ],
