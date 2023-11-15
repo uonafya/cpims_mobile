@@ -1,11 +1,8 @@
 import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.dart';
-import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
-
 import '../../../Models/case_load_model.dart';
 import '../../../providers/app_meta_data_provider.dart';
 import '../../../providers/cpara/unapproved_cpara_database.dart';

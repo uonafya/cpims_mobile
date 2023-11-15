@@ -480,7 +480,7 @@ UnapprovedCparaModel fetchUnaprovedCpara({required UnapprovedCparaDatabase cpara
       schooled: fetchSchooled(cparaDatabase: cparaDatabase),
       stable: fetchStable(cparaDatabase: cparaDatabase),
       uuid: cparaDatabase.cparaFormId,
-      message: "cparaDatabase.message",
+      message: cparaDatabase.message,
       cpmis_id: cparaDatabase.ovcCpimsId,
   );
   return model;

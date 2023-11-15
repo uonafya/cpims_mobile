@@ -223,7 +223,7 @@ class UnapprovedCparaService {
 
   static void informUpstreamOfStoredUnapproved(String formID, bool saved) async{
     try{
-      var baseUrl = "mobile/unaccepted_records/cpara/";
+      var baseUrl = "mobile/record_status/";
 
       var prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getString('access');
