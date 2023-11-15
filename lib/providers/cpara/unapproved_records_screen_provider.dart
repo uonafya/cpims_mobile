@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/providers/cpara/unapproved_cpara_database.dart';
+import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
 import 'package:flutter/cupertino.dart';
 
 class UnapprovedRecordsScreenProvider extends ChangeNotifier {
@@ -8,6 +9,14 @@ class UnapprovedRecordsScreenProvider extends ChangeNotifier {
   // Sets the list of CPARAs
   set unapprovedCparas(List<UnapprovedCparaModel> cparaModels) {
     _unapprovedCparas = cparaModels;
+    notifyListeners();
+  }
+
+  // update the list of CPARAs
+  void updateUnnapprovedCparas() async{
+    final List<UnapprovedCparaModel> cparaRecords = await UnapprovedCparaService
+        .getUnapprovedFromDB();
+    _unapprovedCparas = cparaRecords;
     notifyListeners();
   }
 

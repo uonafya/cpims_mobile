@@ -53,15 +53,6 @@ class HIVManagementFormProvider extends ChangeNotifier {
         ..._hivVisitationFormModel.toJson(),
       };
 
-      // Loop through the formData map and apply modifications
-      formData.forEach((key, value) {
-        if (value == "Yes") {
-          formData[key] = convertBooleanStringToDBBoolen("Yes");
-        } else if (value == "No") {
-          formData[key] = convertBooleanStringToDBBoolen("No");
-        }
-      });
-
       if (kDebugMode) {
         print(formData);
       }

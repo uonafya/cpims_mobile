@@ -1,6 +1,7 @@
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
+import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/caregiver/caregiver.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/preventive/preventive_assesment_attendance.dart';
@@ -394,7 +395,7 @@ class _HomepageState extends State<Homepage> {
                       form1ACount: dashData.unapprovedF1A,
                       form1BCount: dashData.unapprovedF1B,
                       cpaCount: dashData.unapprovedCPR,
-                      cparaCount: dashData.unapprovedCPT,
+                      cparaCount: int.tryParse("${context.watch<UnapprovedRecordsScreenProvider>().unapprovedCparas.length}") ?? 0,
                       hrsCount: dashData.unapprovedHRS,
                       hmfCount: dashData.unapprovedHMF,
                       onClick: () {

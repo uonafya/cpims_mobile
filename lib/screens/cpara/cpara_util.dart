@@ -370,7 +370,7 @@ HealthModel fetchHealth({required UnapprovedCparaDatabase cparaDatabase}){
     question4: mainQuestionResponse(questions: cparaDatabase.questions, questionId: CparaRemoteQuestionIds.healthQuestion4),
       question5: mainQuestionResponse(questions: cparaDatabase.questions, questionId: CparaRemoteQuestionIds.healthQuestion5),
     question6: mainQuestionResponse(questions: cparaDatabase.questions, questionId: CparaRemoteQuestionIds.healthGoal2Question1),
-    question7: mainQuestionResponse(questions: cparaDatabase.questions, questionId: CparaQuestionIds.healthGoal2Question2),
+    question7: mainQuestionResponse(questions: cparaDatabase.questions, questionId: CparaRemoteQuestionIds.healthGoal2Question2),
     question8: mainQuestionResponse(questions: cparaDatabase.questions, questionId: CparaRemoteQuestionIds.healthGoal2Question3),
     question9: mainQuestionResponse(questions: cparaDatabase.questions, questionId: CparaRemoteQuestionIds.healthGoal2Question4),
     question10: mainQuestionResponse(questions: cparaDatabase.questions, questionId: CparaRemoteQuestionIds.healthGoal2Question5),
@@ -480,7 +480,7 @@ UnapprovedCparaModel fetchUnaprovedCpara({required UnapprovedCparaDatabase cpara
       schooled: fetchSchooled(cparaDatabase: cparaDatabase),
       stable: fetchStable(cparaDatabase: cparaDatabase),
       uuid: cparaDatabase.cparaFormId,
-      message: cparaDatabase.message,
+      message: "cparaDatabase.message",
       cpmis_id: cparaDatabase.ovcCpimsId,
   );
   return model;
