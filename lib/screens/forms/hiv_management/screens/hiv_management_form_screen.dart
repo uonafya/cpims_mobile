@@ -12,6 +12,7 @@ import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -55,7 +56,9 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
               context: context);
 
       if (context.mounted) {
-        context.read<StatsProvider>().updateHmfStats();
+        StatsProvider statsProvider = StatsProvider();
+        statsProvider.updateHmfStats();
+
         Navigator.pop(context);
         Get.snackbar(
           'Success',
@@ -249,7 +252,62 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                             ),
                           ),
                         ],
-                      )
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton(
+                              onPressed: () {
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        content: const Text(
+                                            "Are you sure you want to clear the form?"),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                context
+                                                    .read<
+                                                        HIVManagementFormProvider>()
+                                                    .clearForms();
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(
+                                                "Yes",
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 14.sp,
+                                                ),
+                                              )),
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(
+                                                "No",
+                                                style: TextStyle(
+                                                  fontSize: 14.sp,
+                                                ),
+                                              ))
+                                        ],
+                                      );
+                                    });
+                              },
+                              child: Text(
+                                "Clear Form",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 14.sp,
+                                ),
+                              )),
+                        ),
+                      ),
                     ],
                   ),
                 )
