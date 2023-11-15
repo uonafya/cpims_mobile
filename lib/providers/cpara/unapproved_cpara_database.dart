@@ -1,25 +1,28 @@
-// import 'package:cpims_mobile/screens/cpara/model/db_model.dart';
-//
-// class UnapprovedCPARADatabase extends CPARADatabase {
-//   final String message;
-//
-//   UnapprovedCPARADatabase(
-//       {required super.appFormMetaData,
-//         required super.childQuestions,
-//         required super.cpara_form_id,
-//         required super.date_of_event,
-//         required super.ovc_cpims_id,
-//         required super.questions,
-//         required this.message});
-//
-//   factory UnapprovedCPARADatabase.fromJSON(Map<String, dynamic> json) {
-//     return UnapprovedCPARADatabase(
-//         appFormMetaData: appFormMetaData,
-//         childQuestions: json['individual_questions'].map((e) => CPARAChildQuestions.fromJSON(e)).toList(),
-//         cpara_form_id: 1,
-//         date_of_event: json['date_of_event'],
-//         ovc_cpims_id: json['ovc_cpims_id'],
-//         questions: questions,
-//         message: message);
-//   }
-// }
+import 'package:cpims_mobile/providers/db_provider.dart';
+import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
+import 'package:sqflite/sqflite.dart';
+
+var cannot_store_unapproved_cpara = "Could Not Store Unapproved CPARA Data";
+
+class UnapprovedCparaModel extends CparaModel {
+  final String message;
+  final String cpmis_id;
+
+  UnapprovedCparaModel({
+    required super.appFormMetaData,
+    required super.detail,
+    required super.health,
+    required super.ovcSubPopulations,
+    required super.safe,
+    required super.schooled,
+    required super.stable,
+    required super.uuid,
+    required this.message,
+    required this.cpmis_id,
+  });
+
+  // fromJson
+  // factory UnapprovedCparaModel.fromJson(Map<String, dynamic> json) {
+  //   return
+  // }
+}

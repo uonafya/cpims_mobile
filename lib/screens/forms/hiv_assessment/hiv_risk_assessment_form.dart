@@ -228,7 +228,7 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               const SizedBox(height: 10),
               FormSection(
                 isVisibleCondition: () {
-                  return age > 15;
+                  return age >= 15;
                 },
                 children: [
                   const Text(
@@ -251,7 +251,7 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               const SizedBox(height: 10),
               FormSection(
                 isVisibleCondition: () {
-                  return age > 15;
+                  return age >= 15;
                 },
                 children: [
                   const Text("Q6. Have you had TB in the last 12 months?"),
@@ -272,7 +272,7 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               const SizedBox(height: 10),
               FormSection(
                 isVisibleCondition: () {
-                  return age > 15;
+                  return age >= 15;
                 },
                 children: [
                   const Text(
@@ -295,7 +295,7 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               const SizedBox(height: 10),
               FormSection(
                 isVisibleCondition: () {
-                  return age > 15;
+                  return age >= 15;
                 },
                 children: [
                   const Text(
@@ -318,7 +318,7 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               const SizedBox(height: 10),
               FormSection(
                 isVisibleCondition: () {
-                  return age > 15;
+                  return age >= 15;
                 },
                 children: [
                   const Text(
@@ -341,7 +341,7 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               const SizedBox(height: 10),
               FormSection(
                 isVisibleCondition: () {
-                  return age > 15;
+                  return age >= 15;
                 },
                 children: [
                   const Text("Q10. Are you an IV drug user sharing needles?"),

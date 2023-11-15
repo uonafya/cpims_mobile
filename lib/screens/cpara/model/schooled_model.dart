@@ -2,11 +2,11 @@ import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
 
 class SchooledModel{
    final String? mainquestion1;
-  final String? question1;
-  final String? question2;
+  String? question1;
+  String? question2;
   final String? mainquestion2;
-  final String? question3;
-  final String? question4;
+  String? question3;
+  String? question4;
 
   SchooledModel({
     this.mainquestion1,

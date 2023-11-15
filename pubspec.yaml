@@ -63,6 +63,7 @@ dependencies:
   geolocator:
   permission_handler:
   foundation:
+  signature: ^5.3.0
   percent_indicator:
   app_settings: ^5.1.1
 
