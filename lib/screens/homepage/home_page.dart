@@ -200,7 +200,7 @@ class _HomepageState extends State<Homepage> {
       for (final formData in queryResults) {
         try {
           final response =
-          await dio.post('${cpimsApiUrl}mobile/hmf/', data: formData);
+              await dio.post('${cpimsApiUrl}mobile/hmf/', data: formData);
           if (kDebugMode) {
             print(response.toString());
           }
@@ -276,11 +276,12 @@ class _HomepageState extends State<Homepage> {
       await showCountUnsyncedForms();
       await syncHRSFormData();
       await syncHMFFormData();
-      if (mounted) {
-        context.read<StatsProvider>().updateFormStats();
-      }
-    }else{
+      StatsProvider statsProvider = StatsProvider();
+      statsProvider.updateFormStats();
+    } else {
       await showCountUnsyncedForms();
+      StatsProvider statsProvider = StatsProvider();
+      statsProvider.updateFormStats();
     }
   }
 
@@ -395,7 +396,9 @@ class _HomepageState extends State<Homepage> {
                       form1ACount: dashData.unapprovedF1A,
                       form1BCount: dashData.unapprovedF1B,
                       cpaCount: dashData.unapprovedCPR,
-                      cparaCount: int.tryParse("${context.watch<UnapprovedRecordsScreenProvider>().unapprovedCparas.length}") ?? 0,
+                      cparaCount: int.tryParse(
+                              "${context.watch<UnapprovedRecordsScreenProvider>().unapprovedCparas.length}") ??
+                          0,
                       hrsCount: dashData.unapprovedHRS,
                       hmfCount: dashData.unapprovedHMF,
                       onClick: () {

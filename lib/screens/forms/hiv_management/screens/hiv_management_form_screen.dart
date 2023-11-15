@@ -58,7 +58,6 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
       if (context.mounted) {
         StatsProvider statsProvider = StatsProvider();
         statsProvider.updateHmfStats();
-
         Navigator.pop(context);
         Get.snackbar(
           'Success',
