@@ -21,18 +21,30 @@ class HIVRiskAssessmentModel {
   final String ivDrugUser;
   final String finalEvaluation;
 
-  HIVRiskAssessmentModel(
-      {this.biologicalFather = "",
-      this.malnourished = "",
-      this.sexualAbuse = "",
-      this.sexualAbuseAdolescent = "",
-      this.traditionalProcedures = "",
-      this.persistentlySick = "",
-      this.tb = "",
-      this.sexualIntercourse = "",
-      this.symptomsOfSTI = "",
-      this.ivDrugUser = "",
-      this.finalEvaluation = ""});
+  HIVRiskAssessmentModel({
+    this.biologicalFather = "",
+    this.malnourished = "",
+    this.sexualAbuse = "",
+    this.sexualAbuseAdolescent = "",
+    this.traditionalProcedures = "",
+    this.persistentlySick = "",
+    this.tb = "",
+    this.sexualIntercourse = "",
+    this.symptomsOfSTI = "",
+    this.ivDrugUser = "",
+    String? finalEvaluation, // Allow for the initialization of finalEvaluation
+  }) : finalEvaluation = _calculateFinalEvaluation(
+          biologicalFather,
+          malnourished,
+          sexualAbuse,
+          sexualAbuseAdolescent,
+          traditionalProcedures,
+          persistentlySick,
+          tb,
+          sexualIntercourse,
+          symptomsOfSTI,
+          ivDrugUser,
+        );
 
   Map<String, dynamic> toJson() {
     return {
@@ -48,6 +60,32 @@ class HIVRiskAssessmentModel {
       'HIV_RS_10B': ivDrugUser,
       'HIV_RS_11': finalEvaluation,
     };
+  }
+
+  static String _calculateFinalEvaluation(
+    String biologicalFather,
+    String malnourished,
+    String sexualAbuse,
+    String sexualAbuseAdolescent,
+    String traditionalProcedures,
+    String persistentlySick,
+    String tb,
+    String sexualIntercourse,
+    String symptomsOfSTI,
+    String ivDrugUser,
+  ) {
+    bool anyQuestionAnsweredYes = biologicalFather == "Yes" ||
+        malnourished == "Yes" ||
+        sexualAbuse == "Yes" ||
+        sexualAbuseAdolescent == "Yes" ||
+        traditionalProcedures == "Yes" ||
+        persistentlySick == "Yes" ||
+        tb == "Yes" ||
+        sexualIntercourse == "Yes" ||
+        symptomsOfSTI == "Yes" ||
+        ivDrugUser == "Yes";
+
+    return anyQuestionAnsweredYes ? "Yes" : "No";
   }
 }
 
@@ -70,6 +108,7 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
   String ivDrugUser = "";
   String finalEvaluation = "";
   String sexualAbuseAdolescent = "";
+  bool anyQuestionAnsweredYes = false;
 
   void handleOnFormSaved() {
     final val = HIVRiskAssessmentModel(
@@ -144,6 +183,7 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
                           biologicalFather =
                               convertingRadioButtonOptionsToString(val);
                           handleOnFormSaved();
+                          debugPrint("Final evaluation is $finalEvaluation");
                         });
                       }),
                 ],
@@ -356,6 +396,7 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
                           ivDrugUser =
                               convertingRadioButtonOptionsToString(val);
                           handleOnFormSaved();
+                          debugPrint("Final evaluation is $finalEvaluation");
                         });
                       }),
                 ],
@@ -382,6 +423,7 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
                       setState(() {
                         finalEvaluation =
                             convertingRadioButtonOptionsToString(val);
+                        debugPrint("final evaluation is $finalEvaluation");
                         handleOnFormSaved();
                       });
                     }),

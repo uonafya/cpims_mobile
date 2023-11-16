@@ -329,7 +329,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                       "6. (If applicable) Record facility of child's ART enrollment	"),
                   const SizedBox(height: 10),
                   CustomTextField(
-                      hintText: "Search for facility here",
+                      hintText: "Enter MFL Code",
                       initialValue: formData.facilityOfArtEnrollment,
                       onChanged: (val) {
                         facilityOfArtEnrollment = val;

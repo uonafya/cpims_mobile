@@ -203,6 +203,24 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
                   onTap: () => handleNext(context),
                 )),
               ]),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Provider.of<HIVAssessmentProvider>(context,
+                                listen: false)
+                            .resetWholeForm();
+                      },
+                      child: const Text(
+                        "Clear Form",
+                        style: TextStyle(color: Colors.red),
+                      )),
+                ],
+              ),
             ],
           ),
           const SizedBox(
