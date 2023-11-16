@@ -6,10 +6,12 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
+import '../../../../cpara/widgets/cpara_details_widget.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
 import '../models/healthy_cpt_model.dart';
 
@@ -24,7 +26,7 @@ class HealthyCasePlan extends StatefulWidget {
 
 class _HealthyCasePlanState extends State<HealthyCasePlan> {
   DateTime currentDateOfCasePlan = DateTime.now();
-  DateTime completionDate = DateTime.now();
+  String completionDate = '';
   String reasonForNotAchievingCasePlan = "";
   List<ValueItem> selectedGoalOptions = [];
   List<ValueItem> selectedNeedOptions = [];
@@ -144,7 +146,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
     }
 
     completionDate = cptHealthFormData.completionDate != null
-        ? DateTime.parse(cptHealthFormData.completionDate!)
+        ? cptHealthFormData.completionDate!
         : completionDate;
 
     textEditingController.text = cptHealthFormData.reasonId ?? "";
@@ -443,22 +445,45 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
           ],
         ),
         const SizedBox(height: 10),
-        CustomFormsDatePicker(
-          allowPastDates: false,
-          hintText: 'Select the date',
-          selectedDateTime: completionDate,
-          onDateSelected: (selectedDate) {
-            completionDate = selectedDate;
-            CptHealthFormData cptHealthFormData =
-                context.read<CptProvider>().cptHealthFormData ??
-                    CptHealthFormData();
-            context.read<CptProvider>().updateCptFormData(cptHealthFormData
-                .copyWith(completionDate: completionDate.toIso8601String()));
-            if (kDebugMode) {
-              print("The selected date was $completionDate");
-            }
-          },
-        ),
+        // CustomFormsDatePicker(
+        //   allowPastDates: false,
+        //   hintText: 'Select the date',
+        //   selectedDateTime: completionDate,
+        //   onDateSelected: (selectedDate) {
+        //     completionDate = selectedDate;
+        //     CptHealthFormData cptHealthFormData =
+        //         context.read<CptProvider>().cptHealthFormData ??
+        //             CptHealthFormData();
+        //     context.read<CptProvider>().updateCptFormData(cptHealthFormData
+        //         .copyWith(completionDate: completionDate.toIso8601String()));
+        //     if (kDebugMode) {
+        //       print("The selected date was $completionDate");
+        //     }
+        //   },
+        // ),
+        DateTextField(
+            label: completionDate,
+            enabled: true,
+            identifier: DateTextFieldIdentifier.dateOfAssessment,
+            onDateSelected: (value) {
+              setState(() {
+                completionDate = DateFormat("yyyy-MM-dd").format(value!);
+                if (completionDate.isNotEmpty) {
+                  CptHealthFormData cptHealthFormData =
+                      context.read<CptProvider>().cptHealthFormData ??
+                          CptHealthFormData();
+                  context.read<CptProvider>().updateCptFormData(
+                      cptHealthFormData.copyWith(
+                          completionDate: completionDate));
+                } else {
+                  CptHealthFormData cptHealthFormData =
+                      context.read<CptProvider>().cptHealthFormData ??
+                          CptHealthFormData();
+                  context.read<CptProvider>().updateCptFormData(
+                      cptHealthFormData.copyWith(completionDate: ""));
+                }
+              });
+            }),
         const SizedBox(height: 10),
         const Row(
           children: [

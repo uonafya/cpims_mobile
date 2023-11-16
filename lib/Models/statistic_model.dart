@@ -18,12 +18,6 @@ class SummaryDataModel {
   String orgUnit = '';
   int orgUnitId = 0;
   String details = '';
-  int unapproved = 0;
-  int form1a, form1b = 0;
-  int cpara, cpt, clhiv = 0;
-  int unapprovedF1A, unapprovedF1B = 0;
-  int unapprovedCPR, unapprovedCPT = 0;
-  int unapprovedHRS, unapprovedHMF = 0;
 
   SummaryDataModel({
     required this.children,
@@ -44,18 +38,6 @@ class SummaryDataModel {
     required this.orgUnit,
     required this.orgUnitId,
     required this.details,
-    required this.unapproved,
-    required this.form1a,
-    required this.form1b,
-    required this.cpara,
-    required this.cpt,
-    required this.clhiv,
-    required this.unapprovedF1A,
-    required this.unapprovedF1B,
-    required this.unapprovedCPR,
-    required this.unapprovedCPT,
-    required this.unapprovedHRS,
-    required this.unapprovedHMF,
   });
 
   factory SummaryDataModel.fromJson(Map<String, dynamic> json) {
@@ -78,18 +60,6 @@ class SummaryDataModel {
       orgUnit: json['org_unit'],
       orgUnitId: json['org_unit_id'],
       details: json['details'],
-      unapproved: json['unapproved'],
-      form1a: json['form1a'],
-      form1b: json['form1b'],
-      cpara: json['cpara'],
-      cpt: json['cpt'],
-      clhiv: json['clhiv'],
-      unapprovedF1A: json['unapproved_F1A'],
-      unapprovedF1B: json['unapproved_F1B'],
-      unapprovedCPR: json['unapproved_CPR'],
-      unapprovedCPT: json['unapproved_CPT'],
-      unapprovedHRS: json['unapproved_HRS'],
-      unapprovedHMF: json['unapproved_HMF'],
     );
   }
 
@@ -113,18 +83,6 @@ class SummaryDataModel {
       'org_unit': orgUnit,
       'org_unit_id': orgUnitId,
       'details': details,
-      'unapproved': unapproved,
-      'form1a': form1a,
-      'form1b': form1b,
-      'cpara': cpara,
-      'cpt': cpt,
-      'clhiv': clhiv,
-      'unapproved_F1A': unapprovedF1A,
-      'unapproved_F1B': unapprovedF1B,
-      'unapproved_CPR': unapprovedCPR,
-      'unapproved_CPT': unapprovedCPT,
-      'unapproved_HRS': unapprovedHRS,
-      'unapproved_HMF': unapprovedHMF,
     };
   }
 }

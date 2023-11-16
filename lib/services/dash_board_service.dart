@@ -19,10 +19,15 @@ class DashBoardService {
   }
 
   Future<dynamic> fetchDashboardData() async {
-    final prefs = await SharedPreferences.getInstance();
-    var dashboardData = prefs.getString('dashboard_data');
-    if (dashboardData != null) {
-      return SummaryDataModel.fromJson(jsonDecode(dashboardData));
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      var dashboardData = prefs.getString('dashboard_data');
+      if (dashboardData != null) {
+        return SummaryDataModel.fromJson(jsonDecode(dashboardData));
+      }
+    } catch (e) {
+      print("Failed to fetch dash data $e");
+      rethrow;
     }
   }
 }

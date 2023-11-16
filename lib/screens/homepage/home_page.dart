@@ -15,6 +15,7 @@ import 'package:cpims_mobile/services/form_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_grid_view.dart';
+import 'package:cpims_mobile/widgets/custom_toast.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -393,14 +394,14 @@ class _HomepageState extends State<Homepage> {
                       icon: FontAwesomeIcons.fileCircleXmark,
                       color: const Color(0xff947901),
                       secondaryColor: const Color(0xff524300),
-                      form1ACount: dashData.unapprovedF1A,
-                      form1BCount: dashData.unapprovedF1B,
-                      cpaCount: dashData.unapprovedCPR,
+                      form1ACount: 0,
+                      form1BCount: 0,
+                      cpaCount: 0,
                       cparaCount: int.tryParse(
                               "${context.watch<UnapprovedRecordsScreenProvider>().unapprovedCparas.length}") ??
                           0,
-                      hrsCount: dashData.unapprovedHRS,
-                      hmfCount: dashData.unapprovedHMF,
+                      hrsCount: 0,
+                      hmfCount: 0,
                       onClick: () {
                         Get.to(() => const UnapprovedRecordsScreens());
                       },
@@ -411,37 +412,37 @@ class _HomepageState extends State<Homepage> {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       children: [
-                        StatisticsGridItem(
+                        const StatisticsGridItem(
                           title: 'FORM 1A',
-                          value: "${dashData.unapprovedF1A}/${dashData.form1a}",
+                          value: "0",
                           icon: FontAwesomeIcons.fileLines,
                           color: kPrimaryColor,
-                          secondaryColor: const Color(0xff0E6668),
+                          secondaryColor: Color(0xff0E6668),
                         ),
-                        StatisticsGridItem(
+                        const StatisticsGridItem(
                           title: 'FORM 1B',
-                          value: "${dashData.unapprovedF1B}/${dashData.form1b}",
+                          value: "0",
                           icon: FontAwesomeIcons.fileLines,
                           color: const Color(0xff348FE2),
                           secondaryColor: const Color(0xff1F5788),
                         ),
-                        StatisticsGridItem(
+                        const StatisticsGridItem(
                           title: 'CPARA',
-                          value: "${dashData.unapprovedCPR}/${dashData.cpara}",
+                          value: "0",
                           icon: FontAwesomeIcons.fileLines,
                           color: const Color(0xff727DB6),
                           secondaryColor: const Color(0xff454A6D),
                         ),
-                        StatisticsGridItem(
+                        const StatisticsGridItem(
                           title: 'CPT',
-                          value: "${dashData.unapprovedCPT}/${dashData.cpt}",
+                          value: "0",
                           icon: FontAwesomeIcons.fileLines,
                           color: const Color(0xff49B6D5),
                           secondaryColor: const Color(0xff2C6E80),
                         ),
                         StatisticsGridItem(
                           title: 'CLHIV',
-                          value: "${dashData.clhiv}",
+                          value: "0",
                           icon: FontAwesomeIcons.heart,
                           color: const Color(0xff49B6D5),
                           secondaryColor: const Color(0xff2C6E80),

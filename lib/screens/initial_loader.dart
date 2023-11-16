@@ -90,10 +90,14 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
 
             final localDashData = await DashBoardService().fetchDashboardData();
             if (isMounted) {
-              Provider.of<UIProvider>(context, listen: false)
-                  .setDashData(localDashData);
-              await Provider.of<UIProvider>(context, listen: false)
-                  .setCaseLoadData();
+              try {
+                Provider.of<UIProvider>(context, listen: false)
+                    .setDashData(localDashData);
+                await Provider.of<UIProvider>(context, listen: false)
+                    .setCaseLoadData();
+              } catch (e) {
+                rethrow;
+              }
             }
           } else {
             final prefs = await SharedPreferences.getInstance();
@@ -120,19 +124,20 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
                 return;
               }
 
-              await UnapprovedDataService.fetchRemoteUnapprovedData(accessToken);
+              // TODO Fetch unapproved data from server
+              // await UnapprovedDataService.fetchRemoteUnapprovedData(accessToken);
 
               // fetch unapproved data from local db
-              final List<UnapprovedCparaModel> cparaRecords = await UnapprovedCparaService
-                  .getUnapprovedFromDB();
-             if(mounted){
-               context
-                   .read<UnapprovedRecordsScreenProvider>()
-                   .unapprovedCparas = cparaRecords;
+              final List<UnapprovedCparaModel> cparaRecords =
+                  await UnapprovedCparaService.getUnapprovedFromDB();
+              if (mounted) {
+                context
+                    .read<UnapprovedRecordsScreenProvider>()
+                    .unapprovedCparas = cparaRecords;
 
-               await Provider.of<UIProvider>(context, listen: false)
-                   .setCaseLoadData();
-             }
+                await Provider.of<UIProvider>(context, listen: false)
+                    .setCaseLoadData();
+              }
               try {
                 await MetadataService.fetchMetadata();
               } catch (e) {
