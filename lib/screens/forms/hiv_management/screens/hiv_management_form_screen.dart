@@ -276,6 +276,7 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                                         HIVManagementFormProvider>()
                                                     .clearForms();
                                                 Navigator.pop(context);
+                                                Navigator.pop(context);
                                               },
                                               child: Text(
                                                 "Yes",

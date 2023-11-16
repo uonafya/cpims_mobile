@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
@@ -199,6 +201,7 @@ class _HomepageState extends State<Homepage> {
 
       // Submit data
       for (final formData in queryResults) {
+        debugPrint("The hmf form data is ${jsonEncode(formData)}");
         try {
           final response =
               await dio.post('${cpimsApiUrl}mobile/hmf/', data: formData);
@@ -207,7 +210,7 @@ class _HomepageState extends State<Homepage> {
           }
 
           if (response.statusCode == 201) {
-            await db.updateHRSData(formData['uuid']);
+            await db.updateHMFData(formData['uuid']);
           }
         } catch (error) {
           // Handle the error, you may want to retry or log it
@@ -241,6 +244,7 @@ class _HomepageState extends State<Homepage> {
 
       // Submit data
       for (final formData in queryResults) {
+        debugPrint("The form data is ${jsonEncode(formData)}");
         try {
           final response =
               await dio.post('${cpimsApiUrl}mobile/hrs/', data: formData);

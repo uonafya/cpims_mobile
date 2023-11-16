@@ -702,6 +702,13 @@ class LocalDb {
         where: 'uuid = ?', whereArgs: [id]);
   }
 
+  Future<void> updateHMFData(String id) async {
+    debugPrint("The uuid is $id and form is being accepted is here");
+    final db = await LocalDb.instance.database;
+    await db.update(HMForms, {'form_date_synced': DateTime.now().toString()},
+        where: 'uuid = ?', whereArgs: [id]);
+  }
+
   // create HIVManagement table
   Future<void> createHMFForms(Database db, int version) async {
     // Define the table schema with all the fields
