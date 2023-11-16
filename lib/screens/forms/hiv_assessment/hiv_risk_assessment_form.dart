@@ -414,6 +414,7 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
                 const Text(
                     "Q8. Did the child/Adolescent/youth have a YES to Question 2 to 10?"),
                 CustomRadioButton(
+                    readOnly: true,
                     isNaAvailable: false,
                     option: riskAssessment.finalEvaluation.isNotEmpty
                         ? convertingStringToRadioButtonOptions(
