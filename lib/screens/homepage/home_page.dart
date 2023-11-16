@@ -268,8 +268,8 @@ class _HomepageState extends State<Homepage> {
 
   Future<void> syncWorkflows() async {
     final isConnected =
-        await Provider.of<ConnectivityProvider>(context, listen: false)
-            .checkInternetConnection();
+    await Provider.of<ConnectivityProvider>(context, listen: false)
+        .checkInternetConnection();
     if (isConnected) {
       await submitCparaToUpstream();
       await postCasePlansToServer();
@@ -277,12 +277,14 @@ class _HomepageState extends State<Homepage> {
       await showCountUnsyncedForms();
       await syncHRSFormData();
       await syncHMFFormData();
-      StatsProvider statsProvider = StatsProvider();
-      statsProvider.updateFormStats();
+      if (mounted) {
+        context.read<StatsProvider>().updateFormStats();
+      }
     } else {
       await showCountUnsyncedForms();
-      StatsProvider statsProvider = StatsProvider();
-      statsProvider.updateFormStats();
+      if (mounted) {
+        context.read<StatsProvider>().updateFormStats();
+      }
     }
   }
 
