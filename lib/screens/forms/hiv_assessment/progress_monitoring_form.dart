@@ -87,7 +87,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
       formalReferralMadeDate: formalReferralMadeDate,
       formalReferralCompleted: formalReferralCompleted,
       reasonForNotMakingReferral:
-          reasonForNotMakingReferral.isEmpty ? "A" : reasonForNotMakingReferral,
+          reasonForNotMakingReferral.isEmpty ? "" : reasonForNotMakingReferral,
       hivTestResult: hivTestResult,
       referredForArt: referredForArt,
       referredForArtDate: referredForArtDate,
@@ -249,8 +249,9 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                 height: 14,
               ),
               FormSection(
-                isDisabled:
-                    hivTestResult != "HIV_Positive" && hivTestResult.isNotEmpty,
+                isVisibleCondition: (){
+                  return hivTestResult == "HIV_Positive" && hivTestResult.isNotEmpty;
+                },
                 children: [
                   const Text(
                       "4. If HIV positive(3b), was the child referred for ART?"),
@@ -284,8 +285,9 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                 height: 14,
               ),
               FormSection(
-                isDisabled:
-                    hivTestResult != "HIV_Positive" && hivTestResult.isNotEmpty,
+                isVisibleCondition: (){
+                  return hivTestResult == "HIV_Positive" && hivTestResult.isNotEmpty;
+                },
                 children: [
                   const Text(
                       "5. If HIV positive(3b), was the ART referral completed?"),
@@ -319,8 +321,9 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                 height: 14,
               ),
               FormSection(
-                isDisabled:
-                    hivTestResult != "HIV_Positive" && hivTestResult.isNotEmpty,
+                isVisibleCondition: (){
+                  return hivTestResult == "HIV_Positive" && hivTestResult.isNotEmpty;
+                },
                 children: [
                   const Text(
                       "6. (If applicable) Record facility of child's ART enrollment	"),
