@@ -84,6 +84,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
   String facilityOfArtEnrollment = "";
 
   HIVCurrentStatusModel currentStatus = HIVCurrentStatusModel();
+  var previousAssessmentController = TextEditingController();
 
   void handleOnFormSaved() {
     final val = ProgressMonitoringModel(
@@ -92,6 +93,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
       formalReferralMade: formalReferralMade,
       formalReferralMadeDate: formalReferralMadeDate,
       formalReferralCompleted: formalReferralCompleted,
+      formalReferralCompletedDate: formalReferralCompletedDate,
       reasonForNotMakingReferral:
           reasonForNotMakingReferral.isEmpty ? "" : reasonForNotMakingReferral,
       hivTestResult: hivTestResult,
@@ -170,16 +172,26 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                 },
               ),
               if (formData.parentAcceptHivTesting == "Yes")
-                DateTextField(
-                  label: "Report Date",
+                // DateTextField(
+                //   label: "Report Date",
+                //   enabled: true,
+                //   identifier: DateTextFieldIdentifier.dateOfAssessment,
+                //   onDateSelected: (val) {
+                //     parentAcceptHivTestingDate =
+                //         DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
+                //     handleOnFormSaved();
+                //   },
+                // ),
+              DateTextField2(
+                  label:
+                  'Report Date',
                   enabled: true,
-                  identifier: DateTextFieldIdentifier.dateOfAssessment,
-                  onDateSelected: (val) {
-                    parentAcceptHivTestingDate =
-                        DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
+                  initialValue: parentAcceptHivTestingDate ?? "",
+                  updateDate: (String? newDate) {
+                    parentAcceptHivTestingDate = newDate ?? DateFormat("yyyy-MM-dd")
+                        .format(DateTime.now());
                     handleOnFormSaved();
-                  },
-                ),
+                  }),
               const SizedBox(height: 14),
               const Divider(),
               const Text("2. Was a formal referral made for HIV testing?"),
@@ -193,20 +205,30 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                 },
               ),
               if (formData.formalReferralMade == "Yes")
-                DateTextField(
-                  label: "Report Date",
+                // DateTextField(
+                //   label: "Report Date",
+                //   enabled: true,
+                //   identifier: DateTextFieldIdentifier.dateOfAssessment,
+                //   onDateSelected: (val) {
+                //     formalReferralMadeDate =
+                //         DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
+                //     handleOnFormSaved();
+                //   },
+                // ),
+              DateTextField2(
+                  label:
+                  'Report Date',
                   enabled: true,
-                  identifier: DateTextFieldIdentifier.dateOfAssessment,
-                  onDateSelected: (val) {
-                    formalReferralMadeDate =
-                        DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
+                  initialValue: formalReferralMadeDate ?? "",
+                  updateDate: (String? newDate) {
+                    formalReferralMadeDate = newDate ?? DateFormat("yyyy-MM-dd")
+                        .format(DateTime.now());
                     handleOnFormSaved();
-                  },
-                ),
+                  }),
               const SizedBox(
                 height: 4,
               ),
-              const Text("3. Was the referal for HIV testing completed?"),
+              const Text("3. Was the referral for HIV testing completed?"),
               const SizedBox(
                 height: 4,
               ),
@@ -221,16 +243,26 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                 },
               ),
               if (formData.formalReferralCompleted == "Yes")
-                DateTextField(
-                  label: "Report Date",
+                // DateTextField(
+                //   label: "Report Date",
+                //   enabled: true,
+                //   identifier: DateTextFieldIdentifier.dateOfAssessment,
+                //   onDateSelected: (val) {
+                //     formalReferralCompletedDate =
+                //         DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
+                //     handleOnFormSaved();
+                //   },
+                // ),
+              DateTextField2(
+                  label:
+                  'Report Date',
                   enabled: true,
-                  identifier: DateTextFieldIdentifier.dateOfAssessment,
-                  onDateSelected: (val) {
-                    formalReferralCompletedDate =
-                        DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
+                  initialValue: formalReferralCompletedDate ?? "",
+                  updateDate: (String? newDate) {
+                    formalReferralCompletedDate = newDate ?? DateFormat("yyyy-MM-dd")
+                        .format(DateTime.now());
                     handleOnFormSaved();
-                  },
-                ),
+                  }),
               const SizedBox(
                 height: 14,
               ),
@@ -287,16 +319,26 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                     },
                   ),
                   if (formData.referredForArt == "Yes")
-                    DateTextField(
-                      label: "Report Date",
+                    // DateTextField(
+                    //   label: "Report Date",
+                    //   enabled: true,
+                    //   identifier: DateTextFieldIdentifier.dateOfAssessment,
+                    //   onDateSelected: (val) {
+                    //     referredForArtDate = DateFormat("yyyy-MM-dd")
+                    //         .format(val ?? DateTime.now());
+                    //     handleOnFormSaved();
+                    //   },
+                    // ),
+                  DateTextField2(
+                      label:
+                      'Report Date',
                       enabled: true,
-                      identifier: DateTextFieldIdentifier.dateOfAssessment,
-                      onDateSelected: (val) {
-                        referredForArtDate = DateFormat("yyyy-MM-dd")
-                            .format(val ?? DateTime.now());
+                      initialValue: referredForArtDate ?? "",
+                      updateDate: (String? newDate) {
+                        referredForArtDate = newDate ?? DateFormat("yyyy-MM-dd")
+                            .format(DateTime.now());
                         handleOnFormSaved();
-                      },
-                    ),
+                      }),
                 ],
               ),
               const SizedBox(
@@ -321,16 +363,16 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                     },
                   ),
                   if (formData.artReferralCompleted == "Yes")
-                    DateTextField(
-                      label: "Report Date",
+                  DateTextField2(
+                      label:
+                      'Report Date',
                       enabled: true,
-                      identifier: DateTextFieldIdentifier.dateOfAssessment,
-                      onDateSelected: (val) {
-                        artReferralCompletedDate = DateFormat("yyyy-MM-dd")
-                            .format(val ?? DateTime.now());
+                      initialValue: artReferralCompletedDate ?? "",
+                      updateDate: (String? newDate) {
+                        artReferralCompletedDate = newDate ?? DateFormat("yyyy-MM-dd")
+                            .format(DateTime.now());
                         handleOnFormSaved();
-                      },
-                    ),
+                      }),
                 ],
               ),
               const SizedBox(
