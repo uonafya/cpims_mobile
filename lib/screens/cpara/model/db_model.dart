@@ -10,11 +10,18 @@ class CPARAChildQuestions {
   CPARAChildQuestions(
       {this.ovcCpimsId = "", this.questionCode = "", this.answerId = ""});
 
-  factory CPARAChildQuestions.fromJSON(Map<String, dynamic> json) {
+  factory CPARAChildQuestions.fromJsonRemote(Map<String, dynamic> json) {
     return CPARAChildQuestions(
         questionCode: "${json['question_code']}",
         answerId: "${json['answer_id']}",
         ovcCpimsId: "${json['ovc_cpims_id']}");
+  }
+
+  factory CPARAChildQuestions.fromJsonLocal(Map<String, dynamic> json) {
+    return CPARAChildQuestions(
+        questionCode: "${json['questionid']}",
+        answerId: "${json['answer']}",
+        ovcCpimsId: "${json['childID']}");
   }
 
   Map<String, dynamic> toJSON() {

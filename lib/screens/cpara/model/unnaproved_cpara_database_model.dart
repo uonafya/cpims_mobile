@@ -34,7 +34,7 @@ class UnapprovedCparaDatabase extends CPARADatabase {
       childQuestions: (json["individual_questions"] != null &&
               json["individual_questions"].isNotEmpty)
           ? List<CPARAChildQuestions>.from(json["individual_questions"]
-              .map((x) => CPARAChildQuestions.fromJSON(x)))
+              .map((x) => CPARAChildQuestions.fromJsonRemote(x)))
           : [],
       dateOfEvent: json["date_of_event"],
       listOfSubOvcs: (json["sub_population"] != null &&
