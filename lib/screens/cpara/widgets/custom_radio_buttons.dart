@@ -28,6 +28,7 @@ class _CustomRadioButtonState extends State<CustomRadioButton> {
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,6 +79,36 @@ class _CustomRadioButtonState extends State<CustomRadioButton> {
     );
   }
 }
+
+class CustomRadioButtonOverall extends StatelessWidget {
+  final RadioButtonOptions? option;
+  const CustomRadioButtonOverall({super.key, required this.option});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        RadioListTile<RadioButtonOptions>(
+          title: const Text('Yes'),
+          value: RadioButtonOptions.yes,
+          groupValue: option,
+          onChanged: null,
+        ),
+        RadioListTile<RadioButtonOptions>(
+          title: const Text('No'),
+          value: RadioButtonOptions.no,
+          groupValue: option,
+          onChanged: null,
+        ),
+      ],
+    );
+  }
+}
+
+
 
 enum RadioButtonOptions { yes, no, na }
 
