@@ -1,6 +1,7 @@
 import 'package:cpims_mobile/screens/cpara/provider/hiv_assessment_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
+import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
 import 'package:cpims_mobile/widgets/form_section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -108,13 +109,16 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
   String ivDrugUser = "";
   String finalEvaluation = "";
   String sexualAbuseAdolescent = "";
-  bool anyQuestionAnsweredYes = false;
+  // bool anyQuestionAnsweredYes = false;
 
+  HIVCurrentStatusModel currentStatus = HIVCurrentStatusModel();
+  int age = 0;
   void handleOnFormSaved() {
     final val = HIVRiskAssessmentModel(
       biologicalFather: biologicalFather,
       malnourished: malnourished,
       sexualAbuse: sexualAbuse,
+      sexualAbuseAdolescent: sexualAbuseAdolescent,
       traditionalProcedures: traditionalProcedures,
       persistentlySick: persistentlySick,
       tb: tb,
@@ -129,14 +133,29 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final currentStatus =
-        Provider.of<HIVAssessmentProvider>(context).hivCurrentStatusModel;
-    final riskAssessment =
-        Provider.of<HIVAssessmentProvider>(context).hivRiskAssessmentModel;
+  void initState() {
+    super.initState();
+    currentStatus = context.read<HIVAssessmentProvider>().hivCurrentStatusModel;
+    final riskAssessment = context.read<HIVAssessmentProvider>().hivRiskAssessmentModel;
+    biologicalFather = riskAssessment.biologicalFather;
+    malnourished = riskAssessment.malnourished;
+    sexualAbuse = riskAssessment.sexualAbuse;
+    traditionalProcedures = riskAssessment.traditionalProcedures;
+    persistentlySick = riskAssessment.persistentlySick;
+    tb = riskAssessment.tb;
+    sexualIntercourse = riskAssessment.sexualIntercourse;
+    symptomsOfSTI = riskAssessment.symptomsOfSTI;
+    ivDrugUser = riskAssessment.ivDrugUser;
+    finalEvaluation = riskAssessment.finalEvaluation;
+    sexualAbuseAdolescent = riskAssessment.sexualAbuseAdolescent;
+    // anyQuestionAnsweredYes = false;
 
-    int age = context.read<HIVAssessmentProvider>().ovcAge;
+    age = context.read<HIVAssessmentProvider>().ovcAge;
     debugPrint("age is of ovc is  $age");
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return Container(
       padding: const EdgeInsets.only(top: 20),
@@ -174,10 +193,7 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
                       "Q1. Is the biological father/mother/siblings of the child living/ lived with HIV?"),
                   CustomRadioButton(
                       isNaAvailable: false,
-                      option: riskAssessment.biologicalFather.isNotEmpty
-                          ? convertingStringToRadioButtonOptions(
-                              riskAssessment.biologicalFather)
-                          : null,
+                      option: convertingStringToRadioButtonOptions(biologicalFather),
                       optionSelected: (val) {
                         setState(() {
                           biologicalFather =
@@ -198,10 +214,8 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
                       "Q2. Has the child been persistently sick/malnourished/Failure to trive in the past 3 months without improvement?"),
                   CustomRadioButton(
                       isNaAvailable: false,
-                      option: riskAssessment.malnourished.isNotEmpty
-                          ? convertingStringToRadioButtonOptions(
-                              riskAssessment.malnourished)
-                          : null,
+                      option: convertingStringToRadioButtonOptions(
+                              malnourished),
                       optionSelected: (val) {
                         setState(() {
                           malnourished =
@@ -221,10 +235,7 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
                       "Q3. Is the child exposed to sexual abuse (defiled/raped) ?	"),
                   CustomRadioButton(
                       isNaAvailable: false,
-                      option: riskAssessment.sexualAbuse.isNotEmpty
-                          ? convertingStringToRadioButtonOptions(
-                              riskAssessment.sexualAbuse)
-                          : null,
+                      option:convertingStringToRadioButtonOptions(sexualAbuse),
                       optionSelected: (val) {
                         setState(() {
                           sexualAbuse =
@@ -244,10 +255,8 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
                       "Q4. Has the child been subjected to traditional/non medical procedures (eg scarification/tattooing, traditional circumcision) ?	"),
                   CustomRadioButton(
                       isNaAvailable: false,
-                      option: riskAssessment.traditionalProcedures.isNotEmpty
-                          ? convertingStringToRadioButtonOptions(
-                              riskAssessment.traditionalProcedures)
-                          : null,
+                      option: convertingStringToRadioButtonOptions(
+                              traditionalProcedures),
                       optionSelected: (val) {
                         setState(() {
                           traditionalProcedures =
@@ -275,10 +284,8 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
                       "Q5. Have you been persistently sick in the past 3 months without improvement?"),
                   CustomRadioButton(
                       isNaAvailable: false,
-                      option: riskAssessment.persistentlySick.isNotEmpty
-                          ? convertingStringToRadioButtonOptions(
-                              riskAssessment.persistentlySick)
-                          : null,
+                      option: convertingStringToRadioButtonOptions(
+                              persistentlySick),
                       optionSelected: (val) {
                         setState(() {
                           persistentlySick =
@@ -297,10 +304,8 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
                   const Text("Q6. Have you had TB in the last 12 months?"),
                   CustomRadioButton(
                       isNaAvailable: false,
-                      option: riskAssessment.tb.isNotEmpty
-                          ? convertingStringToRadioButtonOptions(
-                              riskAssessment.tb)
-                          : null,
+                      option: convertingStringToRadioButtonOptions(
+                              tb),
                       optionSelected: (val) {
                         setState(() {
                           tb = convertingRadioButtonOptionsToString(val);
@@ -319,10 +324,8 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
                       "Q7. Have you been sexually abuse (defiled) or been physically forced to have sexual intercouse?"),
                   CustomRadioButton(
                       isNaAvailable: false,
-                      option: riskAssessment.sexualAbuseAdolescent.isNotEmpty
-                          ? convertingStringToRadioButtonOptions(
-                              riskAssessment.sexualAbuseAdolescent)
-                          : null,
+                      option: convertingStringToRadioButtonOptions(
+                              sexualAbuseAdolescent),
                       optionSelected: (val) {
                         setState(() {
                           sexualAbuseAdolescent =
@@ -342,10 +345,8 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
                       "Q8. Have you had unprotected sexual intercourse in the past 6 months?"),
                   CustomRadioButton(
                       isNaAvailable: false,
-                      option: riskAssessment.sexualIntercourse.isNotEmpty
-                          ? convertingStringToRadioButtonOptions(
-                              riskAssessment.sexualIntercourse)
-                          : null,
+                      option: convertingStringToRadioButtonOptions(
+                              sexualIntercourse),
                       optionSelected: (val) {
                         setState(() {
                           sexualIntercourse =
@@ -365,10 +366,8 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
                       "Q9. Do you have any Symptoms of sexually transmitted infections? {Penial/Vaginal sores, unusual discharge or Pain) ?"),
                   CustomRadioButton(
                       isNaAvailable: false,
-                      option: riskAssessment.symptomsOfSTI.isNotEmpty
-                          ? convertingStringToRadioButtonOptions(
-                              riskAssessment.symptomsOfSTI)
-                          : null,
+                      option: convertingStringToRadioButtonOptions(
+                              symptomsOfSTI),
                       optionSelected: (val) {
                         setState(() {
                           symptomsOfSTI =
@@ -387,10 +386,8 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
                   const Text("Q10. Are you an IV drug user sharing needles?"),
                   CustomRadioButton(
                       isNaAvailable: false,
-                      option: riskAssessment.ivDrugUser.isNotEmpty
-                          ? convertingStringToRadioButtonOptions(
-                              riskAssessment.ivDrugUser)
-                          : null,
+                      option: convertingStringToRadioButtonOptions(
+                              ivDrugUser),
                       optionSelected: (val) {
                         setState(() {
                           ivDrugUser =
@@ -413,21 +410,7 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
               FormSection(children: [
                 const Text(
                     "Q8. Did the child/Adolescent/youth have a YES to Question 2 to 10?"),
-                CustomRadioButton(
-                    readOnly: true,
-                    isNaAvailable: false,
-                    option: riskAssessment.finalEvaluation.isNotEmpty
-                        ? convertingStringToRadioButtonOptions(
-                            riskAssessment.finalEvaluation)
-                        : null,
-                    optionSelected: (val) {
-                      setState(() {
-                        finalEvaluation =
-                            convertingRadioButtonOptionsToString(val);
-                        debugPrint("final evaluation is $finalEvaluation");
-                        handleOnFormSaved();
-                      });
-                    }),
+                CustomRadioButtonOverall(option: convertingStringToRadioButtonOptions(context.watch<HIVAssessmentProvider>().finalEvaluation),),
               ]),
             ],
           ),

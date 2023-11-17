@@ -28,6 +28,8 @@ class HIVAssessmentProvider with ChangeNotifier {
 
   int ovcAge = 0;
 
+  String finalEvaluation = "No";
+
   void updateOvcAge(int age) {
     ovcAge = age;
     notifyListeners();
@@ -63,6 +65,7 @@ class HIVAssessmentProvider with ChangeNotifier {
 
   void updateHIVRiskAssessmentModel(HIVRiskAssessmentModel model) {
     _hivRiskAssessmentModel = model;
+    calculateFinalEvaluation();
     if (kDebugMode) {
       print(hivRiskAssessmentModel.toJson());
     }
@@ -98,7 +101,7 @@ class HIVAssessmentProvider with ChangeNotifier {
           if (value.toLowerCase() == 'yes') {
             data[key] = 'AYES';
           } else if (value.toLowerCase() == 'no') {
-            data[key] = 'ANO';
+            data[key] = 'ANNO';
           }
         }
       });
@@ -126,7 +129,33 @@ class HIVAssessmentProvider with ChangeNotifier {
     _hivRiskAssessmentModel = HIVRiskAssessmentModel();
     _progressMonitoringModel = ProgressMonitoringModel();
     formIndex = 0;
+    ovcAge = 0;
+    finalEvaluation = "No";
 
+    notifyListeners();
+  }
+
+  void calculateFinalEvaluation() {
+
+    bool finalEvaluation = false;
+
+    if(ovcAge < 15){
+      finalEvaluation = hivRiskAssessmentModel.biologicalFather == "Yes" &&
+    hivRiskAssessmentModel.malnourished == "Yes" &&
+    hivRiskAssessmentModel.sexualAbuse == "Yes" &&
+    hivRiskAssessmentModel.traditionalProcedures == "Yes";
+    }
+    else{
+      finalEvaluation =
+      hivRiskAssessmentModel.sexualAbuseAdolescent == "Yes" &&
+    hivRiskAssessmentModel.persistentlySick == "Yes" &&
+    hivRiskAssessmentModel.tb == "Yes" &&
+    hivRiskAssessmentModel.sexualIntercourse == "Yes" &&
+    hivRiskAssessmentModel.symptomsOfSTI == "Yes" &&
+    hivRiskAssessmentModel.ivDrugUser == "Yes";
+    }
+
+    this.finalEvaluation = finalEvaluation ? "Yes" : "No";
     notifyListeners();
   }
 }

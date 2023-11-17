@@ -112,7 +112,7 @@ Future<CPARADatabase> getFormFromDB(int formID, Database? db) async {
         [formID]);
     List<CPARAChildQuestions> childQuestions = [];
     for (var i in fetchResult2) {
-      childQuestions.add(CPARAChildQuestions.fromJSON(i));
+      childQuestions.add(CPARAChildQuestions.fromJsonLocal(i));
     }
 
     form.childQuestions = childQuestions;
