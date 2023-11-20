@@ -96,7 +96,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
         padding: const EdgeInsets.symmetric(horizontal: 15),
         children: [
           const SizedBox(height: 20),
-          const Text('CASEPLAN TEMPLATE', style: TextStyle(
+          const Text('CASEPLAN TEMPLATE',
+              style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black)),
@@ -245,8 +246,10 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                         const SizedBox(
                           height: 30,
                         ),
-                        ...List.generate(getDomainItems(context,formSubmitted).length,
-                            (index) => getDomainItems(context,formSubmitted)[index]),
+                        ...List.generate(
+                            getDomainItems(context, formSubmitted).length,
+                            (index) =>
+                                getDomainItems(context, formSubmitted)[index]),
                         const SizedBox(height: 20),
                         GestureDetector(
                           onTap: () {},
@@ -283,7 +286,6 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
       try {
         setState(() {
           isLoading = true;
-
         });
         String? ovsId = widget.caseLoad.cpimsId!;
         String formattedDate = currentDateOfCasePlan;
@@ -389,7 +391,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
   }
 }
 
-List<DomainItem> getDomainItems(BuildContext context,bool isSubmitted) {
+List<DomainItem> getDomainItems(BuildContext context, bool isSubmitted) {
   final cptProvider = Provider.of<CptProvider>(context);
   if (isSubmitted) {
     cptProvider.clearProviderData();
@@ -400,7 +402,6 @@ List<DomainItem> getDomainItems(BuildContext context,bool isSubmitted) {
   final cptSafeFormDataList = cptProvider.cptSafeFormDataList;
   final cptStableFormDataList = cptProvider.cptStableFormDataList;
   final cptschooledFormDataList = cptProvider.cptschooledFormDataList;
-
 
   for (CptHealthFormData cptHealthForm in cptHealthFormDataList) {
     domainList.add(CPTDomainModel(

@@ -56,13 +56,12 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
               context: context);
 
       if (context.mounted) {
-        StatsProvider statsProvider = StatsProvider();
-        statsProvider.updateHmfStats();
-        Navigator.pop(context);
+        context.read<StatsProvider>().updateCparaFormStats();
+
         Get.snackbar(
           'Success',
           'HIV Management Form submitted successfully',
-          snackPosition: SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
@@ -203,6 +202,7 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                         listen: false,
                                       );
                                       hivManagementFormProvider.clearForms();
+                                      context.read<StatsProvider>().updateFormStats();
                                       Navigator.pop(context);
                                     } else {
                                       ScaffoldMessenger.of(context)

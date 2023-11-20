@@ -29,17 +29,17 @@ class ProgressMonitoringModel {
 
   ProgressMonitoringModel({
     this.parentAcceptHivTesting = "",
-    this.parentAcceptHivTestingDate = "Report Date",
+    this.parentAcceptHivTestingDate = "",
     this.formalReferralMade = "",
-    this.formalReferralMadeDate = "Report Date",
+    this.formalReferralMadeDate = "",
     this.formalReferralCompleted = "",
-    this.formalReferralCompletedDate = "Report Date",
-    this.reasonForNotMakingReferral = "A",
+    this.formalReferralCompletedDate = "",
+    this.reasonForNotMakingReferral = "",
     this.hivTestResult = "",
     this.referredForArt = "",
-    this.referredForArtDate = "Report Date",
+    this.referredForArtDate = "",
     this.artReferralCompleted = "",
-    this.artReferralCompletedDate = "Report Date",
+    this.artReferralCompletedDate = "",
     this.facilityOfArtEnrollment = "",
   });
 

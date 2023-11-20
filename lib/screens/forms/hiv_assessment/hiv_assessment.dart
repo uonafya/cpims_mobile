@@ -93,16 +93,16 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
           setState(() {
             isLoading = false;
           });
-          context.read<StatsProvider>().updateHrsStats();
+          context.read<StatsProvider>().updateFormStats();
           context.read<HIVAssessmentProvider>().clearOvcAge();
+
+          Get.snackbar("HRS Form submitted", "HRS Form submitted successfully",
+              snackPosition: SnackPosition.TOP,
+              backgroundColor: Colors.green,
+              colorText: Colors.white);
 
           Navigator.pop(context);
         }
-
-        Get.snackbar("HRS Form submitted", "HRS Form submitted successfully",
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: Colors.green,
-            colorText: Colors.white);
       } catch (e) {
         setState(() {
           isLoading = false;
@@ -111,6 +111,9 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
             e.toString() == locationDenied) {
           if (context.mounted) {
             locationMissingDialog(context);
+            setState(() {
+              isLoading = false;
+            });
           }
         }
       }
