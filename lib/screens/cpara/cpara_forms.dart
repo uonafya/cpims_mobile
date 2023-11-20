@@ -62,7 +62,7 @@ class CparaFormsScreen extends StatefulWidget {
 class _CparaFormsScreenState extends State<CparaFormsScreen> {
   final ScrollController _scrollController = ScrollController();
   int selectedStep = 0;
-
+  bool isLoading = false;
   Database? database;
 
   final SignatureController _signature_controller = SignatureController(
@@ -219,6 +219,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                             ),
                             Expanded(
                               child: CustomButton(
+                                isLoading: isLoading,
                                 text: selectedStep == steps.length - 1
                                     ? 'Submit'
                                     : 'Next',
@@ -313,7 +314,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                         if (ovsId == null) {
                                           throw ("No CPMSID found");
                                         }
-                                        
+
                                         // Show signature
                                         Uint8List blob = await showDialog(
                                           barrierDismissible: false,
@@ -365,7 +366,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                             );
                                           }
                                         );
-                                        
+                                      setState(() {
+                                        isLoading = true;
+                                      });
                                         String ovcpmisid = ovsId;
                                         // Insert to db
                                         CparaModel cparaModelDB = CparaModel(
@@ -402,9 +405,15 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                             backgroundColor: Colors.green,
                                             colorText: Colors.white,
                                           );
+                                          setState(() {
+                                            isLoading = false;
+                                          });
                                           Navigator.pop(context);
                                         }
                                     } catch (e) {
+                                      setState(() {
+                                        isLoading = false;
+                                      });
                                       if(e.toString() == locationDisabled || e.toString() == locationDenied){
                                         if(context.mounted) {
                                           locationMissingDialog(context);
@@ -420,7 +429,6 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                       }
                                     }
                                   }
-
                                   _scrollController.animateTo(
                                     0,
                                     duration: const Duration(milliseconds: 100),
