@@ -16,6 +16,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Models/unapproved_form_1_model.dart';
 import '../../../providers/app_meta_data_provider.dart';
 import '../../../providers/form1b_provider.dart';
 import '../../../widgets/custom_forms_date_picker.dart';
@@ -25,9 +26,10 @@ import '../../cpara/widgets/cpara_details_widget.dart';
 import '../../homepage/provider/stats_provider.dart';
 
 class Form1BScreen extends StatefulWidget {
-  const Form1BScreen({super.key, required this.caseLoad});
+  const Form1BScreen({super.key, required this.caseLoad, this.unapprovedForm1});
 
   final CaseLoadModel caseLoad;
+  final UnapprovedForm1DataModel? unapprovedForm1;
 
   @override
   State<Form1BScreen> createState() => _Form1BScreen();
@@ -53,6 +55,9 @@ class _Form1BScreen extends State<Form1BScreen> {
       Form1bProvider form1bProvider =
           Provider.of<Form1bProvider>(context, listen: false);
       form1bProvider.setFinalFormDataOvcId(widget.caseLoad.cpimsId!);
+      if (widget.unapprovedForm1 != null) {
+        form1bProvider.setSelectedDate(widget.unapprovedForm1!.dateOfEvent);
+      }
     });
   }
 
@@ -264,10 +269,10 @@ class _Form1BScreen extends State<Form1BScreen> {
                                           bool isFormSaved =
                                               await form1bProvider
                                                   .saveForm1bData(
-                                            form1bProvider.formData,
-                                            startInterviewTime,
-                                            context,
-                                          );
+                                                      form1bProvider.formData,
+                                                      startInterviewTime,
+                                                      context,
+                                                      widget.unapprovedForm1);
 
                                           setState(() {
                                             if (isFormSaved == true) {
@@ -294,7 +299,7 @@ class _Form1BScreen extends State<Form1BScreen> {
                                                     const EdgeInsets.all(16),
                                                 borderRadius: 8,
                                               );
-                                              Navigator.pop(context);
+                                              Navigator.pop(context, true);
                                               selectedStep = 0;
                                             }
                                           });
