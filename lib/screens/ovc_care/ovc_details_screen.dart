@@ -217,7 +217,7 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
               ),
             if (widget.caseLoadModel.ovchivstatus != "Positive")
               ChildDetailsWorkflowButton(
-                workflowName: "HIV Assessment form",
+                workflowName: "HIV Risk Assessment form",
                 onClick: () {
                   String startDateTime = DateTime.now().toString();
                   context

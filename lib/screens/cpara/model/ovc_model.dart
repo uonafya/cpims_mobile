@@ -17,7 +17,7 @@ class SubOvcModel{
 }
 
 class CparaOvcSubPopulation {
-  final List<CparaOvcChild>? childrenQuestions;
+  List<CparaOvcChild>? childrenQuestions;
 
   CparaOvcSubPopulation({
     this.childrenQuestions,
@@ -58,22 +58,22 @@ class CparaOvcSubPopulation {
 class CparaOvcChild {
   final String?  ovcId;
   final String? name;
-  final String? question1;
-  final String? question2;
-  final String? question3;
-  final String? question4;
-  final String? question5;
-  final String? question6;
-  final String? question7;
-  final String? question8;
-  final bool? answer1;
-  final bool? answer2;
-  final bool? answer3;
-  final bool? answer4;
-  final bool? answer5;
-  final bool? answer6;
-  final bool? answer7;
-  final bool? answer8;
+  String? question1;
+  String? question2;
+  String? question3;
+  String? question4;
+  String? question5;
+  String? question6;
+  String? question7;
+  String? question8;
+  bool? answer1;
+  bool? answer2;
+  bool? answer3;
+  bool? answer4;
+  bool? answer5;
+  bool? answer6;
+  bool? answer7;
+  bool? answer8;
 
 
   CparaOvcChild({
@@ -154,12 +154,21 @@ class CparaOvcChild {
     return {"id": ovcId, CparaQuestionIds.safeChildQuestion1: question1};
   }
 
+
+
   @override
   String toString() {
-    return 'SafeChild {\n'
+    return 'CPARAOvcChild {\n'
         '  ovcId: $ovcId,\n'
         '  name: $name,\n'
         '  question1: $question1,\n'
+        '  question2: $question2,\n'
+        '  question3: $question3,\n'
+        '  question4: $question4,\n'
+        '  question5: $question5,\n'
+        '  question6: $question6,\n'
+        '  question7: $question7,\n'
+        '  question8: $question8,\n'
         '}';
   }
 }

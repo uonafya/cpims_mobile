@@ -4,6 +4,7 @@ import 'package:cpims_mobile/screens/cpara/provider/hiv_assessment_provider.dart
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_form.dart';
+import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
@@ -18,6 +19,7 @@ import 'package:provider/provider.dart';
 
 import '../../../constants.dart';
 import '../../../widgets/location_dialog.dart';
+import '../../homepage/provider/stats_provider.dart';
 
 bool disableSubsquentHIVAssessmentFieldsAndSubmit(BuildContext context) {
   final currentStatus =
@@ -86,24 +88,31 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
             DateTime.now().toIso8601String();
         await Provider.of<HIVAssessmentProvider>(context, listen: false)
             .submitHIVAssessmentForm(startTime);
-        setState(() {
-          isLoading = false;
-        });
-        Navigator.pop(context);
+
+        if (context.mounted) {
+          setState(() {
+            isLoading = false;
+          });
+          context.read<StatsProvider>().updateHrsStats();
+          context.read<HIVAssessmentProvider>().clearOvcAge();
+
+          Navigator.pop(context);
+        }
 
         Get.snackbar("HRS Form submitted", "HRS Form submitted successfully",
-            snackPosition: SnackPosition.BOTTOM,
+            snackPosition: SnackPosition.TOP,
             backgroundColor: Colors.green,
             colorText: Colors.white);
       } catch (e) {
         setState(() {
           isLoading = false;
         });
-       if(e.toString() == locationDisabled || e.toString() == locationDenied){
-         if(context.mounted) {
-           locationMissingDialog(context);
-         }
-       }
+        if (e.toString() == locationDisabled ||
+            e.toString() == locationDenied) {
+          if (context.mounted) {
+            locationMissingDialog(context);
+          }
+        }
       }
 
       return;
@@ -135,6 +144,10 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         Provider.of<HIVAssessmentProvider>(context, listen: false)
             .resetWholeForm();
       }
+      int ovcAge = calculateAgeInt(widget.caseLoadModel.dateOfBirth!);
+
+      Provider.of<HIVAssessmentProvider>(context, listen: false)
+          .updateOvcAge(ovcAge);
 
       Provider.of<HIVAssessmentProvider>(context, listen: false)
           .updateCaseLoadModel(widget.caseLoadModel);
@@ -190,6 +203,24 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
                   onTap: () => handleNext(context),
                 )),
               ]),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Provider.of<HIVAssessmentProvider>(context,
+                                listen: false)
+                            .resetWholeForm();
+                      },
+                      child: const Text(
+                        "Clear Form",
+                        style: TextStyle(color: Colors.red),
+                      )),
+                ],
+              ),
             ],
           ),
           const SizedBox(

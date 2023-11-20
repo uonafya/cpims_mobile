@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
@@ -8,6 +10,7 @@ import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/cpara/provider/unnaproved_cparas_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_healthy_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_safe_widget.dart';
@@ -26,17 +29,31 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:signature/signature.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../Models/case_load_model.dart';
+import '../../providers/cpara/unapproved_records_screen_provider.dart';
 import '../../widgets/location_dialog.dart';
 import 'model/ovc_model.dart';
 
 class CparaFormsScreen extends StatefulWidget {
+  final bool isRejected;
+  final String rejectedMessage;
+  final String formId;
+  final String cpmisID;
+
   final CaseLoadModel caseLoadModel;
 
-  const CparaFormsScreen({super.key, required this.caseLoadModel});
+  const CparaFormsScreen({
+    super.key,
+    required this.caseLoadModel,
+    this.isRejected = false,
+    this.rejectedMessage = "",
+    this.formId = "",
+    this.cpmisID = ""
+  });
 
   @override
   State<CparaFormsScreen> createState() => _CparaFormsScreenState();
@@ -46,28 +63,35 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
   final ScrollController _scrollController = ScrollController();
   int selectedStep = 0;
 
-  List<Widget> steps = [
-    const CparaDetailsWidget(),
-    const CparaHealthyWidget(),
-    const CparaStableWidget(),
-    const CparaSafeWidget(),
-    const CparaSchooledWidget(),
-  ];
-
   Database? database;
+
+  final SignatureController _signature_controller = SignatureController(
+    penStrokeWidth: 1,
+    penColor: Colors.red,
+    exportBackgroundColor: Colors.transparent,
+    exportPenColor: Colors.black,
+    // onDrawStart: () => log('onDrawStart called!'),
+    // onDrawEnd: () => log('onDrawEnd called!'),
+  );
 
   // Initialize database
   @override
   void initState() {
     super.initState();
-    // final caseLoadData = Provider.of<UIProvider>(context, listen: false).caseLoadData;
-    // todo: update case load data in Cpara provider
-    // fetchChildren(caseLoadData);
   }
 
-  Future<void> initializeDbInstance() async {
-    database = await LocalDb.instance.database;
-    if (mounted) setState(() {});
+  Future<Uint8List?> exportSignature() async {
+    final exportController = SignatureController(
+      penStrokeWidth: 2,
+      exportBackgroundColor: Colors.white,
+      penColor: Colors.black,
+      points: _signature_controller!.points,
+    );
+    //converting the signature to png bytes
+    final signature = exportController.toPngBytes();
+    //clean up the memory
+    exportController.dispose();
+    return signature;
   }
 
   fetchChildren(caseList) async {
@@ -95,6 +119,14 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> steps = [
+      const CparaDetailsWidget(),
+      const CparaHealthyWidget(),
+      const CparaStableWidget(),
+      CparaSafeWidget(isRejected: widget.isRejected),
+      const CparaSchooledWidget(),
+    ];
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -123,6 +155,19 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),
+                  if (widget.isRejected == true)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        width: double.infinity,
+                        color: Colors.red,
+                        child: Text(
+                          widget.rejectedMessage,
+                          style: const TextStyle(color: Colors.white),
+                        )
+                      ),
+                    ),
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Column(
@@ -181,6 +226,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                   if (selectedStep == steps.length - 1) {
                                     CparaProvider cparaProvider =
                                         context.read<CparaProvider>();
+
                                     // display collected data
                                     DetailModel detailModel =
                                         cparaProvider.detailModel ??
@@ -256,12 +302,70 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                             .updateHealthModel(healthModel);
                                       }
 
-                                        String? ovsId = cparaProvider
-                                            .caseLoadModel?.cpimsId;
+                                        String? ovsId;
+                                        if (widget.isRejected == true) {
+                                          ovsId = widget.cpmisID;
+                                        } else {
+                                          ovsId = cparaProvider
+                                              .caseLoadModel?.cpimsId;
+                                        }
 
                                         if (ovsId == null) {
                                           throw ("No CPMSID found");
                                         }
+                                        
+                                        // Show signature
+                                        Uint8List blob = await showDialog(
+                                          barrierDismissible: false,
+                                          context: context,
+                                          builder: (context) {
+                                            return Center(
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Signature(
+                                                    controller: _signature_controller,
+                                                    height: 300,
+                                                    width: 350,
+                                                    backgroundColor: Colors.grey[200]!,
+                                                  ),
+                                                  Container(
+                                                    width: 350,
+                                                    color: Colors.white,
+                                                    padding: const EdgeInsets.symmetric(vertical: 20),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                      children: [
+                                                        TextButton(onPressed: () async{
+                                                          var signatureData = await exportSignature();
+                                                          if (context.mounted) {
+                                                            Navigator.of(context).pop(signatureData);
+                                                          }
+                                                        }, child: Text(
+                                                          "Done",
+                                                          style: TextStyle(
+                                                            color: Colors.blue,
+                                                            fontSize: 16.sp
+                                                          ),
+                                                        )),
+                                                        TextButton(onPressed: (){
+                                                          setState(() => _signature_controller.clear());
+                                                        }, child: Text(
+                                                            "Clear",
+                                                          style: TextStyle(
+                                                            fontSize: 16.sp,
+                                                            color: Colors.red
+                                                          ),
+                                                        ))
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          }
+                                        );
+                                        
                                         String ovcpmisid = ovsId;
                                         // Insert to db
                                         CparaModel cparaModelDB = CparaModel(
@@ -270,7 +374,8 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           stable: stableModel,
                                           schooled: schooledModel,
                                           health: (healthModel),
-                                          ovcSubPopulations: cparaOvcSub
+                                          ovcSubPopulations: cparaOvcSub,
+                                          uuid: cparaProvider.cparaModel?.uuid ?? ""
                                         );
                                         // Create form
                                         String startTime = context.read<AppMetaDataProvider>().startTimeInterview ?? DateTime.now().toIso8601String();
@@ -278,10 +383,14 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                             cparaModelDB: cparaModelDB,
                                             ovcId: ovcpmisid,
                                             startTime: startTime,
-                                            careProviderId: ovcpmisid,
-                                        );
+                                            isRejected: widget.isRejected,
+                                            signature: blob,
+                                            careProviderId: ovcpmisid);
 
                                         if (context.mounted) {
+                                          if(widget.isRejected){
+                                            context.read<UnapprovedRecordsScreenProvider>().updateUnnapprovedCparas();
+                                          }
                                           cparaProvider.clearCparaProvider();
                                           context
                                               .read<StatsProvider>()
@@ -624,5 +733,12 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
       colorText: Colors.white,
     );
     return;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _signature_controller.dispose();
+    super.dispose();
   }
 }

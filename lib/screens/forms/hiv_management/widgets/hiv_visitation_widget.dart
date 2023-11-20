@@ -3,6 +3,7 @@ import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_form_model.dart';
+import 'package:cpims_mobile/screens/forms/hiv_management/utils/hiv_management_form_status_provider.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
 import 'package:cpims_mobile/utils.dart';
 import 'package:cpims_mobile/widgets/custom_dynamic_checkbox_widget.dart';
@@ -49,17 +50,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   String peerEducatorName = '';
   String peerEducatorContact = '';
 
-  TextEditingController durationOnARTsController = TextEditingController();
-  TextEditingController heightController = TextEditingController();
-  TextEditingController muACController = TextEditingController();
-  TextEditingController arvDrugsDurationController = TextEditingController();
-  TextEditingController treatmentSupportAgeController = TextEditingController();
-  TextEditingController viralLoadResultsController = TextEditingController();
-  TextEditingController zScoreController = TextEditingController();
-  TextEditingController referralServicesController = TextEditingController();
-  TextEditingController peerEducatorNameController = TextEditingController();
-  TextEditingController peerEducatorContactController = TextEditingController();
-
   void handleOptionsSelected(Set<String> options) {
     setState(() {
       selectedOptions = options;
@@ -101,14 +91,12 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
         .updateHIVVisitationModel(formData);
     final isComplete = areAllFieldsFilled();
 
+    final formCompletionStatus = context.read<FormCompletionStatusProvider>();
+
     if (isComplete) {
+      formCompletionStatus.setHIVVisitationFormCompleted(true);
     } else {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Please fill in the required fields"),
-          backgroundColor: Colors.red,
-        ));
-      }
+      formCompletionStatus.setHIVVisitationFormCompleted(false);
     }
 
     if (kDebugMode) {
@@ -194,13 +182,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
-              controller: durationOnARTsController,
               initialValue: hivVisitationFormData.durationOnARTs,
               onChanged: (val) {
-                setState(() {
-                  durationOnARTs = durationOnARTsController.text;
-                  handleOnSave();
-                });
+                durationOnARTs = val;
+                handleOnSave();
               },
             ),
           ],
@@ -218,13 +203,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
-              controller: heightController,
               initialValue: hivVisitationFormData.height,
               onChanged: (val) {
-                setState(() {
-                  height = heightController.text;
-                  handleOnSave();
-                });
+                height = val;
+                handleOnSave();
               },
             ),
           ],
@@ -242,13 +224,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
-              controller: muACController,
               initialValue: hivVisitationFormData.mUAC,
               onChanged: (val) {
-                setState(() {
-                  mUAC = muACController.text;
-                  handleOnSave();
-                });
+                mUAC = val;
+                handleOnSave();
               },
             ),
           ],
@@ -295,11 +274,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
-              controller: arvDrugsDurationController,
               initialValue: hivVisitationFormData.arvDrugsDuration,
               onChanged: (val) {
                 setState(() {
-                  arvDrugsDuration = arvDrugsDurationController.text;
+                  arvDrugsDuration = val;
                   handleOnSave();
                 });
               },
@@ -414,16 +392,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomTextField(
               hintText: 'Age',
-              controller: treatmentSupportAgeController,
-              initialValue:
-                  hivVisitationFormData.treatmentSupporterAge.isNotEmpty
-                      ? hivVisitationFormData.treatmentSupporterAge
-                      : null,
+              initialValue: hivVisitationFormData.treatmentSupporterAge,
               onChanged: (val) {
-                setState(() {
-                  treatmentSupporterAge = treatmentSupportAgeController.text;
-                  handleOnSave();
-                });
+                treatmentSupporterAge = val;
+                handleOnSave();
               },
             ),
           ],
@@ -449,6 +421,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               optionSelected: (String? option) {
                 setState(() {
                   treatmentSupporterHIVStatus = option!;
+                  handleOnSave();
                 });
               },
               customOptions: const [
@@ -473,12 +446,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomTextField(
               hintText: 'Viral Load Results (if LDL enter 1)',
-              controller: viralLoadResultsController,
               initialValue: hivVisitationFormData.viralLoadResults,
               onChanged: (val) {
-                setState(() {
-                  viralLoadResults = viralLoadResultsController.text;
-                });
+                viralLoadResults = val;
+                handleOnSave();
               },
             ),
           ],
@@ -529,10 +500,8 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                   ? hivVisitationFormData.detectableViralLoadInterventions
                   : null,
               optionSelected: (String? option) {
-                setState(() {
-                  detectableViralLoadInterventions = option!;
-                  handleOnSave();
-                });
+                detectableViralLoadInterventions = option!;
+                handleOnSave();
               },
               customOptions: const [
                 'Direct Observed Therapy',
@@ -569,10 +538,8 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                   ? hivVisitationFormData.disclosure
                   : null,
               optionSelected: (String? option) {
-                setState(() {
-                  disclosure = option!;
-                  handleOnSave();
-                });
+                disclosure = option!;
+                handleOnSave();
               },
               customOptions: const [
                 'Not Done',
@@ -603,10 +570,8 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                   ? hivVisitationFormData.mUACScore
                   : null,
               optionSelected: (String? option) {
-                setState(() {
-                  mUACScore = option!;
-                  handleOnSave();
-                });
+                mUACScore = option!;
+                handleOnSave();
               },
               customOptions: const [
                 'Red',
@@ -630,13 +595,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomTextField(
               hintText: 'nutritional assessment',
-              controller: zScoreController,
               initialValue: hivVisitationFormData.zScore,
               onChanged: (val) {
-                setState(() {
-                  zScore = zScoreController.text;
-                  handleOnSave();
-                });
+                zScore = val;
+                handleOnSave();
               },
             ),
           ],
@@ -712,11 +674,8 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomRadioButton(
               optionSelected: (RadioButtonOptions? options) {
-                setState(() {
-                  nhifEnrollment =
-                      convertingRadioButtonOptionsToString(options);
-                  handleOnSave();
-                });
+                nhifEnrollment = convertingRadioButtonOptionsToString(options);
+                handleOnSave();
               },
               option: hivVisitationFormData.nhifEnrollment.isNotEmpty
                   ? convertingStringToRadioButtonOptions(
@@ -748,9 +707,8 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                   ? hivVisitationFormData.nhifEnrollmentStatus
                   : null,
               optionSelected: (String? option) {
-                setState(() {
-                  nhifEnrollmentStatus = option!;
-                });
+                nhifEnrollmentStatus = option!;
+                handleOnSave();
               },
             ),
           ],
@@ -769,13 +727,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             ),
             CustomTextField(
               hintText: 'Services',
-              controller: referralServicesController,
               initialValue: hivVisitationFormData.referralServices,
               onChanged: (val) {
-                setState(() {
-                  referralServices = referralServicesController.text;
-                  handleOnSave();
-                });
+                referralServices = val;
+                handleOnSave();
               },
             ),
           ],
@@ -821,13 +776,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
-              controller: peerEducatorNameController,
               initialValue: hivVisitationFormData.peerEducatorName,
               onChanged: (val) {
-                setState(() {
-                  peerEducatorName = peerEducatorNameController.text;
-                  handleOnSave();
-                });
+                peerEducatorName = val;
+                handleOnSave();
               },
             ),
           ],
@@ -845,13 +797,10 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
-              controller: peerEducatorContactController,
               initialValue: hivVisitationFormData.peerEducatorContact,
               onChanged: (val) {
-                setState(() {
-                  peerEducatorContact = peerEducatorContactController.text;
-                  handleOnSave();
-                });
+                peerEducatorContact = val;
+                handleOnSave();
               },
             ),
           ],

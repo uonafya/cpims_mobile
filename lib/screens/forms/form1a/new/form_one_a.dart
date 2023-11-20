@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
 import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
+import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/utils/form_one_a_provider.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_critical.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/widgets/fom_one_a_safe.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Models/case_load_model.dart';
@@ -28,7 +30,8 @@ class FomOneA extends StatefulWidget {
   final CaseLoadModel caseLoadModel;
   final UnapprovedForm1DataModel? unapprovedForm1;
 
-  const FomOneA({Key? key, required this.caseLoadModel, this.unapprovedForm1}) : super(key: key);
+  const FomOneA({Key? key, required this.caseLoadModel, this.unapprovedForm1})
+      : super(key: key);
 
   @override
   State<FomOneA> createState() => _FomOneAState();
@@ -37,7 +40,7 @@ class FomOneA extends StatefulWidget {
 class _FomOneAState extends State<FomOneA> {
   int selectedStep = 0;
   bool isLoading = false;
-
+  String dateOfEvent = '';
   List<Widget> steps = [
     const FormOneAHealthy(),
     const FormOneASafe(),
@@ -54,7 +57,8 @@ class _FomOneAState extends State<FomOneA> {
           Provider.of<Form1AProviderNew>(context, listen: false);
       form1AProvider.setFinalFormDataOvcId(widget.caseLoadModel.cpimsId!);
       if (widget.unapprovedForm1 != null) {
-        form1AProvider.setSelectedDate(DateTime.parse(widget.unapprovedForm1!.dateOfEvent));
+        form1AProvider
+            .setSelectedDateOfEvent(widget.unapprovedForm1!.dateOfEvent);
       }
     });
   }
@@ -66,7 +70,8 @@ class _FomOneAState extends State<FomOneA> {
     bool isLastStep = selectedStep == steps.length - 1;
 
     bool isFormInvalid() {
-      return (form1AProvider.formData.selectedDate == null) ||
+      return (form1AProvider.formData.selectedDate == null ||
+              form1AProvider.formData.selectedDate == '') &&
           (form1AProvider.formData.selectedServices.isBlank! &&
               form1AProvider.safeFormData.selectedServices.isBlank! &&
               form1AProvider.stableFormData.selectedServices.isBlank! &&
@@ -144,14 +149,22 @@ class _FomOneAState extends State<FomOneA> {
                                     fontSize: 12, fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 10),
-                              CustomFormsDatePicker(
-                                  hintText: 'Select the date',
-                                  selectedDateTime:
-                                      form1AProvider.formData.selectedDate,
-                                  allowFutureDates: false,
-                                  onDateSelected: (selectedDate) {
-                                    form1AProvider
-                                        .setSelectedDate(selectedDate);
+                              DateTextField(
+                                  label: dateOfEvent,
+                                  enabled: true,
+                                  identifier:
+                                      DateTextFieldIdentifier.dateOfAssessment,
+                                  onDateSelected: (value) {
+                                    setState(() {
+                                      dateOfEvent = DateFormat("yyyy-MM-dd")
+                                          .format(value!);
+                                      debugPrint(
+                                          "The selected date is $value and date of event is $dateOfEvent");
+                                      if (dateOfEvent.isNotEmpty) {
+                                        form1AProvider.setSelectedDateOfEvent(
+                                            dateOfEvent);
+                                      }
+                                    });
                                   }),
                               const SizedBox(
                                 height: 15,
@@ -201,6 +214,9 @@ class _FomOneAState extends State<FomOneA> {
                                       margin: const EdgeInsets.all(16),
                                       borderRadius: 8,
                                     );
+                                    setState(() {
+                                      isLoading = false;
+                                    });
                                     return;
                                   } else {
                                     try {
@@ -215,10 +231,27 @@ class _FomOneAState extends State<FomOneA> {
                                         isLoading = true;
                                       });
 
+                                      //check if date of event is empty
+                                      if (dateOfEvent.isEmpty &&
+                                          form1AProvider
+                                                  .formData.selectedDate ==
+                                              "") {
+                                        debugPrint("Missing date of event");
+                                        // Get.snackbar(
+                                        //   'Error',
+                                        //   'Please select date of event',
+                                        //   backgroundColor: Colors.red,
+                                        //   colorText: Colors.white,
+                                        // );
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                      }
                                       bool isFormSaved =
                                           await form1AProvider.saveForm1AData(
                                               form1AProvider.formData,
-                                              startInterviewTime, widget.unapprovedForm1);
+                                              startInterviewTime,
+                                              widget.unapprovedForm1);
                                       setState(() {
                                         if (isFormSaved == true) {
                                           isLoading = false;
@@ -254,8 +287,9 @@ class _FomOneAState extends State<FomOneA> {
                                           "Error getting user location: $e",
                                         );
                                       }
-                                      if(e.toString() == locationDisabled || e.toString() == locationDenied){
-                                        if(context.mounted) {
+                                      if (e.toString() == locationDisabled ||
+                                          e.toString() == locationDenied) {
+                                        if (context.mounted) {
                                           locationMissingDialog(context);
                                         }
                                       }
@@ -291,26 +325,25 @@ class _FomOneAState extends State<FomOneA> {
   }
 }
 
-Future<Position> getUserLocation(
-    // {required BuildContext context}
+Future<Position> getUserLocation(// {required BuildContext context}
     ) async {
   // try{
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw (locationDisabled);
-    }
-    LocationPermission permission = await Geolocator.checkPermission();
+  bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    throw (locationDisabled);
+  }
+  LocationPermission permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        throw(locationDenied);
-      }
+      throw (locationDenied);
     }
+  }
 
-    if (permission == LocationPermission.deniedForever) {
-      throw(locationDenied);
-    }
-    return await Geolocator.getCurrentPosition();
+  if (permission == LocationPermission.deniedForever) {
+    throw (locationDenied);
+  }
+  return await Geolocator.getCurrentPosition();
   // }
   // catch(e){
   //   locationMissingDialog(context);

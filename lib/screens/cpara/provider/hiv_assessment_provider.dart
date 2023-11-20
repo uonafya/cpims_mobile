@@ -26,6 +26,21 @@ class HIVAssessmentProvider with ChangeNotifier {
 
   int formIndex = 0;
 
+  int ovcAge = 0;
+
+  String finalEvaluation = "No";
+
+  void updateOvcAge(int age) {
+    ovcAge = age;
+    notifyListeners();
+  }
+
+  //clear ovc age
+  void clearOvcAge() {
+    ovcAge = 0;
+    notifyListeners();
+  }
+
   void updateFormIndex(int index) {
     formIndex = index;
     notifyListeners();
@@ -50,6 +65,7 @@ class HIVAssessmentProvider with ChangeNotifier {
 
   void updateHIVRiskAssessmentModel(HIVRiskAssessmentModel model) {
     _hivRiskAssessmentModel = model;
+    calculateFinalEvaluation();
     if (kDebugMode) {
       print(hivRiskAssessmentModel.toJson());
     }
@@ -70,7 +86,6 @@ class HIVAssessmentProvider with ChangeNotifier {
   //   _progressMonitoringModel.reasonForNotMakingReferral = "A";
   //   notifyListeners();
   // }
-
   Future<void> submitHIVAssessmentForm(String startTime) async {
     try {
       final data = {
@@ -80,14 +95,19 @@ class HIVAssessmentProvider with ChangeNotifier {
         ..._progressMonitoringModel.toJson(),
       };
 
-      //Replace all Yes string with true and No string with false
+      // Convert "Yes" to "AYES" and "No" to "ANO"
       data.forEach((key, value) {
-        if (value == "Yes") {
-          data[key] = convertBooleanStringToDBBoolen("AYES");
-        } else if (value == "No") {
-          data[key] = convertBooleanStringToDBBoolen("ANNO");
+        if (value is String) {
+          if (value.toLowerCase() == 'yes') {
+            data[key] = 'AYES';
+          } else if (value.toLowerCase() == 'no') {
+            data[key] = 'ANNO';
+          }
         }
       });
+
+      debugPrint("HIV Assessment Data: $data");
+
       String formUuid = const Uuid().v4();
       await LocalDb.instance.insertHRSData(
           caseLoadModel.cpimsId!,
@@ -96,8 +116,7 @@ class HIVAssessmentProvider with ChangeNotifier {
           _progressMonitoringModel,
           formUuid,
           startTime,
-          "HIV Risk Assessment"
-      );
+          "HIV Risk Assessment");
 
       resetWholeForm();
     } catch (e) {
@@ -110,7 +129,33 @@ class HIVAssessmentProvider with ChangeNotifier {
     _hivRiskAssessmentModel = HIVRiskAssessmentModel();
     _progressMonitoringModel = ProgressMonitoringModel();
     formIndex = 0;
+    ovcAge = 0;
+    finalEvaluation = "No";
 
+    notifyListeners();
+  }
+
+  void calculateFinalEvaluation() {
+
+    bool finalEvaluation = false;
+
+    if(ovcAge < 15){
+      finalEvaluation = hivRiskAssessmentModel.biologicalFather == "Yes" &&
+    hivRiskAssessmentModel.malnourished == "Yes" &&
+    hivRiskAssessmentModel.sexualAbuse == "Yes" &&
+    hivRiskAssessmentModel.traditionalProcedures == "Yes";
+    }
+    else{
+      finalEvaluation =
+      hivRiskAssessmentModel.sexualAbuseAdolescent == "Yes" &&
+    hivRiskAssessmentModel.persistentlySick == "Yes" &&
+    hivRiskAssessmentModel.tb == "Yes" &&
+    hivRiskAssessmentModel.sexualIntercourse == "Yes" &&
+    hivRiskAssessmentModel.symptomsOfSTI == "Yes" &&
+    hivRiskAssessmentModel.ivDrugUser == "Yes";
+    }
+
+    this.finalEvaluation = finalEvaluation ? "Yes" : "No";
     notifyListeners();
   }
 }

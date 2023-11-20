@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 
 class FormSection extends StatelessWidget {
-  const FormSection(
-      {super.key, this.isDisabled = false, required this.children});
+  const FormSection({
+    super.key,
+    this.isDisabled = false,
+    this.isVisibleCondition, // Make it optional
+    required this.children,
+  });
+
   final bool isDisabled;
+  final Function? isVisibleCondition; // Make it nullable
   final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
+    if (isVisibleCondition != null && !isVisibleCondition!()) {
+      return Container(); // Return an empty container if not visible
+    }
+
     return AbsorbPointer(
       absorbing: isDisabled,
       child: Container(
@@ -25,3 +35,4 @@ class FormSection extends StatelessWidget {
     );
   }
 }
+

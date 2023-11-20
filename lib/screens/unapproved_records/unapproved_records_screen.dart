@@ -7,6 +7,13 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/stable_cpt_model
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_case_plan_template.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/utils/case_plan_dummy_data.dart';
+import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
+import 'package:cpims_mobile/constants.dart';
+import 'package:cpims_mobile/providers/cpara/unapproved_cpara_database.dart';
+import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
+import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.dart';
+import 'package:cpims_mobile/providers/db_provider.dart';
+import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
@@ -14,9 +21,13 @@ import 'package:cpims_mobile/widgets/custom_chip.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:provider/provider.dart';
+import '../../providers/app_meta_data_provider.dart';
+import '../cpara/cpara_forms.dart';
+import '../cpara/model/unnaproved_cpara_screen.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import 'package:provider/provider.dart';
-
 import '../../Models/unapproved_caseplan_form_model.dart';
 import '../../Models/unapproved_form_1_model.dart';
 import '../../providers/db_provider.dart';
@@ -434,9 +445,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                 onEdit: editUnapprovedCptForm,
               ),
             if (selectedRecord == "CPARA")
-              const Column(
-                children: [Text('Hello')],
-              ),
+    const Expanded(child: UnnaprovedCparaScreen()),
             if (selectedRecord == unapprovedRecords[0])
               Expanded(
                 child: FormTab(

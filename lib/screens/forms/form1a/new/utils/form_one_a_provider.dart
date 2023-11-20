@@ -5,6 +5,8 @@ import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import 'package:uuid/uuid.dart';
@@ -19,8 +21,8 @@ import '../../../form1b/utils/SafeForm1bModel.dart';
 import '../../../form1b/utils/StableForm1bModel.dart';
 
 class Form1AProviderNew extends ChangeNotifier {
-  final HealthFormData _formData = HealthFormData(
-      selectedServices: [], selectedDate: DateTime.now(), domainId: "");
+  final HealthFormData _formData =
+      HealthFormData(selectedServices: [], selectedDate: "", domainId: "");
   final StableFormData _stableFormData =
       StableFormData(selectedServices: [], domainId: "");
   final SchooledFormData _schooledFormData =
@@ -36,7 +38,7 @@ class Form1AProviderNew extends ChangeNotifier {
   final CriticalEventDataForm1b _criticalEventDataForm1b =
       CriticalEventDataForm1b(
     selectedEvents: [],
-    selectedDate: DateTime.now(),
+    selectedDate: "",
   );
 
   HealthFormData get formData => _formData;
@@ -84,12 +86,17 @@ class Form1AProviderNew extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setSelectedDate(DateTime selectedDate) {
+  // void setSelectedDate(DateTime selectedDate) {
+  //   _formData.selectedDate = selectedDate;
+  //   notifyListeners();
+  // }
+
+  void setSelectedDateOfEvent(String selectedDate) {
     _formData.selectedDate = selectedDate;
     notifyListeners();
   }
 
-  void setCriticalEventsSelectedDate(DateTime selectedDate) {
+  void setCriticalEventsSelectedDate(String selectedDate) {
     _criticalEventDataForm1b.selectedDate = selectedDate;
     notifyListeners();
   }
@@ -105,9 +112,8 @@ class Form1AProviderNew extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setFinalFormDataDOE(DateTime? dateOfEvent) {
-    _finalServicesFormData.date_of_event =
-        DateFormat('yyyy-MM-dd').format(dateOfEvent!);
+  void setFinalFormDataDOE(String? dateOfEvent) {
+    _finalServicesFormData.date_of_event = dateOfEvent!;
     _criticalEventDataForm1b.selectedDate = dateOfEvent;
     notifyListeners();
   }
@@ -161,37 +167,55 @@ class Form1AProviderNew extends ChangeNotifier {
       location_long: unapprovedForm1?.appFormMetaData.location_long,
     );
 
-    Form1DataModel toDbData = Form1DataModel(
-      ovcCpimsId: finalServicesFormData.ovc_cpims_id,
-      dateOfEvent: finalServicesFormData.date_of_event,
-      services: servicesList,
-      criticalEvents: criticalEventsList,
-      id: formUUID,
-    );
-    String data = jsonEncode(toDbData);
-    if (kDebugMode) {
-      print("The json data for form 1 a is $data");
-    }
-    if (kDebugMode) {
-      print("form1b payload:==========>$criticalEventsList");
-    }
-
-    bool isFormSaved = await Form1Service.saveFormLocal(
-        "form1a", toDbData, appFormMetaData, formUUID,);
-
-    if (unapprovedForm1 != null && unapprovedForm1.localId != null) {
-      bool isUnapprovedDeleted = await UnapprovedDataService.deleteUnapprovedForm1(unapprovedForm1.localId!);
-      if (isUnapprovedDeleted) {
-        debugPrint("Unapproved delete success");
-      } else {
-        debugPrint("Unapproved delete not success");
+    if (!(finalServicesFormData.date_of_event == "")) {
+      Form1DataModel toDbData = Form1DataModel(
+        ovcCpimsId: finalServicesFormData.ovc_cpims_id,
+        dateOfEvent: finalServicesFormData.date_of_event,
+        services: servicesList,
+        criticalEvents: criticalEventsList,
+        id: formUUID,
+      );
+      String data = jsonEncode(toDbData);
+      if (kDebugMode) {
+        print("The json data for form 1 a is $data");
       }
+      if (kDebugMode) {
+        print("form1b payload:==========>$criticalEventsList");
+      }
+
+      bool isFormSaved = await Form1Service.saveFormLocal(
+        "form1a",
+        toDbData,
+        appFormMetaData,
+        formUUID,
+      );
+      if (unapprovedForm1 != null && unapprovedForm1.localId != null) {
+        bool isUnapprovedDeleted = await UnapprovedDataService.deleteUnapprovedForm1(unapprovedForm1.localId!);
+        if (isUnapprovedDeleted) {
+          debugPrint("Unapproved delete success");
+        } else {
+          debugPrint("Unapproved delete not success");
+        }
+      }
+      if (isFormSaved == true) {
+        resetFormData();
+        notifyListeners();
+      }
+
+      return isFormSaved;
+    } else {
+      Get.snackbar(
+        'Error',
+        'Please select date of event',
+        duration: const Duration(seconds: 2),
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        margin: const EdgeInsets.all(16),
+        borderRadius: 8,
+      );
     }
-    if (isFormSaved == true) {
-      resetFormData();
-      notifyListeners();
-    }
-    return isFormSaved;
+    return false;
   }
 
   //converting the various services from the domains into one Services list with domain id and service id
@@ -246,12 +270,12 @@ class Form1AProviderNew extends ChangeNotifier {
 
     for (int i = 0; i < criticalEventDataForm1b.selectedEvents.length; i++) {
       final eventId = criticalEventDataForm1b.selectedEvents[i].value;
-      final eventDate =
-          DateFormat('yyyy-MM-dd').format(criticalEventDataForm1b.selectedDate);
-
-      eventsList.add(
-        Form1CriticalEventsModel(eventId: eventId!, eventDate: eventDate),
-      );
+      final eventDate = criticalEventDataForm1b.selectedDate;
+      if (eventDate.isNotEmpty) {
+        eventsList.add(
+          Form1CriticalEventsModel(eventId: eventId!, eventDate: eventDate),
+        );
+      }
     }
 
     return eventsList;
@@ -261,7 +285,7 @@ class Form1AProviderNew extends ChangeNotifier {
 
   void resetFormData() {
     _formData.selectedServices.clear();
-    _formData.selectedDate = DateTime.now();
+    _formData.selectedDate = '';
     _formData.domainId = '1234';
 
     _stableFormData.selectedServices.clear();
@@ -276,7 +300,7 @@ class Form1AProviderNew extends ChangeNotifier {
     _finalServicesFormData.ovc_cpims_id = '';
 
     _criticalEventDataForm1b.selectedEvents.clear();
-    _criticalEventDataForm1b.selectedDate = DateTime.now();
+    _criticalEventDataForm1b.selectedDate = '';
 
     notifyListeners();
   }

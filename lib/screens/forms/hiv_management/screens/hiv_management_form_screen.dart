@@ -12,10 +12,12 @@ import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../widgets/location_dialog.dart';
+import '../../../homepage/provider/stats_provider.dart';
 
 class HIVManagementForm extends StatefulWidget {
   final CaseLoadModel caseLoad;
@@ -45,15 +47,25 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
   }
 
   // submit hivmanagementform
-  void submitHIVManagementForm(String startInterviewTime) async {
+  Future<void> submitHIVManagementForm(String startInterviewTime) async {
     try {
       String formUUid = const Uuid().v4();
       await Provider.of<HIVManagementFormProvider>(context, listen: false)
           .submitHIVManagementForm(widget.caseLoad.cpimsId, formUUid,
               startInterviewTime, "HIV Management Form",
               context: context);
+
       if (context.mounted) {
-        Get.back();
+        StatsProvider statsProvider = StatsProvider();
+        statsProvider.updateHmfStats();
+        Navigator.pop(context);
+        Get.snackbar(
+          'Success',
+          'HIV Management Form submitted successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
       }
     } catch (e) {
       rethrow;
@@ -62,8 +74,7 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
 
   @override
   Widget build(BuildContext context) {
-    final formCompletionStatus =
-        context.watch<FormCompletionStatusProvider>().artTherapyFormCompleted;
+    final formCompletionStatus = context.watch<FormCompletionStatusProvider>();
 
     return Scaffold(
       appBar: customAppBar(),
@@ -156,45 +167,90 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                               text: selectedStep == steps.length - 1
                                   ? 'Submit Form'
                                   : 'Next',
-                              onTap: () {
+                              onTap: () async {
                                 try {
                                   if (selectedStep == steps.length - 1) {
+                                    // Set isLoading to true when form submission starts
                                     setState(() {
                                       isLoading = true;
                                     });
-                                    // logic for verifying form and submitting
-                                    AppMetaDataProvider appMetaDataProvider =
-                                        Provider.of<AppMetaDataProvider>(
-                                            context,
-                                            listen: false);
-                                    String startInterviewTime =
-                                        appMetaDataProvider
-                                                .startTimeInterview ??
-                                            DateTime.now().toIso8601String();
-                                    submitHIVManagementForm(startInterviewTime);
 
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                    HIVManagementFormProvider
-                                        hivManagementFormProvider =
-                                        Provider.of<HIVManagementFormProvider>(
-                                            context,
-                                            listen: false);
-                                    hivManagementFormProvider.clearForms();
-                                    Navigator.pop(context);
+                                    // logic for verifying form and submitting
+                                    if (formCompletionStatus
+                                            .hivVisitationFormCompleted ==
+                                        true) {
+                                      AppMetaDataProvider appMetaDataProvider =
+                                          Provider.of<AppMetaDataProvider>(
+                                        context,
+                                        listen: false,
+                                      );
+                                      String startInterviewTime =
+                                          appMetaDataProvider
+                                                  .startTimeInterview ??
+                                              DateTime.now().toIso8601String();
+                                      await submitHIVManagementForm(
+                                          startInterviewTime);
+
+                                      // Set isLoading to false when form submission is complete
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+
+                                      HIVManagementFormProvider
+                                          hivManagementFormProvider = Provider
+                                              .of<HIVManagementFormProvider>(
+                                        context,
+                                        listen: false,
+                                      );
+                                      hivManagementFormProvider.clearForms();
+                                      Navigator.pop(context);
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              "Please fill in the required fields"),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+
+                                      // Set isLoading to false when form submission fails
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                      return;
+                                    }
                                   } else {
-                                    setState(() {
-                                      if (selectedStep < steps.length - 1 &&
-                                          formCompletionStatus == true) {
-                                        selectedStep++;
-                                      }
-                                    });
+                                    setState(
+                                      () {
+                                        if (selectedStep < steps.length - 1 &&
+                                            formCompletionStatus
+                                                    .artTherapyFormCompleted ==
+                                                true) {
+                                          selectedStep++;
+                                        } else if (selectedStep <
+                                                steps.length - 1 &&
+                                            formCompletionStatus
+                                                    .artTherapyFormCompleted ==
+                                                false) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  "Please fill in the required fields"),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    );
                                   }
                                 } catch (e) {
+                                  // Set isLoading to false when an error occurs during form submission
                                   setState(() {
                                     isLoading = false;
                                   });
+
                                   if (e.toString() == locationDisabled ||
                                       e.toString() == locationDenied) {
                                     if (context.mounted) {
@@ -204,10 +260,68 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                 }
                               },
                               color: kPrimaryColor,
+                              isLoading:
+                                  isLoading, // Pass the isLoading state to the CustomButton
                             ),
                           ),
                         ],
-                      )
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton(
+                              onPressed: () {
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        content: const Text(
+                                            "Are you sure you want to clear the form?"),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                context
+                                                    .read<
+                                                        HIVManagementFormProvider>()
+                                                    .clearForms();
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(
+                                                "Yes",
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 14.sp,
+                                                ),
+                                              )),
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(
+                                                "No",
+                                                style: TextStyle(
+                                                  fontSize: 14.sp,
+                                                ),
+                                              ))
+                                        ],
+                                      );
+                                    });
+                              },
+                              child: Text(
+                                "Clear Form",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 14.sp,
+                                ),
+                              )),
+                        ),
+                      ),
                     ],
                   ),
                 )

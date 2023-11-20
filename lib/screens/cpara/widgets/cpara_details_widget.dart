@@ -108,9 +108,6 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
   final GlobalKey<_DateTextFieldState> _dateTextFieldKey = GlobalKey();
   final GlobalKey<_DateTextFieldState> _dateTextFieldPreviousKey = GlobalKey();
 
-  var dateOfAssesmentController = TextEditingController();
-  var previousAssesmentController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     // Providing access to the provider
@@ -135,7 +132,6 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             DateTextField2(
                 label: 'Date of Assessment',
                 enabled: true,
-                controller: dateOfAssesmentController,
                 initialValue: model.detailModel?.dateOfAssessment ?? "",
                 updateDate: (String? newDate) {
                   updateDate('assesment', newDate);
@@ -187,7 +183,6 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
                 label:
                     'If No, give date of Previous Case Plan Readiness Assessment',
                 enabled: isFirstAssessment == RadioButtonOptions.no,
-                controller: previousAssesmentController,
                 initialValue: model.detailModel?.dateOfLastAssessment ?? "",
                 updateDate: (String? newDate) {
                   updateDate('previous', newDate);
@@ -295,20 +290,12 @@ typedef UpdateDate = Function(String? newDate);
 class DateTextField2 extends StatelessWidget {
   final String label;
   final bool enabled;
-  final TextEditingController controller;
   final String initialValue;
-  // final DateTextFieldIdentifier identifier;
-  // final Function(DateTime?) onDateSelected;
   final UpdateDate updateDate;
 
-  const DateTextField2(
-      {required this.label,
-      required this.enabled,
-      required this.controller,
-      required this.initialValue,
-      required this.updateDate,
-      // required this.identifier,
-      super.key});
+  DateTextField2({required this.label, required this.enabled, required this.initialValue, required this.updateDate, super.key});
+
+  final TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -363,6 +350,7 @@ class DateTextField extends StatefulWidget {
 
   final String label;
   final bool enabled;
+
   // final String initialValue;
   final DateTextFieldIdentifier identifier;
   final Function(DateTime?)? onDateSelected;
@@ -430,6 +418,7 @@ class TextViewsColumn extends StatefulWidget {
 
 class _TextViewsColumnState extends State<TextViewsColumn> {
   CaseLoadModel caseLoadModel = CaseLoadModel();
+
   // SummaryDataModel dashData = SummaryDataModel();
   @override
   void initState() {
@@ -502,6 +491,7 @@ class _TextViewsColumnState extends State<TextViewsColumn> {
 
 class ChildCard extends StatelessWidget {
   const ChildCard({Key? key, required this.childDetails}) : super(key: key);
+
   // CaseLoadModel caseLoadModel = CaseLoadModel();
   final CaseLoadModel childDetails;
 
@@ -584,6 +574,21 @@ class ChildCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Yes"),
+              ],
+            ),
+            const SizedBox(
+              height: 2,
+            ),
+            const Divider(
+              color: Colors.grey,
+            ),
+            const SizedBox(
+              height: 2,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("${childDetails.ovchivstatus}"),
               ],
             ),
           ],

@@ -23,7 +23,7 @@ class _FormOneAHealthy extends State<FormOneAHealthy> {
 
   List<ValueItem> selectedCareGiverServices = [];
   List<ValueItem> selectedCareGiverServicesOptions = [];
-  DateTime currentlySelectedDate = DateTime.now();
+  String currentlySelectedDate = "";
 
   @override
   Widget build(BuildContext context) {

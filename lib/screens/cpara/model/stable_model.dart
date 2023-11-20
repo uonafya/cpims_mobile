@@ -1,9 +1,9 @@
 import 'package:cpims_mobile/screens/cpara/model/cpara_question_ids.dart';
 
 class StableModel {
-  final String? question1;
-  final String? question2;
-  final String? question3;
+  String? question1;
+  String? question2;
+  String? question3;
 
   StableModel({
     this.question1,

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
+import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/caregiver/caregiver.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/preventive/preventive_assesment_attendance.dart';
@@ -14,6 +17,7 @@ import 'package:cpims_mobile/services/form_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_grid_view.dart';
+import 'package:cpims_mobile/widgets/custom_toast.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -161,20 +165,62 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
+  // Future<void> syncHMFFormData() async {
+  //   final db = LocalDb.instance;
+  //   try {
+  //     // read from localdb
+  //     final queryResults = await db.fetchHMFFormData();
+  //     // submit data
+  //     for (final formData in queryResults) {
+  //       final Response response =
+  //           await apiServiceConstructor.postSecData(formData, "mobile/hmf/");
+  //       if (kDebugMode) {
+  //         print("Data ${response.data}");
+  //       }
+  //     }
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print(e);
+  //     }
+  //   }
+  // }
+
   Future<void> syncHMFFormData() async {
-    final db = LocalDb.instance;
+    var prefs = await SharedPreferences.getInstance();
+    var bearerToken = prefs.getString('access');
+
+    if (bearerToken == null) {
+      return;
+    }
+    final db = await LocalDb.instance;
     try {
-      // read from localdb
       final queryResults = await db.fetchHMFFormData();
-      // submit data
+      final Dio dio = Dio();
+      dio.options.headers['Authorization'] = 'Bearer $bearerToken';
+      dio.interceptors.add(LogInterceptor());
+
+      // Submit data
       for (final formData in queryResults) {
-        final Response response =
-            await apiServiceConstructor.postSecData(formData, "mobile/hmf/");
-        if (kDebugMode) {
-          print("Data ${response.data}");
+        debugPrint("The hmf form data is ${jsonEncode(formData)}");
+        try {
+          final response =
+              await dio.post('${cpimsApiUrl}mobile/hmf/', data: formData);
+          if (kDebugMode) {
+            print(response.toString());
+          }
+
+          if (response.statusCode == 201) {
+            await db.updateHMFData(formData['uuid']);
+          }
+        } catch (error) {
+          // Handle the error, you may want to retry or log it
+          if (kDebugMode) {
+            print(error);
+          }
         }
       }
     } catch (e) {
+      // Handle the error, you may want to retry or log it
       if (kDebugMode) {
         print(e);
       }
@@ -198,6 +244,7 @@ class _HomepageState extends State<Homepage> {
 
       // Submit data
       for (final formData in queryResults) {
+        debugPrint("The form data is ${jsonEncode(formData)}");
         try {
           final response =
               await dio.post('${cpimsApiUrl}mobile/hrs/', data: formData);
@@ -225,8 +272,8 @@ class _HomepageState extends State<Homepage> {
 
   Future<void> syncWorkflows() async {
     final isConnected =
-        await Provider.of<ConnectivityProvider>(context, listen: false)
-            .checkInternetConnection();
+    await Provider.of<ConnectivityProvider>(context, listen: false)
+        .checkInternetConnection();
     if (isConnected) {
       await submitCparaToUpstream();
       await postCasePlansToServer();
@@ -234,6 +281,11 @@ class _HomepageState extends State<Homepage> {
       await showCountUnsyncedForms();
       await syncHRSFormData();
       await syncHMFFormData();
+      if (mounted) {
+        context.read<StatsProvider>().updateFormStats();
+      }
+    } else {
+      await showCountUnsyncedForms();
       if (mounted) {
         context.read<StatsProvider>().updateFormStats();
       }
@@ -348,12 +400,14 @@ class _HomepageState extends State<Homepage> {
                       icon: FontAwesomeIcons.fileCircleXmark,
                       color: const Color(0xff947901),
                       secondaryColor: const Color(0xff524300),
-                      form1ACount: dashData.unapprovedF1A,
-                      form1BCount: dashData.unapprovedF1B,
-                      cpaCount: dashData.unapprovedCPR,
-                      cparaCount: dashData.unapprovedCPT,
-                      hrsCount: dashData.unapprovedHRS,
-                      hmfCount: dashData.unapprovedHMF,
+                      form1ACount: 0,
+                      form1BCount: 0,
+                      cpaCount: 0,
+                      cparaCount: int.tryParse(
+                              "${context.watch<UnapprovedRecordsScreenProvider>().unapprovedCparas.length}") ??
+                          0,
+                      hrsCount: 0,
+                      hmfCount: 0,
                       onClick: () {
                         Get.to(() => const UnapprovedRecordsScreens());
                       },
@@ -364,37 +418,37 @@ class _HomepageState extends State<Homepage> {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       children: [
-                        StatisticsGridItem(
+                        const StatisticsGridItem(
                           title: 'FORM 1A',
-                          value: "${dashData.unapprovedF1A}/${dashData.form1a}",
+                          value: "0",
                           icon: FontAwesomeIcons.fileLines,
                           color: kPrimaryColor,
-                          secondaryColor: const Color(0xff0E6668),
+                          secondaryColor: Color(0xff0E6668),
                         ),
-                        StatisticsGridItem(
+                        const StatisticsGridItem(
                           title: 'FORM 1B',
-                          value: "${dashData.unapprovedF1B}/${dashData.form1b}",
+                          value: "0",
                           icon: FontAwesomeIcons.fileLines,
                           color: const Color(0xff348FE2),
                           secondaryColor: const Color(0xff1F5788),
                         ),
-                        StatisticsGridItem(
+                        const StatisticsGridItem(
                           title: 'CPARA',
-                          value: "${dashData.unapprovedCPR}/${dashData.cpara}",
+                          value: "0",
                           icon: FontAwesomeIcons.fileLines,
                           color: const Color(0xff727DB6),
                           secondaryColor: const Color(0xff454A6D),
                         ),
-                        StatisticsGridItem(
+                        const StatisticsGridItem(
                           title: 'CPT',
-                          value: "${dashData.unapprovedCPT}/${dashData.cpt}",
+                          value: "0",
                           icon: FontAwesomeIcons.fileLines,
                           color: const Color(0xff49B6D5),
                           secondaryColor: const Color(0xff2C6E80),
                         ),
                         StatisticsGridItem(
                           title: 'CLHIV',
-                          value: "${dashData.clhiv}",
+                          value: "0",
                           icon: FontAwesomeIcons.heart,
                           color: const Color(0xff49B6D5),
                           secondaryColor: const Color(0xff2C6E80),
@@ -601,7 +655,7 @@ class _HomepageState extends State<Homepage> {
       Get.snackbar('Info', 'No Form1A and Form1B forms to sync',
           backgroundColor: Colors.orange,
           colorText: Colors.black,
-          snackPosition: SnackPosition.BOTTOM);
+          snackPosition: SnackPosition.TOP);
     }
     if (mounted) {
       Get.closeAllSnackbars();

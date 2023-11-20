@@ -10,12 +10,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import 'hiv_current_status_form.dart';
+
 class ProgressMonitoringModel {
   final String parentAcceptHivTesting;
   final String parentAcceptHivTestingDate;
   final String formalReferralMade;
   final String formalReferralMadeDate;
   final String formalReferralCompleted;
+  final String formalReferralCompletedDate;
   String reasonForNotMakingReferral;
   final String hivTestResult;
   final String referredForArt;
@@ -26,16 +29,17 @@ class ProgressMonitoringModel {
 
   ProgressMonitoringModel({
     this.parentAcceptHivTesting = "",
-    this.parentAcceptHivTestingDate = "",
+    this.parentAcceptHivTestingDate = "Report Date",
     this.formalReferralMade = "",
-    this.formalReferralMadeDate = "",
+    this.formalReferralMadeDate = "Report Date",
     this.formalReferralCompleted = "",
+    this.formalReferralCompletedDate = "Report Date",
     this.reasonForNotMakingReferral = "A",
     this.hivTestResult = "",
     this.referredForArt = "",
-    this.referredForArtDate = "",
+    this.referredForArtDate = "Report Date",
     this.artReferralCompleted = "",
-    this.artReferralCompletedDate = "",
+    this.artReferralCompletedDate = "Report Date",
     this.facilityOfArtEnrollment = "",
   });
 
@@ -79,6 +83,9 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
   String artReferralCompletedDate = "";
   String facilityOfArtEnrollment = "";
 
+  HIVCurrentStatusModel currentStatus = HIVCurrentStatusModel();
+  var previousAssessmentController = TextEditingController();
+
   void handleOnFormSaved() {
     final val = ProgressMonitoringModel(
       parentAcceptHivTesting: parentAcceptHivTesting,
@@ -86,8 +93,9 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
       formalReferralMade: formalReferralMade,
       formalReferralMadeDate: formalReferralMadeDate,
       formalReferralCompleted: formalReferralCompleted,
+      formalReferralCompletedDate: formalReferralCompletedDate,
       reasonForNotMakingReferral:
-          reasonForNotMakingReferral.isEmpty ? "A" : reasonForNotMakingReferral,
+          reasonForNotMakingReferral.isEmpty ? "" : reasonForNotMakingReferral,
       hivTestResult: hivTestResult,
       referredForArt: referredForArt,
       referredForArtDate: referredForArtDate,
@@ -100,14 +108,41 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    currentStatus =
+        context.read<HIVAssessmentProvider>().hivCurrentStatusModel;
     final formData =
-        Provider.of<HIVAssessmentProvider>(context).progressMonitoringModel;
+        context.read<HIVAssessmentProvider>().progressMonitoringModel;
+
+    parentAcceptHivTesting = formData.parentAcceptHivTesting;
+    parentAcceptHivTestingDate = formData.parentAcceptHivTestingDate;
+    formalReferralMade = formData.formalReferralMade;
+    formalReferralMadeDate = formData.formalReferralMadeDate;
+    formalReferralCompleted = formData.formalReferralCompleted;
+    formalReferralCompletedDate = formData.formalReferralCompletedDate;
+    reasonForNotMakingReferral = formData.reasonForNotMakingReferral;
+    hivTestResult = formData.hivTestResult;
+    referredForArt = formData.referredForArt;
+    referredForArtDate = formData.referredForArtDate;
+    artReferralCompleted = formData.artReferralCompleted;
+    artReferralCompletedDate = formData.artReferralCompletedDate;
+    facilityOfArtEnrollment = formData.facilityOfArtEnrollment;
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final formData = context.watch<HIVAssessmentProvider>().progressMonitoringModel;
 
     return Container(
       padding: const EdgeInsets.only(top: 20),
       child: FormSection(
-        isDisabled: disableSubsquentHIVAssessmentFieldsAndSubmit(context),
+        isVisibleCondition: () {
+          return (currentStatus.statusOfChild == "Yes" &&
+              currentStatus.hivStatus == "HIV_Negative" &&
+              currentStatus.hivTestDone == "No");
+        },
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,10 +163,8 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
               ),
               CustomRadioButton(
                 isNaAvailable: false,
-                option: formData.parentAcceptHivTesting.isNotEmpty
-                    ? convertingStringToRadioButtonOptions(
-                        formData.parentAcceptHivTesting)
-                    : null,
+                option: convertingStringToRadioButtonOptions(
+                        parentAcceptHivTesting),
                 optionSelected: (val) {
                   parentAcceptHivTesting =
                       convertingRadioButtonOptionsToString(val);
@@ -139,26 +172,32 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                 },
               ),
               if (formData.parentAcceptHivTesting == "Yes")
-                DateTextField(
-                  label: "Report Date",
+                // DateTextField(
+                //   label: "Report Date",
+                //   enabled: true,
+                //   identifier: DateTextFieldIdentifier.dateOfAssessment,
+                //   onDateSelected: (val) {
+                //     parentAcceptHivTestingDate =
+                //         DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
+                //     handleOnFormSaved();
+                //   },
+                // ),
+              DateTextField2(
+                  label:
+                  'Report Date',
                   enabled: true,
-                  identifier: DateTextFieldIdentifier.dateOfAssessment,
-                  onDateSelected: (val) {
-                    parentAcceptHivTestingDate =
-                        DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
+                  initialValue: parentAcceptHivTestingDate ?? "",
+                  updateDate: (String? newDate) {
+                    parentAcceptHivTestingDate = newDate ?? DateFormat("yyyy-MM-dd")
+                        .format(DateTime.now());
                     handleOnFormSaved();
-                  },
-                ),
+                  }),
               const SizedBox(height: 14),
               const Divider(),
               const Text("2. Was a formal referral made for HIV testing?"),
               CustomRadioButton(
                 isNaAvailable: false,
-
-                option: formData.formalReferralMade.isNotEmpty
-                    ? convertingStringToRadioButtonOptions(
-                        formData.formalReferralMade)
-                    : null,
+                option:  convertingStringToRadioButtonOptions(formalReferralMade),
                 optionSelected: (val) {
                   formalReferralMade =
                       convertingRadioButtonOptionsToString(val);
@@ -166,29 +205,37 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                 },
               ),
               if (formData.formalReferralMade == "Yes")
-                DateTextField(
-                  label: "Report Date",
+                // DateTextField(
+                //   label: "Report Date",
+                //   enabled: true,
+                //   identifier: DateTextFieldIdentifier.dateOfAssessment,
+                //   onDateSelected: (val) {
+                //     formalReferralMadeDate =
+                //         DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
+                //     handleOnFormSaved();
+                //   },
+                // ),
+              DateTextField2(
+                  label:
+                  'Report Date',
                   enabled: true,
-                  identifier: DateTextFieldIdentifier.dateOfAssessment,
-                  onDateSelected: (val) {
-                    formalReferralMadeDate =
-                        DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
+                  initialValue: formalReferralMadeDate ?? "",
+                  updateDate: (String? newDate) {
+                    formalReferralMadeDate = newDate ?? DateFormat("yyyy-MM-dd")
+                        .format(DateTime.now());
                     handleOnFormSaved();
-                  },
-                ),
+                  }),
               const SizedBox(
                 height: 4,
               ),
-              const Text("3. Was the referal for HIV testing completed?"),
+              const Text("3. Was the referral for HIV testing completed?"),
               const SizedBox(
                 height: 4,
               ),
               CustomRadioButton(
                 isNaAvailable: false,
-                option: formData.formalReferralCompleted.isNotEmpty
-                    ? convertingStringToRadioButtonOptions(
-                        formData.formalReferralCompleted)
-                    : null,
+                option: convertingStringToRadioButtonOptions(
+                        formalReferralCompleted),
                 optionSelected: (val) {
                   formalReferralCompleted =
                       convertingRadioButtonOptionsToString(val);
@@ -196,16 +243,26 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                 },
               ),
               if (formData.formalReferralCompleted == "Yes")
-                DateTextField(
-                  label: "Report Date",
+                // DateTextField(
+                //   label: "Report Date",
+                //   enabled: true,
+                //   identifier: DateTextFieldIdentifier.dateOfAssessment,
+                //   onDateSelected: (val) {
+                //     formalReferralCompletedDate =
+                //         DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
+                //     handleOnFormSaved();
+                //   },
+                // ),
+              DateTextField2(
+                  label:
+                  'Report Date',
                   enabled: true,
-                  identifier: DateTextFieldIdentifier.dateOfAssessment,
-                  onDateSelected: (val) {
-                    formalReferralCompletedDate =
-                        DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
+                  initialValue: formalReferralCompletedDate ?? "",
+                  updateDate: (String? newDate) {
+                    formalReferralCompletedDate = newDate ?? DateFormat("yyyy-MM-dd")
+                        .format(DateTime.now());
                     handleOnFormSaved();
-                  },
-                ),
+                  }),
               const SizedBox(
                 height: 14,
               ),
@@ -213,7 +270,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
               const SizedBox(height: 10),
               CustomTextField(
                 hintText: "Response",
-                initialValue: formData.reasonForNotMakingReferral,
+                initialValue: reasonForNotMakingReferral,
                 onChanged: (val) {
                   reasonForNotMakingReferral = val;
                   handleOnFormSaved();
@@ -227,8 +284,8 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
               const SizedBox(height: 10),
               CustomDynamicRadioButton(
                 isNaAvailable: false,
-                option: formData.hivTestResult.isNotEmpty
-                    ? formData.hivTestResult
+                option: hivTestResult.isNotEmpty
+                    ? hivTestResult
                     : null,
                 optionSelected: (val) {
                   hivTestResult = val!;
@@ -244,19 +301,17 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                 height: 14,
               ),
               FormSection(
-                isDisabled:
-                    hivTestResult != "HIV_Positive" && hivTestResult.isNotEmpty,
+                isVisibleCondition: (){
+                  return hivTestResult == "HIV_Positive" && hivTestResult.isNotEmpty;
+                },
                 children: [
                   const Text(
                       "4. If HIV positive(3b), was the child referred for ART?"),
                   const SizedBox(height: 10),
                   CustomRadioButton(
                     isNaAvailable: false,
-                    option:
-                        formData.referredForArt.isNotEmpty
-                            ? convertingStringToRadioButtonOptions(
-                                formData.referredForArt)
-                            : null,
+                    option: convertingStringToRadioButtonOptions(
+                            referredForArt),
                     optionSelected: (val) {
                       referredForArt =
                           convertingRadioButtonOptionsToString(val);
@@ -264,34 +319,43 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                     },
                   ),
                   if (formData.referredForArt == "Yes")
-                    DateTextField(
-                      label: "Report Date",
+                    // DateTextField(
+                    //   label: "Report Date",
+                    //   enabled: true,
+                    //   identifier: DateTextFieldIdentifier.dateOfAssessment,
+                    //   onDateSelected: (val) {
+                    //     referredForArtDate = DateFormat("yyyy-MM-dd")
+                    //         .format(val ?? DateTime.now());
+                    //     handleOnFormSaved();
+                    //   },
+                    // ),
+                  DateTextField2(
+                      label:
+                      'Report Date',
                       enabled: true,
-                      identifier: DateTextFieldIdentifier.dateOfAssessment,
-                      onDateSelected: (val) {
-                        referredForArtDate = DateFormat("yyyy-MM-dd")
-                            .format(val ?? DateTime.now());
+                      initialValue: referredForArtDate ?? "",
+                      updateDate: (String? newDate) {
+                        referredForArtDate = newDate ?? DateFormat("yyyy-MM-dd")
+                            .format(DateTime.now());
                         handleOnFormSaved();
-                      },
-                    ),
+                      }),
                 ],
               ),
               const SizedBox(
                 height: 14,
               ),
               FormSection(
-                isDisabled:
-                    hivTestResult != "HIV_Positive" && hivTestResult.isNotEmpty,
+                isVisibleCondition: (){
+                  return hivTestResult == "HIV_Positive" && hivTestResult.isNotEmpty;
+                },
                 children: [
                   const Text(
                       "5. If HIV positive(3b), was the ART referral completed?"),
                   const SizedBox(height: 10),
                   CustomRadioButton(
                     isNaAvailable: false,
-                    option: formData.artReferralCompleted.isNotEmpty
-                        ? convertingStringToRadioButtonOptions(
-                            formData.artReferralCompleted)
-                        : null,
+                    option: convertingStringToRadioButtonOptions(
+                            artReferralCompleted),
                     optionSelected: (val) {
                       artReferralCompleted =
                           convertingRadioButtonOptionsToString(val);
@@ -299,31 +363,32 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                     },
                   ),
                   if (formData.artReferralCompleted == "Yes")
-                    DateTextField(
-                      label: "Report Date",
+                  DateTextField2(
+                      label:
+                      'Report Date',
                       enabled: true,
-                      identifier: DateTextFieldIdentifier.dateOfAssessment,
-                      onDateSelected: (val) {
-                        artReferralCompletedDate = DateFormat("yyyy-MM-dd")
-                            .format(val ?? DateTime.now());
+                      initialValue: artReferralCompletedDate ?? "",
+                      updateDate: (String? newDate) {
+                        artReferralCompletedDate = newDate ?? DateFormat("yyyy-MM-dd")
+                            .format(DateTime.now());
                         handleOnFormSaved();
-                      },
-                    ),
+                      }),
                 ],
               ),
               const SizedBox(
                 height: 14,
               ),
               FormSection(
-                isDisabled:
-                    hivTestResult != "HIV_Positive" && hivTestResult.isNotEmpty,
+                isVisibleCondition: (){
+                  return hivTestResult == "HIV_Positive" && hivTestResult.isNotEmpty;
+                },
                 children: [
                   const Text(
                       "6. (If applicable) Record facility of child's ART enrollment	"),
                   const SizedBox(height: 10),
                   CustomTextField(
-                      hintText: "Search for facility here",
-                      initialValue: formData.facilityOfArtEnrollment,
+                      hintText: "Enter MFL Code",
+                      initialValue: facilityOfArtEnrollment,
                       onChanged: (val) {
                         facilityOfArtEnrollment = val;
                         handleOnFormSaved();

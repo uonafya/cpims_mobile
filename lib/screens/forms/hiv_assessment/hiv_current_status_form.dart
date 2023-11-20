@@ -59,9 +59,21 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    final hivAssessmentProvider = context.read<HIVAssessmentProvider>().hivCurrentStatusModel;
+    dateOfAssessment = hivAssessmentProvider.dateOfAssessment.isNotEmpty
+        ? hivAssessmentProvider.dateOfAssessment
+        : "Date of assessment";
+    statusOfChild = hivAssessmentProvider.statusOfChild;
+    hivStatus = hivAssessmentProvider.hivStatus;
+    hivTestDone = hivAssessmentProvider.hivTestDone;
+    // hivTestDoneDate = "";
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final hivAssessmentProvider =
-        Provider.of<HIVAssessmentProvider>(context).hivCurrentStatusModel;
+
     return Container(
       padding: const EdgeInsets.only(top: 20),
       child: Column(
@@ -84,9 +96,7 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                 height: 10,
               ),
               DateTextField(
-                label: hivAssessmentProvider.dateOfAssessment.isNotEmpty
-                    ? hivAssessmentProvider.dateOfAssessment
-                    : "Date of assessment",
+                label: dateOfAssessment,
                 enabled: true,
                 onDateSelected: (date) {
                   setState(() {
@@ -105,10 +115,8 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                 "1b) Does the caregiver know the status of the child? /Does the Adolescent and youth (>15) years know his/her status? *"),
             CustomRadioButton(
                 isNaAvailable: false,
-                option: hivAssessmentProvider.statusOfChild.isNotEmpty
-                    ? convertingStringToRadioButtonOptions(
-                        hivAssessmentProvider.statusOfChild)
-                    : null,
+                option: convertingStringToRadioButtonOptions(
+                        statusOfChild),
                 optionSelected: (val) {
                   setState(() {
                     statusOfChild = convertingRadioButtonOptionsToString(val);
@@ -117,7 +125,9 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                 }),
           ]),
           FormSection(
-            isDisabled: hivAssessmentProvider.statusOfChild == "No",
+            isVisibleCondition: () {
+              return statusOfChild == "Yes";
+            },
             children: [
               const Text("What is the HIV Status *"),
               const SizedBox(
@@ -131,8 +141,8 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                     handleOnFormSaved();
                   });
                 },
-                option: hivAssessmentProvider.hivStatus.isNotEmpty
-                    ? hivAssessmentProvider.hivStatus
+                option: hivStatus.isNotEmpty
+                    ? hivStatus
                     : null,
                 customOptions: const [
                   "HIV_Positive",
@@ -146,16 +156,15 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
           ),
           const Divider(),
           FormSection(
-            isDisabled: statusOfChild == "No" || hivStatus == "HIV_Positive",
+            isVisibleCondition: () {
+              return statusOfChild == "Yes"  && hivStatus == "HIV_Negative";
+            },
             children: [
               const Text("1c) Was the HIV test done less than 6 months ago?	*"),
               const SizedBox(height: 10),
               CustomRadioButton(
                   isNaAvailable: false,
-                  option: hivAssessmentProvider.hivTestDone.isNotEmpty
-                      ? convertingStringToRadioButtonOptions(
-                          hivAssessmentProvider.hivTestDone)
-                      : null,
+                  option: convertingStringToRadioButtonOptions(hivTestDone),
                   optionSelected: (val) {
                     setState(() {
                       hivTestDone = convertingRadioButtonOptionsToString(val);

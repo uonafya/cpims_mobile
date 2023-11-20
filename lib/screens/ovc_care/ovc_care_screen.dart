@@ -265,6 +265,14 @@ class _OVCCardItemState extends State<OVCCardItem> {
   }
 }
 
+int calculateAgeInt(String date) {
+  final dob = DateTime.parse(date);
+  final now = DateTime.now();
+  final difference = now.difference(dob);
+  final age = difference.inDays / 365;
+  return age.toInt();
+}
+
 String calculateAge(String date) {
   final dob = DateTime.parse(date);
   final now = DateTime.now();
