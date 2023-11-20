@@ -21,9 +21,11 @@ import '../../Models/unapproved_caseplan_form_model.dart';
 import '../../Models/unapproved_form_1_model.dart';
 import '../../providers/db_provider.dart';
 import '../../providers/form1a_provider.dart';
+import '../../providers/form1b_provider.dart';
 import '../forms/form1a/new/form_one_a.dart';
 import '../forms/form1a/new/utils/form_one_a_provider.dart';
 import '../forms/form1a/utils/form_1a_options.dart';
+import '../forms/form1b/form_1B.dart';
 import '../forms/form1b/utils/form1bConstants.dart';
 
 class UnapprovedRecordsScreens extends StatefulWidget {
@@ -96,22 +98,104 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
   @override
   Widget build(BuildContext context) {
     Form1AProviderNew form1aProvider = Provider.of<Form1AProviderNew>(context);
+    Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
+
+    void editUnapprovedForm1B(UnapprovedForm1DataModel unapprovedForm1B) async {
+      // TODO : Refactor for efficiency
+      final db = LocalDb.instance;
+      CaseLoadModel caseLoad = await db.getCaseLoad(int.parse(unapprovedForm1B.ovcCpimsId));
+      List<ValueItem> form1CriticalEvents = [];
+      List<ValueItem> criticalEventsOptions = careGiverCriticalEvents.map((service) {
+        return ValueItem(
+            label: service['item_description'], value: service['item_id']);
+      }).toList();
+      for (var form1ACriticalEvent in unapprovedForm1B.criticalEvents) {
+        var t = criticalEventsOptions.where((element) => element.value == form1ACriticalEvent.eventId);
+        if(t.isNotEmpty) {
+          form1CriticalEvents.add(t.first);
+        }
+      }
+      if (form1CriticalEvents.isNotEmpty) {
+        form1bProvider.setCriticalEventsSelectedEvents(form1CriticalEvents);
+      }
+
+      List<ValueItem> form1StableServices = [];
+      String stableServicesDomain = domainsList[2]['item_id'];
+      List<ValueItem> stableServices = careGiverEconomicServices.map((service) {
+        return ValueItem(
+            label: service['item_description'], value: service['item_id']);
+      }).toList();
+      for (var form1AService in unapprovedForm1B.services) {
+        if (form1AService.domainId == stableServicesDomain) {
+          var t = stableServices.where((element) => element.value == form1AService.serviceId);
+          if(t.isNotEmpty) {
+            form1StableServices.add(t.first);
+          }
+        }
+      }
+      if (form1StableServices.isNotEmpty) {
+        form1bProvider.setSelectedStableFormDataServices(
+            form1StableServices, stableServicesDomain);
+      }
+      List<ValueItem> form1HealthyServices = [];
+      String healthyServicesDomain = domainsList[1]['item_id'];
+      List<ValueItem> healthyServices = careGiverHealthServices.map((service) {
+        return ValueItem(
+            label: service['item_description'], value: service['item_id']);
+      }).toList();
+      for (var form1AService in unapprovedForm1B.services) {
+        if (form1AService.domainId == healthyServicesDomain) {
+          var t = healthyServices.where((element) => element.value == form1AService.serviceId);
+          if(t.isNotEmpty) {
+            form1HealthyServices.add(t.first);
+          }
+        }
+      }
+      if (form1HealthyServices.isNotEmpty) {
+        form1bProvider.setSelectedHealthServices(
+            form1HealthyServices, healthyServicesDomain);
+      }
+      List<ValueItem> form1SafeServices = [];
+      String safeServicesDomain = domainsList[3]['item_id'];
+      List<ValueItem> safeServicesOptions = careGiverProtectionServices.map((service) {
+        return ValueItem(
+            label: service['item_description'], value: service['item_id']);
+      }).toList();
+      for (var form1AService in unapprovedForm1B.services) {
+        if (form1AService.domainId == safeServicesDomain) {
+          var t = safeServicesOptions.where((element) => element.value == form1AService.serviceId);
+          if(t.isNotEmpty) {
+            form1SafeServices.add(t.first);
+          }
+        }
+      }
+      if (form1SafeServices.isNotEmpty) {
+        form1bProvider.setSelectedSafeFormDataServices(
+            form1SafeServices, safeServicesDomain);
+      }
+
+      // List<> services = unapprovedForm1A.services.map((e) => null);
+      context
+          .read<Form1AProvider>();
+
+      var success = await Get.to(() => Form1BScreen(caseLoad: caseLoad, unapprovedForm1: unapprovedForm1B,));
+      if (success) {
+        getRecords();
+      }
+    }
 
     void editUnapprovedForm1A(UnapprovedForm1DataModel unapprovedForm1A) async {
       // TODO : Refactor for efficiency
       final db = LocalDb.instance;
-      CaseLoadModel caseLoad =
-          await db.getCaseLoad(int.parse(unapprovedForm1A.ovcCpimsId));
+      CaseLoadModel caseLoad = await db.getCaseLoad(int.parse(unapprovedForm1A.ovcCpimsId));
       List<ValueItem> form1CriticalEvents = [];
-      List<ValueItem> criticalEventsOptions =
-          formOneACriticalEvents.map((service) {
+      List<ValueItem> criticalEventsOptions = formOneACriticalEvents.map((service) {
         return ValueItem(
             label: service['event_description'], value: service['event_id']);
       }).toList();
       for (var form1ACriticalEvent in unapprovedForm1A.criticalEvents) {
-        var t = criticalEventsOptions
-            .where((element) => element.value == form1ACriticalEvent.eventId);
-        if (t.isNotEmpty) {
+        var t = criticalEventsOptions.where((element) => element.value == form1ACriticalEvent.eventId);
+        if(t.isNotEmpty) {
           form1CriticalEvents.add(t.first);
         }
       }
@@ -127,9 +211,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       }).toList();
       for (var form1AService in unapprovedForm1A.services) {
         if (form1AService.domainId == stableServicesDomain) {
-          var t = stableServices
-              .where((element) => element.value == form1AService.serviceId);
-          if (t.isNotEmpty) {
+          var t = stableServices.where((element) => element.value == form1AService.serviceId);
+          if(t.isNotEmpty) {
             form1StableServices.add(t.first);
           }
         }
@@ -146,9 +229,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       }).toList();
       for (var form1AService in unapprovedForm1A.services) {
         if (form1AService.domainId == schooledServicesDomain) {
-          var t = schoolServices
-              .where((element) => element.value == form1AService.serviceId);
-          if (t.isNotEmpty) {
+          var t = schoolServices.where((element) => element.value == form1AService.serviceId);
+          if(t.isNotEmpty) {
             form1SchooledServices.add(t.first);
           }
         }
@@ -165,9 +247,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       }).toList();
       for (var form1AService in unapprovedForm1A.services) {
         if (form1AService.domainId == healthyServicesDomain) {
-          var t = healthyServices
-              .where((element) => element.value == form1AService.serviceId);
-          if (t.isNotEmpty) {
+          var t = healthyServices.where((element) => element.value == form1AService.serviceId);
+          if(t.isNotEmpty) {
             form1HealthyServices.add(t.first);
           }
         }
@@ -184,9 +265,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       }).toList();
       for (var form1AService in unapprovedForm1A.services) {
         if (form1AService.domainId == safeServicesDomain) {
-          var t = safeServicesOptions
-              .where((element) => element.value == form1AService.serviceId);
-          if (t.isNotEmpty) {
+          var t = safeServicesOptions.where((element) => element.value == form1AService.serviceId);
+          if(t.isNotEmpty) {
             form1SafeServices.add(t.first);
           }
         }
@@ -197,19 +277,28 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       }
 
       // List<> services = unapprovedForm1A.services.map((e) => null);
-      context.read<Form1AProvider>();
+      context
+          .read<Form1AProvider>();
 
-      Get.to(() => FomOneA(
-            caseLoadModel: caseLoad,
-            unapprovedForm1: unapprovedForm1A,
-          ));
+      var success = await Get.to(() => FomOneA(caseLoadModel: caseLoad, unapprovedForm1: unapprovedForm1A,));
+      if (success) {
+        getRecords();
+      }
+    }
+
+    void editUnapprovedForm1(UnapprovedForm1DataModel unapprovedForm1)  async {
+      if (selectedRecord == unapprovedRecords[0]) {
+        editUnapprovedForm1A(unapprovedForm1);
+      } else if (selectedRecord == unapprovedRecords[1]) {
+        editUnapprovedForm1B(unapprovedForm1);
+      }
     }
 
     void editUnapprovedCptForm(UnapprovedCasePlanModel unapprovedCpt) async {
       // TODO : Refactor for efficiency
       final db = LocalDb.instance;
       CaseLoadModel caseLoad =
-          await db.getCaseLoad(int.parse(unapprovedCpt.ovcCpimsId));
+      await db.getCaseLoad(int.parse(unapprovedCpt.ovcCpimsId));
 
       // Healthy Services
       CptHealthFormData cptHealtFormData =
@@ -218,17 +307,17 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       for (var cptService in unapprovedCpt.services) {
         if (cptService.domainId == healthyServicesDomain) {
           context.read<CptProvider>().updateCptFormData(
-                cptHealtFormData.copyWith(
-                  domainId: cptService.domainId,
-                  goalId: cptService.goalId,
-                  gapId: cptService.gapId,
-                  priorityId: cptService.priorityId,
-                  resultsId: cptService.resultsId,
-                  reasonId: cptService.reasonId,
-                  serviceIds: cptService.serviceIds,
-                  responsibleIds: cptService.responsibleIds,
-                ),
-              );
+            cptHealtFormData.copyWith(
+              domainId: cptService.domainId,
+              goalId: cptService.goalId,
+              gapId: cptService.gapId,
+              priorityId: cptService.priorityId,
+              resultsId: cptService.resultsId,
+              reasonId: cptService.reasonId,
+              serviceIds: cptService.serviceIds,
+              responsibleIds: cptService.responsibleIds,
+            ),
+          );
         }
       }
 
@@ -241,15 +330,15 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           context
               .read<CptProvider>()
               .updateCptSafeFormData(cptSafeFormData.copyWith(
-                domainId: cptService.domainId,
-                goalId: cptService.goalId,
-                gapId: cptService.gapId,
-                priorityId: cptService.priorityId,
-                resultsId: cptService.resultsId,
-                reasonId: cptService.reasonId,
-                serviceIds: cptService.serviceIds,
-                responsibleIds: cptService.responsibleIds,
-              ));
+            domainId: cptService.domainId,
+            goalId: cptService.goalId,
+            gapId: cptService.gapId,
+            priorityId: cptService.priorityId,
+            resultsId: cptService.resultsId,
+            reasonId: cptService.reasonId,
+            serviceIds: cptService.serviceIds,
+            responsibleIds: cptService.responsibleIds,
+          ));
         }
       }
 
@@ -263,15 +352,15 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           context
               .read<CptProvider>()
               .updateCptSchooledFormData(cptschooledFormData.copyWith(
-                domainId: cptService.domainId,
-                goalId: cptService.goalId,
-                gapId: cptService.gapId,
-                priorityId: cptService.priorityId,
-                resultsId: cptService.resultsId,
-                reasonId: cptService.reasonId,
-                serviceIds: cptService.serviceIds,
-                responsibleIds: cptService.responsibleIds,
-              ));
+            domainId: cptService.domainId,
+            goalId: cptService.goalId,
+            gapId: cptService.gapId,
+            priorityId: cptService.priorityId,
+            resultsId: cptService.resultsId,
+            reasonId: cptService.reasonId,
+            serviceIds: cptService.serviceIds,
+            responsibleIds: cptService.responsibleIds,
+          ));
         }
       }
 
@@ -284,25 +373,26 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           context
               .read<CptProvider>()
               .updateCptStableFormData(cptStableFormData.copyWith(
-                domainId: cptService.domainId,
-                goalId: cptService.goalId,
-                gapId: cptService.gapId,
-                priorityId: cptService.priorityId,
-                resultsId: cptService.resultsId,
-                reasonId: cptService.reasonId,
-                serviceIds: cptService.serviceIds,
-                responsibleIds: cptService.responsibleIds,
-              ));
+            domainId: cptService.domainId,
+            goalId: cptService.goalId,
+            gapId: cptService.gapId,
+            priorityId: cptService.priorityId,
+            resultsId: cptService.resultsId,
+            reasonId: cptService.reasonId,
+            serviceIds: cptService.serviceIds,
+            responsibleIds: cptService.responsibleIds,
+          ));
         }
       }
 
       context.read<CasePlanProvider>();
       Get.to(
-        () => CasePlanTemplateForm(
+            () => CasePlanTemplateForm(
           caseLoad: caseLoad,
         ),
       );
     }
+
 
     return Scaffold(
       appBar: customAppBar(),
@@ -330,7 +420,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                 ),
                 itemCount: unapprovedRecords.length,
                 separatorBuilder: (BuildContext context, int index) =>
-                    const SizedBox(
+                const SizedBox(
                   width: 12,
                 ),
               ),
@@ -353,7 +443,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                   selectedRecord: selectedRecord,
                   unapprovedForm1aData: unapprovedForm1AData,
                   onDelete: deleteUnapprovedForm1,
-                  onEdit: editUnapprovedForm1A,
+                  onEdit: editUnapprovedForm1,
                 ),
               ),
             if (selectedRecord == unapprovedRecords[1])
@@ -362,7 +452,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                   selectedRecord: selectedRecord,
                   unapprovedForm1aData: unapprovedForm1BData,
                   onDelete: deleteUnapprovedForm1,
-                  onEdit: editUnapprovedForm1A,
+                  onEdit: editUnapprovedForm1,
                 ),
               ),
           ],
@@ -812,36 +902,51 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
                 visible: unapprovedData.services.isNotEmpty,
                 child: Column(
                   children: unapprovedData.services
-                      .map((e) => Row(
-                            children: [
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    const Text(
-                                      "ID: ",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                      .map((e) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "ID: ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(e.serviceId.toString()),
+                                      ],
                                     ),
-                                    Text(e.serviceId.toString()),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    const Text(
-                                      "Domain: ",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "Domain: ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(e.domainId),
+                                      ],
                                     ),
-                                    Text(e.domainId),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ))
+                          const Text(
+                            "Message",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            e.message ?? 'Unknown',
+                          ),
+                          const SizedBox(height: 8,)
+                        ],
+                      ))
                       .toList(),
                 )),
             const SizedBox(
@@ -864,34 +969,49 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
                 visible: unapprovedData.criticalEvents.isNotEmpty,
                 child: Column(
                   children: unapprovedData.criticalEvents
-                      .map((e) => Row(
-                            children: [
-                              Expanded(
-                                  child: Row(
+                      .map((e) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
                                 children: [
-                                  const Text(
-                                    "ID: ",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(e.eventId),
+                                  Expanded(
+                                      child: Row(
+                                    children: [
+                                      const Text(
+                                        "ID: ",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(e.eventId),
+                                    ],
+                                  )),
+                                  Expanded(
+                                      child: Row(
+                                    children: [
+                                      const Text(
+                                        "Date: ",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(e.eventDate),
+                                    ],
+                                  )),
                                 ],
-                              )),
-                              Expanded(
-                                  child: Row(
-                                children: [
-                                  const Text(
-                                    "Date: ",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(e.eventDate),
-                                ],
-                              )),
-                            ],
-                          ))
+                              ),
+                          const Text(
+                            "Message",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            e.message ?? 'Unknown',
+                          ),
+                          const SizedBox(height: 8,)
+                        ],
+                      ))
                       .toList(),
                 )),
           ],

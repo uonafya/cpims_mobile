@@ -175,7 +175,8 @@ class LocalDb {
     ${Form1Services.formId} $intTypeNull,
     ${Form1Services.domainId} $textType,
     ${Form1Services.serviceId} $textType,
-    ${Form1Services.unapprovedFormId} $intTypeNull
+    ${Form1Services.unapprovedFormId} $intTypeNull,
+    ${Form1Services.message} $textTypeNull
   )
 ''');
 
@@ -185,7 +186,8 @@ class LocalDb {
         ${Form1CriticalEvents.formId} $intTypeNull,
         ${Form1CriticalEvents.eventId} $textType,
         ${Form1CriticalEvents.eventDate} $textType,
-        ${Form1CriticalEvents.unapprovedFormId} $intTypeNull
+        ${Form1CriticalEvents.unapprovedFormId} $intTypeNull,
+        ${Form1CriticalEvents.message} $textTypeNull
         )
       ''');
 
@@ -1053,6 +1055,7 @@ class LocalDb {
             Form1Services.unapprovedFormId: formId,
             'domain_id': service.domainId,
             'service_id': service.serviceId,
+            Form1Services.message : service.message
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
@@ -1064,6 +1067,7 @@ class LocalDb {
             Form1Services.unapprovedFormId: formId,
             'event_id': criticalEvent.eventId,
             'event_date': criticalEvent.eventDate,
+            Form1CriticalEvents.message : criticalEvent.message
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
@@ -1814,6 +1818,7 @@ class Form1Services {
   static const String unapprovedFormId = "unapproved_form_id";
   static const String domainId = "domain_id";
   static const String serviceId = "service_id";
+  static const String message = "message";
 }
 
 class Form1CriticalEvents {
@@ -1829,4 +1834,5 @@ class Form1CriticalEvents {
   static const String unapprovedFormId = "unapproved_form_id";
   static const String eventId = "event_id";
   static const String eventDate = "event_date";
+  static const String message = "message";
 }

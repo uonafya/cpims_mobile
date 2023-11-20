@@ -241,7 +241,7 @@ class _FomOneAState extends State<FomOneA> {
                                             margin: const EdgeInsets.all(16),
                                             borderRadius: 8,
                                           );
-                                          Navigator.pop(context);
+                                          Navigator.pop(context, true);
                                           selectedStep = 0;
                                         }
                                       });

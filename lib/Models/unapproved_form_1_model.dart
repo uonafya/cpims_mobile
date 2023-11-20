@@ -34,12 +34,12 @@ class UnapprovedForm1DataModel extends Form1DataModel {
     return UnapprovedForm1DataModel(
       localId: json['local_id'] as int?,
       id: json['id'] as String,
-      ovcCpimsId: json['ovc_cpims_id'] as String,
+      ovcCpimsId: json['ovc_cpims_id'].toString(),
       dateOfEvent: json['date_of_event'] as String,
       services: services,
       criticalEvents: criticalEvents,
       appFormMetaData: AppFormMetaData.fromJson(json['app_form_metadata']),
-      message: json['message'] as String, // Add the 'message' field
+      message: json['message']?? "", // Add the 'message' field
     );
   }
 
