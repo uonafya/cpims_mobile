@@ -126,9 +126,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           form1CriticalEvents.add(t.first);
         }
       }
-      if (form1CriticalEvents.isNotEmpty) {
-        form1bProvider.setCriticalEventsSelectedEvents(form1CriticalEvents);
-      }
+      form1bProvider.setCriticalEventsSelectedEvents(form1CriticalEvents);
+
 
       List<ValueItem> form1StableServices = [];
       String stableServicesDomain = domainsList[2]['item_id'];
@@ -144,10 +143,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           }
         }
       }
-      if (form1StableServices.isNotEmpty) {
-        form1bProvider.setSelectedStableFormDataServices(
+      form1bProvider.setSelectedStableFormDataServices(
             form1StableServices, stableServicesDomain);
-      }
+
       List<ValueItem> form1HealthyServices = [];
       String healthyServicesDomain = domainsList[1]['item_id'];
       List<ValueItem> healthyServices = careGiverHealthServices.map((service) {
@@ -162,10 +160,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           }
         }
       }
-      if (form1HealthyServices.isNotEmpty) {
-        form1bProvider.setSelectedHealthServices(
+      form1bProvider.setSelectedHealthServices(
             form1HealthyServices, healthyServicesDomain);
-      }
+
       List<ValueItem> form1SafeServices = [];
       String safeServicesDomain = domainsList[3]['item_id'];
       List<ValueItem> safeServicesOptions = careGiverProtectionServices.map((service) {
@@ -180,17 +177,16 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           }
         }
       }
-      if (form1SafeServices.isNotEmpty) {
-        form1bProvider.setSelectedSafeFormDataServices(
+      form1bProvider.setSelectedSafeFormDataServices(
             form1SafeServices, safeServicesDomain);
-      }
+
 
       // List<> services = unapprovedForm1A.services.map((e) => null);
       context
           .read<Form1AProvider>();
 
       var success = await Get.to(() => Form1BScreen(caseLoad: caseLoad, unapprovedForm1: unapprovedForm1B,));
-      if (success) {
+      if (success != null && success) {
         getRecords();
       }
     }
@@ -210,9 +206,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           form1CriticalEvents.add(t.first);
         }
       }
-      if (form1CriticalEvents.isNotEmpty) {
-        form1aProvider.setCriticalEventsSelectedEvents(form1CriticalEvents);
-      }
+      form1aProvider.setCriticalEventsSelectedEvents(form1CriticalEvents);
 
       List<ValueItem> form1StableServices = [];
       String stableServicesDomain = domainsList[2]['item_id'];
@@ -228,10 +222,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           }
         }
       }
-      if (form1StableServices.isNotEmpty) {
-        form1aProvider.setSelectedStableFormDataServices(
+      form1aProvider.setSelectedStableFormDataServices(
             form1StableServices, stableServicesDomain);
-      }
+
       List<ValueItem> form1SchooledServices = [];
       String schooledServicesDomain = domainsList[0]['item_id'];
       List<ValueItem> schoolServices = schooledServicesOptions.map((service) {
@@ -246,10 +239,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           }
         }
       }
-      if (form1SchooledServices.isNotEmpty) {
-        form1aProvider.setSelectedSchooledFormDataServices(
+      form1aProvider.setSelectedSchooledFormDataServices(
             form1SchooledServices, schooledServicesDomain);
-      }
+
       List<ValueItem> form1HealthyServices = [];
       String healthyServicesDomain = domainsList[1]['item_id'];
       List<ValueItem> healthyServices = healthServicesOptions.map((service) {
@@ -264,10 +256,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           }
         }
       }
-      if (form1HealthyServices.isNotEmpty) {
-        form1aProvider.setSelectedHealthServices(
+      form1aProvider.setSelectedHealthServices(
             form1HealthyServices, healthyServicesDomain);
-      }
+
       List<ValueItem> form1SafeServices = [];
       String safeServicesDomain = domainsList[3]['item_id'];
       List<ValueItem> safeServicesOptions = safeServices.map((service) {
@@ -282,17 +273,15 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           }
         }
       }
-      if (form1SafeServices.isNotEmpty) {
-        form1aProvider.setSelectedSafeFormDataServices(
+      form1aProvider.setSelectedSafeFormDataServices(
             form1SafeServices, safeServicesDomain);
-      }
 
       // List<> services = unapprovedForm1A.services.map((e) => null);
       context
           .read<Form1AProvider>();
 
       var success = await Get.to(() => FomOneA(caseLoadModel: caseLoad, unapprovedForm1: unapprovedForm1A,));
-      if (success) {
+      if (success != null && success) {
         getRecords();
       }
     }
