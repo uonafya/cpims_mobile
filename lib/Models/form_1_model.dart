@@ -86,16 +86,19 @@ class Form1DataModel {
 class Form1ServicesModel {
   final String domainId;
   final String? serviceId;
+  final String? message;
 
   Form1ServicesModel({
     required this.domainId,
     required this.serviceId,
+    this.message
   });
 
   factory Form1ServicesModel.fromJson(Map<String, dynamic> json) {
     return Form1ServicesModel(
       domainId: json['domain_id'] as String,
       serviceId: json['service_id'],
+      message: json['message']
     );
   }
 
@@ -103,18 +106,20 @@ class Form1ServicesModel {
     return {
       'domain_id': domainId,
       'service_id': serviceId,
+      'message' : message
     };
   }
 
   @override
   String toString() {
-    return 'Form1ServicesModel{domainId: $domainId, serviceId: $serviceId}';
+    return 'Form1ServicesModel{domainId: $domainId, serviceId: $serviceId, message: $message}';
   }
 
   Map<String, dynamic> toMap() {
     return {
       'domain_id': domainId,
       'service_id': serviceId,
+      'message' : message
     };
   }
 }
@@ -122,16 +127,19 @@ class Form1ServicesModel {
 class Form1CriticalEventsModel {
   final String eventId;
   final String eventDate;
+  final String? message;
 
   Form1CriticalEventsModel({
     required this.eventId,
     required this.eventDate,
+    this.message
   });
 
   factory Form1CriticalEventsModel.fromJson(Map<String, dynamic> json) {
     return Form1CriticalEventsModel(
       eventId: json['event_id'] as String,
       eventDate: json['event_date'],
+      message: json['message']
     );
   }
 
@@ -139,6 +147,7 @@ class Form1CriticalEventsModel {
     return {
       'event_id': eventId,
       'event_date': eventDate,
+      'message' : message
     };
   }
 
@@ -146,11 +155,12 @@ class Form1CriticalEventsModel {
     return {
       'event_id': eventId,
       'event_date': eventDate,
+      'message' : message
     };
   }
 
   @override
   String toString() {
-    return 'Form1CriticalEventsModel{event_id: $eventId, event_date: $eventDate}';
+    return 'Form1CriticalEventsModel{event_id: $eventId, event_date: $eventDate, message: $message}';
   }
 }

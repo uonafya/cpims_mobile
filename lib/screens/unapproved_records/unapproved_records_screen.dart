@@ -902,36 +902,51 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
                 visible: unapprovedData.services.isNotEmpty,
                 child: Column(
                   children: unapprovedData.services
-                      .map((e) => Row(
-                            children: [
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    const Text(
-                                      "ID: ",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                      .map((e) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "ID: ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(e.serviceId.toString()),
+                                      ],
                                     ),
-                                    Text(e.serviceId.toString()),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    const Text(
-                                      "Domain: ",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "Domain: ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(e.domainId),
+                                      ],
                                     ),
-                                    Text(e.domainId),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ))
+                          const Text(
+                            "Message",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            e.message ?? 'Unknown',
+                          ),
+                          const SizedBox(height: 8,)
+                        ],
+                      ))
                       .toList(),
                 )),
             const SizedBox(
@@ -954,34 +969,49 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
                 visible: unapprovedData.criticalEvents.isNotEmpty,
                 child: Column(
                   children: unapprovedData.criticalEvents
-                      .map((e) => Row(
-                            children: [
-                              Expanded(
-                                  child: Row(
+                      .map((e) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
                                 children: [
-                                  const Text(
-                                    "ID: ",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(e.eventId),
+                                  Expanded(
+                                      child: Row(
+                                    children: [
+                                      const Text(
+                                        "ID: ",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(e.eventId),
+                                    ],
+                                  )),
+                                  Expanded(
+                                      child: Row(
+                                    children: [
+                                      const Text(
+                                        "Date: ",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(e.eventDate),
+                                    ],
+                                  )),
                                 ],
-                              )),
-                              Expanded(
-                                  child: Row(
-                                children: [
-                                  const Text(
-                                    "Date: ",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(e.eventDate),
-                                ],
-                              )),
-                            ],
-                          ))
+                              ),
+                          const Text(
+                            "Message",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            e.message ?? 'Unknown',
+                          ),
+                          const SizedBox(height: 8,)
+                        ],
+                      ))
                       .toList(),
                 )),
           ],
