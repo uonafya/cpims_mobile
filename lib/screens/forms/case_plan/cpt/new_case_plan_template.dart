@@ -47,6 +47,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
   int selectedStep = 0;
   List<Widget> steps = [];
   int clearFieldIndex = -1;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -229,6 +230,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                             ),
                             Expanded(
                               child: CustomButton(
+                                isLoading: isLoading,
                                 text: selectedStep == steps.length - 1
                                     ? 'Submit Caseplan'
                                     : 'Next',
@@ -277,9 +279,11 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
 
   Future<void> submitData(BuildContext context) async {
     CptProvider cptProvider = Provider.of<CptProvider>(context, listen: false);
-
     if (selectedStep == steps.length - 1) {
       try {
+        setState(() {
+          isLoading = true;
+        });
         String? ovsId = widget.caseLoad.cpimsId!;
         String formattedDate = currentDateOfCasePlan;
         if (formattedDate.isEmpty) {
@@ -289,6 +293,9 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
             backgroundColor: Colors.red,
             colorText: Colors.white,
           );
+          setState(() {
+            isLoading = false;
+          });
           return;
         }
 
@@ -326,6 +333,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
               backgroundColor: Colors.green,
               colorText: Colors.white,
             );
+            //clear the provider data
+            cptProvider.clearProviderData();
             //get back to the previous screen
             if (context.mounted) {
               Navigator.pop(context);
@@ -344,6 +353,9 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
             cptProvider.clearProviderData();
           }
         } else {
+          setState(() {
+            isLoading = false;
+          });
           Get.snackbar(
             'Error',
             'Please fill all mandatory fields.',
@@ -352,6 +364,9 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
           );
         }
       } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
         debugPrint(e.toString());
       }
       setState(() {
