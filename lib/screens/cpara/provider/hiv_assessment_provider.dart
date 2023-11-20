@@ -140,18 +140,18 @@ class HIVAssessmentProvider with ChangeNotifier {
     bool finalEvaluation = false;
 
     if(ovcAge < 15){
-      finalEvaluation = hivRiskAssessmentModel.biologicalFather == "Yes" &&
-    hivRiskAssessmentModel.malnourished == "Yes" &&
-    hivRiskAssessmentModel.sexualAbuse == "Yes" &&
+      finalEvaluation = hivRiskAssessmentModel.biologicalFather == "Yes" ||
+    hivRiskAssessmentModel.malnourished == "Yes" ||
+    hivRiskAssessmentModel.sexualAbuse == "Yes" ||
     hivRiskAssessmentModel.traditionalProcedures == "Yes";
     }
     else{
       finalEvaluation =
-      hivRiskAssessmentModel.sexualAbuseAdolescent == "Yes" &&
-    hivRiskAssessmentModel.persistentlySick == "Yes" &&
+      hivRiskAssessmentModel.sexualAbuseAdolescent == "Yes" ||
+    hivRiskAssessmentModel.persistentlySick == "Yes" ||
     hivRiskAssessmentModel.tb == "Yes" &&
-    hivRiskAssessmentModel.sexualIntercourse == "Yes" &&
-    hivRiskAssessmentModel.symptomsOfSTI == "Yes" &&
+    hivRiskAssessmentModel.sexualIntercourse == "Yes" ||
+    hivRiskAssessmentModel.symptomsOfSTI == "Yes" ||
     hivRiskAssessmentModel.ivDrugUser == "Yes";
     }
 
