@@ -1392,8 +1392,6 @@ class LocalDb {
     } catch (e, stackTrace) {
       if (kDebugMode) {
         print('Error inserting case plan: $e');
-      }
-      if (kDebugMode) {
         print('Stack trace: $stackTrace');
       }
       return false;
