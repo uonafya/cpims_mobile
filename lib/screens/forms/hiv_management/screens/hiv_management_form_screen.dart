@@ -47,7 +47,7 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
   }
 
   // submit hivmanagementform
-  void submitHIVManagementForm(String startInterviewTime) async {
+  Future<void> submitHIVManagementForm(String startInterviewTime) async {
     try {
       String formUUid = const Uuid().v4();
       await Provider.of<HIVManagementFormProvider>(context, listen: false)
@@ -167,30 +167,35 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                               text: selectedStep == steps.length - 1
                                   ? 'Submit Form'
                                   : 'Next',
-                              onTap: () {
+                              onTap: () async {
                                 try {
                                   if (selectedStep == steps.length - 1) {
+                                    // Set isLoading to true when form submission starts
                                     setState(() {
                                       isLoading = true;
                                     });
+
                                     // logic for verifying form and submitting
                                     if (formCompletionStatus
                                             .hivVisitationFormCompleted ==
                                         true) {
                                       AppMetaDataProvider appMetaDataProvider =
                                           Provider.of<AppMetaDataProvider>(
-                                              context,
-                                              listen: false);
+                                        context,
+                                        listen: false,
+                                      );
                                       String startInterviewTime =
                                           appMetaDataProvider
                                                   .startTimeInterview ??
                                               DateTime.now().toIso8601String();
-                                      submitHIVManagementForm(
+                                      await submitHIVManagementForm(
                                           startInterviewTime);
 
+                                      // Set isLoading to false when form submission is complete
                                       setState(() {
                                         isLoading = false;
                                       });
+
                                       HIVManagementFormProvider
                                           hivManagementFormProvider = Provider
                                               .of<HIVManagementFormProvider>(
@@ -208,6 +213,11 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                           backgroundColor: Colors.red,
                                         ),
                                       );
+
+                                      // Set isLoading to false when form submission fails
+                                      setState(() {
+                                        isLoading = false;
+                                      });
                                       return;
                                     }
                                   } else {
@@ -236,9 +246,11 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                     );
                                   }
                                 } catch (e) {
+                                  // Set isLoading to false when an error occurs during form submission
                                   setState(() {
                                     isLoading = false;
                                   });
+
                                   if (e.toString() == locationDisabled ||
                                       e.toString() == locationDenied) {
                                     if (context.mounted) {
@@ -248,6 +260,8 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                 }
                               },
                               color: kPrimaryColor,
+                              isLoading:
+                                  isLoading, // Pass the isLoading state to the CustomButton
                             ),
                           ),
                         ],
