@@ -462,6 +462,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
         //   },
         // ),
         DateTextField(
+          allowFutureDates: true,
             label: completionDate,
             enabled: true,
             identifier: DateTextFieldIdentifier.dateOfAssessment,
