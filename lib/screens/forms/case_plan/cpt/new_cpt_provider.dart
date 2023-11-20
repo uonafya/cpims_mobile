@@ -107,54 +107,29 @@ class CptProvider extends ChangeNotifier {
   //Lists
 
   void updateCptList(CptHealthFormData formData) {
-    cptHealthFormDataList.firstWhereOrNull(
-                (element) => element.goalId == formData.goalId) !=
-            null
-        ? cptHealthFormDataList
-            .removeWhere((element) => element.goalId == formData.goalId)
-        : null;
     cptHealthFormDataList.insert(0, formData);
     cptHealthFormData = null;
-
     notifyListeners();
   }
 
   void updateCptSafeList(CptSafeFormData formData) {
-    cptSafeFormDataList.firstWhereOrNull(
-                (element) => element.goalId == formData.goalId) !=
-            null
-        ? cptSafeFormDataList
-            .removeWhere((element) => element.goalId == formData.goalId)
-        : null;
     cptSafeFormDataList.insert(0, formData);
     cptSafeFormData = null;
-
     notifyListeners();
   }
 
   void updateCptStableList(CptStableFormData formData) {
-    cptStableFormDataList.firstWhereOrNull(
-                (element) => element.goalId == formData.goalId) !=
-            null
-        ? cptStableFormDataList
-            .removeWhere((element) => element.goalId == formData.goalId)
-        : null;
     cptStableFormDataList.insert(0, formData);
     cptStableFormData = null;
     notifyListeners();
   }
 
   void updateCptSchooledList(CptschooledFormData formData) {
-    cptschooledFormDataList.firstWhereOrNull(
-                (element) => element.goalId == formData.goalId) !=
-            null
-        ? cptschooledFormDataList
-            .removeWhere((element) => element.goalId == formData.goalId)
-        : null;
     cptschooledFormDataList.insert(0, formData);
     cptschooledFormData = null;
     notifyListeners();
   }
+
 
   void updateDateOfCasePlanList(String? dateCPlan) {
     casePlanModel.dateOfEvent = dateCPlan!;
