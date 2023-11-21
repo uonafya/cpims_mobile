@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
 import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/forms/form1a/new/utils/form_one_a_provider.dart';
@@ -27,8 +28,10 @@ import '../../form1b/utils/form1bConstants.dart';
 
 class FomOneA extends StatefulWidget {
   final CaseLoadModel caseLoadModel;
+  final UnapprovedForm1DataModel? unapprovedForm1;
 
-  const FomOneA({Key? key, required this.caseLoadModel}) : super(key: key);
+  const FomOneA({Key? key, required this.caseLoadModel, this.unapprovedForm1})
+      : super(key: key);
 
   @override
   State<FomOneA> createState() => _FomOneAState();
@@ -53,6 +56,10 @@ class _FomOneAState extends State<FomOneA> {
       Form1AProviderNew form1AProvider =
           Provider.of<Form1AProviderNew>(context, listen: false);
       form1AProvider.setFinalFormDataOvcId(widget.caseLoadModel.cpimsId!);
+      if (widget.unapprovedForm1 != null) {
+        form1AProvider
+            .setSelectedDateOfEvent(widget.unapprovedForm1!.dateOfEvent);
+      }
     });
   }
 
@@ -243,7 +250,8 @@ class _FomOneAState extends State<FomOneA> {
                                       bool isFormSaved =
                                           await form1AProvider.saveForm1AData(
                                               form1AProvider.formData,
-                                              startInterviewTime);
+                                              startInterviewTime,
+                                              widget.unapprovedForm1);
                                       setState(() {
                                         if (isFormSaved == true) {
                                           isLoading = false;
@@ -266,7 +274,7 @@ class _FomOneAState extends State<FomOneA> {
                                             margin: const EdgeInsets.all(16),
                                             borderRadius: 8,
                                           );
-                                          Navigator.pop(context);
+                                          Navigator.pop(context, true);
                                           selectedStep = 0;
                                         }
                                       });

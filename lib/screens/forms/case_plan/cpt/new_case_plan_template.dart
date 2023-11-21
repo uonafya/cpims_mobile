@@ -65,24 +65,6 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
     ];
   }
 
-  // Future<bool> saveCasePlanLocal(String jsonPayload) async {
-  //   try {
-  //     // Parse the JSON string into a Map
-  //     Map<String, dynamic> payload = json.decode(jsonPayload);
-  //
-  //     // Create a new CasePlanModel object from the Map
-  //     CasePlanModel casePlanModel = CasePlanModel.fromJson(payload);
-  //
-  //     // Save the CasePlanModel object to the local database
-  //     await CasePlanService.saveCasePlanLocal(casePlanModel);
-  //
-  //     return true; // Return true if the data was successfully saved.
-  //   } catch (e) {
-  //     print("Error saving case plan locally: $e");
-  //     return false; // Return false if there was an error.
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     bool isLastStep = selectedStep == steps.length - 1;

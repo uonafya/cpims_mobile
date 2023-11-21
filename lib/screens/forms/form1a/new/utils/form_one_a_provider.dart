@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
+import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -129,9 +131,7 @@ class Form1AProviderNew extends ChangeNotifier {
   }
 
   Future<bool> saveForm1AData(
-    HealthFormData healthFormData,
-    String startInterviewTime,
-  ) async {
+      HealthFormData healthFormData, String startInterviewTime, UnapprovedForm1DataModel? unapprovedForm1) async {
     List<MasterServicesFormData> masterServicesList =
         convertToMasterServicesFormData();
     setFinalFormDataServices(masterServicesList);
@@ -157,12 +157,14 @@ class Form1AProviderNew extends ChangeNotifier {
       criticalEventsList.add(entry);
     }
 
-    String formUUID = const Uuid().v4();
+    String formUUID = unapprovedForm1?.id ?? const Uuid().v4();
 
     AppFormMetaData appFormMetaData = AppFormMetaData(
       formId: formUUID,
       startOfInterview: startInterviewTime,
       formType: "form1a",
+      location_lat: unapprovedForm1?.appFormMetaData.location_lat,
+      location_long: unapprovedForm1?.appFormMetaData.location_long,
     );
 
     if (!(finalServicesFormData.date_of_event == "")) {
@@ -171,7 +173,7 @@ class Form1AProviderNew extends ChangeNotifier {
         dateOfEvent: finalServicesFormData.date_of_event,
         services: servicesList,
         criticalEvents: criticalEventsList,
-        uuid: formUUID,
+        id: formUUID,
       );
       String data = jsonEncode(toDbData);
       if (kDebugMode) {
@@ -187,6 +189,14 @@ class Form1AProviderNew extends ChangeNotifier {
         appFormMetaData,
         formUUID,
       );
+      if (unapprovedForm1 != null && unapprovedForm1.localId != null) {
+        bool isUnapprovedDeleted = await UnapprovedDataService.deleteUnapprovedForm1(unapprovedForm1.localId!);
+        if (isUnapprovedDeleted) {
+          debugPrint("Unapproved delete success");
+        } else {
+          debugPrint("Unapproved delete not success");
+        }
+      }
       if (isFormSaved == true) {
         resetFormData();
         notifyListeners();

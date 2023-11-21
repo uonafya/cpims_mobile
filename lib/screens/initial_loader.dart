@@ -125,7 +125,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
               }
 
               // TODO Fetch unapproved data from server
-              // await UnapprovedDataService.fetchRemoteUnapprovedData(accessToken);
+              await UnapprovedDataService.fetchRemoteUnapprovedData(accessToken);
 
               // fetch unapproved data from local db
               final List<UnapprovedCparaModel> cparaRecords =
@@ -148,9 +148,10 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
             }
           }
           Get.off(() => const Homepage());
-        } catch (e) {
+        } catch (e, stackTrace) {
           if (kDebugMode) {
             print("Error in init load: $e");
+            print('Stack trace: $stackTrace');
           }
         }
       },

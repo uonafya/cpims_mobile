@@ -1,4 +1,12 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
+import 'package:cpims_mobile/providers/case_plan_provider.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/healthy_cpt_model.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/safe_cpt_model.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/schooled_cpt_model.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/stable_cpt_model.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_case_plan_template.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/utils/case_plan_dummy_data.dart';
 import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/cpara/unapproved_cpara_database.dart';
@@ -22,10 +30,13 @@ import 'package:multi_dropdown/models/value_item.dart';
 import 'package:provider/provider.dart';
 import '../../Models/unapproved_caseplan_form_model.dart';
 import '../../Models/unapproved_form_1_model.dart';
+import '../../providers/db_provider.dart';
 import '../../providers/form1a_provider.dart';
+import '../../providers/form1b_provider.dart';
 import '../forms/form1a/new/form_one_a.dart';
 import '../forms/form1a/new/utils/form_one_a_provider.dart';
 import '../forms/form1a/utils/form_1a_options.dart';
+import '../forms/form1b/form_1B.dart';
 import '../forms/form1b/utils/form1bConstants.dart';
 
 class UnapprovedRecordsScreens extends StatefulWidget {
@@ -56,47 +67,15 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
   List<UnapprovedForm1DataModel> unapprovedForm1AData = [];
   List<UnapprovedForm1DataModel> unapprovedForm1BData = [];
   List<UnapprovedCasePlanModel> unapprovedCaseplanData = [];
-  List<UnapprovedForm1DataModel> unapprovedForm1Data = [];
-  // List<UnapprovedCparaModel> unapprovedCparaData = [];
-
-  void getRecords() async {
-    final List<UnapprovedForm1DataModel> records = await UnapprovedDataService
-        .fetchLocalUnapprovedForm1AData();
-    final List<
-        UnapprovedForm1DataModel> form1ARecords = await UnapprovedDataService
-        .fetchLocalUnapprovedForm1AData();
-    final List<
-        UnapprovedForm1DataModel> form1BRecords = await UnapprovedDataService
-        .fetchLocalUnapprovedForm1BData();
-    final List<
-        UnapprovedCasePlanModel> unapprovedCaseplanRecords = await UnapprovedDataService
-        .fetchLocalUnapprovedCasePlanData();
-    // final List<UnapprovedCparaModel> cparaRecords = await UnapprovedCparaService
-    //     .getUnapprovedFromDB();
-    // Update unapprovedCparaData
-    // unapprovedCparaData = cparaRecords;
-    // if (context.mounted) {
-    //   context
-    //       .read<UnapprovedRecordsScreenProvider>()
-    //       .unapprovedCparas = cparaRecords;
-    // }
-
-    setState(() {
-      unapprovedForm1AData = form1ARecords;
-      unapprovedForm1BData = form1BRecords;
-      unapprovedCaseplanData = unapprovedCaseplanRecords;
-    });
-  }
-
 
   void deleteUnapprovedForm1(int id) async {
     bool success = await UnapprovedDataService.deleteUnapprovedForm1(id);
     if (success) {
       setState(() {
         if (selectedRecord == unapprovedRecords[0]) {
-            unapprovedForm1AData.removeWhere((element) => element.id == id);
+          unapprovedForm1AData.removeWhere((element) => element.localId == id);
         } else if (selectedRecord == unapprovedRecords[1]) {
-          unapprovedForm1BData.removeWhere((element) => element.id == id);
+          unapprovedForm1BData.removeWhere((element) => element.localId == id);
         }
       });
     }
@@ -111,18 +90,111 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     }
   }
 
+  void getRecords() async {
+    final List<UnapprovedForm1DataModel> form1ARecords =
+        await UnapprovedDataService.fetchLocalUnapprovedForm1AData();
+    final List<UnapprovedForm1DataModel> form1BRecords =
+        await UnapprovedDataService.fetchLocalUnapprovedForm1BData();
+    final List<UnapprovedCasePlanModel> unapprovedCaseplanRecords =
+        await UnapprovedDataService.fetchLocalUnapprovedCasePlanData();
+    setState(() {
+      unapprovedForm1AData = form1ARecords;
+      unapprovedForm1BData = form1BRecords;
+      unapprovedCaseplanData = unapprovedCaseplanRecords;
+    });
+  }
 
   String selectedRecord = 'Form 1A';
 
   @override
   Widget build(BuildContext context) {
     Form1AProviderNew form1aProvider = Provider.of<Form1AProviderNew>(context);
+    Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
+
+    void editUnapprovedForm1B(UnapprovedForm1DataModel unapprovedForm1B) async {
+      // TODO : Refactor for efficiency
+      final db = LocalDb.instance;
+      CaseLoadModel caseLoad = await db.getCaseLoad(int.parse(unapprovedForm1B.ovcCpimsId));
+      List<ValueItem> form1CriticalEvents = [];
+      List<ValueItem> criticalEventsOptions = careGiverCriticalEvents.map((service) {
+        return ValueItem(
+            label: service['item_description'], value: service['item_id']);
+      }).toList();
+      for (var form1ACriticalEvent in unapprovedForm1B.criticalEvents) {
+        var t = criticalEventsOptions.where((element) => element.value == form1ACriticalEvent.eventId);
+        if(t.isNotEmpty) {
+          form1CriticalEvents.add(t.first);
+        }
+      }
+      form1bProvider.setCriticalEventsSelectedEvents(form1CriticalEvents);
+
+
+      List<ValueItem> form1StableServices = [];
+      String stableServicesDomain = domainsList[2]['item_id'];
+      List<ValueItem> stableServices = careGiverEconomicServices.map((service) {
+        return ValueItem(
+            label: service['item_description'], value: service['item_id']);
+      }).toList();
+      for (var form1AService in unapprovedForm1B.services) {
+        if (form1AService.domainId == stableServicesDomain) {
+          var t = stableServices.where((element) => element.value == form1AService.serviceId);
+          if(t.isNotEmpty) {
+            form1StableServices.add(t.first);
+          }
+        }
+      }
+      form1bProvider.setSelectedStableFormDataServices(
+            form1StableServices, stableServicesDomain);
+
+      List<ValueItem> form1HealthyServices = [];
+      String healthyServicesDomain = domainsList[1]['item_id'];
+      List<ValueItem> healthyServices = careGiverHealthServices.map((service) {
+        return ValueItem(
+            label: service['item_description'], value: service['item_id']);
+      }).toList();
+      for (var form1AService in unapprovedForm1B.services) {
+        if (form1AService.domainId == healthyServicesDomain) {
+          var t = healthyServices.where((element) => element.value == form1AService.serviceId);
+          if(t.isNotEmpty) {
+            form1HealthyServices.add(t.first);
+          }
+        }
+      }
+      form1bProvider.setSelectedHealthServices(
+            form1HealthyServices, healthyServicesDomain);
+
+      List<ValueItem> form1SafeServices = [];
+      String safeServicesDomain = domainsList[3]['item_id'];
+      List<ValueItem> safeServicesOptions = careGiverProtectionServices.map((service) {
+        return ValueItem(
+            label: service['item_description'], value: service['item_id']);
+      }).toList();
+      for (var form1AService in unapprovedForm1B.services) {
+        if (form1AService.domainId == safeServicesDomain) {
+          var t = safeServicesOptions.where((element) => element.value == form1AService.serviceId);
+          if(t.isNotEmpty) {
+            form1SafeServices.add(t.first);
+          }
+        }
+      }
+      form1bProvider.setSelectedSafeFormDataServices(
+            form1SafeServices, safeServicesDomain);
+
+
+      // List<> services = unapprovedForm1A.services.map((e) => null);
+      context
+          .read<Form1AProvider>();
+
+      var success = await Get.to(() => Form1BScreen(caseLoad: caseLoad, unapprovedForm1: unapprovedForm1B,));
+      if (success != null && success) {
+        getRecords();
+      }
+    }
 
     void editUnapprovedForm1A(UnapprovedForm1DataModel unapprovedForm1A) async {
       // TODO : Refactor for efficiency
-      CaseLoadModel caseLoad = CaseLoadModel();
-      caseLoad.cpimsId = unapprovedForm1A.ovcCpimsId;
-      caseLoad.caregiverNames = "Unknown";
+      final db = LocalDb.instance;
+      CaseLoadModel caseLoad = await db.getCaseLoad(int.parse(unapprovedForm1A.ovcCpimsId));
       List<ValueItem> form1CriticalEvents = [];
       List<ValueItem> criticalEventsOptions = formOneACriticalEvents.map((service) {
         return ValueItem(
@@ -134,9 +206,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           form1CriticalEvents.add(t.first);
         }
       }
-      if (form1CriticalEvents.isNotEmpty) {
-        form1aProvider.setCriticalEventsSelectedEvents(form1CriticalEvents);
-      }
+      form1aProvider.setCriticalEventsSelectedEvents(form1CriticalEvents);
 
       List<ValueItem> form1StableServices = [];
       String stableServicesDomain = domainsList[2]['item_id'];
@@ -152,10 +222,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           }
         }
       }
-      if (form1StableServices.isNotEmpty) {
-        form1aProvider.setSelectedStableFormDataServices(
+      form1aProvider.setSelectedStableFormDataServices(
             form1StableServices, stableServicesDomain);
-      }
+
       List<ValueItem> form1SchooledServices = [];
       String schooledServicesDomain = domainsList[0]['item_id'];
       List<ValueItem> schoolServices = schooledServicesOptions.map((service) {
@@ -170,12 +239,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           }
         }
       }
-      print("form1SchooledServices");
-      print(form1SchooledServices);
-      if (form1SchooledServices.isNotEmpty) {
-        form1aProvider.setSelectedSchooledFormDataServices(
+      form1aProvider.setSelectedSchooledFormDataServices(
             form1SchooledServices, schooledServicesDomain);
-      }
+
       List<ValueItem> form1HealthyServices = [];
       String healthyServicesDomain = domainsList[1]['item_id'];
       List<ValueItem> healthyServices = healthServicesOptions.map((service) {
@@ -190,10 +256,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           }
         }
       }
-      if (form1HealthyServices.isNotEmpty) {
-        form1aProvider.setSelectedHealthServices(
+      form1aProvider.setSelectedHealthServices(
             form1HealthyServices, healthyServicesDomain);
-      }
+
       List<ValueItem> form1SafeServices = [];
       String safeServicesDomain = domainsList[3]['item_id'];
       List<ValueItem> safeServicesOptions = safeServices.map((service) {
@@ -208,17 +273,127 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           }
         }
       }
-      if (form1SafeServices.isNotEmpty) {
-        form1aProvider.setSelectedSafeFormDataServices(
+      form1aProvider.setSelectedSafeFormDataServices(
             form1SafeServices, safeServicesDomain);
-      }
 
       // List<> services = unapprovedForm1A.services.map((e) => null);
       context
           .read<Form1AProvider>();
 
-      Get.to(() => FomOneA(caseLoadModel: caseLoad));
+      var success = await Get.to(() => FomOneA(caseLoadModel: caseLoad, unapprovedForm1: unapprovedForm1A,));
+      if (success != null && success) {
+        getRecords();
+      }
     }
+
+    void editUnapprovedForm1(UnapprovedForm1DataModel unapprovedForm1)  async {
+      if (selectedRecord == unapprovedRecords[0]) {
+        editUnapprovedForm1A(unapprovedForm1);
+      } else if (selectedRecord == unapprovedRecords[1]) {
+        editUnapprovedForm1B(unapprovedForm1);
+      }
+    }
+
+    void editUnapprovedCptForm(UnapprovedCasePlanModel unapprovedCpt) async {
+      // TODO : Refactor for efficiency
+      final db = LocalDb.instance;
+      CaseLoadModel caseLoad =
+      await db.getCaseLoad(int.parse(unapprovedCpt.ovcCpimsId));
+
+      // Healthy Services
+      CptHealthFormData cptHealtFormData =
+          context.read<CptProvider>().cptHealthFormData ?? CptHealthFormData();
+      String healthyServicesDomain = allDomains[1]['item_id'];
+      for (var cptService in unapprovedCpt.services) {
+        if (cptService.domainId == healthyServicesDomain) {
+          context.read<CptProvider>().updateCptFormData(
+            cptHealtFormData.copyWith(
+              domainId: cptService.domainId,
+              goalId: cptService.goalId,
+              gapId: cptService.gapId,
+              priorityId: cptService.priorityId,
+              resultsId: cptService.resultsId,
+              reasonId: cptService.reasonId,
+              serviceIds: cptService.serviceIds,
+              responsibleIds: cptService.responsibleIds,
+            ),
+          );
+        }
+      }
+
+      // Safe Services
+      CptSafeFormData cptSafeFormData =
+          context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
+      String safeServicesDomain = allDomains[3]['item_id'];
+      for (var cptService in unapprovedCpt.services) {
+        if (cptService.domainId == safeServicesDomain) {
+          context
+              .read<CptProvider>()
+              .updateCptSafeFormData(cptSafeFormData.copyWith(
+            domainId: cptService.domainId,
+            goalId: cptService.goalId,
+            gapId: cptService.gapId,
+            priorityId: cptService.priorityId,
+            resultsId: cptService.resultsId,
+            reasonId: cptService.reasonId,
+            serviceIds: cptService.serviceIds,
+            responsibleIds: cptService.responsibleIds,
+          ));
+        }
+      }
+
+      // Schooled Services
+      CptschooledFormData cptschooledFormData =
+          context.read<CptProvider>().cptschooledFormData ??
+              CptschooledFormData();
+      String schooledServicesDomain = allDomains[0]['item_id'];
+      for (var cptService in unapprovedCpt.services) {
+        if (cptService.domainId == schooledServicesDomain) {
+          context
+              .read<CptProvider>()
+              .updateCptSchooledFormData(cptschooledFormData.copyWith(
+            domainId: cptService.domainId,
+            goalId: cptService.goalId,
+            gapId: cptService.gapId,
+            priorityId: cptService.priorityId,
+            resultsId: cptService.resultsId,
+            reasonId: cptService.reasonId,
+            serviceIds: cptService.serviceIds,
+            responsibleIds: cptService.responsibleIds,
+          ));
+        }
+      }
+
+      // Stable Services
+      CptStableFormData cptStableFormData =
+          context.read<CptProvider>().cptStableFormData ?? CptStableFormData();
+      String stableServicesDomain = allDomains[2]['item_id'];
+      for (var cptService in unapprovedCpt.services) {
+        if (cptService.domainId == stableServicesDomain) {
+          context
+              .read<CptProvider>()
+              .updateCptStableFormData(cptStableFormData.copyWith(
+            domainId: cptService.domainId,
+            goalId: cptService.goalId,
+            gapId: cptService.gapId,
+            priorityId: cptService.priorityId,
+            resultsId: cptService.resultsId,
+            reasonId: cptService.reasonId,
+            serviceIds: cptService.serviceIds,
+            responsibleIds: cptService.responsibleIds,
+          ));
+        }
+      }
+
+      context.read<CasePlanProvider>();
+      Get.to(
+            () => CasePlanTemplateForm(
+          caseLoad: caseLoad,
+        ),
+      );
+    }
+
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -245,7 +420,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                 ),
                 itemCount: unapprovedRecords.length,
                 separatorBuilder: (BuildContext context, int index) =>
-                    const SizedBox(
+                const SizedBox(
                   width: 12,
                 ),
               ),
@@ -256,6 +431,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                 unapprovedRecords: unapprovedCaseplanData,
                 selectedRecord: selectedRecord,
                 onDelete: deleteUnapprovedCPT,
+                onEdit: editUnapprovedCptForm,
               ),
             if (selectedRecord == "CPARA")
     const Expanded(child: UnnaprovedCparaScreen()),
@@ -265,7 +441,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                   selectedRecord: selectedRecord,
                   unapprovedForm1aData: unapprovedForm1AData,
                   onDelete: deleteUnapprovedForm1,
-                  onEdit: editUnapprovedForm1A,
+                  onEdit: editUnapprovedForm1,
                 ),
               ),
             if (selectedRecord == unapprovedRecords[1])
@@ -274,7 +450,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                   selectedRecord: selectedRecord,
                   unapprovedForm1aData: unapprovedForm1BData,
                   onDelete: deleteUnapprovedForm1,
-                  onEdit: editUnapprovedForm1A,
+                  onEdit: editUnapprovedForm1,
                 ),
               ),
           ],
@@ -322,30 +498,10 @@ class FormTab extends StatelessWidget {
                   );
                 },
               )
-            else if (selectedRecord == "CPT")
-              const Column(
-                children: [
-                  Text(
-                    'Not Implemented',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                ],
-              )
-            else
-              const Column(children: [
-                Text(
-                  'Not Implemented',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-              ])
+          ],
+        ),
       ],
-    )]);
+    );
   }
 }
 
@@ -353,12 +509,14 @@ class ChildDetailsCard<T> extends StatelessWidget {
   final List<UnapprovedCasePlanModel> unapprovedRecords;
   final String selectedRecord;
   final Function(int)? onDelete;
+  final Function(UnapprovedCasePlanModel) onEdit;
 
   const ChildDetailsCard({
     super.key,
     required this.unapprovedRecords,
     required this.selectedRecord,
     required this.onDelete,
+    required this.onEdit,
   });
 
   @override
@@ -386,6 +544,7 @@ class ChildDetailsCard<T> extends StatelessWidget {
                         onDelete: (int) {
                           onDelete!(int);
                         },
+                        onEdit: onEdit,
                       );
                     },
                   ),
@@ -400,14 +559,16 @@ class ChildDetailsCard<T> extends StatelessWidget {
 }
 
 class UnapprovedCasePlanFormDetails extends StatelessWidget {
+  final UnapprovedCasePlanModel unapprovedRecord;
+  final Function(int) onDelete;
+  final Function(UnapprovedCasePlanModel) onEdit;
+
   const UnapprovedCasePlanFormDetails({
     super.key,
     required this.unapprovedRecord,
     required this.onDelete,
+    required this.onEdit,
   });
-
-  final UnapprovedCasePlanModel unapprovedRecord;
-  final Function(int) onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -434,7 +595,9 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                 ),
                 const Spacer(),
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await onEdit(unapprovedRecord);
+                    },
                     icon: const Icon(Icons.edit)),
                 IconButton(
                     onPressed: () async {
@@ -648,7 +811,8 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
     required this.unapprovedData,
     this.eventOrDomainId,
     required this.isService,
-    required this.onDelete, required this.onEdit,
+    required this.onDelete,
+    required this.onEdit,
   });
 
   @override
@@ -676,15 +840,14 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                IconButton (
-                    onPressed:()async{
-                      await  onEdit(unapprovedData);
-                    },
-                    icon: const Icon(Icons.edit)
-                ),
                 IconButton(
                     onPressed: () async {
-                      await onDelete(unapprovedData.id ?? 0);
+                      await onEdit(unapprovedData);
+                    },
+                    icon: const Icon(Icons.edit)),
+                IconButton(
+                    onPressed: () async {
+                      await onDelete(unapprovedData.localId ?? 0);
                     },
                     icon: const Icon(Icons.delete)),
               ],
@@ -737,36 +900,51 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
                 visible: unapprovedData.services.isNotEmpty,
                 child: Column(
                   children: unapprovedData.services
-                      .map((e) => Row(
-                            children: [
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    const Text(
-                                      "ID: ",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                      .map((e) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "ID: ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(e.serviceId.toString()),
+                                      ],
                                     ),
-                                    Text(e.serviceId.toString()),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    const Text(
-                                      "Domain: ",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "Domain: ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(e.domainId),
+                                      ],
                                     ),
-                                    Text(e.domainId),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ))
+                          const Text(
+                            "Message",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            e.message ?? 'Unknown',
+                          ),
+                          const SizedBox(height: 8,)
+                        ],
+                      ))
                       .toList(),
                 )),
             const SizedBox(
@@ -789,34 +967,49 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
                 visible: unapprovedData.criticalEvents.isNotEmpty,
                 child: Column(
                   children: unapprovedData.criticalEvents
-                      .map((e) => Row(
-                            children: [
-                              Expanded(
-                                  child: Row(
+                      .map((e) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
                                 children: [
-                                  const Text(
-                                    "ID: ",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(e.eventId),
+                                  Expanded(
+                                      child: Row(
+                                    children: [
+                                      const Text(
+                                        "ID: ",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(e.eventId),
+                                    ],
+                                  )),
+                                  Expanded(
+                                      child: Row(
+                                    children: [
+                                      const Text(
+                                        "Date: ",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(e.eventDate),
+                                    ],
+                                  )),
                                 ],
-                              )),
-                              Expanded(
-                                  child: Row(
-                                children: [
-                                  const Text(
-                                    "Date: ",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(e.eventDate),
-                                ],
-                              )),
-                            ],
-                          ))
+                              ),
+                          const Text(
+                            "Message",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            e.message ?? 'Unknown',
+                          ),
+                          const SizedBox(height: 8,)
+                        ],
+                      ))
                       .toList(),
                 )),
           ],
