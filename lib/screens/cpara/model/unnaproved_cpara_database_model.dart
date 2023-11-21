@@ -18,18 +18,18 @@ class UnapprovedCparaDatabase extends CPARADatabase {
 
   static UnapprovedCparaDatabase fromJson(Map<String, dynamic> json) {
     return UnapprovedCparaDatabase(
-      message: json['message'] ?? "The form was rejected due to inaccurate details",
+      message:
+          json['message'] ?? "The form was rejected due to inaccurate details",
       cparaFormId: json['id'] ?? "",
-      ovcCpimsId: json['ovc_cpims_id'],
+      ovcCpimsId: "${json['ovc_cpims_id']}",
       appFormMetaData: json['app_form_metadata'] == null
           ? AppFormMetaData(
-        formId:  json['id'] ?? "",
-        location_lat: "",
-        location_long: "",
-        startOfInterview: "",
-        endOfInterview: "",
-        formType: 'cpara'
-      )
+              formId: json['id'] ?? "",
+              location_lat: "",
+              location_long: "",
+              startOfInterview: "",
+              endOfInterview: "",
+              formType: 'cpara')
           : AppFormMetaData.fromJson(json['app_form_metadata']),
       childQuestions: (json["individual_questions"] != null &&
               json["individual_questions"].isNotEmpty)
@@ -37,11 +37,11 @@ class UnapprovedCparaDatabase extends CPARADatabase {
               .map((x) => CPARAChildQuestions.fromJsonRemote(x)))
           : [],
       dateOfEvent: json["date_of_event"],
-      listOfSubOvcs: (json["sub_population"] != null &&
-              json["sub_population"].isNotEmpty)
-          ? List<SubOvcChild>.from(
-              json["sub_population"].map((x) => SubOvcChild.fromJson(x)))
-          : [],
+      listOfSubOvcs:
+          (json["sub_population"] != null && json["sub_population"].isNotEmpty)
+              ? List<SubOvcChild>.from(
+                  json["sub_population"].map((x) => SubOvcChild.fromJson(x)))
+              : [],
       questions: (json["questions"] != null && json["questions"].isNotEmpty)
           ? List<CPARADatabaseQuestions>.from(
               json["questions"].map((x) => CPARADatabaseQuestions.fromJSON(x)))
