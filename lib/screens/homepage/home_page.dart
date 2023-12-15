@@ -312,12 +312,14 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    final SummaryDataModel? dashData =
-        context.select((UIProvider provider) => provider.getDashData);
+     SummaryDataModel? dashData;
+    dashData= context.select((UIProvider provider) => provider.getDashData);
 
     StatsProvider formStats = context.watch<StatsProvider>();
 
     if (dashData == null) {
+      dashData =
+      context.select((UIProvider provider) => provider.getDashData);
       return const Center(
         child: SnackBar(
           content: Text("Failed to sync dashboard data"),

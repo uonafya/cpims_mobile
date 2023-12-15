@@ -70,7 +70,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
           final prefs = await SharedPreferences.getInstance();
 
           final hasUserSetup = prefs.getBool("hasUserSetup"); //todo: remove
-
+          final localDashData = await DashBoardService().fetchDashboardData();
           if (hasConnection == false) {
             if (hasUserSetup == null) {
               Get.off(() =>
@@ -87,8 +87,6 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
                 return;
               }
             }
-
-            final localDashData = await DashBoardService().fetchDashboardData();
             if (isMounted) {
               try {
                 Provider.of<UIProvider>(context, listen: false)
@@ -103,11 +101,14 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
             final prefs = await SharedPreferences.getInstance();
             final accessToken = prefs.getString('access');
             final dashRep = await DashBoardService().dashBoard(accessToken);
-
             if (isMounted) {
+              if (dashRep == null) {
+                Provider.of<UIProvider>(context, listen: false)
+                    .setDashData(localDashData);
+              }
+
               Provider.of<UIProvider>(context, listen: false)
                   .setDashData(dashRep);
-              // final deviceID = await getDeviceID();
               const androidIdPlugin = AndroidId();
               final String? androidId = await androidIdPlugin.getId();
               if (isMounted) {
@@ -125,7 +126,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
               }
 
               // TODO Fetch unapproved data from server
-              await UnapprovedDataService.fetchRemoteUnapprovedData(accessToken);
+              // await UnapprovedDataService.fetchRemoteUnapprovedData(accessToken);
 
               // fetch unapproved data from local db
               final List<UnapprovedCparaModel> cparaRecords =

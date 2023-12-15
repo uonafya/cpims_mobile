@@ -85,6 +85,29 @@ class SummaryDataModel {
       'details': details,
     };
   }
+
+  @override
+  String toString() {
+    return 'SummaryDataModel{'
+        'children: $children, '
+        'caregivers: $caregivers, '
+        'government: $government, '
+        'ngo: $ngo, '
+        'caseRecords: $caseRecords, '
+        'pendingCases: $pendingCases, '
+        'orgUnits: $orgUnits, '
+        'workforceMembers: $workforceMembers, '
+        'household: $household, '
+        'childrenAll: $childrenAll, '
+        'ovcSummary: $ovcSummary, '
+        'ovcRegs: $ovcRegs, '
+        'caseRegs: $caseRegs, '
+        'caseCats: $caseCats, '
+        'criteria: $criteria, '
+        'orgUnit: $orgUnit, '
+        'orgUnitId: $orgUnitId, '
+        'details: $details}';
+  }
 }
 
 class OvcSummary {
@@ -140,5 +163,20 @@ class OvcSummary {
       'f3': f3,
       'f4': f4,
     };
+  }
+
+  @override
+  String toString() {
+    return 'OvcSummary{'
+        'm0: $m0, '
+        'm1: $m1, '
+        'm2: $m2, '
+        'm3: $m3, '
+        'm4: $m4, '
+        'f0: $f0, '
+        'f1: $f1, '
+        'f2: $f2, '
+        'f3: $f3, '
+        'f4: $f4}';
   }
 }
