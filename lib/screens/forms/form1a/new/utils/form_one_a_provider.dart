@@ -33,6 +33,7 @@ class Form1AProviderNew extends ChangeNotifier {
     services: [],
     date_of_event: DateFormat('yyyy-MM-dd').format(DateTime.now()),
     ovc_cpims_id: "",
+    careGiverId: "",
   );
 
   final CriticalEventDataForm1b _criticalEventDataForm1b =
@@ -112,6 +113,11 @@ class Form1AProviderNew extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setFinalFormDataCareGiverId(String careGiverId) {
+    _finalServicesFormData.careGiverId = careGiverId;
+    notifyListeners();
+  }
+
   void setFinalFormDataDOE(String? dateOfEvent) {
     _finalServicesFormData.date_of_event = dateOfEvent!;
     _criticalEventDataForm1b.selectedDate = dateOfEvent;
@@ -136,6 +142,7 @@ class Form1AProviderNew extends ChangeNotifier {
         convertToMasterServicesFormData();
     setFinalFormDataServices(masterServicesList);
     setFinalFormDataOvcId(_finalServicesFormData.ovc_cpims_id);
+    setFinalFormDataCareGiverId(_finalServicesFormData.careGiverId);
     setFinalFormDataDOE(formData.selectedDate);
     List<Form1CriticalEventsModel> criticalEventsFormData =
         getFinalCriticalEventsFormData();
@@ -170,6 +177,7 @@ class Form1AProviderNew extends ChangeNotifier {
     if (!(finalServicesFormData.date_of_event == "")) {
       Form1DataModel toDbData = Form1DataModel(
         ovcCpimsId: finalServicesFormData.ovc_cpims_id,
+        caregiverCpimsId: finalServicesFormData.careGiverId,
         dateOfEvent: finalServicesFormData.date_of_event,
         services: servicesList,
         criticalEvents: criticalEventsList,
@@ -298,6 +306,7 @@ class Form1AProviderNew extends ChangeNotifier {
     _finalServicesFormData.date_of_event =
         DateFormat('yyyy-MM-dd').format(DateTime.now());
     _finalServicesFormData.ovc_cpims_id = '';
+    _finalServicesFormData.careGiverId = '';
 
     _criticalEventDataForm1b.selectedEvents.clear();
     _criticalEventDataForm1b.selectedDate = '';

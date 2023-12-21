@@ -55,6 +55,8 @@ class _Form1BScreen extends State<Form1BScreen> {
       Form1bProvider form1bProvider =
           Provider.of<Form1bProvider>(context, listen: false);
       form1bProvider.setFinalFormDataOvcId(widget.caseLoad.cpimsId!);
+      form1bProvider
+          .setFinalFormDataCareGiverId(widget.caseLoad.caregiverCpimsId!);
       if (widget.unapprovedForm1 != null) {
         form1bProvider.setSelectedDate(widget.unapprovedForm1!.dateOfEvent);
       }

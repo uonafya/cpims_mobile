@@ -7,6 +7,7 @@ class UnapprovedForm1DataModel extends Form1DataModel {
   UnapprovedForm1DataModel({
     super.localId,
     required super.id,
+    super.caregiverCpimsId = "",
     required super.ovcCpimsId,
     required super.dateOfEvent,
     required super.services,
@@ -36,6 +37,7 @@ class UnapprovedForm1DataModel extends Form1DataModel {
       id: json['id'] as String,
       ovcCpimsId: json['ovc_cpims_id'].toString(),
       dateOfEvent: json['date_of_event'] as String,
+      caregiverCpimsId: json['caregiver_cpims_id'] == null ? "N/A" : json['caregiver_cpims_id'].toString(),
       services: services,
       criticalEvents: criticalEvents,
       appFormMetaData: AppFormMetaData.fromJson(json['app_form_metadata']),

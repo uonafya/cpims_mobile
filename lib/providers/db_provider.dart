@@ -166,7 +166,8 @@ class LocalDb {
           ${Form1.ovcCpimsId} $textType,
           ${Form1.dateOfEvent} $textType,
           ${Form1.formType} $textType,
-          ${Form1.formDateSynced} $textTypeNull
+          ${Form1.formDateSynced} $textTypeNull,
+          ${Form1.caregiverId} $textType
         )
         ''');
 
@@ -1057,6 +1058,7 @@ class LocalDb {
         {
           'ovc_cpims_id': formData.ovcCpimsId,
           'date_of_event': formData.dateOfEvent,
+          'caregiver_cpims_id': formData.caregiverCpimsId,
           'form_type': formType,
           'form_date_synced': null,
           'id': id,
@@ -1891,6 +1893,7 @@ class Form1 {
   static const String dateOfEvent = 'date_of_event';
   static const String formDateSynced = 'form_date_synced';
   static const String message = 'message';
+  static const String caregiverId = 'caregiver_cpims_id';
 }
 
 class Form1Services {

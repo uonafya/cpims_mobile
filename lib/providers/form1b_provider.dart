@@ -32,6 +32,7 @@ class Form1bProvider extends ChangeNotifier {
     services: [],
     date_of_event: DateFormat('yyyy-MM-dd').format(DateTime.now()),
     ovc_cpims_id: "",
+    careGiverId: "",
   );
 
   final CriticalEventDataForm1b _criticalEventDataForm1b =
@@ -96,6 +97,11 @@ class Form1bProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setFinalFormDataCareGiverId(String careGiverId) {
+    _finalServicesFormData.careGiverId = careGiverId;
+    notifyListeners();
+  }
+
   void setFinalFormDataDOE(String dateOfEvent) {
     _finalServicesFormData.date_of_event = dateOfEvent;
     _criticalEventDataForm1b.selectedDate = dateOfEvent;
@@ -125,6 +131,7 @@ class Form1bProvider extends ChangeNotifier {
     //creating our data to be sent for saving
     setFinalFormDataServices(masterServicesList);
     setFinalFormDataOvcId(_finalServicesFormData.ovc_cpims_id);
+    setFinalFormDataCareGiverId(_finalServicesFormData.careGiverId);
     setFinalFormDataDOE(formData.selectedDate!);
     List<Form1CriticalEventsModel> criticalEventsFormData =
         getFinalCriticalEventsFormData();
@@ -159,9 +166,11 @@ class Form1bProvider extends ChangeNotifier {
       Form1DataModel toDbData = Form1DataModel(
         id: formUuid,
         ovcCpimsId: finalServicesFormData.ovc_cpims_id,
+        caregiverCpimsId: finalServicesFormData.careGiverId,
         dateOfEvent: finalServicesFormData.date_of_event,
         services: servicesList,
         criticalEvents: criticalEventsList,
+
       );
 
       bool isFormSaved = await Form1Service.saveFormLocal(

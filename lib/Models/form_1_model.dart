@@ -6,6 +6,7 @@ class Form1DataModel {
   final int? localId;
   final String id;
   final String ovcCpimsId;
+  final String caregiverCpimsId;
   final String dateOfEvent;
   final List<Form1ServicesModel> services;
   final List<Form1CriticalEventsModel> criticalEvents;
@@ -16,6 +17,7 @@ class Form1DataModel {
     required this.id,
     this.localId,
     required this.ovcCpimsId,
+    required this.caregiverCpimsId,
     required this.dateOfEvent,
     required this.services,
     required this.criticalEvents,
@@ -47,6 +49,7 @@ class Form1DataModel {
       localId: json['local_id'] as int,
       id: json['id'] as String,
       ovcCpimsId: json['ovc_cpims_id'] as String,
+      caregiverCpimsId: json['caregiver_cpims_id'] as String,
       dateOfEvent: json['date_of_event'] as String,
       services: services,
       criticalEvents: criticalEvents,
@@ -58,6 +61,7 @@ class Form1DataModel {
   Map<String, dynamic> toJson() {
     return {
       'ovc_cpims_id': ovcCpimsId,
+      'caregiver_cpims_id': caregiverCpimsId,
       'id': id,
       'date_of_event': dateOfEvent,
       'services': services.map((service) => service.toJson()).toList(),
@@ -70,6 +74,7 @@ class Form1DataModel {
   Map<String, dynamic> toMap() {
     return {
       'ovc_cpims_id': ovcCpimsId,
+      'caregiver_cpims_id': caregiverCpimsId,
       'id': id,
       'date_of_event': dateOfEvent,
       'services': services.map((service) => service.toMap()).toList(),
@@ -79,7 +84,9 @@ class Form1DataModel {
 
   @override
   String toString() {
-    return 'Form1DataModel{ovcCpimsId: $ovcCpimsId, date_of_event: $dateOfEvent, services: $services, criticalEvents: $criticalEvents},id: $id';
+    return 'Form1DataModel{'
+        'ovcCpimsId: $ovcCpimsId, caregiverCpimsId: $caregiverCpimsId,'
+        'date_of_event: $dateOfEvent, services: $services, criticalEvents: $criticalEvents},id: $id' ;
   }
 }
 

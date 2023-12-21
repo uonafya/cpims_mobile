@@ -6,11 +6,13 @@ class FinalServicesFormData {
   List<MasterServicesFormData> services;
   String date_of_event;
   String ovc_cpims_id;
+  String careGiverId;
 
   FinalServicesFormData({
     required this.services,
     required this.date_of_event,
     required this.ovc_cpims_id,
+    required this.careGiverId,
   });
 
   // Factory constructor to create an instance from a JSON Map
@@ -27,6 +29,7 @@ class FinalServicesFormData {
       services: masterServicesList,
       date_of_event: json['date_of_event'],
       ovc_cpims_id: json['ovc_cpims_id'],
+      careGiverId: json['caregiver_cpims_id'],
     );
   }
 
@@ -36,12 +39,13 @@ class FinalServicesFormData {
       'services': services.map((item) => item.toJson()).toList(),
       'date_of_event': date_of_event,
       'ovc_cpims_id': ovc_cpims_id,
+      'caregiver_cpims_id': careGiverId,
     };
   }
 
   // Optional: Override the toString method for debugging
   @override
   String toString() {
-    return 'FinalServicesFormData{services: $services, date_of_event: $date_of_event, ovc_cpims_id: $ovc_cpims_id}';
+    return 'FinalServicesFormData{services: $services, date_of_event: $date_of_event, ovc_cpims_id: $ovc_cpims_id} careGiverId: $careGiverId';
   }
 }
