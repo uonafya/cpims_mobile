@@ -4,11 +4,18 @@ import '../../../../../Models/caseplan_form_model.dart';
 class CasePlanschooledModel {
   late final int? id;
   late final String? ovcCpimsId;
+  late final String? caregiverCpimsId;
   late final String? dateOfEvent;
   late final List<CasePlanServiceschooledModel>? services;
 
   CasePlanschooledModel(
-      {this.ovcCpimsId, this.dateOfEvent, this.services, this.id});
+      {
+        this.ovcCpimsId,
+        this.dateOfEvent,
+        this.services,
+        this.id,
+        this.caregiverCpimsId,
+      });
 
   factory CasePlanschooledModel.fromJson(Map<String, dynamic> json) {
     List<CasePlanServiceschooledModel> services = [];
@@ -21,6 +28,7 @@ class CasePlanschooledModel {
 
     return CasePlanschooledModel(
       id: json['id'],
+      caregiverCpimsId: json['caregiver_cpims_id'] as String? ?? '',
       ovcCpimsId: json['ovc_cpims_id'] as String,
       dateOfEvent: json['date_of_event'] as String,
       services: services,
@@ -32,6 +40,7 @@ class CasePlanschooledModel {
       'id': id,
       'ovc_cpims_id': ovcCpimsId,
       'date_of_event': dateOfEvent,
+      'caregiver_cpims_id': caregiverCpimsId,
       'services': services?.map((service) => service.toJson()).toList(),
     };
   }
@@ -40,18 +49,21 @@ class CasePlanschooledModel {
   String toString() {
     return 'CasePlanModel {'
         'ovcCpimsId: $ovcCpimsId, '
+        'caregiverCpimsId: $caregiverCpimsId, '
         'dateOfEvent: $dateOfEvent, '
         'services: $services'
         '}';
   }
 
   CasePlanschooledModel copyWith({
+    String? caregiverCpimsId,
     String? ovcCpimsId,
     String? dateOfEvent,
     List<CasePlanServiceschooledModel>? services,
     int? id,
   }) {
     return CasePlanschooledModel(
+      caregiverCpimsId: caregiverCpimsId ?? this.caregiverCpimsId,
       ovcCpimsId: ovcCpimsId ?? this.ovcCpimsId,
       dateOfEvent: dateOfEvent ?? this.dateOfEvent,
       services: services ?? this.services,
@@ -299,6 +311,7 @@ CasePlanModel mapCasePlanschooledToCasePlan(
   }
 
   return CasePlanModel(
+    caregiverCpimsId: schooledModel.caregiverCpimsId ?? "",
     id: schooledModel.id,
     ovcCpimsId: schooledModel.ovcCpimsId ?? "",
     dateOfEvent: schooledModel.dateOfEvent ?? "",

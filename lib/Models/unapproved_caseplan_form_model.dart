@@ -6,6 +6,7 @@ class UnapprovedCasePlanModel extends CasePlanModel {
 
   UnapprovedCasePlanModel({
     super.id,
+    required super.caregiverCpimsId,
     required super.ovcCpimsId,
     required super.dateOfEvent,
     required super.services,
@@ -23,6 +24,7 @@ class UnapprovedCasePlanModel extends CasePlanModel {
     }
     return UnapprovedCasePlanModel(
       id: json['id'],
+      caregiverCpimsId: json['caregiver_cpims_id'] as String? ?? '',
       ovcCpimsId: json['ovc_cpims_id'] as String? ?? '',
       dateOfEvent: json['date_of_event'] as String? ?? '',
       services: services,
@@ -42,7 +44,8 @@ class UnapprovedCasePlanModel extends CasePlanModel {
         'ovcCpimsId: $ovcCpimsId, '
         'dateOfEvent: $dateOfEvent, '
         'services: $services, '
-        'message: $message'
+        'message: $message, '
+        'caregiverCpimsId: $caregiverCpimsId, '
         '}';
   }
 

@@ -128,6 +128,22 @@ class Form1Service {
     return 0; // Return 0 if there is an error.
   }
 
+  static Future<int?> getFormCountByDistinctCareGiver(String formType) async{
+    final db= LocalDb.instance;
+    try{
+      final count = await db.countFormOneByDistinctCareGiver(formType);
+      if(count != null){
+        return count;
+      }else{
+        return 0;
+      }
+    }catch(e){
+      if(kDebugMode){
+        print("An error on getFormCountByDistinctCareGiver: ${e.toString()}");
+      }
+    }
+  }
+
   Future<void> updateFormCount(String formType) async {
     try {
       final db = LocalDb.instance;
@@ -204,6 +220,14 @@ class Form1Service {
 
   static Future<int?> getCountAllFormOneB() async {
     return await getFormCount("form1b");
+  }
+
+  static Future<int?> getCountAllFormOneADistinct() async {
+    return await getFormCountByDistinctCareGiver("form1a");
+  }
+
+  static Future<int?> getCountAllFormOneBDistinct() async {
+    return await getFormCountByDistinctCareGiver("form1b");
   }
 
   //count cpara forms
@@ -315,6 +339,18 @@ class CasePlanService {
     }
     return 0; // Return 0 if there is an error.
   }
+  static getCaseplanUnsyncedCountDistict() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.getUnsyncedCasePlanCountDistinctByCareGiverId();
+      return count;
+        } catch (e) {
+      if (kDebugMode) {
+        print("An error on getCaseplanUnsyncedCount: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
+  }
 
   static getCountOfHmfForms() async {
     final db = LocalDb.instance;
@@ -332,6 +368,18 @@ class CasePlanService {
     }
     return 0; // Return 0 if there is an error.
   }
+  static getCountOfHmfFormsDistinct() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.countHMFFormDataDistinctByCareGiver();
+      return count;
+        } catch (e) {
+      if (kDebugMode) {
+        print("An error on getCountOfHmfForms: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
+  }
 
   static getCountOfHRSForms() async {
     final db = LocalDb.instance;
@@ -343,6 +391,18 @@ class CasePlanService {
         return 0;
       }
     } catch (e) {
+      if (kDebugMode) {
+        print("An error on getCountOfHmfForms: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
+  }
+  static getCountOfHRSFormsDistinct() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.countHRSFormDataDistinctByCareGiver();
+      return count;
+        } catch (e) {
       if (kDebugMode) {
         print("An error on getCountOfHmfForms: ${e.toString()}");
       }

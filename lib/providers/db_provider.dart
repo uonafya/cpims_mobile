@@ -115,7 +115,8 @@ class LocalDb {
         ${CasePlan.ovcCpimsId} $textType,
         ${CasePlan.dateOfEvent} $textType,
         ${CasePlan.formDateSynced} $textTypeNull,
-        ${CasePlan.uuid} $textType
+        ${CasePlan.uuid} $textType,
+        ${CasePlan.caregiverId} $textType
       )
       ''');
 
@@ -544,6 +545,7 @@ class LocalDb {
     CREATE TABLE $HRSForms (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       ovc_cpims_id TEXT,
+      caregiver_cpims_id TEXT,
       HIV_RA_1A TEXT,
       HIV_RS_01 TEXT,
       HIV_RS_02 TEXT,
@@ -585,6 +587,7 @@ class LocalDb {
 
   Future<void> insertHRSData(
       String cpmisId,
+      String caregiverCpimsId,
       HIVCurrentStatusModel currentStatus,
       HIVRiskAssessmentModel assessment,
       ProgressMonitoringModel progress,
@@ -597,6 +600,7 @@ class LocalDb {
       HRSForms,
       {
         'ovc_cpims_id': cpmisId,
+        'caregiver_cpims_id': caregiverCpimsId,
         'HIV_RA_1A': currentStatus.dateOfAssessment,
         'HIV_RS_01': currentStatus.statusOfChild,
         'HIV_RS_02': currentStatus.hivStatus,
@@ -694,6 +698,22 @@ class LocalDb {
     }
   }
 
+  Future<int> countHRSFormDataDistinctByCareGiver() async {
+    try {
+      final db = await LocalDb.instance.database;
+
+      final count = Sqflite.firstIntValue(await db.rawQuery(
+          'SELECT COUNT(*) FROM $HRSForms WHERE form_date_synced IS NULL OR form_date_synced = ""'));
+
+      return count ?? 0;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error counting HRS form data: $e");
+      }
+      return 0;
+    }
+  }
+
   Future<void> deleteHRSData(String id) async {
     final db = await LocalDb.instance.database;
     await db.delete(HRSForms, where: 'uuid = ?', whereArgs: [id]);
@@ -714,13 +734,11 @@ class LocalDb {
 
   // create HIVManagement table
   Future<void> createHMFForms(Database db, int version) async {
-    // Define the table schema with all the fields
-    print("-------------------Creating HMF Forms---------------------------");
-    print("-------------------Creating HMF Forms---------------------------");
     const String createTableQuery = '''
     CREATE TABLE $HMForms (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       ovc_cpims_id TEXT,
+      caregiver_cpims_id TEXT,
       HIV_MGMT_1_A TEXT,
       HIV_MGMT_1_B TEXT,
       HIV_MGMT_1_C TEXT,
@@ -764,12 +782,12 @@ class LocalDb {
     try {
       await db.execute(createTableQuery);
       if (kDebugMode) {
-        print(
+        debugPrint(
             "------------------Function ----Creating HMF Forms---------------------------");
       }
     } catch (e) {
       if (kDebugMode) {
-        print(
+        debugPrint(
             "-------------------Error HMF Forms---------------------------$e");
       }
     }
@@ -777,6 +795,7 @@ class LocalDb {
 
   Future<void> insertHMFFormData(
       String cpmisId,
+      String caregiverCpimsId,
       ARTTherapyHIVFormModel artTherapyHIVFormModel,
       HIVVisitationFormModel hivVisitationFormModel,
       String uuid,
@@ -789,6 +808,7 @@ class LocalDb {
       HMForms,
       {
         'ovc_cpims_id': cpmisId,
+        'caregiver_cpims_id': caregiverCpimsId,
         'HIV_MGMT_1_A': artTherapyHIVFormModel.dateHIVConfirmedPositive,
         'HIV_MGMT_1_B': artTherapyHIVFormModel.dateTreatmentInitiated,
         'HIV_MGMT_1_C': artTherapyHIVFormModel.baselineHEILoad,
@@ -918,6 +938,22 @@ class LocalDb {
 
       final count = Sqflite.firstIntValue(await db.rawQuery(
           'SELECT COUNT(*) FROM $HMForms WHERE form_date_synced IS NULL OR form_date_synced = ""'));
+
+      return count ?? 0;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error counting HMF form data: $e");
+      }
+      return 0;
+    }
+  }
+
+  Future<int> countHMFFormDataDistinctByCareGiver() async {
+    try {
+      final db = await LocalDb.instance.database;
+
+      final count = Sqflite.firstIntValue(await db.rawQuery(
+          'SELECT COUNT(DISTINCT caregiver_cpims_id) FROM $HMForms WHERE form_date_synced IS NULL OR form_date_synced = ""'));
 
       return count ?? 0;
     } catch (e) {
@@ -1295,6 +1331,27 @@ class LocalDb {
     }
   }
 
+  Future<int?> countFormOneByDistinctCareGiver(String formType) async{
+    try {
+      final db = await instance.database;
+      const sql =
+          'SELECT COUNT(DISTINCT caregiver_cpims_id) FROM $form1Table WHERE form_type = ? AND form_date_synced IS NULL';
+      final List<Map<String, dynamic>> result =
+          await db.rawQuery(sql, [formType]);
+
+      if (result.isNotEmpty) {
+        return Sqflite.firstIntValue(result);
+      } else {
+        return 0; // Return 0 if no count is found.
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error querying form1 count: $e");
+      }
+      return 0; // Return 0 if there is an error.
+    }
+  }
+
   Future<Stream<int>> queryForm1UnsyncedFormsStream(String formType) async {
     final controller = StreamController<int>();
 
@@ -1437,6 +1494,8 @@ class LocalDb {
             'date_of_event': casePlan.dateOfEvent,
             'form_date_synced': null,
             'uuid': formUuid,
+            'caregiver_cpims_id': casePlan.caregiverCpimsId,
+
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
@@ -1516,6 +1575,7 @@ class LocalDb {
 
         // Create and return the CasePlanModel instance
         return CasePlanModel(
+          caregiverCpimsId: mainQueryResult.first[CasePlan.caregiverId] as String,
           ovcCpimsId: mainQueryResult.first[CasePlan.ovcCpimsId] as String,
           dateOfEvent: mainQueryResult.first[CasePlan.dateOfEvent] as String,
           services: services,
@@ -1584,6 +1644,7 @@ class LocalDb {
 
         casePlans.add(CasePlanModel(
           id: row[CasePlan.id] as int,
+          caregiverCpimsId: row[CasePlan.caregiverId] as String,
           ovcCpimsId: row[CasePlan.ovcCpimsId] as String,
           dateOfEvent: row[CasePlan.dateOfEvent] as String,
           services: services,
@@ -1615,6 +1676,23 @@ class LocalDb {
       // Extract the count from the first row
       final count = queryResult.first.values.first as int;
 
+      return count;
+    } catch (e) {
+      debugPrint('Error retrieving unsynced case plan count: $e');
+      return 0; // Handle the error and return 0
+    }
+  }
+
+  Future<int> getUnsyncedCasePlanCountDistinctByCareGiverId() async{
+    try {
+      final db = await instance.database;
+      final queryResult = await db.rawQuery(
+          'SELECT COUNT(DISTINCT caregiver_cpims_id) FROM $casePlanTable WHERE form_date_synced IS NULL');
+      if (queryResult.isEmpty) {
+        return 0; // No unsynced case plans found
+      }
+      // Extract the count from the first row
+      final count = queryResult.first.values.first as int;
       return count;
     } catch (e) {
       debugPrint('Error retrieving unsynced case plan count: $e');
@@ -1668,6 +1746,23 @@ class LocalDb {
     try {
       List<Map<String, dynamic>> countResult = await db.rawQuery(
           "SELECT COUNT(id) AS count FROM Form WHERE form_date_synced IS NULL");
+
+      if (countResult.isNotEmpty) {
+        int count = countResult[0]['count'];
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (err) {
+      throw ("Could Not Get Unsynced Forms Count: ${err.toString()}");
+    }
+  }
+
+  Future<int> getUnsyncedCparaFormCountDistinctByCareGiver() async{
+    final db = await instance.database;
+    try {
+      List<Map<String, dynamic>> countResult = await db.rawQuery(
+          "SELECT COUNT(DISTINCT caregiver_cpims_id) AS count FROM Form WHERE form_date_synced IS NULL");
 
       if (countResult.isNotEmpty) {
         int count = countResult[0]['count'];
@@ -1839,7 +1934,8 @@ class CasePlan {
     ovcCpimsId,
     dateOfEvent,
     formDateSynced,
-    uuid
+    uuid,
+    caregiverId,
   ];
 
   static const String id = 'id';
@@ -1847,6 +1943,7 @@ class CasePlan {
   static const String dateOfEvent = 'date_of_event';
   static const String formDateSynced = 'form_date_synced';
   static const String uuid = 'uuid';
+  static const String caregiverId = 'caregiver_cpims_id';
 }
 
 class CasePlanServices {

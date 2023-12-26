@@ -3,6 +3,7 @@ import '../utils/app_form_metadata.dart';
 class CasePlanModel {
   final int? id;
   late final String ovcCpimsId;
+  late final String caregiverCpimsId;
   late final String dateOfEvent;
   late final List<CasePlanServiceModel> services;
   final AppFormMetaData appFormMetaData;
@@ -11,6 +12,7 @@ class CasePlanModel {
     required this.ovcCpimsId,
     required this.dateOfEvent,
     required this.services,
+    required  this.caregiverCpimsId,
     this.id,
     this.appFormMetaData = const AppFormMetaData(
       formId: '',
@@ -32,6 +34,7 @@ class CasePlanModel {
     return CasePlanModel(
       id: json['id'],
       ovcCpimsId: json['ovc_cpims_id'] as String? ?? '',
+      caregiverCpimsId: json['caregiver_cpims_id'] as String? ?? '',
       // Handle possible null value
       dateOfEvent: json['date_of_event'] as String? ?? '',
       // Handle possible null value
@@ -53,6 +56,7 @@ class CasePlanModel {
     return {
       'id': id,
       'ovc_cpims_id': ovcCpimsId,
+      'caregiver_cpims_id': caregiverCpimsId,
       'date_of_event': dateOfEvent,
       'services': services.map((service) => service.toJson()).toList(),
       'app_form_metadata': appFormMetaData.toJson(),

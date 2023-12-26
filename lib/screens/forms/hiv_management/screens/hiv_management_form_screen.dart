@@ -51,9 +51,14 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
     try {
       String formUUid = const Uuid().v4();
       await Provider.of<HIVManagementFormProvider>(context, listen: false)
-          .submitHIVManagementForm(widget.caseLoad.cpimsId, formUUid,
-              startInterviewTime, "HIV Management Form",
-              context: context);
+          .submitHIVManagementForm(
+          widget.caseLoad.cpimsId,
+          widget.caseLoad.caregiverCpimsId,
+          formUUid,
+          startInterviewTime,
+          "HIV Management Form",
+          context: context
+      );
 
       if (context.mounted) {
         context.read<StatsProvider>().updateCparaFormStats();
@@ -195,15 +200,19 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                         isLoading = false;
                                       });
 
-                                      HIVManagementFormProvider
-                                          hivManagementFormProvider = Provider
-                                              .of<HIVManagementFormProvider>(
-                                        context,
-                                        listen: false,
-                                      );
-                                      hivManagementFormProvider.clearForms();
-                                      context.read<StatsProvider>().updateFormStats();
-                                      Navigator.pop(context);
+                                     if(context.mounted){
+                                       HIVManagementFormProvider
+                                       hivManagementFormProvider = Provider
+                                           .of<HIVManagementFormProvider>(
+                                         context,
+                                         listen: false,
+                                       );
+                                       hivManagementFormProvider.clearForms();
+                                       context.read<StatsProvider>().updateFormStats();
+                                       context.read<StatsProvider>().updateHmfStats();
+                                       context.read<StatsProvider>().updateHmfDistinctStats();
+                                       Navigator.pop(context);
+                                     }
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(

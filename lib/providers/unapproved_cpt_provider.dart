@@ -94,6 +94,7 @@ class UnapprovedCptProvider {
         }
 
         unapprovedCasePlanList.add(UnapprovedCasePlanModel(
+          caregiverCpimsId: result['caregiver_cpims_id'] as String,
           id: result['id'] as int,
           ovcCpimsId: result['ovc_cpims_id'] as String,
           dateOfEvent: result['date_of_event'] as String,

@@ -94,9 +94,12 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
             isLoading = false;
           });
           context.read<StatsProvider>().updateFormStats();
+          context.read<StatsProvider>().updateHrsStats();
+          context.read<StatsProvider>().updateHrsDistinctStats();
           context.read<HIVAssessmentProvider>().clearOvcAge();
 
-          Get.snackbar("HRS Form submitted", "HRS Form submitted successfully",
+          Get.snackbar(
+              "HRS Form submitted", "HRS Form submitted successfully",
               snackPosition: SnackPosition.TOP,
               backgroundColor: Colors.green,
               colorText: Colors.white);

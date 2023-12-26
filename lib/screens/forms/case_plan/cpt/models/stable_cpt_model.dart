@@ -3,12 +3,15 @@ import '../../../../../Models/caseplan_form_model.dart';
 
 class CasePlanStableModel {
   late final int? id;
+  late final String? caregiverCpimsId;
   late final String? ovcCpimsId;
   late final String? dateOfEvent;
   late final List<CasePlanServiceStableModel>? services;
 
   CasePlanStableModel(
-      {this.ovcCpimsId, this.dateOfEvent, this.services, this.id});
+      {this.ovcCpimsId,
+      this.caregiverCpimsId,
+        this.dateOfEvent, this.services, this.id});
 
   factory CasePlanStableModel.fromJson(Map<String, dynamic> json) {
     List<CasePlanServiceStableModel> services = [];
@@ -21,6 +24,7 @@ class CasePlanStableModel {
 
     return CasePlanStableModel(
       id: json['id'],
+      caregiverCpimsId: json['caregiver_cpims_id'] as String? ?? '',
       ovcCpimsId: json['ovc_cpims_id'] as String,
       dateOfEvent: json['date_of_event'] as String,
       services: services,
@@ -32,6 +36,7 @@ class CasePlanStableModel {
       'id': id,
       'ovc_cpims_id': ovcCpimsId,
       'date_of_event': dateOfEvent,
+      'caregiver_cpims_id': caregiverCpimsId,
       'services': services?.map((service) => service.toJson()).toList(),
     };
   }
@@ -41,17 +46,20 @@ class CasePlanStableModel {
     return 'CasePlanModel {'
         'ovcCpimsId: $ovcCpimsId, '
         'dateOfEvent: $dateOfEvent, '
-        'services: $services'
+        'services: $services, '
+        'caregiverCpimsId: $caregiverCpimsId, '
         '}';
   }
 
   CasePlanStableModel copyWith({
     String? ovcCpimsId,
     String? dateOfEvent,
+    String? caregiverCpimsId,
     List<CasePlanServiceStableModel>? services,
     int? id,
   }) {
     return CasePlanStableModel(
+      caregiverCpimsId: caregiverCpimsId ?? this.caregiverCpimsId,
       ovcCpimsId: ovcCpimsId ?? this.ovcCpimsId,
       dateOfEvent: dateOfEvent ?? this.dateOfEvent,
       services: services ?? this.services,
@@ -295,6 +303,7 @@ CasePlanModel mapCasePlanStableToCasePlan(CasePlanStableModel stableModel) {
 
   return CasePlanModel(
     id: stableModel.id,
+    caregiverCpimsId: stableModel.caregiverCpimsId ?? "",
     ovcCpimsId: stableModel.ovcCpimsId ?? "",
     dateOfEvent: stableModel.dateOfEvent ?? "",
     services: services,

@@ -261,6 +261,9 @@ class _FomOneAState extends State<FomOneA> {
                                                 .read<StatsProvider>()
                                                 .updateFormOneAStats();
                                             context
+                                                .read<StatsProvider>()
+                                                .updateFormOneADistinctStats();
+                                            context
                                                 .read<AppMetaDataProvider>()
                                                 .clearFormMetaData();
                                           }

@@ -3,12 +3,15 @@ import '../../../../../Models/caseplan_form_model.dart';
 
 class CasePlanSafeModel {
   late final int? id;
+  late final String? caregiverCpimsId;
   late final String? ovcCpimsId;
   late final String? dateOfEvent;
   late final List<CasePlanServiceSafeModel>? services;
 
   CasePlanSafeModel(
-      {this.ovcCpimsId, this.dateOfEvent, this.services, this.id});
+      {this.ovcCpimsId,
+      this.caregiverCpimsId,
+        this.dateOfEvent, this.services, this.id});
 
   factory CasePlanSafeModel.fromJson(Map<String, dynamic> json) {
     List<CasePlanServiceSafeModel> services = [];
@@ -21,6 +24,7 @@ class CasePlanSafeModel {
 
     return CasePlanSafeModel(
       id: json['id'],
+      caregiverCpimsId: json['caregiver_cpims_id'] as String? ?? '',
       ovcCpimsId: json['ovc_cpims_id'] as String,
       dateOfEvent: json['date_of_event'] as String,
       services: services,
@@ -30,6 +34,7 @@ class CasePlanSafeModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'caregiver_cpims_id': caregiverCpimsId,
       'ovc_cpims_id': ovcCpimsId,
       'date_of_event': dateOfEvent,
       'services': services?.map((service) => service.toJson()).toList(),
@@ -41,17 +46,20 @@ class CasePlanSafeModel {
     return 'CasePlanModel {'
         'ovcCpimsId: $ovcCpimsId, '
         'dateOfEvent: $dateOfEvent, '
-        'services: $services'
+        'services: $services, '
+        'caregiverCpimsId: $caregiverCpimsId, '
         '}';
   }
 
   CasePlanSafeModel copyWith({
     String? ovcCpimsId,
+    String? caregiverCpimsId,
     String? dateOfEvent,
     List<CasePlanServiceSafeModel>? services,
     int? id,
   }) {
     return CasePlanSafeModel(
+      caregiverCpimsId: caregiverCpimsId ?? this.caregiverCpimsId,
       ovcCpimsId: ovcCpimsId ?? this.ovcCpimsId,
       dateOfEvent: dateOfEvent ?? this.dateOfEvent,
       services: services ?? this.services,
@@ -295,6 +303,7 @@ CasePlanModel mapCasePlanSafeToCasePlan(CasePlanSafeModel safeModel) {
 
   return CasePlanModel(
     id: safeModel.id,
+    caregiverCpimsId: safeModel.caregiverCpimsId ?? "",
     ovcCpimsId: safeModel.ovcCpimsId ?? "",
     dateOfEvent: safeModel.dateOfEvent ?? "",
     services: services,

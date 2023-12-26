@@ -111,6 +111,7 @@ class HIVAssessmentProvider with ChangeNotifier {
       String formUuid = const Uuid().v4();
       await LocalDb.instance.insertHRSData(
           caseLoadModel.cpimsId!,
+          caseLoadModel.caregiverCpimsId!,
           _hivCurrentStatusModel,
           _hivRiskAssessmentModel,
           _progressMonitoringModel,

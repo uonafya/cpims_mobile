@@ -8,6 +8,12 @@ class StatisticsItem extends StatelessWidget {
       required this.color,
       required this.secondaryColor,
       required this.form1ACount,
+      required this.formoneasummary,
+      required this.formonebsummary,
+      required this.cparaSummary,
+      required this.caseplanSummary,
+      required this.hrsSummary,
+      required this.hmfSummary,
       required this.form1BCount,
       required this.cpaCount,
       required this.cparaCount,
@@ -19,16 +25,29 @@ class StatisticsItem extends StatelessWidget {
   final IconData icon;
   final Color color;
   final Color secondaryColor;
-  final int form1ACount;
-  final int form1BCount;
-  final int cpaCount;
-  final int cparaCount;
-  final int hrsCount;
-  final int hmfCount;
+  final String form1ACount;
+  final String formoneasummary;
+  final String formonebsummary;
+  final String cparaSummary;
+  final String caseplanSummary;
+  final String hrsSummary;
+  final String hmfSummary;
+  final String form1BCount;
+  final String cpaCount;
+  final String cparaCount;
+  final String hrsCount;
+  final String hmfCount;
   final VoidCallback onClick;
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('form1ACount GER: $form1ACount');
+    debugPrint('form1BCount GER: $form1BCount');
+    debugPrint('formoneadtict GER: $formoneasummary');
+    debugPrint('cpaCount GER: $cpaCount');
+    debugPrint('cparaCount GER: $cparaCount');
+    debugPrint('hrsCount GER: $hrsCount');
+    debugPrint('hmfCount GER: $hmfCount');
     return GestureDetector(
       onTap: () {
         onClick();
@@ -59,7 +78,7 @@ class StatisticsItem extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        (form1ACount + form1BCount + cpaCount + cparaCount+hrsCount+hmfCount)
+                        (int.parse(form1ACount) + int.parse(form1BCount) + int.parse(cpaCount) + int.parse(cparaCount)+int.parse(hrsCount)+int.parse(hmfCount))
                             .toString(),
                         style: const TextStyle(
                           fontSize: 24,
@@ -71,7 +90,7 @@ class StatisticsItem extends StatelessWidget {
                       ),
                       Row(children: [
                         Text(
-                          "Form 1A ($form1ACount)",
+                          "Form 1A ($formoneasummary)",
                           style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,
@@ -79,28 +98,7 @@ class StatisticsItem extends StatelessWidget {
                         ),
                         const Spacer(),
                         Text(
-                          "CPARA ($cparaCount)",
-                          style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        const Spacer(),
-                      ]),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(children: [
-                        Text(
-                          "Form 1B ($form1BCount)",
-                          style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        const Spacer(),
-                        Text(
-                          "CPT ($cpaCount)",
+                          "CPARA ($cparaSummary)",
                           style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,
@@ -113,7 +111,7 @@ class StatisticsItem extends StatelessWidget {
                       ),
                       Row(children: [
                         Text(
-                          "HRS Form ($hrsCount)",
+                          "Form 1B ($formonebsummary)",
                           style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,
@@ -121,7 +119,28 @@ class StatisticsItem extends StatelessWidget {
                         ),
                         const Spacer(),
                         Text(
-                          "HMF Form ($hmfCount)",
+                          "CPT ($caseplanSummary)",
+                          style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        const Spacer(),
+                      ]),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(children: [
+                        Text(
+                          "HRS Form ($hrsSummary)",
+                          style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        const Spacer(),
+                        Text(
+                          "HMF Form ($hmfSummary)",
                           style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,

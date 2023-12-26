@@ -284,6 +284,9 @@ class _Form1BScreen extends State<Form1BScreen> {
                                                     .read<StatsProvider>()
                                                     .updateFormOneBStats();
                                                 context
+                                                    .read<StatsProvider>()
+                                                    .updateFormOneBDistinctStats();
+                                                context
                                                     .read<AppMetaDataProvider>()
                                                     .clearFormMetaData();
                                               }

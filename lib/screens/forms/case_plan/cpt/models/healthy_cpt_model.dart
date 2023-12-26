@@ -4,11 +4,14 @@ import '../../../../../Models/caseplan_form_model.dart';
 class CasePlanHealthyModel {
   late final int? id;
   late final String? ovcCpimsId;
+  late final String? caregiverCpimsId;
   late final String? dateOfEvent;
   late final List<CasePlanServiceHealthyModel>? services;
 
   CasePlanHealthyModel(
-      {this.ovcCpimsId, this.dateOfEvent, this.services, this.id});
+      {this.ovcCpimsId,
+      this.caregiverCpimsId,
+        this.dateOfEvent, this.services, this.id});
 
   factory CasePlanHealthyModel.fromJson(Map<String, dynamic> json) {
     List<CasePlanServiceHealthyModel> services = [];
@@ -21,6 +24,7 @@ class CasePlanHealthyModel {
 
     return CasePlanHealthyModel(
       id: json['id'],
+      caregiverCpimsId: json['caregiver_cpims_id'] as String? ?? '',
       ovcCpimsId: json['ovc_cpims_id'] as String,
       dateOfEvent: json['date_of_event'] as String,
       services: services,
@@ -30,6 +34,7 @@ class CasePlanHealthyModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'caregiver_cpims_id': caregiverCpimsId,
       'ovc_cpims_id': ovcCpimsId,
       'date_of_event': dateOfEvent,
       'services': services?.map((service) => service.toJson()).toList(),
@@ -41,17 +46,20 @@ class CasePlanHealthyModel {
     return 'CasePlanModel {'
         'ovcCpimsId: $ovcCpimsId, '
         'dateOfEvent: $dateOfEvent, '
-        'services: $services'
+        'services: $services, '
+        'caregiverCpimsId: $caregiverCpimsId, '
         '}';
   }
 
   CasePlanHealthyModel copyWith({
     String? ovcCpimsId,
+    String? caregiverCpimsId,
     String? dateOfEvent,
     List<CasePlanServiceHealthyModel>? services,
     int? id,
   }) {
     return CasePlanHealthyModel(
+      caregiverCpimsId: caregiverCpimsId ?? this.caregiverCpimsId,
       ovcCpimsId: ovcCpimsId ?? this.ovcCpimsId,
       dateOfEvent: dateOfEvent ?? this.dateOfEvent,
       services: services ?? this.services,
@@ -298,6 +306,7 @@ CasePlanModel mapCasePlanHealthyToCasePlan(CasePlanHealthyModel healthyModel) {
 
   return CasePlanModel(
     id: healthyModel.id,
+    caregiverCpimsId: healthyModel.caregiverCpimsId ?? "",
     ovcCpimsId: healthyModel.ovcCpimsId ?? "",
     dateOfEvent: healthyModel.dateOfEvent ?? "",
     services: services,
