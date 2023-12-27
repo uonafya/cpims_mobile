@@ -388,7 +388,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                             startTime: startTime,
                                             isRejected: widget.isRejected,
                                             signature: blob,
-                                            careProviderId: ovcpmisid);
+                                            careProviderId: ovcpmisid,
+                                            caregiverCpimsId: widget.caseLoadModel.caregiverCpimsId ?? "",
+                                        );
 
                                         if (context.mounted) {
                                           if(widget.isRejected){
@@ -398,6 +400,9 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
                                           context
                                               .read<StatsProvider>()
                                               .updateCparaFormStats();
+                                          context
+                                              .read<StatsProvider>()
+                                              .updateCparaDistinctStats();
                                            //navigate back
                                           Get.snackbar(
                                             'Success',

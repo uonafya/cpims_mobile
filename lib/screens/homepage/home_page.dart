@@ -394,7 +394,7 @@ class _HomepageState extends State<Homepage> {
                       caseplanSummary: "${formStats.casePlanDistinctCount} / ${formStats.cptCount}",
                       hrsSummary: "${formStats.hrsDistinctCount} / ${formStats.hrsCount}",
                       hmfSummary: "${formStats.hmfDistinctCount} / ${formStats.hmfCount}",
-                      cparaSummary: "0 / ${formStats.cparaCount}",
+                      cparaSummary: "${formStats.cparaDistinctCount} / ${formStats.cparaCount}",
                       form1ACount: "${formStats.formOneACount}",
                       form1BCount: "${formStats.formOneBCount}",
                       cpaCount: "${formStats.cptCount}",

@@ -90,6 +90,23 @@ class Form1Service {
     }
     return 0; // Return 0 if there is an error.
   }
+  static countCparaUnsyncedFormsDistinct() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.getUnsyncedCparaFormCountDistinct();
+      debugPrint("Form count: $count");
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error on getFormCount: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
+  }
 
   static ovcSubCount() async {
     final db = LocalDb.instance;
@@ -233,6 +250,11 @@ class Form1Service {
   //count cpara forms
   static Future<int?> getCountAllFormCpara() async {
     return await countCparaUnsyncedForms();
+  }
+
+  //count cpara forms
+  static Future<int?> getCountAllFormCparaDistinct() async {
+    return await countCparaUnsyncedFormsDistinct();
   }
 
   // send form to server

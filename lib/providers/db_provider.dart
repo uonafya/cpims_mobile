@@ -327,12 +327,15 @@ class LocalDb {
   }
 
   Future<void> insertCparaData(
-      {required CparaModel cparaModelDB,
+      {
+        required CparaModel cparaModelDB,
       required String ovcId,
       required String startTime,
         required Uint8List signature,
       required bool isRejected,
-      required String careProviderId}) async {
+      required String careProviderId,
+        required String caregiverCpimsId
+      }) async {
     try {
     final db = await instance.database;
     var idForm = 0;
@@ -346,7 +349,7 @@ class LocalDb {
         startTime,
         'cpara',
       );
-      var formUUID = await cparaModelDB.createForm(db, selectedDate, cparaModelDB.uuid, signature, isRejected);
+      var formUUID = await cparaModelDB.createForm(db, selectedDate, cparaModelDB.uuid, signature, isRejected,caregiverCpimsId);
       var formData = await cparaModelDB.getLatestFormID(db);
       var formDate = formData.formDate;
       var formDateString = formDate.toString().split(' ')[0];
@@ -366,7 +369,7 @@ class LocalDb {
         'cpara',
       );
       // Create form
-      cparaModelDB.createForm(db, selectedDate, formUUID, signature, isRejected)
+      cparaModelDB.createForm(db, selectedDate, formUUID, signature, isRejected, caregiverCpimsId)
           .then((formUUID) {
         // Get formID
         cparaModelDB.getLatestFormID(db).then((formData) {
@@ -529,7 +532,8 @@ class LocalDb {
         uuid TEXT,
         form_date_synced TEXT NULL,
         is_rejected INTEGER DEFAULT 0,
-        signature BLOB
+        signature BLOB,
+        caregiver_cpims_id TEXT
       )
     ''');
     } catch (err) {
@@ -1747,6 +1751,21 @@ class LocalDb {
       List<Map<String, dynamic>> countResult = await db.rawQuery(
           "SELECT COUNT(id) AS count FROM Form WHERE form_date_synced IS NULL");
 
+      if (countResult.isNotEmpty) {
+        int count = countResult[0]['count'];
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (err) {
+      throw ("Could Not Get Unsynced Forms Count: ${err.toString()}");
+    }
+  }
+  Future<int> getUnsyncedCparaFormCountDistinct() async {
+    final db = await instance.database;
+    try {
+      List<Map<String, dynamic>> countResult = await db.rawQuery(
+          "SELECT COUNT(DISTINCT caregiver_cpims_id) AS count FROM Form WHERE form_date_synced IS NULL");
       if (countResult.isNotEmpty) {
         int count = countResult[0]['count'];
         return count;

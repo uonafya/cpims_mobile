@@ -27,7 +27,7 @@ class StatsProvider extends ChangeNotifier {
     hrsCount = await CasePlanService.getCountOfHRSForms() ?? 0;
     hmfCount = await CasePlanService.getCountOfHmfForms() ?? 0;
     casePlanDistinctCount = await CasePlanService.getCaseplanUnsyncedCountDistict() ?? 0;
-    // cparaDistinctCount = await CasePlanService.getCountOfCparaFormsDistinct() ?? 0;
+    cparaDistinctCount = await Form1Service.getCountAllFormCparaDistinct() ?? 0;
     hrsDistinctCount = await CasePlanService.getCountOfHRSFormsDistinct() ?? 0;
     hmfDistinctCount = await CasePlanService.getCountOfHmfFormsDistinct() ?? 0;
 
@@ -79,11 +79,11 @@ class StatsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void updateCparaDistinctStats() async {
-  //   cparaDistinctCount = await CasePlanService.getCountOfCparaFormsDistinct() ?? 0;
-  //   notifyListeners();
-  // }
-  //
+  void updateCparaDistinctStats() async {
+    cparaDistinctCount = await Form1Service.getCountAllFormCparaDistinct() ?? 0;
+    notifyListeners();
+  }
+
   void updateHrsDistinctStats() async {
     hrsDistinctCount = await CasePlanService.getCountOfHRSFormsDistinct() ?? 0;
     notifyListeners();
