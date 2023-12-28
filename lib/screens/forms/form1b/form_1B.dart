@@ -337,61 +337,44 @@ class _Form1BScreen extends State<Form1BScreen> {
                         const SizedBox(
                           height: 30,
                         ),
-                        // Row(children: [
-                        //   Expanded(
-                        //     child: CustomButton(
-                        //       text: "Submit",
-                        //       onTap: () async {
-                        //         bool isFormSaved = await form1bProvider
-                        //             .saveForm1bData(form1bProvider.formData);
-                        //         if (isFormSaved == true) {
-                        //           CustomToastWidget.showToast(
-                        //               "Form saved successfully");
-                        //           setState(() {
-                        //             selectedStep = 0;
-                        //           });
-                        //         }
-                        //       },
-                        //     ),
-                        //   )
-                        // ]),
-                        // const SizedBox(
-                        //   height: 15,
-                        // ),
-                        // Row(children: [
-                        //   Expanded(
-                        //     child: CustomButton(
-                        //         text: 'Cancel',
-                        //         color: kTextGrey,
-                        //         onTap: () {
-                        //           // Navigator.of(context).pop();
-                        //           form1bProvider.fetchSavedDataFromDb();
-                        //         }),
-                        //   )
-                        // ]),
-                        const SizedBox(height: 20),
-                        GestureDetector(
-                          onTap: () {
-                            // TODO Handle past assessments
-                            // Get.to(() => HistoryForm1A(
-                            //     caseLoadModel: widget.caseLoadModel));
-                          },
-                          child: const Row(
-                            children: [
-                              Text(
-                                'Past Assessments',
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios_rounded,
-                                size: 15,
-                              )
-                            ],
-                          ),
+                        Row(
+                          children: [
+                            TextButton(
+                                onPressed: () {
+                                  Provider.of<Form1bProvider>(context,
+                                      listen: false)
+                                      .resetFormData();
+                                  Navigator.pop(context);
+                                },
+                                child: const Text(
+                                  "Clear Form",
+                                  style: TextStyle(color: Colors.red),
+                                )),
+                          ],
                         ),
+                        const SizedBox(height: 20),
+                        // GestureDetector(
+                        //   onTap: () {
+                        //     // TODO Handle past assessments
+                        //     // Get.to(() => HistoryForm1A(
+                        //     //     caseLoadModel: widget.caseLoadModel));
+                        //   },
+                        //   child: const Row(
+                        //     children: [
+                        //       Text(
+                        //         'Past Assessments',
+                        //         style: TextStyle(color: Colors.blue),
+                        //       ),
+                        //       SizedBox(
+                        //         width: 10,
+                        //       ),
+                        //       Icon(
+                        //         Icons.arrow_forward_ios_rounded,
+                        //         size: 15,
+                        //       )
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),

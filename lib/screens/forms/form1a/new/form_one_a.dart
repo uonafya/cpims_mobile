@@ -314,6 +314,21 @@ class _FomOneAState extends State<FomOneA> {
                       const SizedBox(
                         height: 30,
                       ),
+                      Row(
+                        children: [
+                          TextButton(
+                              onPressed: () {
+                                Provider.of<Form1AProviderNew>(context,
+                                    listen: false)
+                                    .resetFormData();
+                                Navigator.pop(context);
+                              },
+                              child: const Text(
+                                "Clear Form",
+                                style: TextStyle(color: Colors.red),
+                              )),
+                        ],
+                      ),
 
                       // ... your other widgets
                     ],
