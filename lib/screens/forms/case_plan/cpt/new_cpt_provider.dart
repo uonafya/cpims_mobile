@@ -159,4 +159,73 @@ class CptProvider extends ChangeNotifier {
         .removeWhere((element) => element.goalId == formData.goalId);
     notifyListeners();
   }
+
+  void updateCasePlanModel(CasePlanModel casePlanModel) {
+    this.casePlanModel = casePlanModel;
+    notifyListeners();
+  }
+
+  void updateCaseLoadModel(CaseLoadModel caseLoadModel) {
+    this.caseLoadModel = caseLoadModel;
+    notifyListeners();
+  }
+
+  void updateCasePlanHealthyModel(CasePlanHealthyModel casePlanHealthyModel) {
+    this.casePlanHealthyModel = casePlanHealthyModel;
+    notifyListeners();
+  }
+
+  void resetForm() {
+    // Reset all properties to their initial values
+    csAllDomains = allDomains;
+    csDomainList = casePlanDomainList;
+    csGoalList = casePlanGoalList;
+    csNeedsList = casePlanNeedsList;
+    csPriorityActionList = casePlanPriorityActionList;
+    csServicesList = casePlanServiceList;
+    cpGoalsHealth = cp_goals_health;
+    cpGoalsStable = cp_goals_stable;
+    cpGoalsSchool = cp_goal_school;
+    cpGoalsSafe = cp_goal_safe;
+    cpGapsHealth = cp_gaps_health;
+    cpGapsStable = cp_gaps_stable;
+    cpGapssSchool = cp_gaps_school;
+    cpGapssSafe = cp_gaps_safe;
+    cpPrioritiesHealth = cp_priorities_health;
+    cpPrioritiesStable = cp_priorities_stable;
+    cpPrioritiesSchool = cp_priorities_school;
+    cpPrioritiesSafe = cp_priorities_safe;
+    cpServicesHealth = cp_services_health;
+    cpServicesStable = cp_services_stable;
+    cpServicesSchool = cp_services_school;
+    cpServicesSafe = cp_services_safe;
+    csPersonsResponsibleList = cp_responsible;
+    csResultsList = casePlanResultsOptions;
+
+    casePlanHealthyModel = null;
+    casePlanSafeModel = null;
+    casePlanStableModel = null;
+    casePlanschooledModel = null;
+    cptSafeFormData = null;
+    cptStableFormData = null;
+    cptHealthFormData = null;
+    cptschooledFormData = null;
+    caseLoadModel = null;
+
+    servicesList.clear();
+
+    cptHealthFormDataList.clear();
+    cptSafeFormDataList.clear();
+    cptStableFormDataList.clear();
+    cptschooledFormDataList.clear();
+
+    casePlanModel = CasePlanModel(
+      ovcCpimsId: '',
+      dateOfEvent: '',
+      caregiverCpimsId: '',
+      services: [],
+    );
+    notifyListeners();
+  }
+
 }

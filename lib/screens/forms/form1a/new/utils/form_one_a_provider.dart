@@ -164,7 +164,7 @@ class Form1AProviderNew extends ChangeNotifier {
       criticalEventsList.add(entry);
     }
 
-    String formUUID = unapprovedForm1?.id ?? const Uuid().v4();
+    String formUUID = unapprovedForm1?.formUuid ?? const Uuid().v4();
 
     AppFormMetaData appFormMetaData = AppFormMetaData(
       formId: formUUID,
@@ -181,7 +181,7 @@ class Form1AProviderNew extends ChangeNotifier {
         dateOfEvent: finalServicesFormData.date_of_event,
         services: servicesList,
         criticalEvents: criticalEventsList,
-        id: formUUID,
+        formUuid: formUUID,
       );
       String data = jsonEncode(toDbData);
       if (kDebugMode) {

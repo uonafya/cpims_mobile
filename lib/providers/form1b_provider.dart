@@ -153,7 +153,7 @@ class Form1bProvider extends ChangeNotifier {
       criticalEventsList.add(entry);
     }
 
-    String formUuid = unapprovedForm1?.id ?? const Uuid().v4();
+    String formUuid = unapprovedForm1?.formUuid ?? const Uuid().v4();
     AppFormMetaData appFormMetaData = AppFormMetaData(
       formType: "form1b",
       formId: formUuid,
@@ -164,7 +164,7 @@ class Form1bProvider extends ChangeNotifier {
 
     if (!(finalServicesFormData.date_of_event == '')) {
       Form1DataModel toDbData = Form1DataModel(
-        id: formUuid,
+        formUuid: formUuid,
         ovcCpimsId: finalServicesFormData.ovc_cpims_id,
         caregiverCpimsId: finalServicesFormData.careGiverId,
         dateOfEvent: finalServicesFormData.date_of_event,

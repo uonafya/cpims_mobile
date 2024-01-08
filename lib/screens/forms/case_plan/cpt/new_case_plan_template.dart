@@ -314,6 +314,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
             if (context.mounted) {
               context.read<CptProvider>().clearProviderData();
               context.read<StatsProvider>().updateFormStats();
+
             }
             Get.snackbar(
               'Success',
@@ -327,6 +328,12 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
             if (context.mounted) {
               Navigator.pop(context);
             }
+            setState(() {
+              // Reset the list when the form is submitted
+              formSubmitted = true;
+            });
+
+            // setState(() {});
           } else {
             Get.snackbar(
               'Error',

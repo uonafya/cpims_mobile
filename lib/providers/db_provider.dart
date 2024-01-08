@@ -1101,7 +1101,7 @@ class LocalDb {
           'caregiver_cpims_id': formData.caregiverCpimsId,
           'form_type': formType,
           'form_date_synced': null,
-          'id': id,
+          'form_uuid': id,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -1220,7 +1220,7 @@ class LocalDb {
         );
 
         final AppFormMetaData appFormMetaData =
-            await getAppFormMetaData(form1row['id']);
+            await getAppFormMetaData(form1row['form_uuid']);
 
         // Create a new map that includes existing form1row data, services, critical_events, and ID
         Map<String, dynamic> updatedForm1Row = {
@@ -1233,12 +1233,12 @@ class LocalDb {
         // Add the updated map to the list
         updatedForm1Rows.add(updatedForm1Row);
       }
-      debugPrint("Updated form1 rows: $updatedForm1Rows");
+      debugPrint("Updated form1 rows HERE: $updatedForm1Rows");
 
       return updatedForm1Rows;
     } catch (e) {
       if (kDebugMode) {
-        print("Error querying form1 data: $e");
+        print("Error querying form1 data here: $e");
       }
       return [];
     }
@@ -1272,7 +1272,7 @@ class LocalDb {
         );
 
         final AppFormMetaData appFormMetaData =
-            await getAppFormMetaData(form1row['id']);
+            await getAppFormMetaData(form1row['form_uuid']);
 
         // Create a new map that includes existing form1row data, services, critical_events, and ID
         Map<String, dynamic> updatedForm1Row = {
@@ -2003,7 +2003,7 @@ class Form1 {
   ];
 
   static const String localId = "local_id";
-  static const String id = "id";
+  static const String id = "form_uuid";
   static const String formType = "form_type";
   static const String ovcCpimsId = "ovc_cpims_id";
   static const String dateOfEvent = 'date_of_event';

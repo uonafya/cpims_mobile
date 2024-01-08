@@ -42,13 +42,13 @@ class UnapprovedDataService {
         for (var map in jsonData) {
           final unapprovedForm1A = UnapprovedForm1DataModel.fromJson(map);
           db.insertUnapprovedForm1Data(_formType1A, unapprovedForm1A,
-              unapprovedForm1A.appFormMetaData, unapprovedForm1A.id);
+              unapprovedForm1A.appFormMetaData, unapprovedForm1A.formUuid);
         }
       } else if (endpoint == endpoints[1]) {
         for (var map in jsonData) {
           final unapprovedForm1B = UnapprovedForm1DataModel.fromJson(map);
           db.insertUnapprovedForm1Data(_formType1B, unapprovedForm1B,
-              unapprovedForm1B.appFormMetaData, unapprovedForm1B.id);
+              unapprovedForm1B.appFormMetaData, unapprovedForm1B.formUuid);
         }
       } else if (endpoint == endpoints[2]) {
         for (var map in cptJsonData) {

@@ -6,7 +6,7 @@ class UnapprovedForm1DataModel extends Form1DataModel {
 
   UnapprovedForm1DataModel({
     super.localId,
-    required super.id,
+    required super.formUuid,
     super.caregiverCpimsId = "",
     required super.ovcCpimsId,
     required super.dateOfEvent,
@@ -34,7 +34,7 @@ class UnapprovedForm1DataModel extends Form1DataModel {
 
     return UnapprovedForm1DataModel(
       localId: json['local_id'] as int?,
-      id: json['id'] as String,
+      formUuid: json['id'] as String,
       ovcCpimsId: json['ovc_cpims_id'].toString(),
       dateOfEvent: json['date_of_event'] as String,
       caregiverCpimsId: json['caregiver_cpims_id'] == null ? "N/A" : json['caregiver_cpims_id'].toString(),
@@ -61,6 +61,6 @@ class UnapprovedForm1DataModel extends Form1DataModel {
 
   @override
   String toString() {
-    return 'UnapprovedForm1DataModel{ovcCpimsId: $ovcCpimsId, date_of_event: $dateOfEvent, services: $services, criticalEvents: $criticalEvents, id: $id, message: $message}';
+    return 'UnapprovedForm1DataModel{ovcCpimsId: $ovcCpimsId, date_of_event: $dateOfEvent, services: $services, criticalEvents: $criticalEvents, id: $formUuid, message: $message}';
   }
 }

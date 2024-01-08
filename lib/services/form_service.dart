@@ -59,6 +59,7 @@ class Form1Service {
     final db = LocalDb.instance;
     try {
       List<Map<String, dynamic>> maps = await db.queryAllForm1Rows(formType);
+
       List<Form1DataModel> forms = [];
       for (var map in maps) {
         forms.add(Form1DataModel.fromJson(map));

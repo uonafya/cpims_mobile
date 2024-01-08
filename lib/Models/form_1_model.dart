@@ -4,7 +4,7 @@ import 'package:cpims_mobile/utils/app_form_metadata.dart';
 
 class Form1DataModel {
   final int? localId;
-  final String id;
+  final String formUuid;
   final String ovcCpimsId;
   final String caregiverCpimsId;
   final String dateOfEvent;
@@ -14,7 +14,7 @@ class Form1DataModel {
    String ? device_id ="";
 
   Form1DataModel({
-    required this.id,
+    required this.formUuid,
     this.localId,
     required this.ovcCpimsId,
     required this.caregiverCpimsId,
@@ -47,7 +47,7 @@ class Form1DataModel {
 
     return Form1DataModel(
       localId: json['local_id'] as int,
-      id: json['id'] as String,
+      formUuid: json['form_uuid'] as String,
       ovcCpimsId: json['ovc_cpims_id'] as String,
       caregiverCpimsId: json['caregiver_cpims_id'] as String,
       dateOfEvent: json['date_of_event'] as String,
@@ -62,7 +62,7 @@ class Form1DataModel {
     return {
       'ovc_cpims_id': ovcCpimsId,
       'caregiver_cpims_id': caregiverCpimsId,
-      'id': id,
+      'uuid': formUuid,
       'date_of_event': dateOfEvent,
       'services': services.map((service) => service.toJson()).toList(),
       'critical_events': criticalEvents.map((event) => event.toJson()).toList(),
@@ -75,7 +75,7 @@ class Form1DataModel {
     return {
       'ovc_cpims_id': ovcCpimsId,
       'caregiver_cpims_id': caregiverCpimsId,
-      'id': id,
+      'id': formUuid,
       'date_of_event': dateOfEvent,
       'services': services.map((service) => service.toMap()).toList(),
       'critical_events': criticalEvents.map((event) => event.toMap()).toList(),
@@ -86,7 +86,7 @@ class Form1DataModel {
   String toString() {
     return 'Form1DataModel{'
         'ovcCpimsId: $ovcCpimsId, caregiverCpimsId: $caregiverCpimsId,'
-        'date_of_event: $dateOfEvent, services: $services, criticalEvents: $criticalEvents},id: $id' ;
+        'date_of_event: $dateOfEvent, services: $services, criticalEvents: $criticalEvents},id: $formUuid' ;
   }
 }
 
