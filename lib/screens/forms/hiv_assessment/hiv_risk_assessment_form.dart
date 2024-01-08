@@ -86,7 +86,7 @@ class HIVRiskAssessmentModel {
         symptomsOfSTI == "Yes" ||
         ivDrugUser == "Yes";
 
-    return anyQuestionAnsweredYes ? "Yes" : "No";
+    return anyQuestionAnsweredYes ? "Yes" : "";
   }
 }
 
@@ -151,7 +151,6 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
     // anyQuestionAnsweredYes = false;
 
     age = context.read<HIVAssessmentProvider>().ovcAge;
-    debugPrint("age is of ovc is  $age");
   }
 
   @override
