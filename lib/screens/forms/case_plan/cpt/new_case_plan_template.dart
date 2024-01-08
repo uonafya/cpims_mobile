@@ -270,6 +270,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
           isLoading = true;
         });
         String? ovsId = widget.caseLoad.cpimsId!;
+        String? caregiverCpimsId = widget.caseLoad.caregiverCpimsId!;
         String formattedDate = currentDateOfCasePlan;
         if (formattedDate.isEmpty) {
           Get.snackbar(
@@ -289,6 +290,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
           Map<String, dynamic> payload = {
             'ovc_cpims_id': ovsId,
             'date_of_event': formattedDate,
+            'caregiver_cpims_id': caregiverCpimsId,
             'services': cptProvider.servicesList,
           };
           if (kDebugMode) {
