@@ -101,7 +101,11 @@ class CptProvider extends ChangeNotifier {
     cptHealthFormData = null;
     cptschooledFormData = null;
     caseLoadModel = null;
-    notifyListeners();
+    cptHealthFormDataList.clear();
+    cptSafeFormDataList.clear();
+    cptStableFormDataList.clear();
+    cptschooledFormDataList.clear();
+    // notifyListeners();
   }
 
   //Lists

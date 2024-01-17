@@ -309,11 +309,12 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
             startTimeOfInterview,
           );
           //provider clear
-
+// todo: if form is saved or not you are clearing the provider data is that okay?
           if (isFormSaved) {
             if (context.mounted) {
               context.read<CptProvider>().clearProviderData();
               context.read<StatsProvider>().updateFormStats();
+              // Provider.of<CptProvider>(context).clearProviderData();
 
             }
             Get.snackbar(
@@ -323,7 +324,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
               colorText: Colors.white,
             );
             //clear the provider data
-            cptProvider.clearProviderData();
+            // cptProvider.clearProviderData();
             //get back to the previous screen
             if (context.mounted) {
               Navigator.pop(context);
