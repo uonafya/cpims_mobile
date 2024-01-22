@@ -228,6 +228,20 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                         const SizedBox(
                           height: 30,
                         ),
+                        Row(
+                          children: [
+                            TextButton(
+                                onPressed: () {
+                                  Provider.of<CptProvider>(context, listen: false).clearProviderData();
+                                  context.read<CptProvider>().updateClearServicesList();
+                                  Navigator.pop(context);
+                                },
+                                child: const Text(
+                                  "Clear Form",
+                                  style: TextStyle(color: Colors.red),
+                                )),
+                          ],
+                        ),
                         ...List.generate(
                             getDomainItems(context, formSubmitted).length,
                             (index) =>
@@ -252,6 +266,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                           ),
                         ),
                       ],
+
                     ),
                   ),
                 ],
