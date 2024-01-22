@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../Models/case_load_model.dart';
 import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
+import '../../../../cpara/widgets/cpara_details_widget.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
 import '../models/schooled_cpt_model.dart';
 import '../new_cpt_provider.dart';
@@ -24,7 +26,7 @@ class SchooledCasePlanTemplate extends StatefulWidget {
 
 class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
   DateTime currentDateOfCasePlan = DateTime.now();
-  DateTime completionDate = DateTime.now();
+  String completionDate = "";
   String reasonForNotAchievingCasePlan = "";
   List<ValueItem> selectedGoalOptions = [];
   List<ValueItem> selectedNeedOptions = [];
@@ -145,7 +147,7 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
     }
 
     completionDate = cptSchooledFormData.completionDate != null
-        ? DateTime.parse(cptSchooledFormData.completionDate!)
+        ? cptSchooledFormData.completionDate!
         : completionDate;
 
     textEditingController.text = cptSchooledFormData.reasonId ?? "";
@@ -444,22 +446,31 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
           ],
         ),
         const SizedBox(height: 10),
-        CustomFormsDatePicker(
-          hintText: 'Select the date',
-          selectedDateTime: completionDate,
-          onDateSelected: (selectedDate) {
-            completionDate = selectedDate;
-            CptschooledFormData cptschooledFormData =
-                context.read<CptProvider>().cptschooledFormData ??
-                    CptschooledFormData();
-            context.read<CptProvider>().updateCptSchooledFormData(
-                cptschooledFormData.copyWith(
-                    completionDate: completionDate.toIso8601String()));
-            if (kDebugMode) {
-              print("The selected date was $completionDate");
-            }
-          },
-        ),
+        DateTextField(
+            allowFutureDates: true,
+            label: completionDate,
+            enabled: true,
+            identifier: DateTextFieldIdentifier.dateOfAssessment,
+            onDateSelected: (value) {
+              setState(() {
+                completionDate = DateFormat("yyyy-MM-dd").format(value!);
+                if (completionDate.isNotEmpty) {
+                  CptschooledFormData cptschooledFormData =
+                      context.read<CptProvider>().cptschooledFormData ??
+                          CptschooledFormData();
+                  context.read<CptProvider>().updateCptSchooledFormData(
+                      cptschooledFormData.copyWith(
+                          completionDate: completionDate));
+                } else {
+                  CptschooledFormData cptschooledFormData =
+                      context.read<CptProvider>().cptschooledFormData ??
+                          CptschooledFormData();
+                  context.read<CptProvider>().updateCptSchooledFormData(
+                      cptschooledFormData.copyWith(
+                          completionDate: ""));
+                }
+              });
+            }),
         const SizedBox(height: 10),
         const Row(
           children: [
@@ -477,6 +488,14 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
             CptschooledFormData cptSchooledFormData =
                 context.read<CptProvider>().cptschooledFormData ??
                     CptschooledFormData();
+            if(val.isEmpty){
+              CptschooledFormData updatedFormData = cptSchooledFormData.copyWith(
+                reasonId: "",
+              );
+              context
+                  .read<CptProvider>()
+                  .updateCptSchooledFormData(updatedFormData);
+            }
             CptschooledFormData updatedFormData = cptSchooledFormData.copyWith(
               reasonId: val,
             );

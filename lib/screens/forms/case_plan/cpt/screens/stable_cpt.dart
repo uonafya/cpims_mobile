@@ -3,11 +3,13 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
+import '../../../../cpara/widgets/cpara_details_widget.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
 import '../models/stable_cpt_model.dart';
 
@@ -23,7 +25,7 @@ class StableCasePlan extends StatefulWidget {
 
 class _StableCasePlanState extends State<StableCasePlan> {
   DateTime currentDateOfCasePlan = DateTime.now();
-  DateTime completionDate = DateTime.now();
+  String completionDate = "";
   String reasonForNotAchievingCasePlan = "";
   List<ValueItem> selectedGoalOptions = [];
   List<ValueItem> selectedNeedOptions = [];
@@ -153,7 +155,7 @@ class _StableCasePlanState extends State<StableCasePlan> {
     }
 
     completionDate = cptStableFormData.completionDate != null
-        ? DateTime.parse(cptStableFormData.completionDate!)
+        ? cptStableFormData.completionDate!
         : completionDate;
 
     textEditingController.text = cptStableFormData.reasonId ?? "";
@@ -385,7 +387,7 @@ class _StableCasePlanState extends State<StableCasePlan> {
                 selectedEvents.map((item) => item.value).toList();
             if (kDebugMode) {
               print(
-                "The selected responsible IDs are $selectedPersonResponsibleIds");
+                  "The selected responsible IDs are $selectedPersonResponsibleIds");
             }
           },
           selectedOptions: selectedPersonsResponsibleOptions,
@@ -448,22 +450,30 @@ class _StableCasePlanState extends State<StableCasePlan> {
           ],
         ),
         const SizedBox(height: 10),
-        CustomFormsDatePicker(
-          hintText: 'Select the date',
-          selectedDateTime: completionDate,
-          onDateSelected: (selectedDate) {
-            completionDate = selectedDate;
-            CptStableFormData cptStableFormData =
-                context.read<CptProvider>().cptStableFormData ??
-                    CptStableFormData();
-            context.read<CptProvider>().updateCptStableFormData(
-                cptStableFormData.copyWith(
-                    completionDate: completionDate.toIso8601String()));
-            if (kDebugMode) {
-              print("The selected date was $completionDate");
-            }
-          },
-        ),
+        DateTextField(
+            allowFutureDates: true,
+            label: completionDate,
+            enabled: true,
+            identifier: DateTextFieldIdentifier.dateOfAssessment,
+            onDateSelected: (value) {
+              setState(() {
+                completionDate = DateFormat("yyyy-MM-dd").format(value!);
+                if (completionDate.isNotEmpty) {
+                  CptStableFormData cptStableFormData =
+                      context.read<CptProvider>().cptStableFormData ??
+                          CptStableFormData();
+                  context.read<CptProvider>().updateCptStableFormData(
+                      cptStableFormData.copyWith(
+                          completionDate: completionDate));
+                } else {
+                  CptStableFormData cptStableFormData =
+                      context.read<CptProvider>().cptStableFormData ??
+                          CptStableFormData();
+                  context.read<CptProvider>().updateCptStableFormData(
+                      cptStableFormData.copyWith(completionDate: ""));
+                }
+              });
+            }),
         const SizedBox(height: 10),
         const Row(
           children: [
@@ -481,7 +491,14 @@ class _StableCasePlanState extends State<StableCasePlan> {
             CptStableFormData cptStableFormData =
                 context.read<CptProvider>().cptStableFormData ??
                     CptStableFormData();
-
+            if (val.isEmpty) {
+              CptStableFormData updatedFormData = cptStableFormData.copyWith(
+                reasonId: "",
+              );
+              context
+                  .read<CptProvider>()
+                  .updateCptStableFormData(updatedFormData);
+            }
             CptStableFormData updatedFormData = cptStableFormData.copyWith(
               reasonId: val,
             );

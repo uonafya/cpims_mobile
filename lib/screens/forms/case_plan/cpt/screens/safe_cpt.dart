@@ -2,12 +2,14 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/safe_cpt_model.d
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../Models/case_load_model.dart';
 import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
+import '../../../../cpara/widgets/cpara_details_widget.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
 import '../new_cpt_provider.dart';
 
@@ -22,7 +24,7 @@ class SafeCasePlan extends StatefulWidget {
 
 class _SafeCasePlanState extends State<SafeCasePlan> {
   DateTime currentDateOfCasePlan = DateTime.now();
-  DateTime completionDate = DateTime.now();
+  String completionDate = '';
   String reasonForNotAchievingCasePlan = "";
   List<ValueItem> selectedGoalOptions = [];
   List<ValueItem> selectedNeedOptions = [];
@@ -149,7 +151,7 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
     }
 
     completionDate = cptsafeFormData.completionDate != null
-        ? DateTime.parse(cptsafeFormData.completionDate!)
+        ? cptsafeFormData.completionDate!
         : completionDate;
 
     textEditingController.text = cptsafeFormData.reasonId ?? "";
@@ -366,7 +368,7 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
               selectedEvents.map((item) => item.value).toList();
           if (kDebugMode) {
             print(
-              "The selected responsible IDs are $selectedPersonResponsibleIds");
+                "The selected responsible IDs are $selectedPersonResponsibleIds");
           }
         },
         selectedOptions: selectedPersonsResponsibleOptions,
@@ -428,17 +430,29 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
         ],
       ),
       const SizedBox(height: 10),
-      CustomFormsDatePicker(
-        hintText: 'Select the date',
-        selectedDateTime: completionDate,
-        onDateSelected: (selectedDate) {
-          completionDate = selectedDate;
-          CptSafeFormData cptSafeFormData =
-              context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
-          context.read<CptProvider>().updateCptSafeFormData(cptSafeFormData
-              .copyWith(completionDate: completionDate.toIso8601String()));
-        },
-      ),
+      DateTextField(
+          allowFutureDates: true,
+          label: completionDate,
+          enabled: true,
+          identifier: DateTextFieldIdentifier.dateOfAssessment,
+          onDateSelected: (value) {
+            setState(() {
+              completionDate = DateFormat("yyyy-MM-dd").format(value!);
+              if (completionDate.isNotEmpty) {
+                CptSafeFormData cptSafeFormData =
+                    context.read<CptProvider>().cptSafeFormData ??
+                        CptSafeFormData();
+                context.read<CptProvider>().updateCptSafeFormData(
+                    cptSafeFormData.copyWith(completionDate: completionDate));
+              } else {
+                CptSafeFormData cptSafeFormData =
+                    context.read<CptProvider>().cptSafeFormData ??
+                        CptSafeFormData();
+                context.read<CptProvider>().updateCptSafeFormData(
+                    cptSafeFormData.copyWith(completionDate: ""));
+              }
+            });
+          }),
       const SizedBox(height: 10),
       const Row(
         children: [
@@ -455,7 +469,14 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
         onChanged: (val) {
           CptSafeFormData cptSafeFormData =
               context.read<CptProvider>().cptSafeFormData ?? CptSafeFormData();
-
+          if (val.isEmpty) {
+            CptSafeFormData updatedSafeFormData = cptSafeFormData.copyWith(
+              reasonId: "",
+            );
+            context
+                .read<CptProvider>()
+                .updateCptSafeFormData(updatedSafeFormData);
+          }
           CptSafeFormData updatedSafeFormData = cptSafeFormData.copyWith(
             reasonId: val,
           );
