@@ -296,7 +296,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
           if (kDebugMode) {
             print("Final payload is${jsonEncode(payload)}");
           }
-          print(payload);
+
           String formUuid = Uuid().v4();
           AppMetaDataProvider appMetaDataProvider =
               Provider.of<AppMetaDataProvider>(context, listen: false);
@@ -308,24 +308,18 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
             formUuid,
             startTimeOfInterview,
           );
-          //provider clear
-// todo: if form is saved or not you are clearing the provider data is that okay?
+
           if (isFormSaved) {
             if (context.mounted) {
-              context.read<CptProvider>().clearProviderData();
-              context.read<StatsProvider>().updateFormStats();
-              // Provider.of<CptProvider>(context).clearProviderData();
-
+              Provider.of<CptProvider>(context, listen: false).clearProviderData();
+              context.read<CptProvider>().updateClearServicesList();
+              Get.snackbar(
+                'Success',
+                'Successfully saved CasePlan form',
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+              );
             }
-            Get.snackbar(
-              'Success',
-              'Successfully saved CasePlan form',
-              backgroundColor: Colors.green,
-              colorText: Colors.white,
-            );
-            //clear the provider data
-            // cptProvider.clearProviderData();
-            //get back to the previous screen
             if (context.mounted) {
               Navigator.pop(context);
             }

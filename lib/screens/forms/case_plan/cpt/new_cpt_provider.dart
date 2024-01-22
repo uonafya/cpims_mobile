@@ -105,7 +105,7 @@ class CptProvider extends ChangeNotifier {
     cptSafeFormDataList.clear();
     cptStableFormDataList.clear();
     cptschooledFormDataList.clear();
-    // notifyListeners();
+    notifyListeners();
   }
 
   //Lists
@@ -179,6 +179,12 @@ class CptProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateClearServicesList() {
+    servicesList.clear();
+    notifyListeners();
+  }
+
+
   void resetForm() {
     // Reset all properties to their initial values
     csAllDomains = allDomains;
@@ -217,7 +223,6 @@ class CptProvider extends ChangeNotifier {
     caseLoadModel = null;
 
     servicesList.clear();
-
     cptHealthFormDataList.clear();
     cptSafeFormDataList.clear();
     cptStableFormDataList.clear();
