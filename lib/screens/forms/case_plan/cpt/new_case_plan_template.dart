@@ -247,24 +247,24 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                             (index) =>
                                 getDomainItems(context, formSubmitted)[index]),
                         const SizedBox(height: 20),
-                        GestureDetector(
-                          onTap: () {},
-                          child: const Row(
-                            children: [
-                              Text(
-                                'Past Assessments',
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios_rounded,
-                                size: 15,
-                              )
-                            ],
-                          ),
-                        ),
+                        // GestureDetector(
+                        //   onTap: () {},
+                        //   child: const Row(
+                        //     children: [
+                        //       Text(
+                        //         'Past Assessments',
+                        //         style: TextStyle(color: Colors.blue),
+                        //       ),
+                        //       SizedBox(
+                        //         width: 10,
+                        //       ),
+                        //       Icon(
+                        //         Icons.arrow_forward_ios_rounded,
+                        //         size: 15,
+                        //       )
+                        //     ],
+                        //   ),
+                        // ),
                       ],
 
                     ),
