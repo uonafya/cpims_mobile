@@ -166,22 +166,14 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                 option: convertingStringToRadioButtonOptions(
                         parentAcceptHivTesting),
                 optionSelected: (val) {
-                  parentAcceptHivTesting =
-                      convertingRadioButtonOptionsToString(val);
+                  parentAcceptHivTesting = convertingRadioButtonOptionsToString(val);
+                  if (parentAcceptHivTesting == "No") {
+                    parentAcceptHivTestingDate = "";
+                  }
                   handleOnFormSaved();
                 },
               ),
               if (formData.parentAcceptHivTesting == "Yes")
-                // DateTextField(
-                //   label: "Report Date",
-                //   enabled: true,
-                //   identifier: DateTextFieldIdentifier.dateOfAssessment,
-                //   onDateSelected: (val) {
-                //     parentAcceptHivTestingDate =
-                //         DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
-                //     handleOnFormSaved();
-                //   },
-                // ),
               DateTextField2(
                   label:
                   'Report Date',
@@ -199,22 +191,14 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                 isNaAvailable: false,
                 option:  convertingStringToRadioButtonOptions(formalReferralMade),
                 optionSelected: (val) {
-                  formalReferralMade =
-                      convertingRadioButtonOptionsToString(val);
+                  formalReferralMade = convertingRadioButtonOptionsToString(val);
+                  if (formalReferralMade == "No") {
+                    formalReferralMadeDate = "";
+                  }
                   handleOnFormSaved();
                 },
               ),
               if (formData.formalReferralMade == "Yes")
-                // DateTextField(
-                //   label: "Report Date",
-                //   enabled: true,
-                //   identifier: DateTextFieldIdentifier.dateOfAssessment,
-                //   onDateSelected: (val) {
-                //     formalReferralMadeDate =
-                //         DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
-                //     handleOnFormSaved();
-                //   },
-                // ),
               DateTextField2(
                   label:
                   'Report Date',
@@ -237,22 +221,14 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                 option: convertingStringToRadioButtonOptions(
                         formalReferralCompleted),
                 optionSelected: (val) {
-                  formalReferralCompleted =
-                      convertingRadioButtonOptionsToString(val);
+                  formalReferralCompleted = convertingRadioButtonOptionsToString(val);
+                  if (formalReferralCompleted == "No") {
+                    formalReferralCompletedDate = "";
+                  }
                   handleOnFormSaved();
                 },
               ),
               if (formData.formalReferralCompleted == "Yes")
-                // DateTextField(
-                //   label: "Report Date",
-                //   enabled: true,
-                //   identifier: DateTextFieldIdentifier.dateOfAssessment,
-                //   onDateSelected: (val) {
-                //     formalReferralCompletedDate =
-                //         DateFormat("yyyy-MM-dd").format(val ?? DateTime.now());
-                //     handleOnFormSaved();
-                //   },
-                // ),
               DateTextField2(
                   label:
                   'Report Date',
@@ -313,22 +289,14 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                     option: convertingStringToRadioButtonOptions(
                             referredForArt),
                     optionSelected: (val) {
-                      referredForArt =
-                          convertingRadioButtonOptionsToString(val);
+                      referredForArt = convertingRadioButtonOptionsToString(val);
+                      if (referredForArt == "No") {
+                        referredForArtDate = "";
+                      }
                       handleOnFormSaved();
                     },
                   ),
                   if (formData.referredForArt == "Yes")
-                    // DateTextField(
-                    //   label: "Report Date",
-                    //   enabled: true,
-                    //   identifier: DateTextFieldIdentifier.dateOfAssessment,
-                    //   onDateSelected: (val) {
-                    //     referredForArtDate = DateFormat("yyyy-MM-dd")
-                    //         .format(val ?? DateTime.now());
-                    //     handleOnFormSaved();
-                    //   },
-                    // ),
                   DateTextField2(
                       label:
                       'Report Date',
@@ -357,8 +325,10 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                     option: convertingStringToRadioButtonOptions(
                             artReferralCompleted),
                     optionSelected: (val) {
-                      artReferralCompleted =
-                          convertingRadioButtonOptionsToString(val);
+                      artReferralCompleted = convertingRadioButtonOptionsToString(val);
+                      if (artReferralCompleted == "No") {
+                        artReferralCompletedDate = "";
+                      }
                       handleOnFormSaved();
                     },
                   ),
