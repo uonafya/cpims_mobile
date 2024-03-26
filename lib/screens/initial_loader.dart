@@ -126,7 +126,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
               }
 
               // TODO Fetch unapproved data from server
-              // await UnapprovedDataService.fetchRemoteUnapprovedData(accessToken);
+              await UnapprovedDataService.fetchRemoteUnapprovedData(accessToken);
 
               // fetch unapproved data from local db
               final List<UnapprovedCparaModel> cparaRecords =

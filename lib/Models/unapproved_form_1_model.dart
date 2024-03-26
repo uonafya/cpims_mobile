@@ -34,7 +34,7 @@ class UnapprovedForm1DataModel extends Form1DataModel {
 
     return UnapprovedForm1DataModel(
       localId: json['local_id'] as int?,
-      formUuid: json['id'] as String,
+      formUuid: json['id'] == null ? "" : json['id'].toString(),
       ovcCpimsId: json['ovc_cpims_id'].toString(),
       dateOfEvent: json['date_of_event'] as String,
       caregiverCpimsId: json['caregiver_cpims_id'] == null ? "N/A" : json['caregiver_cpims_id'].toString(),
