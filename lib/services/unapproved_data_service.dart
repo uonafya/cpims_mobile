@@ -112,7 +112,7 @@ class UnapprovedDataService {
         await db.queryAllUnapprovedForm1Rows(_formType1A);
     List<UnapprovedForm1DataModel> unapprovedForm1Data = [];
     for (var map in maps) {
-      unapprovedForm1Data.add(UnapprovedForm1DataModel.fromJson(map));
+      unapprovedForm1Data.add(UnapprovedForm1DataModel.fromJsonUnApproved(map));
     }
     return unapprovedForm1Data;
   }

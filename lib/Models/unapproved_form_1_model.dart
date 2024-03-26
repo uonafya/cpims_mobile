@@ -45,6 +45,35 @@ class UnapprovedForm1DataModel extends Form1DataModel {
     );
   }
 
+  factory UnapprovedForm1DataModel.fromJsonUnApproved(Map<String, dynamic> json) {
+    List<Form1ServicesModel> services = [];
+    List<Form1CriticalEventsModel> criticalEvents = [];
+
+    if (json['services'] != null) {
+      for (var serviceJson in json['services']) {
+        services.add(Form1ServicesModel.fromJson(serviceJson));
+      }
+    }
+
+    if (json['critical_events'] != null) {
+      for (var eventsJson in json['critical_events']) {
+        criticalEvents.add(Form1CriticalEventsModel.fromJson(eventsJson));
+      }
+    }
+
+    return UnapprovedForm1DataModel(
+      localId: json['local_id'] as int?,
+      formUuid: json['form_uuid'] == null ? "" : json['form_uuid'].toString(),
+      ovcCpimsId: json['ovc_cpims_id'].toString(),
+      dateOfEvent: json['date_of_event'] as String,
+      caregiverCpimsId: json['caregiver_cpims_id'] == null ? "N/A" : json['caregiver_cpims_id'].toString(),
+      services: services,
+      criticalEvents: criticalEvents,
+      appFormMetaData: AppFormMetaData.fromJson(json['app_form_metadata']),
+      message: json['message']?? "", // Add the 'message' field
+    );
+  }
+
   @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> baseJson = super.toJson();
