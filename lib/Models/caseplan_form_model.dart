@@ -118,6 +118,32 @@ class CasePlanServiceModel {
           '', // Handle possible null value
     );
   }
+  factory CasePlanServiceModel.fromJsonUnApproved(Map<String, dynamic> json) {
+    return CasePlanServiceModel(
+      domainId: json['domain_id'] as String? ?? '',
+      // Handle possible null value
+      serviceIds: json['service_id'] is Iterable
+          ? List<String>.from(json['service_id'])
+          : [],
+      // Handle possible null value
+      goalId: json['goal_id'] as String? ?? '',
+      // Handle possible null value
+      gapId: json['gap_id'] as String? ?? '',
+      // Handle possible null value
+      priorityId: json['priority_id'] as String? ?? '',
+      // Handle possible null value
+      responsibleIds: json['responsible_id'] is Iterable
+          ? List<String>.from(json['responsible_id'])
+          : [],
+      // Handle possible null value
+      resultsId: json['results_id'] as String? ?? '',
+      // Handle possible null value
+      reasonId: json['reason_id'] as String? ?? '',
+      // Handle possible null value
+      completionDate: json['completion_date'] as String? ??
+          '', // Handle possible null value
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
