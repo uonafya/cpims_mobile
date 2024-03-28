@@ -182,6 +182,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
+              keyboardType: TextInputType.number,
               initialValue: hivVisitationFormData.durationOnARTs,
               onChanged: (val) {
                 durationOnARTs = val;
@@ -203,6 +204,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
+              keyboardType: TextInputType.number,
               initialValue: hivVisitationFormData.height,
               onChanged: (val) {
                 height = val;
@@ -274,6 +276,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
+              keyboardType: TextInputType.number,
               initialValue: hivVisitationFormData.arvDrugsDuration,
               onChanged: (val) {
                 setState(() {
@@ -391,6 +394,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
+              keyboardType: TextInputType.number,
               hintText: 'Age',
               initialValue: hivVisitationFormData.treatmentSupporterAge,
               onChanged: (val) {
@@ -445,10 +449,14 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               height: 10,
             ),
             CustomTextField(
+              keyboardType: TextInputType.number,
               hintText: 'Viral Load Results (if LDL enter 1)',
               initialValue: hivVisitationFormData.viralLoadResults,
               onChanged: (val) {
                 viralLoadResults = val;
+                if(viralLoadResults.isEmpty){
+                  labInvestigationsDate = '';
+                }
                 handleOnSave();
               },
             ),
@@ -458,6 +466,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
           height: 15,
         ),
         FormSection(
+          isVisibleCondition: (){
+            return hivVisitationFormData.viralLoadResults.isNotEmpty;
+          },
           children: [
             const Text(
               'Q14) Lab Investigations - Date*',

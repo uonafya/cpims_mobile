@@ -13,7 +13,8 @@ class CustomTextField extends StatelessWidget {
       this.controller,
       this.validator,
       this.enabled,
-      this.hintText})
+      this.hintText,
+      this.keyboardType})
       : super(key: key);
 
   final String? labelText;
@@ -26,6 +27,7 @@ class CustomTextField extends StatelessWidget {
   final bool? enabled;
   final String? initialValue;
   final TextEditingController? controller;
+  final TextInputType? keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +44,7 @@ class CustomTextField extends StatelessWidget {
       cursorColor: kPrimaryColor,
       textInputAction: textInputAction,
       textAlignVertical: TextAlignVertical.center,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(horizontal: 20),
         labelText: labelText,
