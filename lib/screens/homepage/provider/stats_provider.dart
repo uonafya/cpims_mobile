@@ -125,6 +125,7 @@ class StatsProvider extends ChangeNotifier {
   }
 
   void updateUnapprovedFormStats() async {
+    debugPrint('Updating form counter.....');
     unapprovedFormOneACount =
         await Form1Service.getCountAllFormOneAUnApproved() ?? 0;
     unapprovedFormOneBCount =

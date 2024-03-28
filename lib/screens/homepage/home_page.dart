@@ -272,8 +272,8 @@ class _HomepageState extends State<Homepage> {
 
   Future<void> syncWorkflows() async {
     final isConnected =
-    await Provider.of<ConnectivityProvider>(context, listen: false)
-        .checkInternetConnection();
+        await Provider.of<ConnectivityProvider>(context, listen: false)
+            .checkInternetConnection();
     if (isConnected) {
       await submitCparaToUpstream();
       await postCasePlansToServer();
@@ -312,14 +312,14 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-     SummaryDataModel? dashData;
-    dashData= context.select((UIProvider provider) => provider.getDashData);
+    SummaryDataModel? dashData;
+    dashData = context.select((UIProvider provider) => provider.getDashData);
 
     StatsProvider formStats = context.watch<StatsProvider>();
+    // formStats.updateUnapprovedFormStats();
 
     if (dashData == null) {
-      dashData =
-      context.select((UIProvider provider) => provider.getDashData);
+      dashData = context.select((UIProvider provider) => provider.getDashData);
       return const Center(
         child: SnackBar(
           content: Text("Failed to sync dashboard data"),
@@ -389,12 +389,18 @@ class _HomepageState extends State<Homepage> {
                       icon: FontAwesomeIcons.arrowsRotate,
                       color: const Color(0xffa10036),
                       secondaryColor: const Color(0xff630122),
-                      formoneasummary: "${formStats.formOneADistictCount} / ${formStats.formOneACount}",
-                      formonebsummary: "${formStats.formOneBDistictCount} / ${formStats.formOneBCount}",
-                      caseplanSummary: "${formStats.casePlanDistinctCount} / ${formStats.cptCount}",
-                      hrsSummary: "${formStats.hrsDistinctCount} / ${formStats.hrsCount}",
-                      hmfSummary: "${formStats.hmfDistinctCount} / ${formStats.hmfCount}",
-                      cparaSummary: "${formStats.cparaDistinctCount} / ${formStats.cparaCount}",
+                      formoneasummary:
+                          "${formStats.formOneADistictCount} / ${formStats.formOneACount}",
+                      formonebsummary:
+                          "${formStats.formOneBDistictCount} / ${formStats.formOneBCount}",
+                      caseplanSummary:
+                          "${formStats.casePlanDistinctCount} / ${formStats.cptCount}",
+                      hrsSummary:
+                          "${formStats.hrsDistinctCount} / ${formStats.hrsCount}",
+                      hmfSummary:
+                          "${formStats.hmfDistinctCount} / ${formStats.hmfCount}",
+                      cparaSummary:
+                          "${formStats.cparaDistinctCount} / ${formStats.cparaCount}",
                       form1ACount: "${formStats.formOneACount}",
                       form1BCount: "${formStats.formOneBCount}",
                       cpaCount: "${formStats.cptCount}",
@@ -441,15 +447,15 @@ class _HomepageState extends State<Homepage> {
                           title: 'FORM 1B',
                           value: "0",
                           icon: FontAwesomeIcons.fileLines,
-                          color: const Color(0xff348FE2),
-                          secondaryColor: const Color(0xff1F5788),
+                          color: Color(0xff348FE2),
+                          secondaryColor: Color(0xff1F5788),
                         ),
                         const StatisticsGridItem(
                           title: 'CPARA',
                           value: "0",
                           icon: FontAwesomeIcons.fileLines,
-                          color: const Color(0xff727DB6),
-                          secondaryColor: const Color(0xff454A6D),
+                          color: Color(0xff727DB6),
+                          secondaryColor: Color(0xff454A6D),
                         ),
                         const StatisticsGridItem(
                           title: 'CPT',
