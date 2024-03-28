@@ -91,6 +91,24 @@ class Form1Service {
     }
     return 0; // Return 0 if there is an error.
   }
+
+  static countCparaUnApprovedForms() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.getUnApprovedCparaFormCount();
+      debugPrint("Form count: $count");
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error on getFormCount: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
+  }
   static countCparaUnsyncedFormsDistinct() async {
     final db = LocalDb.instance;
     try {
@@ -133,6 +151,24 @@ class Form1Service {
     try {
       final count = await db.queryForm1UnsyncedForms(formType);
       debugPrint("Form count: $count");
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error on getFormCount: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
+  }
+
+  static Future<int?> getFormCountUnApproved(String formType) async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.queryForm1UnApprovedForm1(formType);
+      debugPrint("Form count Unapproved: $count");
       if (count != null) {
         return count;
       } else {
@@ -236,8 +272,17 @@ class Form1Service {
     return getFormCount("form1a");
   }
 
+  static Future<int?> getCountAllFormOneAUnApproved() {
+    return getFormCountUnApproved("form1a");
+  }
+
+
   static Future<int?> getCountAllFormOneB() async {
     return await getFormCount("form1b");
+  }
+
+  static Future<int?> getCountAllFormOneBUnApproved() async {
+    return await getFormCountUnApproved("form1b");
   }
 
   static Future<int?> getCountAllFormOneADistinct() async {
@@ -253,9 +298,14 @@ class Form1Service {
     return await countCparaUnsyncedForms();
   }
 
+
   //count cpara forms
   static Future<int?> getCountAllFormCparaDistinct() async {
     return await countCparaUnsyncedFormsDistinct();
+  }
+
+  static Future<int?> getCparaUnapprovedCount() async {
+    return await countCparaUnApprovedForms();
   }
 
   // send form to server
@@ -326,6 +376,23 @@ class CasePlanService {
         print("Error fetching caseplan fom db $e");
       }
     }
+  }
+
+  static getAllUnApprovedCaseplanCount() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.getUnApprovedCasePlanCount();
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error on getCaseplanUnsyncedCount: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
   }
 
   static postCasePlanRemote(

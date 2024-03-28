@@ -231,7 +231,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
       );
     } on PlatformException catch (e) {
       if (mounted) {
-        errorSnackBar(context, e.details);
+        errorSnackBar(context, e.message!);
       }
     }
 

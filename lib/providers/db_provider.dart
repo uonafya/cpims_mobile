@@ -1331,6 +1331,27 @@ class LocalDb {
     }
   }
 
+  Future<int?> queryForm1UnApprovedForm1(String formType) async {
+    try {
+      final db = await instance.database;
+      const sql =
+          'SELECT COUNT(*) FROM $unapprovedForm1Table WHERE form_type = ?';
+      final List<Map<String, dynamic>> result =
+      await db.rawQuery(sql, [formType]);
+
+      if (result.isNotEmpty) {
+        return Sqflite.firstIntValue(result);
+      } else {
+        return 0; // Return 0 if no count is found.
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error querying form1 count: $e");
+      }
+      return 0; // Return 0 if there is an error.
+    }
+  }
+
   Future<int?> countFormOneByDistinctCareGiver(String formType) async {
     try {
       final db = await instance.database;
@@ -1682,6 +1703,25 @@ class LocalDb {
       return 0; // Handle the error and return 0
     }
   }
+  Future<int> getUnApprovedCasePlanCount() async {
+    try {
+      final db = await instance.database;
+      final queryResult = await db.rawQuery(
+          'SELECT COUNT(*) FROM unapproved_cpt');
+
+      if (queryResult.isEmpty) {
+        return 0; // No unsynced case plans found
+      }
+
+      // Extract the count from the first row
+      final count = queryResult.first.values.first as int;
+
+      return count;
+    } catch (e) {
+      debugPrint('Error retrieving unsynced case plan count: $e');
+      return 0; // Handle the error and return 0
+    }
+  }
 
   Future<int> getUnsyncedCasePlanCountDistinctByCareGiverId() async {
     try {
@@ -1755,6 +1795,23 @@ class LocalDb {
       }
     } catch (err) {
       throw ("Could Not Get Unsynced Forms Count: ${err.toString()}");
+    }
+  }
+
+  Future<int> getUnApprovedCparaFormCount() async {
+    final db = await instance.database;
+    try {
+      List<Map<String, dynamic>> countResult = await db.rawQuery(
+          "SELECT COUNT(id) AS count FROM UnapprovedCPARA");
+
+      if (countResult.isNotEmpty) {
+        int count = countResult[0]['count'];
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (err) {
+      throw ("Could Not Get Unapproved Cpara Forms Count: ${err.toString()}");
     }
   }
 
