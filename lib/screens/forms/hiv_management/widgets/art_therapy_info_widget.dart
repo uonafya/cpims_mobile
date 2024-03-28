@@ -211,6 +211,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                 });
               },
             ),
+            if(arvsSubWithFirstLine == 'Yes')
             DateTextField(
               label: artTherapyInfoFormData.arvsSubWithFirstLineDate.isNotEmpty
                   ? artTherapyInfoFormData.arvsSubWithFirstLineDate
@@ -255,6 +256,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                 });
               },
             ),
+            if(switchToSecondLine == 'Yes')
             DateTextField(
               label: artTherapyInfoFormData.switchToSecondLineDate.isNotEmpty
                   ? artTherapyInfoFormData.switchToSecondLineDate
@@ -299,6 +301,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                 });
               },
             ),
+            if(switchToThirdLine == 'Yes')
             DateTextField(
               label: artTherapyInfoFormData.switchToThirdLineDate.isNotEmpty
                   ? artTherapyInfoFormData.switchToThirdLineDate
