@@ -1140,44 +1140,56 @@ class LocalDb {
       UnapprovedForm1DataModel formData, metadata, id) async {
     try {
       final db = await instance.database;
-      final formId = await db.insert(
-        unapprovedForm1Table,
-        {
-          'ovc_cpims_id': formData.ovcCpimsId,
-          'date_of_event': formData.dateOfEvent,
-          'form_type': formType,
-          'form_uuid': id,
-          Form1.message: formData.message
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-      //insert app form metadata
-      await insertUnapprovedAppFormMetaData(id, metadata, formType);
 
-      // insert services
-      for (var service in formData.services) {
-        await db.insert(
-          form1ServicesTable,
+      // Check if data already exists
+      final existingData = await db.query(
+        unapprovedForm1Table,
+        where: 'form_uuid = ?',
+        whereArgs: [id],
+      );
+
+      // If data does not exist, insert it
+      if (existingData.isEmpty) {
+        final formId = await db.insert(
+          unapprovedForm1Table,
           {
-            Form1Services.unapprovedFormId: formId,
-            'domain_id': service.domainId,
-            'service_id': service.serviceId,
-            Form1Services.message: service.message
+            'ovc_cpims_id': formData.ovcCpimsId,
+            'date_of_event': formData.dateOfEvent,
+            'form_type': formType,
+            'form_uuid': id,
+            Form1.message: formData.message
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
-      }
-      for (var criticalEvent in formData.criticalEvents) {
-        await db.insert(
-          form1CriticalEventsTable,
-          {
-            Form1Services.unapprovedFormId: formId,
-            'event_id': criticalEvent.eventId,
-            'event_date': criticalEvent.eventDate,
-            Form1CriticalEvents.message: criticalEvent.message
-          },
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
+
+        //insert app form metadata
+        await insertUnapprovedAppFormMetaData(id, metadata, formType);
+
+        // insert services
+        for (var service in formData.services) {
+          await db.insert(
+            form1ServicesTable,
+            {
+              Form1Services.unapprovedFormId: formId,
+              'domain_id': service.domainId,
+              'service_id': service.serviceId,
+              Form1Services.message: service.message
+            },
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+        }
+        for (var criticalEvent in formData.criticalEvents) {
+          await db.insert(
+            form1CriticalEventsTable,
+            {
+              Form1Services.unapprovedFormId: formId,
+              'event_id': criticalEvent.eventId,
+              'event_date': criticalEvent.eventDate,
+              Form1CriticalEvents.message: criticalEvent.message
+            },
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+        }
       }
     } catch (e) {
       if (kDebugMode) {

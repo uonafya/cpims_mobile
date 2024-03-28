@@ -9,6 +9,7 @@ class UnapprovedCptProvider {
     await db.execute('''
       CREATE TABLE IF NOT EXISTS unapproved_cpt (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        form_uuid TEXT NOT NULL,
         ovc_cpims_id TEXT NOT NULL,
         date_of_event TEXT NOT NULL,
         form_date_synced TEXT NULL,
@@ -20,37 +21,48 @@ class UnapprovedCptProvider {
   Future<void> insertUnapprovedCasePlanData(
       Database db, UnapprovedCasePlanModel unapprovedCasePlan) async {
     try {
-      // insert data into table
-      await db.transaction((txn) async {
-        final unapprovedCasePlanId = await txn.insert(
-          "unapproved_cpt",
-          {
-            "ovc_cpims_id": unapprovedCasePlan.ovcCpimsId,
-            "date_of_event": unapprovedCasePlan.dateOfEvent,
-            "form_date_synced": null,
-            "message": unapprovedCasePlan.message,
-          },
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
+      // Check if data already exists
+      final existingData = await db.query(
+        "unapproved_cpt",
+        where: 'form_uuid = ?',
+        whereArgs: [unapprovedCasePlan.formUuid],
+      );
 
-        for (var service in unapprovedCasePlan.services) {
-          final serviceIdList = service.serviceIds.join(',');
-          final responsibleIdList = service.responsibleIds.join(',');
+      // If data does not exist, insert it
+      if (existingData.isEmpty) {
+        // insert data into table
+        await db.transaction((txn) async {
+          final unapprovedCasePlanId = await txn.insert(
+            "unapproved_cpt",
+            {
+              "form_uuid": unapprovedCasePlan.formUuid,
+              "ovc_cpims_id": unapprovedCasePlan.ovcCpimsId,
+              "date_of_event": unapprovedCasePlan.dateOfEvent,
+              "form_date_synced": null,
+              "message": unapprovedCasePlan.message,
+            },
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
 
-          await txn.insert("case_plan_services", {
-            'unapproved_form_id': unapprovedCasePlanId,
-            'domain_id': service.domainId,
-            'goal_id': service.goalId,
-            'gap_id': service.gapId,
-            'priority_id': service.priorityId,
-            'results_id': service.resultsId,
-            'reason_id': service.reasonId,
-            'completion_date': service.completionDate ?? '',
-            'service_ids': serviceIdList,
-            'responsible_ids': responsibleIdList,
-          });
-        }
-      });
+          for (var service in unapprovedCasePlan.services) {
+            final serviceIdList = service.serviceIds.join(',');
+            final responsibleIdList = service.responsibleIds.join(',');
+
+            await txn.insert("case_plan_services", {
+              'unapproved_form_id': unapprovedCasePlanId,
+              'domain_id': service.domainId,
+              'goal_id': service.goalId,
+              'gap_id': service.gapId,
+              'priority_id': service.priorityId,
+              'results_id': service.resultsId,
+              'reason_id': service.reasonId,
+              'completion_date': service.completionDate ?? '',
+              'service_ids': serviceIdList,
+              'responsible_ids': responsibleIdList,
+            });
+          }
+        });
+      }
     } catch (e, stackTrace) {
       if (kDebugMode) {
         print('Error inserting case plan: $e');
@@ -96,6 +108,7 @@ class UnapprovedCptProvider {
         unapprovedCasePlanList.add(UnapprovedCasePlanModel(
           caregiverCpimsId: result['caregiver_cpims_id'] as String,
           id: result['id'] as int,
+          formUuid: result['form_uuid'] as String,
           ovcCpimsId: result['ovc_cpims_id'] as String,
           dateOfEvent: result['date_of_event'] as String,
           services: serviceList,

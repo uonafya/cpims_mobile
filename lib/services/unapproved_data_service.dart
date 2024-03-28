@@ -49,7 +49,6 @@ class UnapprovedDataService {
         }
       } else if (endpoint == endpoints[2]) {
         for (var map in jsonData) {
-          print("Unapproved CPT Data: $map");
           final unapprovedCptData = UnapprovedCasePlanModel.fromJson(map);
           final unapprovedCpt = UnapprovedCptProvider();
           var localdb = await db.database;

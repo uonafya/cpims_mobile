@@ -1,8 +1,8 @@
 import 'caseplan_form_model.dart';
 
 class UnapprovedCasePlanModel extends CasePlanModel {
-
   final String message;
+  final String formUuid;
 
   UnapprovedCasePlanModel({
     super.id,
@@ -11,6 +11,7 @@ class UnapprovedCasePlanModel extends CasePlanModel {
     required super.dateOfEvent,
     required super.services,
     required this.message,
+    required this.formUuid,
   });
 
   factory UnapprovedCasePlanModel.fromJson(Map<String, dynamic> json) {
@@ -23,7 +24,8 @@ class UnapprovedCasePlanModel extends CasePlanModel {
       }
     }
     return UnapprovedCasePlanModel(
-      id: json['id'],
+      id: json['id'] == null ? null : 0,
+      formUuid: json['event_id'] == null ? '' : json['event_id'].toString(),
       caregiverCpimsId: json['caregiver_cpims_id'] as String? ?? '',
       ovcCpimsId: json['ovc_cpims_id'].toString(),
       dateOfEvent: json['date_of_event'] as String? ?? '',
@@ -34,6 +36,7 @@ class UnapprovedCasePlanModel extends CasePlanModel {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> baseJson = super.toJson();
+    baseJson['event_id'] = formUuid; // Add the 'event_id' field
     baseJson['message'] = message; // Add the 'message' field
     return baseJson;
   }
@@ -48,5 +51,4 @@ class UnapprovedCasePlanModel extends CasePlanModel {
         'caregiverCpimsId: $caregiverCpimsId, '
         '}';
   }
-
 }
