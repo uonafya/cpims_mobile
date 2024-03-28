@@ -146,6 +146,17 @@ class Form1Service {
     return 0; // Return 0 if there is an error.
   }
 
+  static deleteForms() async{
+    final db = LocalDb.instance;
+    try {
+      await db.deleteSyncedFormsFromDevice();
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error on deleteForms: ${e.toString()}");
+      }
+    }
+  }
+
   static Future<int?> getFormCount(String formType) async {
     final db = LocalDb.instance;
     try {

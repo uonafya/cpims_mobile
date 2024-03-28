@@ -300,6 +300,8 @@ class _HomepageState extends State<Homepage> {
     updatedCptCount = await CasePlanService.getCaseplanUnsyncedCount();
     updatedHrsCount = await CasePlanService.getCountOfHmfForms();
     updatedHmfCount = await CasePlanService.getCountOfHRSForms();
+    //clear synced forms from local db
+    // await Form1Service.deleteForms();
 
     setState(() {
       formOneACount = updatedCountA!;
