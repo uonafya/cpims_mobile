@@ -223,7 +223,7 @@ class UnapprovedCparaService {
 
   static void informUpstreamOfStoredUnapproved(String formID, bool saved) async{
     try{
-      var baseUrl = "mobile/unaccepted_records/cpara/";
+      var baseUrl = "mobile/record_saved";
 
       var prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getString('access');
@@ -232,13 +232,13 @@ class UnapprovedCparaService {
 
       if (saved == true) {
         responseData = {
-          "id": formID,
+          "record_id": formID,
           "saved": 1,
           "form_type": "cpara"
         };
       } else {
         responseData = {
-          "id": formID,
+          "record_id": formID,
           "saved": 0,
           "form_type": "cpara"
         };
