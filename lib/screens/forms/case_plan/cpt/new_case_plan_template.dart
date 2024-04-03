@@ -69,212 +69,227 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
   Widget build(BuildContext context) {
     bool isLastStep = selectedStep == steps.length - 1;
 
-    return Scaffold(
-      appBar: customAppBar(),
-      drawer: const Drawer(
-        child: CustomDrawer(),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        children: [
-          const SizedBox(height: 20),
-          const Text('CASEPLAN TEMPLATE',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black)),
-          const SizedBox(height: 5),
-          // const Text(
-          //   'Caregiver Status and Service Monitoring',
-          //   style: TextStyle(color: kTextGrey),
-          // ),
-          const SizedBox(height: 10),
-          Container(
-              decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  blurRadius: 10,
-                  spreadRadius: 5,
-                ),
-              ]),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    width: MediaQuery.of(context).size.width,
-                    color: Colors.black,
-                    child: Text(
-                      ' CASE PLAN TEMPLATE \n CARE GIVER: ${widget.caseLoad.caregiverNames} \n CPIMS NAME :${widget.caseLoad.ovcFirstName} ${widget.caseLoad.ovcSurname} \n CPIMS ID: ${widget.caseLoad.cpimsId}',
-                      style: const TextStyle(color: Colors.white),
+    return PopScope(
+        canPop: true,
+        onPopInvoked: (didPop) {
+          CptProvider cptProvider =
+          Provider.of<CptProvider>(context, listen: false);
+          cptProvider.clearProviderData();
+          if (didPop) {
+            return;
+          }
+        },
+        child: Scaffold(
+          appBar: customAppBar(),
+          drawer: const Drawer(
+            child: CustomDrawer(),
+          ),
+          body: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            children: [
+              const SizedBox(height: 20),
+              const Text('CASEPLAN TEMPLATE',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black)),
+              const SizedBox(height: 5),
+              // const Text(
+              //   'Caregiver Status and Service Monitoring',
+              //   style: TextStyle(color: kTextGrey),
+              // ),
+              const SizedBox(height: 10),
+              Container(
+                  decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      blurRadius: 10,
+                      spreadRadius: 5,
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Column(
-                      children: [
-                        CustomStepperWidget(
-                          onTap: (index) {
-                            setState(() {
-                              selectedStep = index;
-                            });
-                          },
-                          data: caseplanStepperTitles,
-                          selectedIndex: selectedStep,
+                  ]),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        width: MediaQuery.of(context).size.width,
+                        color: Colors.black,
+                        child: Text(
+                          ' CASE PLAN TEMPLATE \n CARE GIVER: ${widget.caseLoad.caregiverNames} \n CPIMS NAME :${widget.caseLoad.ovcFirstName} ${widget.caseLoad.ovcSurname} \n CPIMS ID: ${widget.caseLoad.cpimsId}',
+                          style: const TextStyle(color: Colors.white),
                         ),
-                        const SizedBox(
-                          height: 25,
-                        ),
-                        steps[selectedStep],
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Visibility(
-                          visible: isLastStep,
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Date of Event',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 10),
-                                DateTextField(
-                                    label: currentDateOfCasePlan.isNotEmpty
-                                        ? currentDateOfCasePlan
-                                        : 'Select Date of CasePlan',
-                                    enabled: true,
-                                    identifier: DateTextFieldIdentifier
-                                        .dateOfAssessment,
-                                    onDateSelected: (val) {
-                                      setState(() {
-                                        currentDateOfCasePlan =
-                                            DateFormat("yyyy-MM-dd")
-                                                .format(val!);
-                                      });
-                                    }),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                              ]),
-                        ),
-                        AddCPTButton(
-                          formattedDate: currentDateOfCasePlan,
-                          onTap: () {
-                            if (selectedStep != steps.length - 1) {
-                              setState(() {
-                                selectedStep++;
-                              });
-                              Future.delayed(const Duration(milliseconds: 50),
-                                  () {
-                                setState(() {
-                                  selectedStep--;
-                                });
-                              });
-                            } else if (selectedStep == steps.length - 1) {
-                              setState(() {
-                                selectedStep = 0;
-                              });
-
-                              Future.delayed(const Duration(milliseconds: 50),
-                                  () {
-                                setState(() {
-                                  selectedStep = steps.length - 1;
-                                });
-                              });
-                            }
-                          },
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Row(
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Column(
                           children: [
-                            Expanded(
-                              child: CustomButton(
-                                text: selectedStep <= 0 ? 'Cancel' : 'Previous',
-                                onTap: () {
-                                  if (selectedStep == 0) {
-                                    Navigator.pop(context);
-                                  } else {
-                                    setState(() {
-                                      if (selectedStep > 0) {
-                                        selectedStep--;
-                                      }
-                                    });
-                                  }
-                                },
-                                color: kTextGrey,
-                              ),
+                            CustomStepperWidget(
+                              onTap: (index) {
+                                setState(() {
+                                  selectedStep = index;
+                                });
+                              },
+                              data: caseplanStepperTitles,
+                              selectedIndex: selectedStep,
                             ),
                             const SizedBox(
-                              width: 50,
+                              height: 25,
                             ),
-                            Expanded(
-                              child: CustomButton(
-                                isLoading: isLoading,
-                                text: selectedStep == steps.length - 1
-                                    ? 'Submit Caseplan'
-                                    : 'Next',
-                                onTap: () async {
-                                  await submitData(context);
-                                },
-                                color: kTextGrey,
-                              ),
+                            steps[selectedStep],
+                            const SizedBox(
+                              height: 30,
                             ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Row(
-                          children: [
-                            TextButton(
-                                onPressed: () {
-                                  Provider.of<CptProvider>(context, listen: false).clearProviderData();
-                                  context.read<CptProvider>().updateClearServicesList();
-                                  Navigator.pop(context);
-                                },
-                                child: const Text(
-                                  "Clear Form",
-                                  style: TextStyle(color: Colors.red),
-                                )),
-                          ],
-                        ),
-                        ...List.generate(
-                            getDomainItems(context, formSubmitted).length,
-                            (index) =>
-                                getDomainItems(context, formSubmitted)[index]),
-                        const SizedBox(height: 20),
-                        // GestureDetector(
-                        //   onTap: () {},
-                        //   child: const Row(
-                        //     children: [
-                        //       Text(
-                        //         'Past Assessments',
-                        //         style: TextStyle(color: Colors.blue),
-                        //       ),
-                        //       SizedBox(
-                        //         width: 10,
-                        //       ),
-                        //       Icon(
-                        //         Icons.arrow_forward_ios_rounded,
-                        //         size: 15,
-                        //       )
-                        //     ],
-                        //   ),
-                        // ),
-                      ],
+                            Visibility(
+                              visible: isLastStep,
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Date of Event',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    DateTextField(
+                                        label: currentDateOfCasePlan.isNotEmpty
+                                            ? currentDateOfCasePlan
+                                            : 'Select Date of CasePlan',
+                                        enabled: true,
+                                        identifier: DateTextFieldIdentifier
+                                            .dateOfAssessment,
+                                        onDateSelected: (val) {
+                                          setState(() {
+                                            currentDateOfCasePlan =
+                                                DateFormat("yyyy-MM-dd")
+                                                    .format(val!);
+                                          });
+                                        }),
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                  ]),
+                            ),
+                            AddCPTButton(
+                              formattedDate: currentDateOfCasePlan,
+                              onTap: () {
+                                if (selectedStep != steps.length - 1) {
+                                  setState(() {
+                                    selectedStep++;
+                                  });
+                                  Future.delayed(
+                                      const Duration(milliseconds: 50), () {
+                                    setState(() {
+                                      selectedStep--;
+                                    });
+                                  });
+                                } else if (selectedStep == steps.length - 1) {
+                                  setState(() {
+                                    selectedStep = 0;
+                                  });
 
-                    ),
-                  ),
-                ],
-              )),
-          const Footer(),
-        ],
-      ),
-    );
+                                  Future.delayed(
+                                      const Duration(milliseconds: 50), () {
+                                    setState(() {
+                                      selectedStep = steps.length - 1;
+                                    });
+                                  });
+                                }
+                              },
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomButton(
+                                    text: selectedStep <= 0
+                                        ? 'Cancel'
+                                        : 'Previous',
+                                    onTap: () {
+                                      if (selectedStep == 0) {
+                                        Navigator.pop(context);
+                                      } else {
+                                        setState(() {
+                                          if (selectedStep > 0) {
+                                            selectedStep--;
+                                          }
+                                        });
+                                      }
+                                    },
+                                    color: kTextGrey,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 50,
+                                ),
+                                Expanded(
+                                  child: CustomButton(
+                                    isLoading: isLoading,
+                                    text: selectedStep == steps.length - 1
+                                        ? 'Submit Caseplan'
+                                        : 'Next',
+                                    onTap: () async {
+                                      await submitData(context);
+                                    },
+                                    color: kTextGrey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Row(
+                              children: [
+                                TextButton(
+                                    onPressed: () {
+                                      Provider.of<CptProvider>(context,
+                                              listen: false)
+                                          .clearProviderData();
+                                      context
+                                          .read<CptProvider>()
+                                          .updateClearServicesList();
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text(
+                                      "Clear Form",
+                                      style: TextStyle(color: Colors.red),
+                                    )),
+                              ],
+                            ),
+                            ...List.generate(
+                                getDomainItems(context, formSubmitted).length,
+                                (index) => getDomainItems(
+                                    context, formSubmitted)[index]),
+                            const SizedBox(height: 20),
+                            // GestureDetector(
+                            //   onTap: () {},
+                            //   child: const Row(
+                            //     children: [
+                            //       Text(
+                            //         'Past Assessments',
+                            //         style: TextStyle(color: Colors.blue),
+                            //       ),
+                            //       SizedBox(
+                            //         width: 10,
+                            //       ),
+                            //       Icon(
+                            //         Icons.arrow_forward_ios_rounded,
+                            //         size: 15,
+                            //       )
+                            //     ],
+                            //   ),
+                            // ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )),
+              const Footer(),
+            ],
+          ),
+        ));
   }
 
   Future<void> submitData(BuildContext context) async {
@@ -326,7 +341,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
 
           if (isFormSaved) {
             if (context.mounted) {
-              Provider.of<CptProvider>(context, listen: false).clearProviderData();
+              Provider.of<CptProvider>(context, listen: false)
+                  .clearProviderData();
               context.read<CptProvider>().updateClearServicesList();
               Get.snackbar(
                 'Success',
