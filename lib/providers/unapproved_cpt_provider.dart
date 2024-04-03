@@ -125,7 +125,8 @@ class UnapprovedCptProvider {
             goalId: service['goal_id'] as String? ?? '',
             gapId: service['gap_id'] as String? ?? '',
             priorityId: service['priority_id'] as String? ?? '',
-            responsibleIds: (service['responsible_ids'] as String?)?.split(',') ?? [],
+            responsibleIds:
+                (service['responsible_ids'] as String?)?.split(',') ?? [],
             resultsId: service['results_id'] as String? ?? '',
             reasonId: service['reason_id'] as String? ?? '',
             completionDate: service['completion_date'] as String? ?? '',
@@ -158,6 +159,34 @@ class UnapprovedCptProvider {
           await db.delete('unapproved_cpt', where: 'id = ?', whereArgs: [id]);
       int deletedRows2 = await db.delete('case_plan_services',
           where: 'unapproved_form_id = ?', whereArgs: [id]);
+      return deletedRows1 > 0 && deletedRows2 > 0;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error deleting case plan: $e');
+      }
+      return false;
+    }
+  }
+
+  Future<bool> deleteUnapprovedCasePlanDataByUuid(Database db, String uuid) async {
+    try {
+      final formQuery = await db.query(
+        'unapproved_cpt',
+        where: 'form_uuid = ?',
+        whereArgs: [uuid],
+      );
+
+      if (formQuery.isEmpty) {
+        return false;
+      }
+
+      final formId = formQuery.first['id'];
+
+      // Delete the form using the ID
+      int deletedRows1 = await db
+          .delete('unapproved_cpt', where: 'id = ?', whereArgs: [formId]);
+      int deletedRows2 = await db.delete('case_plan_services',
+          where: 'unapproved_form_id = ?', whereArgs: [formId]);
       return deletedRows1 > 0 && deletedRows2 > 0;
     } catch (e) {
       if (kDebugMode) {

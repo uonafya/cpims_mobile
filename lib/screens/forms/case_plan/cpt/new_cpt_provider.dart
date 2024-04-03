@@ -65,6 +65,7 @@ class CptProvider extends ChangeNotifier {
   List<CptschooledFormData> cptschooledFormDataList = [];
 
   late CasePlanModel casePlanModel;
+  String? formUuid;
 
   void updateCptFormData(CptHealthFormData cptHealthFormData) {
     this.cptHealthFormData = cptHealthFormData;
@@ -91,6 +92,11 @@ class CptProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateFormUuid(String? formUuid) {
+    this.formUuid = formUuid;
+    notifyListeners();
+  }
+
   void clearProviderData() {
     casePlanHealthyModel = null;
     casePlanSafeModel = null;
@@ -101,6 +107,8 @@ class CptProvider extends ChangeNotifier {
     cptHealthFormData = null;
     cptschooledFormData = null;
     caseLoadModel = null;
+    servicesList.clear();
+    formUuid = null;
     cptHealthFormDataList.clear();
     cptSafeFormDataList.clear();
     cptStableFormDataList.clear();

@@ -328,6 +328,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       final db = LocalDb.instance;
       CaseLoadModel caseLoad =
           await db.getCaseLoad(int.parse(unapprovedCpt.ovcCpimsId));
+      context.read<CptProvider>().updateFormUuid(unapprovedCpt.formUuid);
+      debugPrint('Unapproved CPT: ${unapprovedCpt.formUuid}');
       // Healthy Services
       CptHealthFormData cptHealtFormData =
           context.read<CptProvider>().cptHealthFormData ?? CptHealthFormData();

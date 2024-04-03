@@ -10,6 +10,7 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/schooled_cpt.da
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/stable_cpt.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/domain_item.dart';
 import 'package:cpims_mobile/services/form_service.dart';
+import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -73,7 +74,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
         canPop: true,
         onPopInvoked: (didPop) {
           CptProvider cptProvider =
-          Provider.of<CptProvider>(context, listen: false);
+              Provider.of<CptProvider>(context, listen: false);
           cptProvider.clearProviderData();
           if (didPop) {
             return;
@@ -327,7 +328,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
             print("Final payload is${jsonEncode(payload)}");
           }
 
-          String formUuid = Uuid().v4();
+          String formUuid = cptProvider.formUuid ?? const Uuid().v4();
+          // cptProvider.updateFormUuid(formUuid);
           AppMetaDataProvider appMetaDataProvider =
               Provider.of<AppMetaDataProvider>(context, listen: false);
           String startTimeOfInterview =
@@ -344,6 +346,21 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
               Provider.of<CptProvider>(context, listen: false)
                   .clearProviderData();
               context.read<CptProvider>().updateClearServicesList();
+              context.read<StatsProvider>().updateCptStats();
+              //delete the edited form from unapproved cpt table
+              bool editedFormDeleted =
+                  await UnapprovedDataService.deleteUnapprovedCptAfterEdit(
+                      formUuid);
+              if (editedFormDeleted) {
+                context.read<StatsProvider>().updateCptStats();
+                Get.snackbar(
+                  'Success',
+                  'Successfully edited CasePlan form',
+                  backgroundColor: Colors.green,
+                  colorText: Colors.white,
+                );
+              }
+
               Get.snackbar(
                 'Success',
                 'Successfully saved CasePlan form',
