@@ -221,7 +221,7 @@ class UnapprovedCparaService {
     return entries;
   }
 
-  static void informUpstreamOfStoredUnapproved(String formID, bool saved) async{
+  static void informUpstreamOfStoredUnapproved(String formID, bool saved,String formType) async{
     try{
       var baseUrl = "mobile/record_saved";
 
@@ -234,13 +234,13 @@ class UnapprovedCparaService {
         responseData = {
           "record_id": formID,
           "saved": 1,
-          "form_type": "cpara"
+          "form_type": formType
         };
       } else {
         responseData = {
           "record_id": formID,
           "saved": 0,
-          "form_type": "cpara"
+          "form_type": formType
         };
       }
 

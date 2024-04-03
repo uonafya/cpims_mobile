@@ -30,6 +30,7 @@ class UnapprovedDataService {
       "mobile/unaccepted_records/hrs/",
     ];
 
+    var updateUpstreamEndpoint="$cpimsApiUrl+mobile/record_saved";
     List<Future<void>> futures = endpoints.map((endpoint) async {
       final db = LocalDb.instance;
       var response = await ApiService().getSecureData(endpoint, access);
@@ -40,6 +41,8 @@ class UnapprovedDataService {
           final unapprovedForm1A = UnapprovedForm1DataModel.fromJson(map);
           db.insertUnapprovedForm1Data(_formType1A, unapprovedForm1A,
               unapprovedForm1A.appFormMetaData, unapprovedForm1A.formUuid);
+          //update the upstream {"record_id":"826366fc-53dc-4edc-8295-ce0dadcb2e5c","saved":1,"form_type":"f1a"}
+
         }
       } else if (endpoint == endpoints[1]) {
         for (var map in jsonData) {
@@ -79,12 +82,12 @@ class UnapprovedDataService {
               );
             } catch (e) {
               UnapprovedCparaService.informUpstreamOfStoredUnapproved(
-                  model.uuid, false);
+                  model.uuid, false,"cpara");
             }
           }
           // Tell Upstream that I have stored the form
           UnapprovedCparaService.informUpstreamOfStoredUnapproved(
-              model.uuid, true);
+              model.uuid, true,"cpara");
         }
       } else if (endpoint == endpoints[4]) {
         //   //fetch unapproved hmf
