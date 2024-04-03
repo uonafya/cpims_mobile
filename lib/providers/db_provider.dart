@@ -1204,7 +1204,11 @@ class LocalDb {
 
         var updateUpstreamEndpoint = "${cpimsApiUrl}mobile/record_saved";
         var response = await dio.post(updateUpstreamEndpoint,
-            data: {"record_id": id, "saved": 1, "form_type": formType=="form1a"?"f1a":"f1b"},
+            data: {
+              "record_id": id,
+              "saved": 1,
+              "form_type": formType == "form1a" ? "f1a" : "f1b"
+            },
             options: Options(headers: {"Authorization": bearerAuth}));
         if (response.statusCode == 200) {
           debugPrint("Data sent successfully");
@@ -1549,7 +1553,6 @@ class LocalDb {
         );
 
         for (var service in casePlan.services) {
-          debugPrint("Here the services ${casePlan.services}");
           final serviceIdList = service.serviceIds.join(',');
           final responsibleIdList = service.responsibleIds.join(',');
 
@@ -1571,23 +1574,6 @@ class LocalDb {
           );
         }
       });
-
-  //     {
-  //       "id": "009f0b8c-3794-41b8-893f-409c8b372e1e",
-  //   "event_id": "8dc4aeba-8fa1-47a4-a679-f33ae88bebf8",
-  //   "domain_id": "DHNU",
-  //   "service_id": "['CP11HE', 'CP13HE']",
-  //   "goal_id": "GH2HE",
-  //   "gap_id": "GN11HE",
-  //   "priority_id": "P13HE",
-  //   "responsible_id": [
-  //   "RHHM"
-  //   ],
-  //   "results_id": "NA",
-  //   "reason_id": "testing ",
-  //   "completion_date": "2023-11-16",
-  //   "is_accepted": "FALSE"
-  // }
 
       return true;
     } catch (e, stackTrace) {

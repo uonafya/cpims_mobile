@@ -114,26 +114,29 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
               cptHealthFormData.priorityId?.trim().toLowerCase())
           .toList();
     }
-    if (cptHealthFormData.serviceIds != null &&
-        cptHealthFormData.serviceIds!.isNotEmpty) {
+    if (cptHealthFormData.serviceIds != null && cptHealthFormData.serviceIds!.isNotEmpty) {
       for (String? serviceId in cptHealthFormData.serviceIds!) {
-        selectedServicesOptions.add(casePlanServicesHealthList
+        final matchingOption = casePlanServicesHealthList
             .where((element) =>
-                element.value?.trim().toLowerCase() ==
-                serviceId?.trim().toLowerCase())
-            .toList()[0]);
+        element.value?.trim().toLowerCase() ==
+            serviceId?.trim().toLowerCase())
+            .firstOrNull;
+        if (matchingOption != null) {
+          selectedServicesOptions.add(matchingOption);
+        }
       }
     }
 
-    if (cptHealthFormData.responsibleIds != null &&
-        cptHealthFormData.responsibleIds!.isNotEmpty) {
+    if (cptHealthFormData.responsibleIds != null && cptHealthFormData.responsibleIds!.isNotEmpty) {
       for (String? responsibleId in cptHealthFormData.responsibleIds!) {
-        selectedPersonsResponsibleOptions.add(
-            casePlanProviderPersonsResponsibleList
-                .where((element) =>
-                    element.value?.trim().toLowerCase() ==
-                    responsibleId?.trim().toLowerCase())
-                .toList()[0]);
+        final matchingOption = casePlanProviderPersonsResponsibleList
+            .where((element) =>
+        element.value?.trim().toLowerCase() ==
+            responsibleId?.trim().toLowerCase())
+            .firstOrNull;
+        if (matchingOption != null) {
+          selectedPersonsResponsibleOptions.add(matchingOption);
+        }
       }
     }
 

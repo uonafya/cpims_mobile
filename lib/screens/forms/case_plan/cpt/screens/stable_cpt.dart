@@ -126,23 +126,28 @@ class _StableCasePlanState extends State<StableCasePlan> {
     if (cptStableFormData.serviceIds != null &&
         cptStableFormData.serviceIds!.isNotEmpty) {
       for (String? serviceId in cptStableFormData.serviceIds!) {
-        selectedServicesOptions.add(casePlanServicesStableList
+        final matchingOption = casePlanServicesStableList
             .where((element) =>
                 element.value?.trim().toLowerCase() ==
                 serviceId?.trim().toLowerCase())
-            .toList()[0]);
+            .firstOrNull;
+        if (matchingOption != null) {
+          selectedServicesOptions.add(matchingOption);
+        }
       }
     }
 
     if (cptStableFormData.responsibleIds != null &&
         cptStableFormData.responsibleIds!.isNotEmpty) {
       for (String? responsibleId in cptStableFormData.responsibleIds!) {
-        selectedPersonsResponsibleOptions.add(
-            casePlanProviderPersonsResponsibleList
-                .where((element) =>
-                    element.value?.trim().toLowerCase() ==
-                    responsibleId?.trim().toLowerCase())
-                .toList()[0]);
+        final matchingOption = casePlanProviderPersonsResponsibleList
+            .where((element) =>
+                element.value?.trim().toLowerCase() ==
+                responsibleId?.trim().toLowerCase())
+            .firstOrNull;
+        if (matchingOption != null) {
+          selectedPersonsResponsibleOptions.add(matchingOption);
+        }
       }
     }
 

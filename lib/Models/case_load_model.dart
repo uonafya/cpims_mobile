@@ -80,4 +80,10 @@ class CaseLoadModel {
       ovchivstatus: map['h_status'],
     );
   }
+
+  //toString method
+  @override
+  String toString() {
+    return 'CaseLoadModel{cpimsId: $cpimsId, ovcFirstName: $ovcFirstName, ovcSurname: $ovcSurname, dateOfBirth: $dateOfBirth, registrationDate: $registrationDate';
+  }
 }

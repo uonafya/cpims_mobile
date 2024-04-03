@@ -70,6 +70,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
   List<UnapprovedForm1DataModel> unapprovedForm1AData = [];
   List<UnapprovedForm1DataModel> unapprovedForm1BData = [];
   List<UnapprovedCasePlanModel> unapprovedCaseplanData = [];
+  // List<UnapprovedHMFModel>  unapprovedHMFData = [];
+  // List<UnapprovedHRSModel>  unapprovedHRSData = [];
 
   void deleteUnapprovedForm1(int id) async {
     bool success = await UnapprovedDataService.deleteUnapprovedForm1(id);
@@ -326,7 +328,6 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       final db = LocalDb.instance;
       CaseLoadModel caseLoad =
           await db.getCaseLoad(int.parse(unapprovedCpt.ovcCpimsId));
-
       // Healthy Services
       CptHealthFormData cptHealtFormData =
           context.read<CptProvider>().cptHealthFormData ?? CptHealthFormData();
@@ -463,6 +464,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
               ),
             if (selectedRecord == "CPARA")
               const Expanded(child: UnnaprovedCparaScreen()),
+
             if (selectedRecord == unapprovedRecords[0])
               Expanded(
                 child: FormTab(

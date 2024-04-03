@@ -115,26 +115,29 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
               cptSchooledFormData.priorityId?.trim().toLowerCase())
           .toList();
     }
-    if (cptSchooledFormData.serviceIds != null &&
-        cptSchooledFormData.serviceIds!.isNotEmpty) {
+    if (cptSchooledFormData.serviceIds != null && cptSchooledFormData.serviceIds!.isNotEmpty) {
       for (String? serviceId in cptSchooledFormData.serviceIds!) {
-        selectedServicesOptions.add(casePlanServicesSchooledList
+        final matchingOption = casePlanServicesSchooledList
             .where((element) =>
-                element.value?.trim().toLowerCase() ==
-                serviceId?.trim().toLowerCase())
-            .toList()[0]);
+        element.value?.trim().toLowerCase() ==
+            serviceId?.trim().toLowerCase())
+            .firstOrNull;
+        if (matchingOption != null) {
+          selectedServicesOptions.add(matchingOption);
+        }
       }
     }
 
-    if (cptSchooledFormData.responsibleIds != null &&
-        cptSchooledFormData.responsibleIds!.isNotEmpty) {
+    if (cptSchooledFormData.responsibleIds != null && cptSchooledFormData.responsibleIds!.isNotEmpty) {
       for (String? responsibleId in cptSchooledFormData.responsibleIds!) {
-        selectedPersonsResponsibleOptions.add(
-            casePlanProviderPersonsResponsibleList
-                .where((element) =>
-                    element.value?.trim().toLowerCase() ==
-                    responsibleId?.trim().toLowerCase())
-                .toList()[0]);
+        final matchingOption = casePlanProviderPersonsResponsibleList
+            .where((element) =>
+        element.value?.trim().toLowerCase() ==
+            responsibleId?.trim().toLowerCase())
+            .firstOrNull;
+        if (matchingOption != null) {
+          selectedPersonsResponsibleOptions.add(matchingOption);
+        }
       }
     }
 
