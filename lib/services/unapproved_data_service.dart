@@ -30,19 +30,15 @@ class UnapprovedDataService {
       "mobile/unaccepted_records/hrs/",
     ];
 
-    var updateUpstreamEndpoint="$cpimsApiUrl+mobile/record_saved";
     List<Future<void>> futures = endpoints.map((endpoint) async {
       final db = LocalDb.instance;
       var response = await ApiService().getSecureData(endpoint, access);
       final List<dynamic> jsonData = json.decode(response.body);
-
       if (endpoint == endpoints[0]) {
         for (var map in jsonData) {
           final unapprovedForm1A = UnapprovedForm1DataModel.fromJson(map);
           db.insertUnapprovedForm1Data(_formType1A, unapprovedForm1A,
               unapprovedForm1A.appFormMetaData, unapprovedForm1A.formUuid);
-          //update the upstream {"record_id":"826366fc-53dc-4edc-8295-ce0dadcb2e5c","saved":1,"form_type":"f1a"}
-
         }
       } else if (endpoint == endpoints[1]) {
         for (var map in jsonData) {

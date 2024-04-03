@@ -1,8 +1,13 @@
 import 'package:cpims_mobile/Models/caseplan_form_model.dart';
 import 'package:cpims_mobile/Models/unapproved_caseplan_form_model.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common/sqlite_api.dart';
+
+import '../constants.dart';
+import '../screens/cpara/model/cpara_model.dart';
 
 class UnapprovedCptProvider {
   Future<void> createTable(Database db, int version) async {
@@ -62,10 +67,32 @@ class UnapprovedCptProvider {
             });
           }
         });
+        //update upstream that form has been cached locally
+        var prefs = await SharedPreferences.getInstance();
+        var accessToken = prefs.getString('access');
+        String bearerAuth = "Bearer $accessToken";
+        var response = await dio.post(
+          "${cpimsApiUrl}mobile/record_saved",
+          options: Options(headers: {"Authorization": bearerAuth}),
+          data: {
+            "record_id": unapprovedCasePlan.formUuid,
+            "saved": 1,
+            "form_type": "caseplan"
+          },
+        );
+        if (response.statusCode == 200) {
+          if (kDebugMode) {
+            print('Record saved successfully');
+          }
+        } else {
+          if (kDebugMode) {
+            print('Record not saved');
+          }
+        }
       }
     } catch (e, stackTrace) {
       if (kDebugMode) {
-        print('Error inserting case plan: $e');
+        print('Error inserting unapproved case plan: $e');
       }
       if (kDebugMode) {
         print('Stack trace: $stackTrace');
@@ -114,12 +141,11 @@ class UnapprovedCptProvider {
           services: serviceList,
           message: result['message'] as String,
         ));
-
       }
       return unapprovedCasePlanList;
     } catch (e) {
       if (kDebugMode) {
-        print('Error retrieving case plans: $e');
+        print('Error retrieving unapproved plans: $e');
       }
       return [];
     }
@@ -130,8 +156,8 @@ class UnapprovedCptProvider {
     try {
       int deletedRows1 =
           await db.delete('unapproved_cpt', where: 'id = ?', whereArgs: [id]);
-      int deletedRows2 = await db
-          .delete('case_plan_services', where: 'unapproved_form_id = ?', whereArgs: [id]);
+      int deletedRows2 = await db.delete('case_plan_services',
+          where: 'unapproved_form_id = ?', whereArgs: [id]);
       return deletedRows1 > 0 && deletedRows2 > 0;
     } catch (e) {
       if (kDebugMode) {
@@ -140,5 +166,4 @@ class UnapprovedCptProvider {
       return false;
     }
   }
-
 }
