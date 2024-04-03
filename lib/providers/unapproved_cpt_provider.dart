@@ -120,26 +120,26 @@ class UnapprovedCptProvider {
         List<CasePlanServiceModel> serviceList = [];
         for (var service in serviceRes) {
           serviceList.add(CasePlanServiceModel(
-            domainId: service['domain_id'] as String,
-            serviceIds: (service['service_ids'] as String).split(','),
-            goalId: service['goal_id'] as String,
-            gapId: service['gap_id'] as String,
-            priorityId: service['priority_id'] as String,
-            responsibleIds: (service['responsible_ids'] as String).split(','),
-            resultsId: service['results_id'] as String,
-            reasonId: service['reason_id'] as String,
-            completionDate: service['completion_date'] as String,
+            domainId: service['domain_id'] as String? ?? '',
+            serviceIds: (service['service_ids'] as String?)?.split(',') ?? [],
+            goalId: service['goal_id'] as String? ?? '',
+            gapId: service['gap_id'] as String? ?? '',
+            priorityId: service['priority_id'] as String? ?? '',
+            responsibleIds: (service['responsible_ids'] as String?)?.split(',') ?? [],
+            resultsId: service['results_id'] as String? ?? '',
+            reasonId: service['reason_id'] as String? ?? '',
+            completionDate: service['completion_date'] as String? ?? '',
           ));
         }
 
         unapprovedCasePlanList.add(UnapprovedCasePlanModel(
-          caregiverCpimsId: result['caregiver_cpims_id'] as String,
-          id: result['id'] as int,
-          formUuid: result['form_uuid'] as String,
-          ovcCpimsId: result['ovc_cpims_id'] as String,
-          dateOfEvent: result['date_of_event'] as String,
+          caregiverCpimsId: result['caregiver_cpims_id'] as String? ?? '',
+          id: result['id'] as int? ?? 0,
+          formUuid: result['form_uuid'] as String? ?? '',
+          ovcCpimsId: result['ovc_cpims_id'] as String? ?? '',
+          dateOfEvent: result['date_of_event'] as String? ?? '',
           services: serviceList,
-          message: result['message'] as String,
+          message: result['message'] as String? ?? '',
         ));
       }
       return unapprovedCasePlanList;
