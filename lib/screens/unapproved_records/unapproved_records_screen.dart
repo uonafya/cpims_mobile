@@ -329,7 +329,6 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       CaseLoadModel caseLoad =
           await db.getCaseLoad(int.parse(unapprovedCpt.ovcCpimsId));
       context.read<CptProvider>().updateFormUuid(unapprovedCpt.formUuid);
-      debugPrint('Unapproved CPT: ${unapprovedCpt.formUuid}');
       // Healthy Services
       CptHealthFormData cptHealtFormData =
           context.read<CptProvider>().cptHealthFormData ?? CptHealthFormData();
@@ -647,7 +646,7 @@ class UnapprovedCasePlanFormDetails extends StatelessWidget {
                 Row(
                   children: [
                     const Text(
-                      "Message",
+                      "Message here",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),

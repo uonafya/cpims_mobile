@@ -353,6 +353,9 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                       formUuid);
               if (editedFormDeleted) {
                 context.read<StatsProvider>().updateCptStats();
+                Provider.of<StatsProvider>(context, listen: false)
+                    .updateUnapprovedFormStats();
+                Navigator.pop(context);
                 Get.snackbar(
                   'Success',
                   'Successfully edited CasePlan form',
