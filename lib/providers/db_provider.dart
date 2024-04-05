@@ -802,16 +802,16 @@ class LocalDb {
   }
 
   Future<void> insertHMFFormData(
-      String? cpmisId,
-      String? caregiverCpimsId,
-      ARTTherapyHIVFormModel artTherapyHIVFormModel,
-      HIVVisitationFormModel hivVisitationFormModel,
-      String? uuid,
-      String? startTimeInterview,
-      String? formType,
-      bool? isRejected,
-      String? rejectedMessage,
-      ) async {
+    String? cpmisId,
+    String? caregiverCpimsId,
+    ARTTherapyHIVFormModel artTherapyHIVFormModel,
+    HIVVisitationFormModel hivVisitationFormModel,
+    String? uuid,
+    String? startTimeInterview,
+    String? formType,
+    bool? isRejected,
+    String? rejectedMessage,
+  ) async {
     final db = await instance.database;
     await insertAppFormMetaData(uuid, startTimeInterview, formType);
     await db.insert(
@@ -860,6 +860,22 @@ class LocalDb {
         'rejected': isRejected,
       },
     );
+    if (isRejected == true) {
+      var dio = Dio();
+      var prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getString('access');
+      String bearerAuth = "Bearer $accessToken";
+
+      var updateUpstreamEndpoint = "${cpimsApiUrl}mobile/record_saved";
+      var response = await dio.post(updateUpstreamEndpoint,
+          data: {"record_id": uuid, "saved": 1, "form_type": "hmf"},
+          options: Options(headers: {"Authorization": bearerAuth}));
+      if (response.statusCode == 200) {
+        debugPrint("Data sent successfully");
+      } else {
+        debugPrint("Data not sent");
+      }
+    }
   }
 
   // todo check on this function
@@ -869,7 +885,8 @@ class LocalDb {
       final db = await LocalDb.instance.database;
 
       final hmfFormData = await db.query(HMForms,
-          where: 'form_date_synced IS NULL OR form_date_synced = ""');
+          where:
+              'form_date_synced IS NULL OR form_date_synced = "" AND rejected = false');
 
       List<Map<String, dynamic>> updatedHMFFormData = [];
 
@@ -879,9 +896,9 @@ class LocalDb {
 
         // Loop through the formData map and apply modifications
         mutableHmfDataRow.forEach((key, value) {
-          if (value == "Yes") {
+          if ((value == "Yes") || (value == true)) {
             mutableHmfDataRow[key] = convertBooleanStringToDBBoolen("Yes");
-          } else if (value == "No") {
+          } else if ((value == "No") || (value == false)) {
             mutableHmfDataRow[key] = convertBooleanStringToDBBoolen("No");
           }
         });
@@ -936,9 +953,10 @@ class LocalDb {
 // Function to convert "Yes" to "AYES" and "No" to "ANO" for specific field
   void _convertYesNoToAYESANO(Map<String, dynamic> data, String fieldName) {
     if (data.containsKey(fieldName) && data[fieldName] is String) {
-      if (data[fieldName].toLowerCase() == 'yes') {
+      if (data[fieldName].toLowerCase() == 'yes' || data[fieldName] == true) {
         data[fieldName] = 'AYES';
-      } else if (data[fieldName].toLowerCase() == 'no') {
+      } else if (data[fieldName].toLowerCase() == 'no' ||
+          data[fieldName] == false) {
         data[fieldName] = 'ANO';
       }
     }
@@ -947,10 +965,22 @@ class LocalDb {
   Future<int> countHMFFormData() async {
     try {
       final db = await LocalDb.instance.database;
-
       final count = Sqflite.firstIntValue(await db.rawQuery(
-          'SELECT COUNT(*) FROM $HMForms WHERE form_date_synced IS NULL OR form_date_synced = ""'));
+          'SELECT COUNT(*) FROM "$HMForms" WHERE ("form_date_synced" IS NULL OR "form_date_synced" = "") AND "rejected" = 0'));
+      return count ?? 0;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error counting HMF form data: $e");
+      }
+      return 0;
+    }
+  }
 
+  Future<int> countUnApprovedHMFFormData() async {
+    try {
+      final db = await LocalDb.instance.database;
+      final count = Sqflite.firstIntValue(await db.rawQuery(
+          'SELECT COUNT(*) FROM "$HMForms" WHERE ("form_date_synced" IS NULL OR "form_date_synced" = "") AND "rejected" = 1'));
       return count ?? 0;
     } catch (e) {
       if (kDebugMode) {
@@ -963,10 +993,8 @@ class LocalDb {
   Future<int> countHMFFormDataDistinctByCareGiver() async {
     try {
       final db = await LocalDb.instance.database;
-
       final count = Sqflite.firstIntValue(await db.rawQuery(
-          'SELECT COUNT(DISTINCT caregiver_cpims_id) FROM $HMForms WHERE form_date_synced IS NULL OR form_date_synced = ""'));
-
+          'SELECT COUNT(DISTINCT "caregiver_cpims_id") FROM "$HMForms" WHERE ("form_date_synced" IS NULL OR "form_date_synced" = "") AND "rejected" = 0'));
       return count ?? 0;
     } catch (e) {
       if (kDebugMode) {
