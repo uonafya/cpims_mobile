@@ -781,7 +781,9 @@ class LocalDb {
       HIV_MGMT_2_R TEXT,
       HIV_MGMT_2_S TEXT,
       uuid TEXT,
-      form_date_synced TEXT NULL
+      form_date_synced TEXT NULL,
+      message TEXT NULL,
+      rejected BOOLEAN 
     )
   ''';
 
@@ -800,14 +802,16 @@ class LocalDb {
   }
 
   Future<void> insertHMFFormData(
-      String cpmisId,
-      String caregiverCpimsId,
+      String? cpmisId,
+      String? caregiverCpimsId,
       ARTTherapyHIVFormModel artTherapyHIVFormModel,
       HIVVisitationFormModel hivVisitationFormModel,
-      String uuid,
-      String startTimeInterview,
-      String formType,
-      {required BuildContext context}) async {
+      String? uuid,
+      String? startTimeInterview,
+      String? formType,
+      bool? isRejected,
+      String? rejectedMessage,
+      ) async {
     final db = await instance.database;
     await insertAppFormMetaData(uuid, startTimeInterview, formType);
     await db.insert(
@@ -852,6 +856,8 @@ class LocalDb {
         'HIV_MGMT_2_S': hivVisitationFormModel.peerEducatorContact,
         'uuid': uuid,
         'form_date_synced': null,
+        'message': rejectedMessage,
+        'rejected': isRejected,
       },
     );
   }
@@ -1207,7 +1213,7 @@ class LocalDb {
             data: {
               "record_id": id,
               "saved": 1,
-              "form_type": formType == "form1a" ? "f1a" : "f1b"
+              "form_type": formType == "form1a" ? "F1A" : "F1B"
             },
             options: Options(headers: {"Authorization": bearerAuth}));
         if (response.statusCode == 200) {

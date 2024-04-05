@@ -16,6 +16,7 @@ class HIVManagementFormProvider extends ChangeNotifier {
   HIVVisitationFormModel get hIVVisitationFormModel => _hivVisitationFormModel;
 
   final CaseLoadModel _caseLoadModel = CaseLoadModel();
+
   CaseLoadModel get caseLoadModel => _caseLoadModel;
 
   // update artTherapy Info Model
@@ -43,9 +44,9 @@ class HIVManagementFormProvider extends ChangeNotifier {
   }
 
   // submit form
-  Future<void> submitHIVManagementForm(
-      String? cpimsID,String? caregiverCpimsId,  uuid, startTimeInterview, formType,
-      {required BuildContext context}) async {
+  Future<void> submitHIVManagementForm(String? cpimsID,
+      String? caregiverCpimsId, uuid, startTimeInterview, formType,
+      ) async {
     try {
       final formData = {
         'ovc_cpims_id': cpimsID,
@@ -71,7 +72,8 @@ class HIVManagementFormProvider extends ChangeNotifier {
         uuid,
         startTimeInterview,
         formType,
-        context: context,
+        false,
+        null,
       );
 
       //reset form Data

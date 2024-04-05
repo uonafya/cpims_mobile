@@ -77,7 +77,7 @@ class UnapprovedCptProvider {
           data: {
             "record_id": unapprovedCasePlan.formUuid,
             "saved": 1,
-            "form_type": "caseplan"
+            "form_type": "cpt"
           },
         );
         if (response.statusCode == 200) {
