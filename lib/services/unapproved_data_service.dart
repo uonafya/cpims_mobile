@@ -89,62 +89,61 @@ class UnapprovedDataService {
         }
       } else if (endpoint == endpoints[4]) {
         for (var map in jsonData) {
-          print("Unapproved HMF: $map");
           final unapprovedHmf = UnApprovedHivManagementForm.fromJson(map);
-          final artTherapyHIVFormModel = ARTTherapyHIVFormModel(
-            dateHIVConfirmedPositive: unapprovedHmf.hivMgmt1A ?? "",
-            dateTreatmentInitiated: unapprovedHmf.hivMgmt1B ?? "",
-            baselineHEILoad: unapprovedHmf.hivMgmt1C ?? "",
-            dateStartedFirstLine: unapprovedHmf.hivMgmt1D ?? "",
-            arvsSubWithFirstLine: unapprovedHmf.hivMgmt1E.toString() ?? "",
-            arvsSubWithFirstLineDate: unapprovedHmf.hivMgmt1EDate ?? "",
-            switchToSecondLine: unapprovedHmf.hivMgmt1F.toString() ?? "",
-            switchToSecondLineDate: unapprovedHmf.hivMgmt1FDate ?? "",
-            switchToThirdLine: unapprovedHmf.hivMgmt1G.toString() ?? "",
-            switchToThirdLineDate: unapprovedHmf.hivMgmt1GDate ?? "",
-          );
+          // final artTherapyHIVFormModel = ARTTherapyHIVFormModel(
+          //   dateHIVConfirmedPositive: unapprovedHmf.hivMgmt1A ?? "",
+          //   dateTreatmentInitiated: unapprovedHmf.hivMgmt1B ?? "",
+          //   baselineHEILoad: unapprovedHmf.hivMgmt1C ?? "",
+          //   dateStartedFirstLine: unapprovedHmf.hivMgmt1D ?? "",
+          //   arvsSubWithFirstLine: unapprovedHmf.hivMgmt1E.toString() ?? "",
+          //   arvsSubWithFirstLineDate: unapprovedHmf.hivMgmt1EDate ?? "",
+          //   switchToSecondLine: unapprovedHmf.hivMgmt1F.toString() ?? "",
+          //   switchToSecondLineDate: unapprovedHmf.hivMgmt1FDate ?? "",
+          //   switchToThirdLine: unapprovedHmf.hivMgmt1G.toString() ?? "",
+          //   switchToThirdLineDate: unapprovedHmf.hivMgmt1GDate ?? "",
+          // );
+          //
+          // final hivVisitationFormModel = HIVVisitationFormModel(
+          //   visitDate: unapprovedHmf.hivMgmt2A ?? "",
+          //   durationOnARTs: unapprovedHmf.hivMgmt2B.toString() ?? "",
+          //   height: unapprovedHmf.hivMgmt2C.toString() ?? "",
+          //   mUAC: unapprovedHmf.hivMgmt2D ?? "",
+          //   arvDrugsAdherence: unapprovedHmf.hivMgmt2E ?? "",
+          //   arvDrugsDuration: unapprovedHmf.hivMgmt2F ?? "",
+          //   adherenceCounseling: unapprovedHmf.hivMgmt2G ?? "",
+          //   treatmentSupporter: unapprovedHmf.hivMgmt2H2 ?? "",
+          //   treatmentSupporterSex: unapprovedHmf.hivMgmt2H3 ?? "",
+          //   treatmentSupporterAge: unapprovedHmf.hivMgmt2H4.toString() ?? "",
+          //   treatmentSupporterHIVStatus: unapprovedHmf.hivMgmt2H5 ?? "",
+          //   viralLoadResults: unapprovedHmf.hivMgmt2I1.toString() ?? "",
+          //   labInvestigationsDate: unapprovedHmf.hivMgmt2IDate ?? "",
+          //   detectableViralLoadInterventions: unapprovedHmf.hivMgmt2J ?? "",
+          //   disclosure: unapprovedHmf.hivMgmt2K ?? "",
+          //   mUACScore: unapprovedHmf.hivMgmt2L1 ?? "",
+          //   zScore: unapprovedHmf.hivMgmt2L2 ?? "",
+          //   nutritionalSupport:
+          //       unapprovedHmf.hivMgmt2M?.whereType<String>().toList() ?? [],
+          //   supportGroupStatus: unapprovedHmf.hivMgmt2N ?? "",
+          //   nhifEnrollment: unapprovedHmf.hivMgmt2O1.toString() ?? "",
+          //   nhifEnrollmentStatus: unapprovedHmf.hivMgmt2O2 ?? "",
+          //   referralServices: unapprovedHmf.hivMgmt2P ?? "",
+          //   nextAppointmentDate: unapprovedHmf.hivMgmt2Q ?? "",
+          //   peerEducatorName: unapprovedHmf.hivMgmt2R ?? "",
+          //   peerEducatorContact: unapprovedHmf.hivMgmt2S ?? "",
+          // );
 
-          final hivVisitationFormModel = HIVVisitationFormModel(
-            visitDate: unapprovedHmf.hivMgmt2A ?? "",
-            durationOnARTs: unapprovedHmf.hivMgmt2B.toString() ?? "",
-            height: unapprovedHmf.hivMgmt2C.toString() ?? "",
-            mUAC: unapprovedHmf.hivMgmt2D ?? "",
-            arvDrugsAdherence: unapprovedHmf.hivMgmt2E ?? "",
-            arvDrugsDuration: unapprovedHmf.hivMgmt2F ?? "",
-            adherenceCounseling: unapprovedHmf.hivMgmt2G ?? "",
-            treatmentSupporter: unapprovedHmf.hivMgmt2H2 ?? "",
-            treatmentSupporterSex: unapprovedHmf.hivMgmt2H3 ?? "",
-            treatmentSupporterAge: unapprovedHmf.hivMgmt2H4.toString() ?? "",
-            treatmentSupporterHIVStatus: unapprovedHmf.hivMgmt2H5 ?? "",
-            viralLoadResults: unapprovedHmf.hivMgmt2I1.toString() ?? "",
-            labInvestigationsDate: unapprovedHmf.hivMgmt2IDate ?? "",
-            detectableViralLoadInterventions: unapprovedHmf.hivMgmt2J ?? "",
-            disclosure: unapprovedHmf.hivMgmt2K ?? "",
-            mUACScore: unapprovedHmf.hivMgmt2L1 ?? "",
-            zScore: unapprovedHmf.hivMgmt2L2 ?? "",
-            nutritionalSupport:
-                unapprovedHmf.hivMgmt2M?.whereType<String>().toList() ?? [],
-            supportGroupStatus: unapprovedHmf.hivMgmt2N ?? "",
-            nhifEnrollment: unapprovedHmf.hivMgmt2O1.toString() ?? "",
-            nhifEnrollmentStatus: unapprovedHmf.hivMgmt2O2 ?? "",
-            referralServices: unapprovedHmf.hivMgmt2P ?? "",
-            nextAppointmentDate: unapprovedHmf.hivMgmt2Q ?? "",
-            peerEducatorName: unapprovedHmf.hivMgmt2R ?? "",
-            peerEducatorContact: unapprovedHmf.hivMgmt2S ?? "",
-          );
-
-          db.insertHMFFormData(
-            unapprovedHmf.ovcCpimsId.toString(),
-            null,
-            artTherapyHIVFormModel,
-            hivVisitationFormModel,
-            unapprovedHmf.appFormMetadata?.formId,
-            unapprovedHmf.appFormMetadata?.startOfInterview,
-            unapprovedHmf.appFormMetadata?.formType,
-            true,
-            //
-            null, // rejectedMessage is null
-          );
+          // db.insertHMFFormData(
+          //   unapprovedHmf.ovcCpimsId.toString(),
+          //   null,
+          //   artTherapyHIVFormModel,
+          //   hivVisitationFormModel,
+          //   unapprovedHmf.appFormMetadata?.formId,
+          //   unapprovedHmf.appFormMetadata?.startOfInterview,
+          //   unapprovedHmf.appFormMetadata?.formType,
+          //   true,
+          //   //
+          //   null, // rejectedMessage is null
+          // );
         }
       } else if (endpoint == endpoints[5]) {
         //fetch unapproved hrs
@@ -210,6 +209,16 @@ class UnapprovedDataService {
     List<UnapprovedCasePlanModel> unapprovedCptList =
         await unapprovedCpt.getAllUnapprovedCasePlanData(localdb);
     return unapprovedCptList;
+  }
+
+  static Future<List<UnApprovedHivManagementForm>> fetchRejectedHMFForms() async {
+    final db = LocalDb.instance;
+    List<Map<String, dynamic>> maps = await db.fetchRejectedHMFFormData();
+    List<UnApprovedHivManagementForm> unapprovedHmfData = [];
+    for (var map in maps) {
+      unapprovedHmfData.add(UnApprovedHivManagementForm.fromJson(map));
+    }
+    return unapprovedHmfData;
   }
 
   static Future<bool> deleteUnapprovedForm1(int id) async {

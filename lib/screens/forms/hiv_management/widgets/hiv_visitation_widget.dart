@@ -23,6 +23,7 @@ class HIVVisitationWidget extends StatefulWidget {
 
 class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   Set<String> selectedOptions = <String>{};
+  late final HivManagementFormModel hivVisitationFormData;
 
   String visitDate = '';
   String durationOnARTs = '';
@@ -58,39 +59,45 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   }
 
   void handleOnSave() {
-    final formData = HIVVisitationFormModel(
-      visitDate: visitDate,
-      durationOnARTs: durationOnARTs,
-      height: height,
-      mUAC: mUAC,
-      arvDrugsAdherence:
-          arvDrugsAdherence.split(' ').where((s) => s.length > 1).join(' '),
-      arvDrugsDuration: arvDrugsDuration,
-      adherenceCounseling: adherenceCounseling,
-      treatmentSupporter: treatmentSupporter,
-      treatmentSupporterSex: treatmentSupporterSex,
-      treatmentSupporterAge: treatmentSupporterAge,
-      treatmentSupporterHIVStatus: treatmentSupporterHIVStatus,
-      viralLoadResults: viralLoadResults,
-      labInvestigationsDate: labInvestigationsDate,
-      detectableViralLoadInterventions: detectableViralLoadInterventions,
-      disclosure: disclosure,
-      mUACScore: mUACScore,
-      zScore: zScore,
-      nutritionalSupport: nutritionalSupport.toList(),
-      supportGroupStatus: supportGroupStatus,
-      nhifEnrollment: nhifEnrollment,
-      nhifEnrollmentStatus: nhifEnrollmentStatus,
-      referralServices: referralServices,
-      nextAppointmentDate: nextAppointmentDate,
-      peerEducatorName: peerEducatorName,
-      peerEducatorContact: peerEducatorContact,
-    );
+    // Get the existing instance of HivManagementFormModel from the provider
+    final formModel =
+        Provider.of<HIVManagementFormProvider>(context, listen: false)
+            .hivManagementFormModel;
 
+    // Update the fields of the existing formModel instance
+    formModel.visitDate = visitDate;
+    formModel.durationOnARTs = durationOnARTs;
+    formModel.height = height;
+    formModel.mUAC = mUAC;
+    formModel.arvDrugsAdherence =
+        arvDrugsAdherence.split(' ').where((s) => s.length > 1).join(' ');
+    formModel.arvDrugsDuration = arvDrugsDuration;
+    formModel.adherenceCounseling = adherenceCounseling;
+    formModel.treatmentSupporter = treatmentSupporter;
+    formModel.treatmentSupporterSex = treatmentSupporterSex;
+    formModel.treatmentSupporterAge = treatmentSupporterAge;
+    formModel.treatmentSupporterHIVStatus = treatmentSupporterHIVStatus;
+    formModel.viralLoadResults = viralLoadResults;
+    formModel.labInvestigationsDate = labInvestigationsDate;
+    formModel.detectableViralLoadInterventions =
+        detectableViralLoadInterventions;
+    formModel.disclosure = disclosure;
+    formModel.mUACScore = mUACScore;
+    formModel.zScore = zScore;
+    formModel.nutritionalSupport = nutritionalSupport.toList();
+    formModel.supportGroupStatus = supportGroupStatus;
+    formModel.nhifEnrollment = nhifEnrollment;
+    formModel.nhifEnrollmentStatus = nhifEnrollmentStatus;
+    formModel.referralServices = referralServices;
+    formModel.nextAppointmentDate = nextAppointmentDate;
+    formModel.peerEducatorName = peerEducatorName;
+    formModel.peerEducatorContact = peerEducatorContact;
+
+    // Notify the provider about the changes
     Provider.of<HIVManagementFormProvider>(context, listen: false)
-        .updateHIVVisitationModel(formData);
-    final isComplete = areAllFieldsFilled();
+        .notifyListeners();
 
+    final isComplete = areAllFieldsFilled();
     final formCompletionStatus = context.read<FormCompletionStatusProvider>();
 
     if (isComplete) {
@@ -100,7 +107,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
     }
 
     if (kDebugMode) {
-      print(formData.toJson());
+      print(formModel.toJson());
     }
   }
 
@@ -139,9 +146,17 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    hivVisitationFormData =
+        Provider.of<HIVManagementFormProvider>(context, listen: false)
+            .hivManagementFormModel;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final hivVisitationFormData =
-        Provider.of<HIVManagementFormProvider>(context).hIVVisitationFormModel;
+    // final hivVisitationFormData =
+    //     Provider.of<HIVManagementFormProvider>(context).hivManagementFormModel;
     return StepsWrapper(
       title: '2. Visitation',
       children: [
@@ -454,7 +469,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               initialValue: hivVisitationFormData.viralLoadResults,
               onChanged: (val) {
                 viralLoadResults = val;
-                if(viralLoadResults.isEmpty){
+                if (viralLoadResults.isEmpty) {
                   labInvestigationsDate = '';
                 }
                 handleOnSave();
@@ -466,7 +481,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
           height: 15,
         ),
         FormSection(
-          isVisibleCondition: (){
+          isVisibleCondition: () {
             return hivVisitationFormData.viralLoadResults.isNotEmpty;
           },
           children: [

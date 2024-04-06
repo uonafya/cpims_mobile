@@ -21,6 +21,7 @@ class ARTTherapyInfoWidget extends StatefulWidget {
 }
 
 class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
+  late final HivManagementFormModel artTherapyInfoFormData;
   String dateHIVConfirmedPositive = '';
   String dateTreatmentInitiated = '';
   String baselineHEILoad = '';
@@ -33,20 +34,26 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
   String switchToThirdLineDate = '';
 
   void handleOnSave() {
-    final formData = ARTTherapyHIVFormModel(
-      dateHIVConfirmedPositive: dateHIVConfirmedPositive,
-      dateTreatmentInitiated: dateTreatmentInitiated,
-      baselineHEILoad: baselineHEILoad,
-      dateStartedFirstLine: dateStartedFirstLine,
-      arvsSubWithFirstLine: arvsSubWithFirstLine,
-      arvsSubWithFirstLineDate: arvsSubWithFirstLineDate,
-      switchToSecondLine: switchToSecondLine,
-      switchToSecondLineDate: switchToSecondLineDate,
-      switchToThirdLine: switchToThirdLine,
-      switchToThirdLineDate: switchToThirdLineDate,
-    );
+    // Get the existing instance of HivManagementFormModel from the provider
+    final formModel =
+        Provider.of<HIVManagementFormProvider>(context, listen: false)
+            .hivManagementFormModel;
+
+    // Update the fields of the existing formModel instance
+    formModel.dateHIVConfirmedPositive = dateHIVConfirmedPositive;
+    formModel.dateTreatmentInitiated = dateTreatmentInitiated;
+    formModel.baselineHEILoad = baselineHEILoad;
+    formModel.dateStartedFirstLine = dateStartedFirstLine;
+    formModel.arvsSubWithFirstLine = arvsSubWithFirstLine;
+    formModel.arvsSubWithFirstLineDate = arvsSubWithFirstLineDate;
+    formModel.switchToSecondLine = switchToSecondLine;
+    formModel.switchToSecondLineDate = switchToSecondLineDate;
+    formModel.switchToThirdLine = switchToThirdLine;
+    formModel.switchToThirdLineDate = switchToThirdLineDate;
+
+    // Notify the provider about the changes
     Provider.of<HIVManagementFormProvider>(context, listen: false)
-        .updateARTTheraphyHIVModel(formData);
+        .notifyListeners();
 
     final isComplete = areAllFieldsFilled();
     final formCompletionStatus = context.read<FormCompletionStatusProvider>();
@@ -75,9 +82,17 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    artTherapyInfoFormData =
+        Provider.of<HIVManagementFormProvider>(context, listen: false)
+            .hivManagementFormModel;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final artTherapyInfoFormData =
-        Provider.of<HIVManagementFormProvider>(context).artTherapyFormModel;
+    // final artTherapyInfoFormData =
+    //     Provider.of<HIVManagementFormProvider>(context).hivManagementFormModel;
     return StepsWrapper(
       title: '1. ARV Therapy Info',
       children: [
@@ -211,20 +226,21 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                 });
               },
             ),
-            if(arvsSubWithFirstLine == 'Yes')
-            DateTextField(
-              label: artTherapyInfoFormData.arvsSubWithFirstLineDate.isNotEmpty
-                  ? artTherapyInfoFormData.arvsSubWithFirstLineDate
-                  : 'If Yes, Date',
-              enabled: arvsSubWithFirstLine == "Yes",
-              onDateSelected: (date) {
-                setState(() {
-                  arvsSubWithFirstLineDate = formattedDate(date!);
-                  handleOnSave();
-                });
-              },
-              identifier: DateTextFieldIdentifier.dateOfAssessment,
-            ),
+            if (arvsSubWithFirstLine == 'Yes')
+              DateTextField(
+                label:
+                    artTherapyInfoFormData.arvsSubWithFirstLineDate.isNotEmpty
+                        ? artTherapyInfoFormData.arvsSubWithFirstLineDate
+                        : 'If Yes, Date',
+                enabled: arvsSubWithFirstLine == "Yes",
+                onDateSelected: (date) {
+                  setState(() {
+                    arvsSubWithFirstLineDate = formattedDate(date!);
+                    handleOnSave();
+                  });
+                },
+                identifier: DateTextFieldIdentifier.dateOfAssessment,
+              ),
           ],
         ),
         const SizedBox(
@@ -256,20 +272,20 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                 });
               },
             ),
-            if(switchToSecondLine == 'Yes')
-            DateTextField(
-              label: artTherapyInfoFormData.switchToSecondLineDate.isNotEmpty
-                  ? artTherapyInfoFormData.switchToSecondLineDate
-                  : 'If Yes, Date',
-              enabled: switchToSecondLine == "Yes",
-              onDateSelected: (date) {
-                setState(() {
-                  switchToSecondLineDate = formattedDate(date!);
-                  handleOnSave();
-                });
-              },
-              identifier: DateTextFieldIdentifier.dateOfAssessment,
-            ),
+            if (switchToSecondLine == 'Yes')
+              DateTextField(
+                label: artTherapyInfoFormData.switchToSecondLineDate.isNotEmpty
+                    ? artTherapyInfoFormData.switchToSecondLineDate
+                    : 'If Yes, Date',
+                enabled: switchToSecondLine == "Yes",
+                onDateSelected: (date) {
+                  setState(() {
+                    switchToSecondLineDate = formattedDate(date!);
+                    handleOnSave();
+                  });
+                },
+                identifier: DateTextFieldIdentifier.dateOfAssessment,
+              ),
           ],
         ),
         const SizedBox(
@@ -301,20 +317,20 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                 });
               },
             ),
-            if(switchToThirdLine == 'Yes')
-            DateTextField(
-              label: artTherapyInfoFormData.switchToThirdLineDate.isNotEmpty
-                  ? artTherapyInfoFormData.switchToThirdLineDate
-                  : 'If Yes, Date',
-              enabled: switchToThirdLine == "Yes",
-              onDateSelected: (date) {
-                setState(() {
-                  switchToThirdLineDate = formattedDate(date!);
-                  handleOnSave();
-                });
-              },
-              identifier: DateTextFieldIdentifier.dateOfAssessment,
-            ),
+            if (switchToThirdLine == 'Yes')
+              DateTextField(
+                label: artTherapyInfoFormData.switchToThirdLineDate.isNotEmpty
+                    ? artTherapyInfoFormData.switchToThirdLineDate
+                    : 'If Yes, Date',
+                enabled: switchToThirdLine == "Yes",
+                onDateSelected: (date) {
+                  setState(() {
+                    switchToThirdLineDate = formattedDate(date!);
+                    handleOnSave();
+                  });
+                },
+                identifier: DateTextFieldIdentifier.dateOfAssessment,
+              ),
           ],
         ),
       ],

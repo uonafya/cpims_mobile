@@ -7,52 +7,41 @@ import 'package:flutter/material.dart';
 import '../utils/strings.dart';
 
 class HIVManagementFormProvider extends ChangeNotifier {
-  ARTTherapyHIVFormModel _artTherapyFormModel = ARTTherapyHIVFormModel();
+  HivManagementFormModel _hivManagementFormModel = HivManagementFormModel();
 
-  ARTTherapyHIVFormModel get artTherapyFormModel => _artTherapyFormModel;
-
-  HIVVisitationFormModel _hivVisitationFormModel = HIVVisitationFormModel();
-
-  HIVVisitationFormModel get hIVVisitationFormModel => _hivVisitationFormModel;
+  HivManagementFormModel get hivManagementFormModel => _hivManagementFormModel;
 
   final CaseLoadModel _caseLoadModel = CaseLoadModel();
 
   CaseLoadModel get caseLoadModel => _caseLoadModel;
 
-  // update artTherapy Info Model
-  void updateARTTheraphyHIVModel(ARTTherapyHIVFormModel formModel) {
-    _artTherapyFormModel = formModel;
+  void updateHIVVisitationModel(HivManagementFormModel formModel) {
+    _hivManagementFormModel = formModel;
     notifyListeners();
     if (kDebugMode) {
-      print(_artTherapyFormModel.toJson());
-    }
-  }
-
-  void updateHIVVisitationModel(HIVVisitationFormModel formModel) {
-    _hivVisitationFormModel = formModel;
-    notifyListeners();
-    if (kDebugMode) {
-      print(_hivVisitationFormModel.toJson());
+      print(_hivManagementFormModel.toJson());
     }
   }
 
   // clear form data
   void clearForms() {
-    _artTherapyFormModel = ARTTherapyHIVFormModel();
-    _hivVisitationFormModel = HIVVisitationFormModel();
+    _hivManagementFormModel = HivManagementFormModel();
     notifyListeners();
   }
 
   // submit form
-  Future<void> submitHIVManagementForm(String? cpimsID,
-      String? caregiverCpimsId, uuid, startTimeInterview, formType,
-      ) async {
+  Future<void> submitHIVManagementForm(
+    String? cpimsID,
+    String? caregiverCpimsId,
+    uuid,
+    startTimeInterview,
+    formType,
+  ) async {
     try {
       final formData = {
         'ovc_cpims_id': cpimsID,
         'caregiver_cpims_id': caregiverCpimsId,
-        ..._artTherapyFormModel.toJson(),
-        ..._hivVisitationFormModel.toJson(),
+        ..._hivManagementFormModel.toJson()
       };
 
       if (kDebugMode) {
@@ -60,15 +49,14 @@ class HIVManagementFormProvider extends ChangeNotifier {
       }
 
       if (kDebugMode) {
-        print(_hivVisitationFormModel.nutritionalSupport);
+        print(_hivManagementFormModel.nutritionalSupport);
       }
 
       // save data locally
       await LocalDb.instance.insertHMFFormData(
         cpimsID!,
         caregiverCpimsId!,
-        _artTherapyFormModel,
-        _hivVisitationFormModel,
+        _hivManagementFormModel,
         uuid,
         startTimeInterview,
         formType,

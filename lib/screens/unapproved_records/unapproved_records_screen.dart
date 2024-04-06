@@ -14,6 +14,7 @@ import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
 import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/forms/hiv_management/unapproved/UnApprovedHmfModel.dart';
 import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
@@ -70,7 +71,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
   List<UnapprovedForm1DataModel> unapprovedForm1AData = [];
   List<UnapprovedForm1DataModel> unapprovedForm1BData = [];
   List<UnapprovedCasePlanModel> unapprovedCaseplanData = [];
-  // List<UnapprovedHMFModel>  unapprovedHMFData = [];
+  List<UnApprovedHivManagementForm> unapprovedHMFData = [];
+
   // List<UnapprovedHRSModel>  unapprovedHRSData = [];
 
   void deleteUnapprovedForm1(int id) async {
@@ -106,10 +108,13 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
         await UnapprovedDataService.fetchLocalUnapprovedForm1BData();
     final List<UnapprovedCasePlanModel> unapprovedCaseplanRecords =
         await UnapprovedDataService.fetchLocalUnapprovedCasePlanData();
+    final List<UnApprovedHivManagementForm> unapprovedHMFRecords =
+        await UnapprovedDataService.fetchRejectedHMFForms();
     setState(() {
       unapprovedForm1AData = form1ARecords;
       unapprovedForm1BData = form1BRecords;
       unapprovedCaseplanData = unapprovedCaseplanRecords;
+      unapprovedHMFData = unapprovedHMFRecords;
     });
   }
 
@@ -424,6 +429,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           .updateUnapprovedFormStats();
     }
 
+    void editHMF(UnApprovedHivManagementForm unapprovedHMF) async {}
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -465,7 +472,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
               ),
             if (selectedRecord == "CPARA")
               const Expanded(child: UnnaprovedCparaScreen()),
-
+            if (selectedRecord == "HMF")
+              Text("Unapproved HMF IS ${unapprovedHMFData.toString()}"),
+            if (selectedRecord == "HRS") Text("Unapproved HRS"),
             if (selectedRecord == unapprovedRecords[0])
               Expanded(
                 child: FormTab(

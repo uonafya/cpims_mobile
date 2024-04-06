@@ -804,8 +804,7 @@ class LocalDb {
   Future<void> insertHMFFormData(
     String? cpmisId,
     String? caregiverCpimsId,
-    ARTTherapyHIVFormModel artTherapyHIVFormModel,
-    HIVVisitationFormModel hivVisitationFormModel,
+  HivManagementFormModel hivManagementFormModel,
     String? uuid,
     String? startTimeInterview,
     String? formType,
@@ -819,41 +818,41 @@ class LocalDb {
       {
         'ovc_cpims_id': cpmisId,
         'caregiver_cpims_id': caregiverCpimsId,
-        'HIV_MGMT_1_A': artTherapyHIVFormModel.dateHIVConfirmedPositive,
-        'HIV_MGMT_1_B': artTherapyHIVFormModel.dateTreatmentInitiated,
-        'HIV_MGMT_1_C': artTherapyHIVFormModel.baselineHEILoad,
-        'HIV_MGMT_1_D': artTherapyHIVFormModel.dateStartedFirstLine,
-        'HIV_MGMT_1_E': artTherapyHIVFormModel.arvsSubWithFirstLine,
-        'HIV_MGMT_1_E_DATE': artTherapyHIVFormModel.arvsSubWithFirstLineDate,
-        'HIV_MGMT_1_F': artTherapyHIVFormModel.switchToSecondLine,
-        'HIV_MGMT_1_F_DATE': artTherapyHIVFormModel.switchToSecondLineDate,
-        'HIV_MGMT_1_G': artTherapyHIVFormModel.switchToThirdLine,
-        'HIV_MGMT_1_G_DATE': artTherapyHIVFormModel.switchToThirdLineDate,
-        'HIV_MGMT_2_A': hivVisitationFormModel.visitDate,
-        'HIV_MGMT_2_B': hivVisitationFormModel.durationOnARTs,
-        'HIV_MGMT_2_C': hivVisitationFormModel.height,
-        'HIV_MGMT_2_D': hivVisitationFormModel.mUAC,
-        'HIV_MGMT_2_E': hivVisitationFormModel.arvDrugsAdherence,
-        'HIV_MGMT_2_F': hivVisitationFormModel.arvDrugsDuration,
-        'HIV_MGMT_2_G': hivVisitationFormModel.adherenceCounseling,
-        'HIV_MGMT_2_H_2': hivVisitationFormModel.treatmentSupporter,
-        'HIV_MGMT_2_H_3': hivVisitationFormModel.treatmentSupporterSex,
-        'HIV_MGMT_2_H_4': hivVisitationFormModel.treatmentSupporterAge,
-        'HIV_MGMT_2_H_5': hivVisitationFormModel.treatmentSupporterHIVStatus,
-        'HIV_MGMT_2_I_1': hivVisitationFormModel.viralLoadResults,
-        'HIV_MGMT_2_I_DATE': hivVisitationFormModel.labInvestigationsDate,
-        'HIV_MGMT_2_J': hivVisitationFormModel.detectableViralLoadInterventions,
-        'HIV_MGMT_2_K': hivVisitationFormModel.disclosure,
-        'HIV_MGMT_2_L_1': hivVisitationFormModel.mUACScore,
-        'HIV_MGMT_2_L_2': hivVisitationFormModel.zScore,
-        'HIV_MGMT_2_M': hivVisitationFormModel.nutritionalSupport.join(', '),
-        'HIV_MGMT_2_N': hivVisitationFormModel.supportGroupStatus,
-        'HIV_MGMT_2_O_1': hivVisitationFormModel.nhifEnrollment,
-        'HIV_MGMT_2_O_2': hivVisitationFormModel.nhifEnrollmentStatus,
-        'HIV_MGMT_2_P': hivVisitationFormModel.referralServices,
-        'HIV_MGMT_2_Q': hivVisitationFormModel.nextAppointmentDate,
-        'HIV_MGMT_2_R': hivVisitationFormModel.peerEducatorName,
-        'HIV_MGMT_2_S': hivVisitationFormModel.peerEducatorContact,
+        'HIV_MGMT_1_A': hivManagementFormModel.dateHIVConfirmedPositive,
+        'HIV_MGMT_1_B': hivManagementFormModel.dateTreatmentInitiated,
+        'HIV_MGMT_1_C': hivManagementFormModel.baselineHEILoad,
+        'HIV_MGMT_1_D': hivManagementFormModel.dateStartedFirstLine,
+        'HIV_MGMT_1_E': hivManagementFormModel.arvsSubWithFirstLine,
+        'HIV_MGMT_1_E_DATE': hivManagementFormModel.arvsSubWithFirstLineDate,
+        'HIV_MGMT_1_F': hivManagementFormModel.switchToSecondLine,
+        'HIV_MGMT_1_F_DATE': hivManagementFormModel.switchToSecondLineDate,
+        'HIV_MGMT_1_G': hivManagementFormModel.switchToThirdLine,
+        'HIV_MGMT_1_G_DATE': hivManagementFormModel.switchToThirdLineDate,
+        'HIV_MGMT_2_A': hivManagementFormModel.visitDate,
+        'HIV_MGMT_2_B': hivManagementFormModel.durationOnARTs,
+        'HIV_MGMT_2_C': hivManagementFormModel.height,
+        'HIV_MGMT_2_D': hivManagementFormModel.mUAC,
+        'HIV_MGMT_2_E': hivManagementFormModel.arvDrugsAdherence,
+        'HIV_MGMT_2_F': hivManagementFormModel.arvDrugsDuration,
+        'HIV_MGMT_2_G': hivManagementFormModel.adherenceCounseling,
+        'HIV_MGMT_2_H_2': hivManagementFormModel.treatmentSupporter,
+        'HIV_MGMT_2_H_3': hivManagementFormModel.treatmentSupporterSex,
+        'HIV_MGMT_2_H_4': hivManagementFormModel.treatmentSupporterAge,
+        'HIV_MGMT_2_H_5': hivManagementFormModel.treatmentSupporterHIVStatus,
+        'HIV_MGMT_2_I_1': hivManagementFormModel.viralLoadResults,
+        'HIV_MGMT_2_I_DATE': hivManagementFormModel.labInvestigationsDate,
+        'HIV_MGMT_2_J': hivManagementFormModel.detectableViralLoadInterventions,
+        'HIV_MGMT_2_K': hivManagementFormModel.disclosure,
+        'HIV_MGMT_2_L_1': hivManagementFormModel.mUACScore,
+        'HIV_MGMT_2_L_2': hivManagementFormModel.zScore,
+        'HIV_MGMT_2_M': hivManagementFormModel.nutritionalSupport.join(', '),
+        'HIV_MGMT_2_N': hivManagementFormModel.supportGroupStatus,
+        'HIV_MGMT_2_O_1': hivManagementFormModel.nhifEnrollment,
+        'HIV_MGMT_2_O_2': hivManagementFormModel.nhifEnrollmentStatus,
+        'HIV_MGMT_2_P': hivManagementFormModel.referralServices,
+        'HIV_MGMT_2_Q': hivManagementFormModel.nextAppointmentDate,
+        'HIV_MGMT_2_R': hivManagementFormModel.peerEducatorName,
+        'HIV_MGMT_2_S': hivManagementFormModel.peerEducatorContact,
         'uuid': uuid,
         'form_date_synced': null,
         'message': rejectedMessage,
@@ -887,6 +886,76 @@ class LocalDb {
       final hmfFormData = await db.query(HMForms,
           where:
               'form_date_synced IS NULL OR form_date_synced = "" AND rejected = false');
+
+      List<Map<String, dynamic>> updatedHMFFormData = [];
+
+      for (Map<String, dynamic> hmfDataRow in hmfFormData) {
+        // Create a mutable copy of hmfDataRow
+        Map<String, dynamic> mutableHmfDataRow = Map.from(hmfDataRow);
+
+        // Loop through the formData map and apply modifications
+        mutableHmfDataRow.forEach((key, value) {
+          if ((value == "Yes") || (value == true)) {
+            mutableHmfDataRow[key] = convertBooleanStringToDBBoolen("Yes");
+          } else if ((value == "No") || (value == false)) {
+            mutableHmfDataRow[key] = convertBooleanStringToDBBoolen("No");
+          }
+        });
+
+        // Convert "Yes" to "AYES" and "No" to "ANO" for specific fields
+        _convertYesNoToAYESANO(mutableHmfDataRow, 'your_field_name');
+        // Add more fields if needed
+
+        String uuid = mutableHmfDataRow['uuid'];
+
+        // restructure nutrition support field
+        dynamic nutritionalSupportData = mutableHmfDataRow['HIV_MGMT_2_M'];
+
+        if (nutritionalSupportData is String) {
+          // Remove leading and trailing whitespace and split by comma and space
+          List<String> nutritionalSupportList = nutritionalSupportData
+              .trim()
+              .split(', ')
+              .map((value) => value.replaceAll("'", '')) // Remove single quotes
+              .toList();
+
+          // Update the copy of the record with the new list
+          mutableHmfDataRow['HIV_MGMT_2_M'] = nutritionalSupportList;
+        } else if (nutritionalSupportData is List<String>) {
+          // The data is already a list of strings, do nothing
+        } else {
+          // Handle other types if needed
+        }
+
+        // Fetch associated AppFormMetaData
+        final AppFormMetaData appFormMetaData = await getAppFormMetaData(uuid);
+
+        Map<String, dynamic> updatedHMFDataRow = {
+          ...mutableHmfDataRow,
+          'app_form_metadata': appFormMetaData.toJson(),
+        };
+
+        // Add the updated map to the list
+        updatedHMFFormData.add(updatedHMFDataRow);
+      }
+
+      debugPrint("Updated HMF form data: $updatedHMFFormData");
+      return updatedHMFFormData;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error fetching HMF form data: $e");
+      }
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchRejectedHMFFormData() async {
+    try {
+      final db = await LocalDb.instance.database;
+
+      final hmfFormData = await db.query(HMForms,
+          where:
+          '"form_date_synced" IS NULL OR "form_date_synced" = "" AND "rejected" = 1');
 
       List<Map<String, dynamic>> updatedHMFFormData = [];
 
