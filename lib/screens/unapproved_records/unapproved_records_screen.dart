@@ -431,6 +431,17 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
 
     void editHMF(UnApprovedHivManagementForm unapprovedHMF) async {}
 
+    void deleteUnapprovedHMF(int id) async {
+      // bool success = await UnapprovedDataService.deleteUnapprovedHMF(id);
+      // if (success) {
+      //   setState(() {
+      //     unapprovedHMFData.removeWhere((element) => element.id == id);
+      //   });
+      //   Provider.of<StatsProvider>(context, listen: false)
+      //       .updateUnapprovedFormStats();
+      // }
+    }
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -473,7 +484,10 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
             if (selectedRecord == "CPARA")
               const Expanded(child: UnnaprovedCparaScreen()),
             if (selectedRecord == "HMF")
-              Text("Unapproved HMF IS ${unapprovedHMFData.toString()}"),
+              UnapprovedHMFList(
+                  unapprovedHMFData: unapprovedHMFData,
+                  onEdit: editHMF,
+                  onDelete: deleteUnapprovedHMF),
             if (selectedRecord == "HRS") Text("Unapproved HRS"),
             if (selectedRecord == unapprovedRecords[0])
               Expanded(
@@ -1058,6 +1072,63 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
                 )),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class UnapprovedHMFList extends StatelessWidget {
+  final List<UnApprovedHivManagementForm> unapprovedHMFData;
+  final Function(UnApprovedHivManagementForm) onEdit;
+  final Function(int) onDelete;
+
+  const UnapprovedHMFList({
+    super.key,
+    required this.unapprovedHMFData,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+        child: ListView.builder(
+      itemCount: unapprovedHMFData.length,
+      itemBuilder: (BuildContext context, int index) {
+        final UnApprovedHivManagementForm unapprovedHMF =
+            unapprovedHMFData[index];
+        return UnapprovedHMFCard(
+          unapprovedHMF: unapprovedHMF,
+          onEdit: onEdit,
+          onDelete: onDelete,
+        );
+      },
+    ));
+  }
+}
+
+class UnapprovedHMFCard extends StatelessWidget {
+  final UnApprovedHivManagementForm unapprovedHMF;
+  final Function(UnApprovedHivManagementForm) onEdit;
+  final Function(int) onDelete;
+
+  const UnapprovedHMFCard({
+    super.key,
+    required this.unapprovedHMF,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: Text('CPIMS ID: ${unapprovedHMF.ovcCpimsId}'),
+        subtitle: Text('Reason For rejection: ${unapprovedHMF.message}'),
+        onTap: () {
+          // Navigate to HMF screen with prepopulated data
+          onEdit(unapprovedHMF);
+        },
       ),
     );
   }

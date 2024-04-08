@@ -952,7 +952,6 @@ class LocalDb {
   Future<List<Map<String, dynamic>>> fetchRejectedHMFFormData() async {
     try {
       final db = await LocalDb.instance.database;
-
       final hmfFormData = await db.query(HMForms,
           where:
           '"form_date_synced" IS NULL OR "form_date_synced" = "" AND "rejected" = 1');
@@ -1009,7 +1008,7 @@ class LocalDb {
         updatedHMFFormData.add(updatedHMFDataRow);
       }
 
-      debugPrint("Updated HMF form data: $updatedHMFFormData");
+      debugPrint("UnApproved HMF: $updatedHMFFormData");
       return updatedHMFFormData;
     } catch (e) {
       if (kDebugMode) {

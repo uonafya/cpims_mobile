@@ -152,4 +152,52 @@ class UnApprovedHivManagementForm extends HivManagementFormModel {
     data['app_form_metadata'] = appFormMetaData.toJson();
     return data;
   }
+
+  @override
+  String toString() {
+    return 'UnApprovedHivManagementForm('
+        'message: $message, '
+        'ovcCpimsId: $ovcCpimsId, '
+        'caregiverCpimsId: $caregiverCpimsId, '
+        'adherenceId: $adherenceId, '
+        'appFormMetaData: $appFormMetaData, '
+        'dateOfEvent: $dateOfEvent, '
+        'dateHIVConfirmedPositive: $dateHIVConfirmedPositive, '
+        'dateTreatmentInitiated: $dateTreatmentInitiated, '
+        'baselineHEILoad: $baselineHEILoad, '
+        'dateStartedFirstLine: $dateStartedFirstLine, '
+        'arvsSubWithFirstLine: $arvsSubWithFirstLine, '
+        'arvsSubWithFirstLineDate: $arvsSubWithFirstLineDate, '
+        'switchToSecondLine: $switchToSecondLine, '
+        'switchToSecondLineDate: $switchToSecondLineDate, '
+        'switchToThirdLine: $switchToThirdLine, '
+        'switchToThirdLineDate: $switchToThirdLineDate, '
+        'visitDate: $visitDate, '
+        'durationOnARTs: $durationOnARTs, '
+        'height: $height, '
+        'mUAC: $mUAC, '
+        'arvDrugsAdherence: $arvDrugsAdherence, '
+        'arvDrugsDuration: $arvDrugsDuration, '
+        'adherenceCounseling: $adherenceCounseling, '
+        'treatmentSupporter: $treatmentSupporter, '
+        'treatmentSupporterSex: $treatmentSupporterSex, '
+        'treatmentSupporterAge: $treatmentSupporterAge, '
+        'treatmentSupporterHIVStatus: $treatmentSupporterHIVStatus, '
+        'viralLoadResults: $viralLoadResults, '
+        'labInvestigationsDate: $labInvestigationsDate, '
+        'detectableViralLoadInterventions: $detectableViralLoadInterventions, '
+        'disclosure: $disclosure, '
+        'mUACScore: $mUACScore, '
+        'zScore: $zScore, '
+        'nutritionalSupport: $nutritionalSupport, '
+        'supportGroupStatus: $supportGroupStatus, '
+        'nhifEnrollment: $nhifEnrollment, '
+        'nhifEnrollmentStatus: $nhifEnrollmentStatus, '
+        'referralServices: $referralServices, '
+        'nextAppointmentDate: $nextAppointmentDate, '
+        'peerEducatorName: $peerEducatorName, '
+        'peerEducatorContact: $peerEducatorContact)';
+  }
+
+
 }

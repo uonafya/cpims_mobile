@@ -94,7 +94,7 @@ class UnapprovedDataService {
             unapprovedHmf.ovcCpimsId.toString(),
             null,
             unapprovedHmf,
-            unapprovedHmf.appFormMetaData.formId,
+            unapprovedHmf.adherenceId,
             unapprovedHmf.appFormMetaData.startOfInterview,
             unapprovedHmf.appFormMetaData.formType,
             true,
@@ -161,6 +161,7 @@ class UnapprovedDataService {
       fetchLocalUnapprovedCasePlanData() async {
     final db = LocalDb.instance;
     final unapprovedCpt = UnapprovedCptProvider();
+    fetchRejectedHMFForms();
     var localdb = await db.database;
     List<UnapprovedCasePlanModel> unapprovedCptList =
         await unapprovedCpt.getAllUnapprovedCasePlanData(localdb);
@@ -170,6 +171,7 @@ class UnapprovedDataService {
   static Future<List<UnApprovedHivManagementForm>>
       fetchRejectedHMFForms() async {
     final db = LocalDb.instance;
+    print("Unapproved function called");
     List<Map<String, dynamic>> maps = await db.fetchRejectedHMFFormData();
     List<UnApprovedHivManagementForm> unapprovedHmfData = [];
     for (var map in maps) {
