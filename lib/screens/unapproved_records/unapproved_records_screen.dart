@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/providers/case_plan_provider.dart';
+import 'package:cpims_mobile/providers/hiv_management_form_provider.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/healthy_cpt_model.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/safe_cpt_model.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/schooled_cpt_model.dart';
@@ -14,6 +15,7 @@ import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
 import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/forms/hiv_management/screens/hiv_management_form_screen.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/unapproved/UnApprovedHmfModel.dart';
 import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
@@ -39,6 +41,7 @@ import '../forms/form1a/new/utils/form_one_a_provider.dart';
 import '../forms/form1a/utils/form_1a_options.dart';
 import '../forms/form1b/form_1B.dart';
 import '../forms/form1b/utils/form1bConstants.dart';
+import '../forms/hiv_management/models/hiv_management_form_model.dart';
 import '../homepage/provider/stats_provider.dart';
 
 class UnapprovedRecordsScreens extends StatefulWidget {
@@ -429,7 +432,61 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           .updateUnapprovedFormStats();
     }
 
-    void editHMF(UnApprovedHivManagementForm unapprovedHMF) async {}
+    void editHMF(UnApprovedHivManagementForm unapprovedHMF) async {
+      final db = LocalDb.instance;
+      CaseLoadModel caseLoad =
+          await db.getCaseLoad(int.parse(unapprovedHMF.ovcCpimsId!));
+      HivManagementFormModel hivManagementFormModel =
+          context.read<HIVManagementFormProvider>().hivManagementFormModel ??
+              HivManagementFormModel();
+      context
+          .read<HIVManagementFormProvider>()
+          .updateHIVVisitationModel(hivManagementFormModel.copyWith(
+            dateOfEvent: unapprovedHMF.dateOfEvent,
+            dateHIVConfirmedPositive: unapprovedHMF.dateHIVConfirmedPositive,
+            dateTreatmentInitiated: unapprovedHMF.dateTreatmentInitiated,
+            baselineHEILoad: unapprovedHMF.baselineHEILoad,
+            dateStartedFirstLine: unapprovedHMF.dateStartedFirstLine,
+            arvsSubWithFirstLine: unapprovedHMF.arvsSubWithFirstLine,
+            arvsSubWithFirstLineDate: unapprovedHMF.arvsSubWithFirstLineDate,
+            switchToSecondLine: unapprovedHMF.switchToSecondLine,
+            switchToSecondLineDate: unapprovedHMF.switchToSecondLineDate,
+            switchToThirdLine: unapprovedHMF.switchToThirdLine,
+            switchToThirdLineDate: unapprovedHMF.switchToThirdLineDate,
+            visitDate: unapprovedHMF.visitDate,
+            durationOnARTs: unapprovedHMF.durationOnARTs,
+            height: unapprovedHMF.height,
+            mUAC: unapprovedHMF.mUAC,
+            arvDrugsAdherence: unapprovedHMF.arvDrugsAdherence,
+            arvDrugsDuration: unapprovedHMF.arvDrugsDuration,
+            adherenceCounseling: unapprovedHMF.adherenceCounseling,
+            treatmentSupporter: unapprovedHMF.treatmentSupporter,
+            treatmentSupporterSex: unapprovedHMF.treatmentSupporterSex,
+            treatmentSupporterAge: unapprovedHMF.treatmentSupporterAge,
+            treatmentSupporterHIVStatus:
+                unapprovedHMF.treatmentSupporterHIVStatus,
+            viralLoadResults: unapprovedHMF.viralLoadResults,
+            labInvestigationsDate: unapprovedHMF.labInvestigationsDate,
+            detectableViralLoadInterventions:
+                unapprovedHMF.detectableViralLoadInterventions,
+            disclosure: unapprovedHMF.disclosure,
+            mUACScore: unapprovedHMF.mUACScore,
+            zScore: unapprovedHMF.zScore,
+            nutritionalSupport: unapprovedHMF.nutritionalSupport,
+            supportGroupStatus: unapprovedHMF.supportGroupStatus,
+            nhifEnrollment: unapprovedHMF.nhifEnrollment,
+            nhifEnrollmentStatus: unapprovedHMF.nhifEnrollmentStatus,
+            referralServices: unapprovedHMF.referralServices,
+            nextAppointmentDate: unapprovedHMF.nextAppointmentDate,
+            peerEducatorName: unapprovedHMF.peerEducatorName,
+            peerEducatorContact: unapprovedHMF.peerEducatorContact,
+          ));
+
+      context.read<HIVManagementFormProvider>();
+      Get.to(() => HIVManagementForm(caseLoad: caseLoad));
+      Provider.of<StatsProvider>(context, listen: false)
+          .updateUnapprovedFormStats();
+    }
 
     void deleteUnapprovedHMF(int id) async {
       // bool success = await UnapprovedDataService.deleteUnapprovedHMF(id);
@@ -1126,7 +1183,6 @@ class UnapprovedHMFCard extends StatelessWidget {
         title: Text('CPIMS ID: ${unapprovedHMF.ovcCpimsId}'),
         subtitle: Text('Reason For rejection: ${unapprovedHMF.message}'),
         onTap: () {
-          // Navigate to HMF screen with prepopulated data
           onEdit(unapprovedHMF);
         },
       ),
