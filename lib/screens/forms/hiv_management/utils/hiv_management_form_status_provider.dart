@@ -1,19 +1,11 @@
 import 'package:flutter/foundation.dart';
 
 class FormCompletionStatusProvider with ChangeNotifier {
-  bool _artTherapyFormCompleted = false;
-  bool _hivVisitationFormCompleted = false;
+  bool _hivManagementFormCompleted =false;
+  bool get hivManagementFormCompleted => _hivManagementFormCompleted;
 
-  bool get artTherapyFormCompleted => _artTherapyFormCompleted;
-  bool get hivVisitationFormCompleted => _hivVisitationFormCompleted;
-
-  void setArtTherapyFormCompleted(bool completed) {
-    _artTherapyFormCompleted = completed;
-    notifyListeners();
-  }
-
-  void setHIVVisitationFormCompleted(bool completed) {
-    _hivVisitationFormCompleted = completed;
+  void setHIVManagementFormCompleted(bool completed) {
+    _hivManagementFormCompleted = completed;
     notifyListeners();
   }
 }

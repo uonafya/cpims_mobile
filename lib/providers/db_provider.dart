@@ -885,7 +885,7 @@ class LocalDb {
 
       final hmfFormData = await db.query(HMForms,
           where:
-              'form_date_synced IS NULL OR form_date_synced = "" AND rejected = false');
+              'form_date_synced IS NULL OR form_date_synced = "" AND rejected = 0');
 
       List<Map<String, dynamic>> updatedHMFFormData = [];
 
@@ -953,8 +953,7 @@ class LocalDb {
     try {
       final db = await LocalDb.instance.database;
       final hmfFormData = await db.query(HMForms,
-          where:
-          '"form_date_synced" IS NULL OR "form_date_synced" = "" AND "rejected" = 1');
+          where: 'rejected = 1');
 
       List<Map<String, dynamic>> updatedHMFFormData = [];
 
@@ -1070,6 +1069,12 @@ class LocalDb {
       }
       return 0;
     }
+  }
+
+  Future<bool> deleteUnApprovedHMFData(String id) async {
+    final db = await LocalDb.instance.database;
+    await db.delete(HMForms, where: 'uuid = ?', whereArgs: [id]);
+    return true;
   }
 
   Future<void> insertOvcSubpopulationData(String uuid, String cpimsId,

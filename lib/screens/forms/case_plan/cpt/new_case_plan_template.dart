@@ -328,7 +328,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
             print("Final payload is${jsonEncode(payload)}");
           }
 
-          String formUuid = cptProvider.formUuid ?? const Uuid().v4();
+          String formUuid =  const Uuid().v4();
           // cptProvider.updateFormUuid(formUuid);
           AppMetaDataProvider appMetaDataProvider =
               Provider.of<AppMetaDataProvider>(context, listen: false);

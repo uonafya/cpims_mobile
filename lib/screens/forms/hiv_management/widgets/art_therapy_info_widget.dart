@@ -33,6 +33,20 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
   String switchToThirdLine = '';
   String switchToThirdLineDate = '';
 
+  void _handleDateHIVConfirmedPositiveChanged(String value) {
+    setState(() {
+      dateHIVConfirmedPositive = value;
+      handleOnSave();
+    });
+  }
+
+  void _handleDateTreatmentInitiatedChanged(String value) {
+    setState(() {
+      dateTreatmentInitiated = value;
+      handleOnSave();
+    });
+  }
+
   void handleOnSave() {
     // Get the existing instance of HivManagementFormModel from the provider
     final formModel =
@@ -54,15 +68,6 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
     // Notify the provider about the changes
     Provider.of<HIVManagementFormProvider>(context, listen: false)
         .notifyListeners();
-
-    final isComplete = areAllFieldsFilled();
-    final formCompletionStatus = context.read<FormCompletionStatusProvider>();
-
-    if (isComplete) {
-      formCompletionStatus.setArtTherapyFormCompleted(true);
-    } else {
-      formCompletionStatus.setArtTherapyFormCompleted(false);
-    }
   }
 
   bool areAllFieldsFilled() {
@@ -91,8 +96,6 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // final artTherapyInfoFormData =
-    //     Provider.of<HIVManagementFormProvider>(context).hivManagementFormModel;
     return StepsWrapper(
       title: '1. ARV Therapy Info',
       children: [
@@ -111,10 +114,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                   : 'Date',
               enabled: true,
               onDateSelected: (date) {
-                setState(() {
-                  dateHIVConfirmedPositive = formattedDate(date!);
-                  handleOnSave();
-                });
+                _handleDateHIVConfirmedPositiveChanged(formattedDate(date!));
               },
               identifier: DateTextFieldIdentifier.dateOfAssessment,
             ),
@@ -138,10 +138,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                   : 'Date',
               enabled: true,
               onDateSelected: (date) {
-                setState(() {
-                  dateTreatmentInitiated = formattedDate(date!);
-                  handleOnSave();
-                });
+                _handleDateTreatmentInitiatedChanged(formattedDate(date!));
               },
               identifier: DateTextFieldIdentifier.dateOfAssessment,
             ),

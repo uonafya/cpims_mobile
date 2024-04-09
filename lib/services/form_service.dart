@@ -14,6 +14,7 @@ import '../constants.dart';
 class Form1Service {
   final StreamController<int> _formCountController =
       StreamController<int>.broadcast();
+
   Stream<int> get formCountStream => _formCountController.stream;
 
   // save form to local storage
@@ -109,6 +110,7 @@ class Form1Service {
     }
     return 0; // Return 0 if there is an error.
   }
+
   static countCparaUnsyncedFormsDistinct() async {
     final db = LocalDb.instance;
     try {
@@ -146,7 +148,7 @@ class Form1Service {
     return 0; // Return 0 if there is an error.
   }
 
-  static deleteForms() async{
+  static deleteForms() async {
     final db = LocalDb.instance;
     try {
       await db.deleteSyncedFormsFromDevice();
@@ -193,17 +195,17 @@ class Form1Service {
     return 0; // Return 0 if there is an error.
   }
 
-  static Future<int?> getFormCountByDistinctCareGiver(String formType) async{
-    final db= LocalDb.instance;
-    try{
+  static Future<int?> getFormCountByDistinctCareGiver(String formType) async {
+    final db = LocalDb.instance;
+    try {
       final count = await db.countFormOneByDistinctCareGiver(formType);
-      if(count != null){
+      if (count != null) {
         return count;
-      }else{
+      } else {
         return 0;
       }
-    }catch(e){
-      if(kDebugMode){
+    } catch (e) {
+      if (kDebugMode) {
         print("An error on getFormCountByDistinctCareGiver: ${e.toString()}");
       }
     }
@@ -287,7 +289,6 @@ class Form1Service {
     return getFormCountUnApproved("form1a");
   }
 
-
   static Future<int?> getCountAllFormOneB() async {
     return await getFormCount("form1b");
   }
@@ -309,7 +310,6 @@ class Form1Service {
     return await countCparaUnsyncedForms();
   }
 
-
   //count cpara forms
   static Future<int?> getCountAllFormCparaDistinct() async {
     return await countCparaUnsyncedFormsDistinct();
@@ -329,11 +329,11 @@ class Form1Service {
 
 class CasePlanService {
   // save form to local storage
-  static saveCasePlanLocal(formData,formUuid,startTimeOfInterview) async {
+  static saveCasePlanLocal(formData, formUuid, startTimeOfInterview) async {
 //save the form data that is in the form of a map to  a local database
     final db = LocalDb.instance;
     try {
-      await db.insertCasePlanNew(formData,formUuid,startTimeOfInterview);
+      await db.insertCasePlanNew(formData, formUuid, startTimeOfInterview);
       return true;
     } catch (e) {
       if (kDebugMode) {
@@ -440,12 +440,13 @@ class CasePlanService {
     }
     return 0; // Return 0 if there is an error.
   }
+
   static getCaseplanUnsyncedCountDistict() async {
     final db = LocalDb.instance;
     try {
       final count = await db.getUnsyncedCasePlanCountDistinctByCareGiverId();
       return count;
-        } catch (e) {
+    } catch (e) {
       if (kDebugMode) {
         print("An error on getCaseplanUnsyncedCount: ${e.toString()}");
       }
@@ -469,12 +470,30 @@ class CasePlanService {
     }
     return 0; // Return 0 if there is an error.
   }
+
+  static getCountOfRejectedHmfForms() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.countUnApprovedHMFFormData();
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error on getCountOfHmfForms: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
+  }
+
   static getCountOfHmfFormsDistinct() async {
     final db = LocalDb.instance;
     try {
       final count = await db.countHMFFormDataDistinctByCareGiver();
       return count;
-        } catch (e) {
+    } catch (e) {
       if (kDebugMode) {
         print("An error on getCountOfHmfForms: ${e.toString()}");
       }
@@ -498,12 +517,13 @@ class CasePlanService {
     }
     return 0; // Return 0 if there is an error.
   }
+
   static getCountOfHRSFormsDistinct() async {
     final db = LocalDb.instance;
     try {
       final count = await db.countHRSFormDataDistinctByCareGiver();
       return count;
-        } catch (e) {
+    } catch (e) {
       if (kDebugMode) {
         print("An error on getCountOfHmfForms: ${e.toString()}");
       }
@@ -511,4 +531,3 @@ class CasePlanService {
     return 0; // Return 0 if there is an error.
   }
 }
-

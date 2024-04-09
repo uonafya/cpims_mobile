@@ -185,6 +185,7 @@ class UnapprovedDataService {
     return await db.deleteUnApprovedForm1Data(id);
   }
 
+
   static Future<bool> deleteUnapprovedCpt(int id) async {
     final db = LocalDb.instance;
     final unapprovedCpt = UnapprovedCptProvider();
@@ -198,5 +199,10 @@ class UnapprovedDataService {
     var localdb = await db.database;
     return await unapprovedCpt.deleteUnapprovedCasePlanDataByUuid(
         localdb, formUuid);
+  }
+
+  static Future<bool> deleteUnapprovedHMF(String id) async {
+    final db = LocalDb.instance;
+    return await db.deleteUnApprovedHMFData(id);
   }
 }

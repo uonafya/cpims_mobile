@@ -101,9 +101,9 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
     final formCompletionStatus = context.read<FormCompletionStatusProvider>();
 
     if (isComplete) {
-      formCompletionStatus.setHIVVisitationFormCompleted(true);
+      formCompletionStatus.setHIVManagementFormCompleted(true);
     } else {
-      formCompletionStatus.setHIVVisitationFormCompleted(false);
+      formCompletionStatus.setHIVManagementFormCompleted(false);
     }
 
     if (kDebugMode) {
@@ -114,6 +114,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   bool areAllFieldsFilled() {
     // Define a list of required fields to check if they are filled in
     final List<String> requiredFields = [
+
       visitDate,
       durationOnARTs,
       height,

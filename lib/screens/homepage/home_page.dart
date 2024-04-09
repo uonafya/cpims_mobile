@@ -421,12 +421,12 @@ class _HomepageState extends State<Homepage> {
                       cpaCount: "${formStats.unapprovedCptCount}",
                       cparaCount: "${formStats.unapprovedCparaCount}",
                       hrsCount: "0",
-                      hmfCount: "0",
+                      hmfCount: "${formStats.unapprovedHmfCount}",
                       formoneasummary: "${formStats.unapprovedFormOneACount}",
                       formonebsummary: "${formStats.unapprovedFormOneBCount}",
                       caseplanSummary: "${formStats.unapprovedCptCount}",
                       hrsSummary: "0",
-                      hmfSummary: "0",
+                      hmfSummary: "${formStats.unapprovedHmfCount}",
                       cparaSummary: "${formStats.unapprovedCparaCount}",
                       onClick: () {
                         Get.to(() => const UnapprovedRecordsScreens());

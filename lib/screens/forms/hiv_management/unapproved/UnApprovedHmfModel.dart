@@ -51,6 +51,7 @@ class UnApprovedHivManagementForm extends HivManagementFormModel {
     String peerEducatorName = '',
     String peerEducatorContact = '',
   }) : super(
+
           dateOfEvent: dateOfEvent,
           dateHIVConfirmedPositive: dateHIVConfirmedPositive,
           dateTreatmentInitiated: dateTreatmentInitiated,
@@ -96,7 +97,7 @@ class UnApprovedHivManagementForm extends HivManagementFormModel {
       message: json['message'] ?? '',
       ovcCpimsId: json['ovc_cpims_id'].toString(),
       caregiverCpimsId: json['caregiver_cpims_id'] ?? '',
-      adherenceId: json['adherence_id'],
+      adherenceId: json['uuid'],
       appFormMetaData: appFormMetaData,
       dateHIVConfirmedPositive: json['HIV_MGMT_1_A'],
       dateTreatmentInitiated: json['HIV_MGMT_1_B'],

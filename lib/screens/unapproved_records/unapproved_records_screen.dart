@@ -437,8 +437,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       CaseLoadModel caseLoad =
           await db.getCaseLoad(int.parse(unapprovedHMF.ovcCpimsId!));
       HivManagementFormModel hivManagementFormModel =
-          context.read<HIVManagementFormProvider>().hivManagementFormModel ??
-              HivManagementFormModel();
+          context.read<HIVManagementFormProvider>().hivManagementFormModel;
       context
           .read<HIVManagementFormProvider>()
           .updateHIVVisitationModel(hivManagementFormModel.copyWith(
@@ -488,15 +487,16 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           .updateUnapprovedFormStats();
     }
 
-    void deleteUnapprovedHMF(int id) async {
-      // bool success = await UnapprovedDataService.deleteUnapprovedHMF(id);
-      // if (success) {
-      //   setState(() {
-      //     unapprovedHMFData.removeWhere((element) => element.id == id);
-      //   });
-      //   Provider.of<StatsProvider>(context, listen: false)
-      //       .updateUnapprovedFormStats();
-      // }
+    void deleteUnapprovedHMF(String id) async {
+      bool success = await UnapprovedDataService.deleteUnapprovedHMF(id);
+      if (success) {
+        setState(() {
+          unapprovedHMFData
+              .removeWhere((element) => element.adherenceId == id.toString());
+        });
+        Provider.of<StatsProvider>(context, listen: false)
+            .updateUnapprovedFormStats();
+      }
     }
 
     return Scaffold(
@@ -1137,7 +1137,7 @@ class UnapprovedForm1CardDetails<T> extends StatelessWidget {
 class UnapprovedHMFList extends StatelessWidget {
   final List<UnApprovedHivManagementForm> unapprovedHMFData;
   final Function(UnApprovedHivManagementForm) onEdit;
-  final Function(int) onDelete;
+  final Function(String) onDelete;
 
   const UnapprovedHMFList({
     super.key,
@@ -1167,7 +1167,7 @@ class UnapprovedHMFList extends StatelessWidget {
 class UnapprovedHMFCard extends StatelessWidget {
   final UnApprovedHivManagementForm unapprovedHMF;
   final Function(UnApprovedHivManagementForm) onEdit;
-  final Function(int) onDelete;
+  final Function(String) onDelete;
 
   const UnapprovedHMFCard({
     super.key,
@@ -1185,6 +1185,19 @@ class UnapprovedHMFCard extends StatelessWidget {
         onTap: () {
           onEdit(unapprovedHMF);
         },
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () => onEdit(unapprovedHMF),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () => onDelete(unapprovedHMF.adherenceId!),
+            ),
+          ],
+        ),
       ),
     );
   }

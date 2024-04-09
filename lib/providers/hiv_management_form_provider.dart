@@ -15,6 +15,8 @@ class HIVManagementFormProvider extends ChangeNotifier {
 
   CaseLoadModel get caseLoadModel => _caseLoadModel;
 
+  String? formUuid;
+
   void updateHIVVisitationModel(HivManagementFormModel formModel) {
     _hivManagementFormModel = formModel;
     notifyListeners();
@@ -26,6 +28,11 @@ class HIVManagementFormProvider extends ChangeNotifier {
   // clear form data
   void clearForms() {
     _hivManagementFormModel = HivManagementFormModel();
+    notifyListeners();
+  }
+
+  void updateFormUuid(String? formUuid) {
+    this.formUuid = formUuid;
     notifyListeners();
   }
 

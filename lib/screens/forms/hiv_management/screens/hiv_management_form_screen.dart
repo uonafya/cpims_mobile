@@ -173,26 +173,45 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                               onTap: () async {
                                 try {
                                   if (selectedStep == steps.length - 1) {
-                                    // Set isLoading to true when form submission starts
                                     setState(() {
                                       isLoading = true;
                                     });
 
                                     // logic for verifying form and submitting
-                                    if (formCompletionStatus
-                                            .hivVisitationFormCompleted ==
-                                        true) {
+                                    if (
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.visitDate.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.durationOnARTs.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.height.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.mUAC.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.arvDrugsAdherence.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.arvDrugsDuration.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.adherenceCounseling.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporter.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporterSex.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporterAge.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporterHIVStatus.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.viralLoadResults.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.labInvestigationsDate.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.detectableViralLoadInterventions.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.disclosure.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.mUACScore.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.zScore.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.nutritionalSupport.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.supportGroupStatus.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.nhifEnrollment.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.nhifEnrollmentStatus.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.referralServices.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.nextAppointmentDate.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.peerEducatorName.isNotEmpty &&
+                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.peerEducatorContact.isNotEmpty
+                                    ) {
                                       AppMetaDataProvider appMetaDataProvider =
                                           Provider.of<AppMetaDataProvider>(
                                         context,
                                         listen: false,
                                       );
-                                      String startInterviewTime =
-                                          appMetaDataProvider
-                                                  .startTimeInterview ??
-                                              DateTime.now().toIso8601String();
-                                      await submitHIVManagementForm(
-                                          startInterviewTime);
+                                      String startInterviewTime = appMetaDataProvider.startTimeInterview ?? DateTime.now().toIso8601String();
+                                      await submitHIVManagementForm(startInterviewTime);
 
                                       // Set isLoading to false when form submission is complete
                                       setState(() {
@@ -217,7 +236,7 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                           .showSnackBar(
                                         const SnackBar(
                                           content: Text(
-                                              "Please fill in the required fields"),
+                                              "Please fill in the required fields in visitation Section"),
                                           backgroundColor: Colors.red,
                                         ),
                                       );
@@ -231,24 +250,28 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                   } else {
                                     setState(
                                       () {
-                                        if (selectedStep < steps.length - 1 &&
-                                            formCompletionStatus
-                                                    .artTherapyFormCompleted ==
-                                                true) {
-                                          selectedStep++;
-                                        } else if (selectedStep <
-                                                steps.length - 1 &&
-                                            formCompletionStatus
-                                                    .artTherapyFormCompleted ==
-                                                false) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                  "Please fill in the required fields"),
-                                              backgroundColor: Colors.red,
-                                            ),
-                                          );
+                                        if (selectedStep < steps.length - 1) {
+                                          print("Selected step: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.dateHIVConfirmedPositive }");
+                                          if(context.read<HIVManagementFormProvider>().hivManagementFormModel.dateHIVConfirmedPositive.isNotEmpty &&
+                                              context.read<HIVManagementFormProvider>().hivManagementFormModel.dateTreatmentInitiated.isNotEmpty &&
+                                              context.read<HIVManagementFormProvider>().hivManagementFormModel.baselineHEILoad.isNotEmpty &&
+                                              context.read<HIVManagementFormProvider>().hivManagementFormModel.dateStartedFirstLine.isNotEmpty &&
+                                              context.read<HIVManagementFormProvider>().hivManagementFormModel.arvsSubWithFirstLine.isNotEmpty &&
+                                              context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToSecondLine.isNotEmpty &&
+                                              context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToThirdLine.isNotEmpty){
+                                            selectedStep++;
+                                            debugPrint("Moving to hiv screen");
+                                          }else{
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    "Please fill in the ART Therapy info fields"),
+                                                backgroundColor: Colors.red,
+                                              ),
+                                            );
+                                          }
+
                                         }
                                       },
                                     );

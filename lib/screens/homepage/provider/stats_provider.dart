@@ -52,11 +52,12 @@ class StatsProvider extends ChangeNotifier {
         await Form1Service.getCountAllFormOneAUnApproved() ?? 0;
     unapprovedFormOneBCount =
         await Form1Service.getCountAllFormOneBUnApproved() ?? 0;
-    unapprovedCparaCount =
-        await Form1Service.countCparaUnApprovedForms() ?? 0;
-    unapprovedCptCount = await CasePlanService.getAllUnApprovedCaseplanCount() ?? 0;
+    unapprovedCparaCount = await Form1Service.countCparaUnApprovedForms() ?? 0;
+    unapprovedCptCount =
+        await CasePlanService.getAllUnApprovedCaseplanCount() ?? 0;
     // unapprovedHrsCount = await CasePlanService.getCountOfHRSFormsUnApproved() ?? 0;
-    // unapprovedHmfCount = await CasePlanService.getCountOfHmfFormsUnApproved() ?? 0;
+    unapprovedHmfCount =
+        await CasePlanService.getCountOfRejectedHmfForms() ?? 0;
 
     notifyListeners();
   }
@@ -130,9 +131,9 @@ class StatsProvider extends ChangeNotifier {
         await Form1Service.getCountAllFormOneAUnApproved() ?? 0;
     unapprovedFormOneBCount =
         await Form1Service.getCountAllFormOneBUnApproved() ?? 0;
-    unapprovedCparaCount =
-        await Form1Service.countCparaUnApprovedForms() ?? 0;
-    unapprovedCptCount = await CasePlanService.getAllUnApprovedCaseplanCount() ?? 0;
+    unapprovedCparaCount = await Form1Service.countCparaUnApprovedForms() ?? 0;
+    unapprovedCptCount =
+        await CasePlanService.getAllUnApprovedCaseplanCount() ?? 0;
     // unapprovedHrsCount = await CasePlanService.getCountOfHRSFormsUnApproved() ?? 0;
     // unapprovedHmfCount = await CasePlanService.getCountOfHmfFormsUnApproved() ?? 0;
     notifyListeners();
