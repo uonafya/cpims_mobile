@@ -32,6 +32,7 @@ import 'package:uuid/uuid.dart';
 import '../Models/caseplan_form_model.dart';
 import '../constants.dart';
 import '../screens/forms/form1a/new/form_one_a.dart';
+import '../screens/forms/hiv_assessment/unapproved/unapproved_hiv_risk_assessment.dart';
 
 class LocalDb {
   static const String _databaseName = 'children_ovc4.db';
@@ -580,7 +581,10 @@ class LocalDb {
       HIV_RS_24 TEXT,
       HIV_RA_3Q6 TEXT,
       uuid TEXT,
-      form_date_synced TEXT NULL
+      form_date_synced TEXT NULL,
+      message TEXT NULL,
+      rejected BOOLEAN,
+       created_at DATETIME DEFAULT CURRENT_TIMESTAMP 
     )
   ''';
 
@@ -594,12 +598,12 @@ class LocalDb {
   Future<void> insertHRSData(
       String cpmisId,
       String caregiverCpimsId,
-      HIVCurrentStatusModel currentStatus,
-      HIVRiskAssessmentModel assessment,
-      ProgressMonitoringModel progress,
+      RiskAssessmentFormModel assessment,
       String uuid,
       String startOfInterview,
-      String formType) async {
+      String formType,
+      bool? isRejected,
+      ) async {
     final db = await instance.database;
     await insertAppFormMetaData(uuid, startOfInterview, formType);
     await db.insert(
@@ -607,10 +611,10 @@ class LocalDb {
       {
         'ovc_cpims_id': cpmisId,
         'caregiver_cpims_id': caregiverCpimsId,
-        'HIV_RA_1A': currentStatus.dateOfAssessment,
-        'HIV_RS_01': currentStatus.statusOfChild,
-        'HIV_RS_02': currentStatus.hivStatus,
-        'HIV_RS_03': currentStatus.hivTestDone,
+        'HIV_RA_1A': assessment.dateOfAssessment,
+        'HIV_RS_01': assessment.statusOfChild,
+        'HIV_RS_02': assessment.hivStatus,
+        'HIV_RS_03': assessment.hivTestDone,
         'HIV_RS_04': assessment.biologicalFather,
         'HIV_RS_05': assessment.malnourished,
         'HIV_RS_06': assessment.sexualAbuse,
@@ -622,20 +626,22 @@ class LocalDb {
         'HIV_RS_10A': assessment.symptomsOfSTI,
         'HIV_RS_10B': assessment.ivDrugUser,
         'HIV_RS_11': assessment.finalEvaluation,
-        'HIV_RS_14': progress.parentAcceptHivTesting,
-        'HIV_RS_15': progress.parentAcceptHivTestingDate,
-        'HIV_RS_16': progress.formalReferralMade,
-        'HIV_RS_17': progress.formalReferralMadeDate,
-        'HIV_RS_18': progress.formalReferralCompleted,
-        'HIV_RS_18A': progress.reasonForNotMakingReferral,
-        'HIV_RS_18B': progress.hivTestResult,
-        'HIV_RS_21': progress.referredForArt,
-        'HIV_RS_22': progress.referredForArtDate,
-        'HIV_RS_23': progress.artReferralCompleted,
-        'HIV_RS_24': progress.artReferralCompletedDate,
-        'HIV_RA_3Q6': progress.facilityOfArtEnrollment,
+        'HIV_RS_14': assessment.parentAcceptHivTesting,
+        'HIV_RS_15': assessment.parentAcceptHivTestingDate,
+        'HIV_RS_16': assessment.formalReferralMade,
+        'HIV_RS_17': assessment.formalReferralMadeDate,
+        'HIV_RS_18': assessment.formalReferralCompleted,
+        'HIV_RS_18A': assessment.reasonForNotMakingReferral,
+        'HIV_RS_18B': assessment.hivTestResult,
+        'HIV_RS_21': assessment.referredForArt,
+        'HIV_RS_22': assessment.referredForArtDate,
+        'HIV_RS_23': assessment.artReferralCompleted,
+        'HIV_RS_24': assessment.artReferralCompletedDate,
+        'HIV_RA_3Q6': assessment.facilityOfArtEnrollment,
         'uuid': uuid,
         'form_date_synced': null,
+        'message': null,
+        'rejected': isRejected,
       },
     );
   }
@@ -804,7 +810,7 @@ class LocalDb {
   Future<void> insertHMFFormData(
     String? cpmisId,
     String? caregiverCpimsId,
-  HivManagementFormModel hivManagementFormModel,
+    HivManagementFormModel hivManagementFormModel,
     String? uuid,
     String? startTimeInterview,
     String? formType,
@@ -952,8 +958,7 @@ class LocalDb {
   Future<List<Map<String, dynamic>>> fetchRejectedHMFFormData() async {
     try {
       final db = await LocalDb.instance.database;
-      final hmfFormData = await db.query(HMForms,
-          where: 'rejected = 1');
+      final hmfFormData = await db.query(HMForms, where: 'rejected = 1');
 
       List<Map<String, dynamic>> updatedHMFFormData = [];
 

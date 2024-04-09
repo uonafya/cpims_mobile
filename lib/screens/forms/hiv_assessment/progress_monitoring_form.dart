@@ -3,6 +3,7 @@ import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_assessment.dart';
+import 'package:cpims_mobile/screens/forms/hiv_assessment/unapproved/unapproved_hiv_risk_assessment.dart';
 import 'package:cpims_mobile/widgets/custom_dynamic_radio_button.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
 import 'package:cpims_mobile/widgets/form_section.dart';
@@ -12,55 +13,6 @@ import 'package:provider/provider.dart';
 
 import 'hiv_current_status_form.dart';
 
-class ProgressMonitoringModel {
-  final String parentAcceptHivTesting;
-  final String parentAcceptHivTestingDate;
-  final String formalReferralMade;
-  final String formalReferralMadeDate;
-  final String formalReferralCompleted;
-  final String formalReferralCompletedDate;
-  String reasonForNotMakingReferral;
-  final String hivTestResult;
-  final String referredForArt;
-  final String referredForArtDate;
-  final String artReferralCompleted;
-  final String artReferralCompletedDate;
-  final String facilityOfArtEnrollment;
-
-  ProgressMonitoringModel({
-    this.parentAcceptHivTesting = "",
-    this.parentAcceptHivTestingDate = "",
-    this.formalReferralMade = "",
-    this.formalReferralMadeDate = "",
-    this.formalReferralCompleted = "",
-    this.formalReferralCompletedDate = "",
-    this.reasonForNotMakingReferral = "",
-    this.hivTestResult = "",
-    this.referredForArt = "",
-    this.referredForArtDate = "",
-    this.artReferralCompleted = "",
-    this.artReferralCompletedDate = "",
-    this.facilityOfArtEnrollment = "",
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'HIV_RS_14': parentAcceptHivTesting,
-      'HIV_RS_15': parentAcceptHivTestingDate,
-      'HIV_RS_16': formalReferralMade,
-      'HIV_RS_17': formalReferralMadeDate,
-      'HIV_RS_18': formalReferralCompleted,
-      'HIV_RS_18A': reasonForNotMakingReferral,
-      'HIV_RS_18B': hivTestResult,
-      'HIV_RS_21': referredForArt,
-      'HIV_RS_22': referredForArtDate,
-      'HIV_RS_23': artReferralCompleted,
-      'HIV_RS_24': artReferralCompletedDate,
-      'HIV_RA_3Q6': facilityOfArtEnrollment,
-    };
-  }
-}
-
 class ProgressMonitoringForm extends StatefulWidget {
   const ProgressMonitoringForm({super.key});
 
@@ -69,6 +21,7 @@ class ProgressMonitoringForm extends StatefulWidget {
 }
 
 class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
+  late final RiskAssessmentFormModel riskAssessmentFormModel;
   String parentAcceptHivTesting = "";
   String parentAcceptHivTestingDate = "";
   String formalReferralMade = "";
@@ -83,36 +36,35 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
   String artReferralCompletedDate = "";
   String facilityOfArtEnrollment = "";
 
-  HIVCurrentStatusModel currentStatus = HIVCurrentStatusModel();
+  // HIVCurrentStatusModel currentStatus = HIVCurrentStatusModel();
   var previousAssessmentController = TextEditingController();
 
   void handleOnFormSaved() {
-    final val = ProgressMonitoringModel(
-      parentAcceptHivTesting: parentAcceptHivTesting,
-      parentAcceptHivTestingDate: parentAcceptHivTestingDate,
-      formalReferralMade: formalReferralMade,
-      formalReferralMadeDate: formalReferralMadeDate,
-      formalReferralCompleted: formalReferralCompleted,
-      formalReferralCompletedDate: formalReferralCompletedDate,
-      reasonForNotMakingReferral:
-          reasonForNotMakingReferral.isEmpty ? "" : reasonForNotMakingReferral,
-      hivTestResult: hivTestResult,
-      referredForArt: referredForArt,
-      referredForArtDate: referredForArtDate,
-      artReferralCompleted: artReferralCompleted,
-      artReferralCompletedDate: artReferralCompletedDate,
-      facilityOfArtEnrollment: facilityOfArtEnrollment,
-    );
+    final formModel = Provider.of<HIVAssessmentProvider>(context, listen: false)
+        .riskAssessmentFormModel;
+    formModel.parentAcceptHivTesting = parentAcceptHivTesting;
+    formModel.parentAcceptHivTestingDate = parentAcceptHivTestingDate;
+    formModel.formalReferralMade = formalReferralMade;
+    formModel.formalReferralMadeDate = formalReferralMadeDate;
+    formModel.formalReferralCompleted = formalReferralCompleted;
+    formModel.formalReferralCompletedDate = formalReferralCompletedDate;
+    formModel.reasonForNotMakingReferral = reasonForNotMakingReferral;
+    formModel.hivTestResult = hivTestResult;
+    formModel.referredForArt = referredForArt;
+    formModel.referredForArtDate = referredForArtDate;
+    formModel.artReferralCompleted = artReferralCompleted;
+    formModel.artReferralCompletedDate = artReferralCompletedDate;
+    formModel.facilityOfArtEnrollment = facilityOfArtEnrollment;
     Provider.of<HIVAssessmentProvider>(context, listen: false)
-        .updateProgressMonitoringModel(val);
+        .notifyListeners();
   }
 
   @override
   void initState() {
     super.initState();
-    currentStatus = context.read<HIVAssessmentProvider>().hivCurrentStatusModel;
+    riskAssessmentFormModel = context.read<HIVAssessmentProvider>().riskAssessmentFormModel;
     final formData =
-        context.read<HIVAssessmentProvider>().progressMonitoringModel;
+        context.read<HIVAssessmentProvider>().riskAssessmentFormModel;
 
     parentAcceptHivTesting = formData.parentAcceptHivTesting;
     parentAcceptHivTestingDate = formData.parentAcceptHivTestingDate;
@@ -132,15 +84,15 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
   @override
   Widget build(BuildContext context) {
     final formData =
-        context.watch<HIVAssessmentProvider>().progressMonitoringModel;
+        context.watch<HIVAssessmentProvider>().riskAssessmentFormModel;
 
     return Container(
       padding: const EdgeInsets.only(top: 20),
       child: FormSection(
         isVisibleCondition: () {
-          return (currentStatus.statusOfChild == "Yes" &&
-              currentStatus.hivStatus == "HIV_Negative" &&
-              currentStatus.hivTestDone == "No");
+          return (riskAssessmentFormModel.statusOfChild == "Yes" &&
+              riskAssessmentFormModel.hivStatus == "HIV_Negative" &&
+              riskAssessmentFormModel.hivTestDone == "No");
         },
         children: [
           Column(

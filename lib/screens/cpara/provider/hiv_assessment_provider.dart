@@ -9,20 +9,28 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../forms/hiv_assessment/unapproved/unapproved_hiv_risk_assessment.dart';
+
 class HIVAssessmentProvider with ChangeNotifier {
   CaseLoadModel _caseLoadModel = CaseLoadModel();
 
   CaseLoadModel get caseLoadModel => _caseLoadModel;
-  HIVCurrentStatusModel _hivCurrentStatusModel = HIVCurrentStatusModel();
 
-  HIVCurrentStatusModel get hivCurrentStatusModel => _hivCurrentStatusModel;
-  HIVRiskAssessmentModel _hivRiskAssessmentModel = HIVRiskAssessmentModel();
+  // HIVCurrentStatusModel _hivCurrentStatusModel = HIVCurrentStatusModel();
+  // HIVCurrentStatusModel get hivCurrentStatusModel => _hivCurrentStatusModel;
+  //
+  // HIVRiskAssessmentModel _hivRiskAssessmentModel = HIVRiskAssessmentModel();
+  //
+  // HIVRiskAssessmentModel get hivRiskAssessmentModel => _hivRiskAssessmentModel;
+  // ProgressMonitoringModel _progressMonitoringModel = ProgressMonitoringModel();
+  //
+  // ProgressMonitoringModel get progressMonitoringModel =>
+  //     _progressMonitoringModel;
 
-  HIVRiskAssessmentModel get hivRiskAssessmentModel => _hivRiskAssessmentModel;
-  ProgressMonitoringModel _progressMonitoringModel = ProgressMonitoringModel();
+  RiskAssessmentFormModel _riskAssessmentFormModel = RiskAssessmentFormModel();
 
-  ProgressMonitoringModel get progressMonitoringModel =>
-      _progressMonitoringModel;
+  RiskAssessmentFormModel get riskAssessmentFormModel =>
+      _riskAssessmentFormModel;
 
   int formIndex = 0;
 
@@ -51,48 +59,48 @@ class HIVAssessmentProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateHIVCurrentStatusModel(HIVCurrentStatusModel model) {
-    _hivCurrentStatusModel = model;
-    // if (_hivCurrentStatusModel.hivStatus == "HIV_Positive" &&
-    //     _hivCurrentStatusModel.dateOfAssessment.isNotEmpty) {
-    //   updateFormIndex(2);
-    // }
-    if (kDebugMode) {
-      print(hivCurrentStatusModel.toJson());
-    }
-    notifyListeners();
-  }
-
-  void updateHIVRiskAssessmentModel(HIVRiskAssessmentModel model) {
-    _hivRiskAssessmentModel = model;
-    calculateFinalEvaluation();
-    if (kDebugMode) {
-      print(hivRiskAssessmentModel.toJson());
-    }
-    notifyListeners();
-  }
-
-  void updateProgressMonitoringModel(ProgressMonitoringModel model) {
-    _progressMonitoringModel = model;
-    if (kDebugMode) {
-      print(progressMonitoringModel.toJson());
-    }
-    notifyListeners();
-  }
-
-  // void clearForms() {
-  //   _hivRiskAssessmentModel = HIVRiskAssessmentModel();
-  //   _progressMonitoringModel = ProgressMonitoringModel();
-  //   _progressMonitoringModel.reasonForNotMakingReferral = "A";
+  // void updateHIVCurrentStatusModel(HIVCurrentStatusModel model) {
+  //   _hivCurrentStatusModel = model;
+  //   // if (_hivCurrentStatusModel.hivStatus == "HIV_Positive" &&
+  //   //     _hivCurrentStatusModel.dateOfAssessment.isNotEmpty) {
+  //   //   updateFormIndex(2);
+  //   // }
+  //   if (kDebugMode) {
+  //     print(hivCurrentStatusModel.toJson());
+  //   }
   //   notifyListeners();
   // }
+  //
+  // void updateHIVRiskAssessmentModel(HIVRiskAssessmentModel model) {
+  //   _hivRiskAssessmentModel = model;
+  //   calculateFinalEvaluation();
+  //   if (kDebugMode) {
+  //     print(hivRiskAssessmentModel.toJson());
+  //   }
+  //   notifyListeners();
+  // }
+  //
+  // void updateProgressMonitoringModel(ProgressMonitoringModel model) {
+  //   _progressMonitoringModel = model;
+  //   if (kDebugMode) {
+  //     print(progressMonitoringModel.toJson());
+  //   }
+  //   notifyListeners();
+  // }
+
+  void updateRiskAssessmentModel(RiskAssessmentFormModel model) {
+    _riskAssessmentFormModel = model;
+    if (kDebugMode) {
+      print(riskAssessmentFormModel.toJson());
+    }
+    notifyListeners();
+  }
+
   Future<void> submitHIVAssessmentForm(String startTime) async {
     try {
       final data = {
         'ovc_cpims_id': caseLoadModel.cpimsId,
-        ..._hivCurrentStatusModel.toJson(),
-        ..._hivRiskAssessmentModel.toJson(),
-        ..._progressMonitoringModel.toJson(),
+        ...riskAssessmentFormModel.toJson(),
       };
 
       // Convert "Yes" to "AYES" and "No" to "ANO"
@@ -112,12 +120,12 @@ class HIVAssessmentProvider with ChangeNotifier {
       await LocalDb.instance.insertHRSData(
           caseLoadModel.cpimsId!,
           caseLoadModel.caregiverCpimsId!,
-          _hivCurrentStatusModel,
-          _hivRiskAssessmentModel,
-          _progressMonitoringModel,
+          _riskAssessmentFormModel,
           formUuid,
           startTime,
-          "HIV Risk Assessment");
+          "HIV Risk Assessment",
+          false
+      );
 
       resetWholeForm();
     } catch (e) {
@@ -126,9 +134,7 @@ class HIVAssessmentProvider with ChangeNotifier {
   }
 
   void resetWholeForm() {
-    _hivCurrentStatusModel = HIVCurrentStatusModel();
-    _hivRiskAssessmentModel = HIVRiskAssessmentModel();
-    _progressMonitoringModel = ProgressMonitoringModel();
+    _riskAssessmentFormModel = RiskAssessmentFormModel();
     formIndex = 0;
     ovcAge = 0;
     finalEvaluation = "No";
@@ -137,23 +143,20 @@ class HIVAssessmentProvider with ChangeNotifier {
   }
 
   void calculateFinalEvaluation() {
-
     bool finalEvaluation = false;
 
-    if(ovcAge < 15){
-      finalEvaluation = hivRiskAssessmentModel.biologicalFather == "Yes" ||
-    hivRiskAssessmentModel.malnourished == "Yes" ||
-    hivRiskAssessmentModel.sexualAbuse == "Yes" ||
-    hivRiskAssessmentModel.traditionalProcedures == "Yes";
-    }
-    else{
-      finalEvaluation =
-      hivRiskAssessmentModel.sexualAbuseAdolescent == "Yes" ||
-    hivRiskAssessmentModel.persistentlySick == "Yes" ||
-    hivRiskAssessmentModel.tb == "Yes" &&
-    hivRiskAssessmentModel.sexualIntercourse == "Yes" ||
-    hivRiskAssessmentModel.symptomsOfSTI == "Yes" ||
-    hivRiskAssessmentModel.ivDrugUser == "Yes";
+    if (ovcAge < 15) {
+      finalEvaluation = riskAssessmentFormModel.biologicalFather == "Yes" ||
+          riskAssessmentFormModel.malnourished == "Yes" ||
+          riskAssessmentFormModel.sexualAbuse == "Yes" ||
+          riskAssessmentFormModel.traditionalProcedures == "Yes";
+    } else {
+      finalEvaluation = riskAssessmentFormModel.sexualAbuseAdolescent == "Yes" ||
+          riskAssessmentFormModel.persistentlySick == "Yes" ||
+          riskAssessmentFormModel.tb == "Yes" &&
+              riskAssessmentFormModel.sexualIntercourse == "Yes" ||
+          riskAssessmentFormModel.symptomsOfSTI == "Yes" ||
+          riskAssessmentFormModel.ivDrugUser == "Yes";
     }
 
     this.finalEvaluation = finalEvaluation ? "Yes" : "No";

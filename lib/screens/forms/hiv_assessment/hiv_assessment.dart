@@ -23,7 +23,7 @@ import '../../homepage/provider/stats_provider.dart';
 
 bool disableSubsquentHIVAssessmentFieldsAndSubmit(BuildContext context) {
   final currentStatus =
-      Provider.of<HIVAssessmentProvider>(context).hivCurrentStatusModel;
+      Provider.of<HIVAssessmentProvider>(context).riskAssessmentFormModel;
   return (currentStatus.statusOfChild == "No" ||
       currentStatus.hivStatus == "HIV_Positive" ||
       currentStatus.hivTestDone == "Yes");
@@ -68,15 +68,14 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         Provider.of<HIVAssessmentProvider>(context, listen: false).formIndex;
     final hivCurrentStatusModel =
         Provider.of<HIVAssessmentProvider>(context, listen: false)
-            .hivCurrentStatusModel;
+            .riskAssessmentFormModel;
 
     if (formIndex == hivAssessmentTitles.length - 1) {
       try {
         setState(() {
           isLoading = true;
         });
-        if (hivCurrentStatusModel.dateOfAssessment.isEmpty ||
-            hivCurrentStatusModel.statusOfChild.isEmpty) {
+        if (hivCurrentStatusModel.dateOfAssessment.isEmpty || hivCurrentStatusModel.statusOfChild.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Please fill in the required fields"),
             backgroundColor: Colors.red,
@@ -86,8 +85,7 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
             Provider.of<AppMetaDataProvider>(context, listen: false);
         String startTime = appMetaDataProvider.startTimeInterview ??
             DateTime.now().toIso8601String();
-        await Provider.of<HIVAssessmentProvider>(context, listen: false)
-            .submitHIVAssessmentForm(startTime);
+        await Provider.of<HIVAssessmentProvider>(context, listen: false).submitHIVAssessmentForm(startTime);
 
         if (context.mounted) {
           setState(() {
@@ -110,8 +108,7 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         setState(() {
           isLoading = false;
         });
-        if (e.toString() == locationDisabled ||
-            e.toString() == locationDenied) {
+        if (e.toString() == locationDisabled || e.toString() == locationDenied) {
           if (context.mounted) {
             locationMissingDialog(context);
             setState(() {
@@ -120,7 +117,6 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
           }
         }
       }
-
       return;
     }
 

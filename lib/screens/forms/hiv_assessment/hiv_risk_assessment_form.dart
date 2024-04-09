@@ -2,6 +2,7 @@ import 'package:cpims_mobile/screens/cpara/provider/hiv_assessment_provider.dart
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
+import 'package:cpims_mobile/screens/forms/hiv_assessment/unapproved/unapproved_hiv_risk_assessment.dart';
 import 'package:cpims_mobile/widgets/form_section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,86 +10,7 @@ import 'package:provider/provider.dart';
 import '../../../Models/case_load_model.dart';
 import '../../ovc_care/ovc_care_screen.dart';
 
-class HIVRiskAssessmentModel {
-  final String biologicalFather;
-  final String malnourished;
-  final String sexualAbuse;
-  final String sexualAbuseAdolescent;
-  final String traditionalProcedures;
-  final String persistentlySick;
-  final String tb;
-  final String sexualIntercourse;
-  final String symptomsOfSTI;
-  final String ivDrugUser;
-  final String finalEvaluation;
 
-  HIVRiskAssessmentModel({
-    this.biologicalFather = "",
-    this.malnourished = "",
-    this.sexualAbuse = "",
-    this.sexualAbuseAdolescent = "",
-    this.traditionalProcedures = "",
-    this.persistentlySick = "",
-    this.tb = "",
-    this.sexualIntercourse = "",
-    this.symptomsOfSTI = "",
-    this.ivDrugUser = "",
-    String? finalEvaluation, // Allow for the initialization of finalEvaluation
-  }) : finalEvaluation = _calculateFinalEvaluation(
-          biologicalFather,
-          malnourished,
-          sexualAbuse,
-          sexualAbuseAdolescent,
-          traditionalProcedures,
-          persistentlySick,
-          tb,
-          sexualIntercourse,
-          symptomsOfSTI,
-          ivDrugUser,
-        );
-
-  Map<String, dynamic> toJson() {
-    return {
-      'HIV_RS_04': biologicalFather,
-      'HIV_RS_05': malnourished,
-      'HIV_RS_06': sexualAbuse,
-      'HIV_RS_09': sexualAbuseAdolescent,
-      'HIV_RS_06A': traditionalProcedures,
-      'HIV_RS_07': persistentlySick,
-      'HIV_RS_08': tb,
-      'HIV_RS_10': sexualIntercourse,
-      'HIV_RS_10A': symptomsOfSTI,
-      'HIV_RS_10B': ivDrugUser,
-      'HIV_RS_11': finalEvaluation,
-    };
-  }
-
-  static String _calculateFinalEvaluation(
-    String biologicalFather,
-    String malnourished,
-    String sexualAbuse,
-    String sexualAbuseAdolescent,
-    String traditionalProcedures,
-    String persistentlySick,
-    String tb,
-    String sexualIntercourse,
-    String symptomsOfSTI,
-    String ivDrugUser,
-  ) {
-    bool anyQuestionAnsweredYes = biologicalFather == "Yes" ||
-        malnourished == "Yes" ||
-        sexualAbuse == "Yes" ||
-        sexualAbuseAdolescent == "Yes" ||
-        traditionalProcedures == "Yes" ||
-        persistentlySick == "Yes" ||
-        tb == "Yes" ||
-        sexualIntercourse == "Yes" ||
-        symptomsOfSTI == "Yes" ||
-        ivDrugUser == "Yes";
-
-    return anyQuestionAnsweredYes ? "Yes" : "";
-  }
-}
 
 class HIVRiskAssesmentForm extends StatefulWidget {
   const HIVRiskAssesmentForm({Key? key}) : super(key: key);
@@ -98,6 +20,7 @@ class HIVRiskAssesmentForm extends StatefulWidget {
 }
 
 class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
+  late final RiskAssessmentFormModel riskAssessmentFormModel;
   String biologicalFather = "";
   String malnourished = "";
   String sexualAbuse = "";
@@ -112,35 +35,36 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
   String assessmentText = "";
 
   // bool anyQuestionAnsweredYes = false;
+  // HIVCurrentStatusModel currentStatus = HIVCurrentStatusModel();
 
-  HIVCurrentStatusModel currentStatus = HIVCurrentStatusModel();
   int age = 0;
 
   void handleOnFormSaved() {
-    final val = HIVRiskAssessmentModel(
-      biologicalFather: biologicalFather,
-      malnourished: malnourished,
-      sexualAbuse: sexualAbuse,
-      sexualAbuseAdolescent: sexualAbuseAdolescent,
-      traditionalProcedures: traditionalProcedures,
-      persistentlySick: persistentlySick,
-      tb: tb,
-      sexualIntercourse: sexualIntercourse,
-      symptomsOfSTI: symptomsOfSTI,
-      ivDrugUser: ivDrugUser,
-      finalEvaluation: finalEvaluation,
-    );
+    final formModel = Provider.of<HIVAssessmentProvider>(context, listen: false)
+        .riskAssessmentFormModel;
+    formModel.biologicalFather = biologicalFather;
+    formModel.malnourished = malnourished;
+    formModel.sexualAbuse = sexualAbuse;
+    formModel.sexualAbuseAdolescent = sexualAbuseAdolescent;
+    formModel.traditionalProcedures = traditionalProcedures;
+    formModel.persistentlySick = persistentlySick;
+    formModel.tb = tb;
+    formModel.sexualIntercourse = sexualIntercourse;
+    formModel.symptomsOfSTI = symptomsOfSTI;
+    formModel.ivDrugUser = ivDrugUser;
+    formModel.finalEvaluation = finalEvaluation;
 
     Provider.of<HIVAssessmentProvider>(context, listen: false)
-        .updateHIVRiskAssessmentModel(val);
+        .notifyListeners();
   }
 
   @override
   void initState() {
     super.initState();
-    currentStatus = context.read<HIVAssessmentProvider>().hivCurrentStatusModel;
+    riskAssessmentFormModel =
+        context.read<HIVAssessmentProvider>().riskAssessmentFormModel;
     final riskAssessment =
-        context.read<HIVAssessmentProvider>().hivRiskAssessmentModel;
+        context.read<HIVAssessmentProvider>().riskAssessmentFormModel;
     biologicalFather = riskAssessment.biologicalFather;
     malnourished = riskAssessment.malnourished;
     sexualAbuse = riskAssessment.sexualAbuse;
@@ -168,9 +92,9 @@ class _HIVRiskAssesmentFormState extends State<HIVRiskAssesmentForm> {
       padding: const EdgeInsets.only(top: 20),
       child: FormSection(
         isVisibleCondition: () {
-          return (currentStatus.statusOfChild == "Yes" &&
-              currentStatus.hivStatus == "HIV_Negative" &&
-              currentStatus.hivTestDone == "No");
+          return (riskAssessmentFormModel.statusOfChild == "Yes" &&
+              riskAssessmentFormModel.hivStatus == "HIV_Negative" &&
+              riskAssessmentFormModel.hivTestDone == "No");
         },
         children: [
           Column(
