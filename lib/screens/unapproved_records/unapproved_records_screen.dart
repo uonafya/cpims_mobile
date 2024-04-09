@@ -481,6 +481,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
             peerEducatorContact: unapprovedHMF.peerEducatorContact,
           ));
 
+      await Future.delayed(Duration(milliseconds: 200));
+
       context.read<HIVManagementFormProvider>();
       Get.to(() => HIVManagementForm(caseLoad: caseLoad));
       Provider.of<StatsProvider>(context, listen: false)
