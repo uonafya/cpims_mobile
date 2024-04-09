@@ -116,7 +116,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               onDateSelected: (date) {
                 _handleDateHIVConfirmedPositiveChanged(formattedDate(date!));
               },
-              identifier: DateTextFieldIdentifier.dateOfAssessment,
+              identifier: DateTextFieldIdentifier.dateHIVConfirmedPositive,
             ),
           ],
         ),
@@ -140,7 +140,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               onDateSelected: (date) {
                 _handleDateTreatmentInitiatedChanged(formattedDate(date!));
               },
-              identifier: DateTextFieldIdentifier.dateOfAssessment,
+              identifier: DateTextFieldIdentifier.dateTreatmentInitiated,
             ),
           ],
         ),
@@ -190,7 +190,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                   handleOnSave();
                 });
               },
-              identifier: DateTextFieldIdentifier.dateOfAssessment,
+              identifier: DateTextFieldIdentifier.dateStartedFirstLine,
             ),
           ],
         ),
@@ -236,7 +236,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                     handleOnSave();
                   });
                 },
-                identifier: DateTextFieldIdentifier.dateOfAssessment,
+                identifier: DateTextFieldIdentifier.arvsSubWithFirstLineDate,
               ),
           ],
         ),
@@ -281,7 +281,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                     handleOnSave();
                   });
                 },
-                identifier: DateTextFieldIdentifier.dateOfAssessment,
+                identifier: DateTextFieldIdentifier.switchToSecondLineDate,
               ),
           ],
         ),
@@ -326,7 +326,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                     handleOnSave();
                   });
                 },
-                identifier: DateTextFieldIdentifier.dateOfAssessment,
+                identifier: DateTextFieldIdentifier.switchToThirdLineDate,
               ),
           ],
         ),

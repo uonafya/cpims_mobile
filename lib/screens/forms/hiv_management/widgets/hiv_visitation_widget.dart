@@ -181,7 +181,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                   handleOnSave();
                 });
               },
-              identifier: DateTextFieldIdentifier.dateOfAssessment,
+              identifier: DateTextFieldIdentifier.visitDate,
             ),
           ],
         ),
@@ -504,7 +504,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                   handleOnSave();
                 });
               },
-              identifier: DateTextFieldIdentifier.dateOfAssessment,
+              identifier: DateTextFieldIdentifier.labInvestigationsDate,
             ),
           ],
         ),
@@ -780,7 +780,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                   : 'Date',
               enabled: true,
               allowFutureDates: true,
-              identifier: DateTextFieldIdentifier.dateOfAssessment,
+              identifier: DateTextFieldIdentifier.nextAppointmentDate,
               onDateSelected: (DateTime? date) {
                 setState(() {
                   nextAppointmentDate = formattedDate(date!);

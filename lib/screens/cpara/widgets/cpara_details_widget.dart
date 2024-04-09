@@ -703,4 +703,15 @@ class ApiService {
 enum DateTextFieldIdentifier {
   dateOfAssessment,
   previousAssessment,
+  dateHIVConfirmedPositive,
+  dateTreatmentInitiated,
+  dateStartedFirstLine,
+  arvsSubWithFirstLineDate,
+  switchToSecondLineDate,
+  switchToThirdLineDate,
+  labInvestigationsDate,
+  nextAppointmentDate,
+  visitDate
+
+
 }
