@@ -9,23 +9,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../forms/hiv_assessment/unapproved/unapproved_hiv_risk_assessment.dart';
+import '../../forms/hiv_assessment/unapproved/hiv_risk_assessment_form_model.dart';
 
 class HIVAssessmentProvider with ChangeNotifier {
   CaseLoadModel _caseLoadModel = CaseLoadModel();
 
   CaseLoadModel get caseLoadModel => _caseLoadModel;
 
-  // HIVCurrentStatusModel _hivCurrentStatusModel = HIVCurrentStatusModel();
-  // HIVCurrentStatusModel get hivCurrentStatusModel => _hivCurrentStatusModel;
-  //
-  // HIVRiskAssessmentModel _hivRiskAssessmentModel = HIVRiskAssessmentModel();
-  //
-  // HIVRiskAssessmentModel get hivRiskAssessmentModel => _hivRiskAssessmentModel;
-  // ProgressMonitoringModel _progressMonitoringModel = ProgressMonitoringModel();
-  //
-  // ProgressMonitoringModel get progressMonitoringModel =>
-  //     _progressMonitoringModel;
 
   RiskAssessmentFormModel _riskAssessmentFormModel = RiskAssessmentFormModel();
 
@@ -90,6 +80,7 @@ class HIVAssessmentProvider with ChangeNotifier {
 
   void updateRiskAssessmentModel(RiskAssessmentFormModel model) {
     _riskAssessmentFormModel = model;
+    calculateFinalEvaluation();
     if (kDebugMode) {
       print(riskAssessmentFormModel.toJson());
     }

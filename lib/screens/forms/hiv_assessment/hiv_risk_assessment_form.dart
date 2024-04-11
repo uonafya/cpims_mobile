@@ -2,7 +2,7 @@ import 'package:cpims_mobile/screens/cpara/provider/hiv_assessment_provider.dart
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
-import 'package:cpims_mobile/screens/forms/hiv_assessment/unapproved/unapproved_hiv_risk_assessment.dart';
+import 'package:cpims_mobile/screens/forms/hiv_assessment/unapproved/hiv_risk_assessment_form_model.dart';
 import 'package:cpims_mobile/widgets/form_section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +10,87 @@ import 'package:provider/provider.dart';
 import '../../../Models/case_load_model.dart';
 import '../../ovc_care/ovc_care_screen.dart';
 
+
+// class HIVRiskAssessmentModel {
+//   final String biologicalFather;
+//   final String malnourished;
+//   final String sexualAbuse;
+//   final String sexualAbuseAdolescent;
+//   final String traditionalProcedures;
+//   final String persistentlySick;
+//   final String tb;
+//   final String sexualIntercourse;
+//   final String symptomsOfSTI;
+//   final String ivDrugUser;
+//   final String finalEvaluation;
+//
+//   HIVRiskAssessmentModel({
+//     this.biologicalFather = "",
+//     this.malnourished = "",
+//     this.sexualAbuse = "",
+//     this.sexualAbuseAdolescent = "",
+//     this.traditionalProcedures = "",
+//     this.persistentlySick = "",
+//     this.tb = "",
+//     this.sexualIntercourse = "",
+//     this.symptomsOfSTI = "",
+//     this.ivDrugUser = "",
+//     String? finalEvaluation, // Allow for the initialization of finalEvaluation
+//   }) : finalEvaluation = _calculateFinalEvaluation(
+//     biologicalFather,
+//     malnourished,
+//     sexualAbuse,
+//     sexualAbuseAdolescent,
+//     traditionalProcedures,
+//     persistentlySick,
+//     tb,
+//     sexualIntercourse,
+//     symptomsOfSTI,
+//     ivDrugUser,
+//   );
+//
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'HIV_RS_04': biologicalFather,
+//       'HIV_RS_05': malnourished,
+//       'HIV_RS_06': sexualAbuse,
+//       'HIV_RS_09': sexualAbuseAdolescent,
+//       'HIV_RS_06A': traditionalProcedures,
+//       'HIV_RS_07': persistentlySick,
+//       'HIV_RS_08': tb,
+//       'HIV_RS_10': sexualIntercourse,
+//       'HIV_RS_10A': symptomsOfSTI,
+//       'HIV_RS_10B': ivDrugUser,
+//       'HIV_RS_11': finalEvaluation,
+//     };
+//   }
+//
+//   static String _calculateFinalEvaluation(
+//       String biologicalFather,
+//       String malnourished,
+//       String sexualAbuse,
+//       String sexualAbuseAdolescent,
+//       String traditionalProcedures,
+//       String persistentlySick,
+//       String tb,
+//       String sexualIntercourse,
+//       String symptomsOfSTI,
+//       String ivDrugUser,
+//       ) {
+//     bool anyQuestionAnsweredYes = biologicalFather == "Yes" ||
+//         malnourished == "Yes" ||
+//         sexualAbuse == "Yes" ||
+//         sexualAbuseAdolescent == "Yes" ||
+//         traditionalProcedures == "Yes" ||
+//         persistentlySick == "Yes" ||
+//         tb == "Yes" ||
+//         sexualIntercourse == "Yes" ||
+//         symptomsOfSTI == "Yes" ||
+//         ivDrugUser == "Yes";
+//
+//     return anyQuestionAnsweredYes ? "Yes" : "";
+//   }
+// }
 
 
 class HIVRiskAssesmentForm extends StatefulWidget {

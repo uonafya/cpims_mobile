@@ -32,7 +32,7 @@ import 'package:uuid/uuid.dart';
 import '../Models/caseplan_form_model.dart';
 import '../constants.dart';
 import '../screens/forms/form1a/new/form_one_a.dart';
-import '../screens/forms/hiv_assessment/unapproved/unapproved_hiv_risk_assessment.dart';
+import '../screens/forms/hiv_assessment/unapproved/hiv_risk_assessment_form_model.dart';
 
 class LocalDb {
   static const String _databaseName = 'children_ovc4.db';
@@ -596,12 +596,12 @@ class LocalDb {
   }
 
   Future<void> insertHRSData(
-      String cpmisId,
-      String caregiverCpimsId,
+      String? cpmisId,
+      String? caregiverCpimsId,
       RiskAssessmentFormModel assessment,
-      String uuid,
-      String startOfInterview,
-      String formType,
+      String? uuid,
+      String? startOfInterview,
+      String? formType,
       bool? isRejected,
       ) async {
     final db = await instance.database;
@@ -644,6 +644,22 @@ class LocalDb {
         'rejected': isRejected,
       },
     );
+    if (isRejected == true) {
+      var dio = Dio();
+      var prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getString('access');
+      String bearerAuth = "Bearer $accessToken";
+
+      var updateUpstreamEndpoint = "${cpimsApiUrl}mobile/record_saved";
+      var response = await dio.post(updateUpstreamEndpoint,
+          data: {"record_id": uuid, "saved": 1, "form_type": "hrs"},
+          options: Options(headers: {"Authorization": bearerAuth}));
+      if (response.statusCode == 200) {
+        debugPrint("Data sent successfully");
+      } else {
+        debugPrint("Data not sent");
+      }
+    }
   }
 
   Future<List<Map<String, dynamic>>> fetchHRSFormData() async {
@@ -818,7 +834,9 @@ class LocalDb {
     String? rejectedMessage,
   ) async {
     final db = await instance.database;
-    await insertAppFormMetaData(uuid, startTimeInterview, formType);
+    if(uuid !=null || startTimeInterview !=null){
+      await insertAppFormMetaData(uuid, startTimeInterview, formType);
+    }
     await db.insert(
       HMForms,
       {

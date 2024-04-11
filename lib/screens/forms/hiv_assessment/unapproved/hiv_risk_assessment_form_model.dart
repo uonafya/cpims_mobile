@@ -46,7 +46,6 @@ class RiskAssessmentFormModel {
     this.sexualIntercourse = "",
     this.symptomsOfSTI = "",
     this.ivDrugUser = "",
-    this.finalEvaluation = "",
     this.parentAcceptHivTesting = "",
     this.parentAcceptHivTestingDate = "",
     this.formalReferralMade = "",
@@ -60,7 +59,45 @@ class RiskAssessmentFormModel {
     this.artReferralCompleted = "",
     this.artReferralCompletedDate = "",
     this.facilityOfArtEnrollment = "",
-  });
+    String? finalEvaluation,
+  }): finalEvaluation = _calculateFinalEvaluation(
+    biologicalFather,
+    malnourished,
+    sexualAbuse,
+    sexualAbuseAdolescent,
+    traditionalProcedures,
+    persistentlySick,
+    tb,
+    sexualIntercourse,
+    symptomsOfSTI,
+    ivDrugUser,
+  );
+
+  static String _calculateFinalEvaluation(
+      String biologicalFather,
+      String malnourished,
+      String sexualAbuse,
+      String sexualAbuseAdolescent,
+      String traditionalProcedures,
+      String persistentlySick,
+      String tb,
+      String sexualIntercourse,
+      String symptomsOfSTI,
+      String ivDrugUser,
+      ) {
+    bool anyQuestionAnsweredYes = biologicalFather == "Yes" ||
+        malnourished == "Yes" ||
+        sexualAbuse == "Yes" ||
+        sexualAbuseAdolescent == "Yes" ||
+        traditionalProcedures == "Yes" ||
+        persistentlySick == "Yes" ||
+        tb == "Yes" ||
+        sexualIntercourse == "Yes" ||
+        symptomsOfSTI == "Yes" ||
+        ivDrugUser == "Yes";
+
+    return anyQuestionAnsweredYes ? "Yes" : "";
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -169,3 +206,6 @@ class RiskAssessmentFormModel {
     );
   }
 }
+
+
+

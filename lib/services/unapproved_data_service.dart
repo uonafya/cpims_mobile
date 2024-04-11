@@ -12,6 +12,7 @@ import '../providers/db_provider.dart';
 
 // import '../screens/cpara/widgets/cpara_details_widget.dart';
 import '../providers/unapproved_cpt_provider.dart';
+import '../screens/forms/hiv_assessment/unapproved/unapproved_hrs_model.dart';
 import '../screens/forms/hiv_management/models/hiv_management_form_model.dart';
 import '../screens/forms/hiv_management/unapproved/UnApprovedHmfModel.dart';
 import 'api_service.dart';
@@ -103,6 +104,11 @@ class UnapprovedDataService {
         }
       } else if (endpoint == endpoints[5]) {
         //fetch unapproved hrs
+        for (var map in jsonData) {
+          final unapprovedHrs = UnapprovedHrsModel.fromJson(map);
+          db.insertHRSData(unapprovedHrs.ovcCpimsId.toString(), null,
+              unapprovedHrs, unapprovedHrs.riskId, null, "hrs", true);
+        }
       }
       return;
     }).toList();
@@ -184,7 +190,6 @@ class UnapprovedDataService {
     final db = LocalDb.instance;
     return await db.deleteUnApprovedForm1Data(id);
   }
-
 
   static Future<bool> deleteUnapprovedCpt(int id) async {
     final db = LocalDb.instance;
