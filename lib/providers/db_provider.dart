@@ -596,14 +596,14 @@ class LocalDb {
   }
 
   Future<void> insertHRSData(
-      String? cpmisId,
-      String? caregiverCpimsId,
-      RiskAssessmentFormModel assessment,
-      String? uuid,
-      String? startOfInterview,
-      String? formType,
-      bool? isRejected,
-      ) async {
+    String? cpmisId,
+    String? caregiverCpimsId,
+    RiskAssessmentFormModel assessment,
+    String? uuid,
+    String? startOfInterview,
+    String? formType,
+    bool? isRejected,
+  ) async {
     final db = await instance.database;
     await insertAppFormMetaData(uuid, startOfInterview, formType);
     await db.insert(
@@ -668,6 +668,53 @@ class LocalDb {
 
       final hrsData = await db.query(HRSForms,
           where: 'form_date_synced IS NULL OR form_date_synced = ""');
+
+      List<Map<String, dynamic>> updatedHRSData = [];
+
+      for (Map hrsDataRow in hrsData) {
+        // Modify values in the HRS form data
+        Map<String, dynamic> modifiedHRSDataRow = Map.from(hrsDataRow);
+        for (String key in modifiedHRSDataRow.keys) {
+          if (modifiedHRSDataRow[key] is String) {
+            if (modifiedHRSDataRow[key].toLowerCase() == 'yes') {
+              modifiedHRSDataRow[key] = 'AYES';
+            } else if (modifiedHRSDataRow[key].toLowerCase() == 'no') {
+              modifiedHRSDataRow[key] = 'ANNO';
+            }
+          }
+        }
+
+        String uuid = modifiedHRSDataRow['uuid'];
+
+        // Fetch associated AppFormMetaData
+        final AppFormMetaData appFormMetaData = await getAppFormMetaData(uuid);
+
+        // Create a new map that includes modified HRS form data and AppFormMetaData
+        Map<String, dynamic> updatedHRSDataRow = {
+          ...modifiedHRSDataRow,
+          'app_form_metadata': appFormMetaData.toJson(),
+        };
+
+        // Add the updated map to the list
+        updatedHRSData.add(updatedHRSDataRow);
+      }
+
+      debugPrint("Updated HRS form data: ${jsonEncode(updatedHRSData)}");
+
+      return updatedHRSData;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error fetching HRS form data: $e");
+      }
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchRejectedHRSFormData() async {
+    try {
+      final db = await LocalDb.instance.database;
+
+      final hrsData = await db.query(HRSForms, where: 'rejected = 1');
 
       List<Map<String, dynamic>> updatedHRSData = [];
 
@@ -834,7 +881,7 @@ class LocalDb {
     String? rejectedMessage,
   ) async {
     final db = await instance.database;
-    if(uuid !=null || startTimeInterview !=null){
+    if (uuid != null || startTimeInterview != null) {
       await insertAppFormMetaData(uuid, startTimeInterview, formType);
     }
     await db.insert(
@@ -1097,6 +1144,12 @@ class LocalDb {
   Future<bool> deleteUnApprovedHMFData(String id) async {
     final db = await LocalDb.instance.database;
     await db.delete(HMForms, where: 'uuid = ?', whereArgs: [id]);
+    return true;
+  }
+
+  Future<bool> deleteUnApprovedHRSFData(String id) async {
+    final db = await LocalDb.instance.database;
+    await db.delete(HRSForms, where: 'uuid = ?', whereArgs: [id]);
     return true;
   }
 

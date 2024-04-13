@@ -186,6 +186,17 @@ class UnapprovedDataService {
     return unapprovedHmfData;
   }
 
+  static Future<List<UnapprovedHrsModel>> fetchRejectedHRSForms() async {
+    final db = LocalDb.instance;
+    print("Unapproved hrs called");
+    List<Map<String, dynamic>> maps = await db.fetchRejectedHRSFormData();
+    List<UnapprovedHrsModel> unapprovedHrs = [];
+    for (var map in maps) {
+      unapprovedHrs.add(UnapprovedHrsModel.fromJson(map));
+    }
+    return unapprovedHrs;
+  }
+
   static Future<bool> deleteUnapprovedForm1(int id) async {
     final db = LocalDb.instance;
     return await db.deleteUnApprovedForm1Data(id);
@@ -210,4 +221,10 @@ class UnapprovedDataService {
     final db = LocalDb.instance;
     return await db.deleteUnApprovedHMFData(id);
   }
+
+  static Future<bool> deleteUnapprovedHrs(String id) async {
+    final db = LocalDb.instance;
+    return await db.deleteUnApprovedHRSFData(id);
+  }
+
 }

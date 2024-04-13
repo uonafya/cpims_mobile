@@ -75,9 +75,9 @@ class UnapprovedHrsModel extends RiskAssessmentFormModel {
       ovcCpimsId: json['ovc_cpims_id'].toString(),
       riskId: json['risk_id'],
       formUuid: json['risk_id'] ?? '',
-      dateOfAssessment: json['HIV_RA_1A'],
+      dateOfAssessment: json['HIV_RA_1A'] ?? '',
       statusOfChild: json['HIV_RS_01'].toString(),
-      hivStatus: json['HIV_RS_02'],
+      hivStatus: json['HIV_RS_02'] ?? '',
       hivTestDone: json['HIV_RS_03'].toString(),
       biologicalFather: json['HIV_RS_04'].toString(),
       malnourished: json['HIV_RS_05'].toString(),
@@ -89,19 +89,26 @@ class UnapprovedHrsModel extends RiskAssessmentFormModel {
       sexualIntercourse: json['HIV_RS_10'] ?? '',
       symptomsOfSTI: json['HIV_RS_10A'] ?? '',
       ivDrugUser: json['HIV_RS_10B'] ?? '',
-      finalEvaluation: json['HIV_RS_11'] ==null ? '' : json['HIV_RS_11'].toString(),
-      parentAcceptHivTesting: json['HIV_RS_14'] ==null ? '' : json['HIV_RS_14'].toString(),
-      parentAcceptHivTestingDate: json['HIV_RS_15'],
-      formalReferralMade: json['HIV_RS_16'] ==null ? '' : json['HIV_RS_16'].toString(),
-      formalReferralMadeDate: json['HIV_RS_17'],
-      formalReferralCompleted: json['HIV_RS_18'] ==null ? '' : json['HIV_RS_18'].toString(),
-      reasonForNotMakingReferral: json['HIV_RS_18A'],
-      hivTestResult: json['HIV_RS_18B'],
-      referredForArt: json['HIV_RS_21'] ==null ? '' : json['HIV_RS_21'].toString(),
-      referredForArtDate: json['HIV_RS_22']==null ? '' : json['HIV_RS_22'].toString(),
-      artReferralCompleted: json['HIV_RS_23'] ==null ? '' : json['HIV_RS_23'].toString(),
-      artReferralCompletedDate: json['HIV_RS_24'],
-      facilityOfArtEnrollment: json['HIV_RA_3Q6'],
+      finalEvaluation:
+          json['HIV_RS_11'] == null ? '' : json['HIV_RS_11'].toString(),
+      parentAcceptHivTesting:
+          json['HIV_RS_14'] == null ? '' : json['HIV_RS_14'].toString(),
+      parentAcceptHivTestingDate: json['HIV_RS_15'] ?? '',
+      formalReferralMade:
+          json['HIV_RS_16'] == null ? '' : json['HIV_RS_16'].toString(),
+      formalReferralMadeDate: json['HIV_RS_17'] ?? '',
+      formalReferralCompleted:
+          json['HIV_RS_18'] == null ? '' : json['HIV_RS_18'].toString(),
+      reasonForNotMakingReferral: json['HIV_RS_18A'] ?? '',
+      hivTestResult: json['HIV_RS_18B'] ?? '',
+      referredForArt:
+          json['HIV_RS_21'] == null ? '' : json['HIV_RS_21'].toString(),
+      referredForArtDate:
+          json['HIV_RS_22'] == null ? '' : json['HIV_RS_22'].toString(),
+      artReferralCompleted:
+          json['HIV_RS_23'] == null ? '' : json['HIV_RS_23'].toString(),
+      artReferralCompletedDate: json['HIV_RS_24'] ?? '',
+      facilityOfArtEnrollment: json['HIV_RA_3Q6'] ?? '',
     );
   }
 

@@ -15,6 +15,7 @@ import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
 import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/forms/hiv_assessment/unapproved/unapproved_hrs_model.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/screens/hiv_management_form_screen.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/unapproved/UnApprovedHmfModel.dart';
 import 'package:cpims_mobile/services/unapproved_data_service.dart';
@@ -75,8 +76,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
   List<UnapprovedForm1DataModel> unapprovedForm1BData = [];
   List<UnapprovedCasePlanModel> unapprovedCaseplanData = [];
   List<UnApprovedHivManagementForm> unapprovedHMFData = [];
-
-  // List<UnapprovedHRSModel>  unapprovedHRSData = [];
+  List<UnapprovedHrsModel> unapprovedHRSData = [];
 
   void deleteUnapprovedForm1(int id) async {
     bool success = await UnapprovedDataService.deleteUnapprovedForm1(id);
@@ -113,11 +113,14 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
         await UnapprovedDataService.fetchLocalUnapprovedCasePlanData();
     final List<UnApprovedHivManagementForm> unapprovedHMFRecords =
         await UnapprovedDataService.fetchRejectedHMFForms();
+    final List<UnapprovedHrsModel> unapprovedHRSRecords =
+        await UnapprovedDataService.fetchRejectedHRSForms();
     setState(() {
       unapprovedForm1AData = form1ARecords;
       unapprovedForm1BData = form1BRecords;
       unapprovedCaseplanData = unapprovedCaseplanRecords;
       unapprovedHMFData = unapprovedHMFRecords;
+      unapprovedHRSData = unapprovedHRSRecords;
     });
   }
 
@@ -501,6 +504,18 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       }
     }
 
+    void editHrsForm(UnapprovedHrsModel unapprovedHrsModel) {}
+    void deleteUnapprovedHrs(String? id) async {
+      bool success = await UnapprovedDataService.deleteUnapprovedHrs(id!);
+      if (success) {
+        setState(() {
+          unapprovedHRSData.removeWhere((element) => element.riskId == id);
+        });
+        Provider.of<StatsProvider>(context, listen: false)
+            .updateUnapprovedFormStats();
+      }
+    }
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -547,7 +562,11 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                   unapprovedHMFData: unapprovedHMFData,
                   onEdit: editHMF,
                   onDelete: deleteUnapprovedHMF),
-            if (selectedRecord == "HRS") Text("Unapproved HRS"),
+            if (selectedRecord == "HRS")
+              UnapprovedHRSList(
+                  unapprovedHrsData: unapprovedHRSData,
+                  onEdit: editHrsForm,
+                  onDelete: deleteUnapprovedHrs),
             if (selectedRecord == unapprovedRecords[0])
               Expanded(
                 child: FormTab(
@@ -1197,6 +1216,76 @@ class UnapprovedHMFCard extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () => onDelete(unapprovedHMF.adherenceId!),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class UnapprovedHRSList extends StatelessWidget {
+  final List<UnapprovedHrsModel> unapprovedHrsData;
+  final Function(UnapprovedHrsModel) onEdit;
+  final Function(String?) onDelete;
+
+  const UnapprovedHRSList({
+    super.key,
+    required this.unapprovedHrsData,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: unapprovedHrsData.length,
+        itemBuilder: (BuildContext context, int index) {
+          final UnapprovedHrsModel unapprovedHrsModel =
+              unapprovedHrsData[index];
+          return UnapprovedHrsCard(
+            unapprovedHrs: unapprovedHrsModel,
+            onEdit: onEdit,
+            onDelete: onDelete,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class UnapprovedHrsCard extends StatelessWidget {
+  final UnapprovedHrsModel unapprovedHrs;
+  final Function(UnapprovedHrsModel) onEdit;
+  final Function(String) onDelete;
+
+  const UnapprovedHrsCard({
+    super.key,
+    required this.unapprovedHrs,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: Text('CPIMS ID: ${unapprovedHrs.ovcCpimsId}'),
+        subtitle: Text('Reason For rejection: ${unapprovedHrs.message}'),
+        onTap: () {
+          onEdit(unapprovedHrs);
+        },
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () => onEdit(unapprovedHrs),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () => onDelete(unapprovedHrs.riskId!),
             ),
           ],
         ),
