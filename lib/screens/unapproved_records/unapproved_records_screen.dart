@@ -15,6 +15,8 @@ import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
 import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
+import 'package:cpims_mobile/screens/forms/hiv_assessment/unapproved/hiv_risk_assessment_form_model.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/unapproved/unapproved_hrs_model.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/screens/hiv_management_form_screen.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/unapproved/UnApprovedHmfModel.dart';
@@ -37,11 +39,13 @@ import '../../Models/unapproved_form_1_model.dart';
 import '../../providers/db_provider.dart';
 import '../../providers/form1a_provider.dart';
 import '../../providers/form1b_provider.dart';
+import '../cpara/provider/hiv_assessment_provider.dart';
 import '../forms/form1a/new/form_one_a.dart';
 import '../forms/form1a/new/utils/form_one_a_provider.dart';
 import '../forms/form1a/utils/form_1a_options.dart';
 import '../forms/form1b/form_1B.dart';
 import '../forms/form1b/utils/form1bConstants.dart';
+import '../forms/hiv_assessment/hiv_assessment.dart';
 import '../forms/hiv_management/models/hiv_management_form_model.dart';
 import '../homepage/provider/stats_provider.dart';
 
@@ -504,7 +508,58 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       }
     }
 
-    void editHrsForm(UnapprovedHrsModel unapprovedHrsModel) {}
+    void editHrsForm(UnapprovedHrsModel unapprovedHrsModel) async {
+      final db = LocalDb.instance;
+      CaseLoadModel caseLoad =
+          await db.getCaseLoad(int.parse(unapprovedHrsModel.ovcCpimsId!));
+      RiskAssessmentFormModel riskAssessmentFormModel =
+          context.read<HIVAssessmentProvider>().riskAssessmentFormModel;
+      context
+          .read<HIVAssessmentProvider>()
+          .updateRiskAssessmentModel(riskAssessmentFormModel.copyWith(
+            formUuid: unapprovedHrsModel.formUuid,
+            dateOfAssessment: unapprovedHrsModel.dateOfAssessment,
+            statusOfChild: unapprovedHrsModel.statusOfChild,
+            hivStatus: unapprovedHrsModel.hivStatus,
+            hivTestDone: unapprovedHrsModel.hivTestDone,
+            biologicalFather: unapprovedHrsModel.biologicalFather,
+            malnourished: unapprovedHrsModel.malnourished,
+            sexualAbuse: unapprovedHrsModel.sexualAbuse,
+            sexualAbuseAdolescent: unapprovedHrsModel.sexualAbuseAdolescent,
+            traditionalProcedures: unapprovedHrsModel.traditionalProcedures,
+            persistentlySick: unapprovedHrsModel.persistentlySick,
+            tb: unapprovedHrsModel.tb,
+            sexualIntercourse: unapprovedHrsModel.sexualIntercourse,
+            symptomsOfSTI: unapprovedHrsModel.symptomsOfSTI,
+            ivDrugUser: unapprovedHrsModel.ivDrugUser,
+            finalEvaluation: unapprovedHrsModel.finalEvaluation,
+            parentAcceptHivTesting: unapprovedHrsModel.parentAcceptHivTesting,
+            parentAcceptHivTestingDate:
+                unapprovedHrsModel.parentAcceptHivTestingDate,
+            formalReferralMade: unapprovedHrsModel.formalReferralMade,
+            formalReferralMadeDate: unapprovedHrsModel.formalReferralMadeDate,
+            formalReferralCompleted: unapprovedHrsModel.formalReferralCompleted,
+            formalReferralCompletedDate:
+                unapprovedHrsModel.formalReferralCompletedDate,
+            reasonForNotMakingReferral:
+                unapprovedHrsModel.reasonForNotMakingReferral,
+            hivTestResult: unapprovedHrsModel.hivTestResult,
+            referredForArt: unapprovedHrsModel.referredForArt,
+            referredForArtDate: unapprovedHrsModel.referredForArtDate,
+            artReferralCompleted: unapprovedHrsModel.artReferralCompleted,
+            artReferralCompletedDate:
+                unapprovedHrsModel.artReferralCompletedDate,
+            facilityOfArtEnrollment: unapprovedHrsModel.facilityOfArtEnrollment,
+          ));
+
+      await Future.delayed(const Duration(milliseconds: 200));
+
+      context.read<HIVAssessmentProvider>();
+      Get.to(() => HIVAssessmentScreen(caseLoadModel: caseLoad));
+      Provider.of<StatsProvider>(context, listen: false)
+          .updateUnapprovedFormStats();
+    }
+
     void deleteUnapprovedHrs(String? id) async {
       bool success = await UnapprovedDataService.deleteUnapprovedHrs(id!);
       if (success) {
