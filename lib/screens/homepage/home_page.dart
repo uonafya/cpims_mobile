@@ -270,6 +270,48 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
+  Future<void> syncGraduationFormData() async {
+    var prefs = await SharedPreferences.getInstance();
+    var bearerToken = prefs.getString('access');
+
+    if (bearerToken == null) {
+      // Handle the case where the token is not available.
+      return;
+    }
+    final db = await LocalDb.instance;
+    try {
+      final queryResults = await db.fetchGraduationMonitoringData();
+      final Dio dio = Dio();
+      dio.options.headers['Authorization'] = 'Bearer $bearerToken';
+      dio.interceptors.add(LogInterceptor());
+
+      // Submit data
+      for (final formData in queryResults) {
+        debugPrint("The graduation data is ${jsonEncode(formData)}");
+        try {
+          final response = await dio.post('${cpimsApiUrl}mobile/graduation/',
+              data: formData);
+          if (kDebugMode) {
+            print(response.toString());
+          }
+
+          if (response.statusCode == 201) {
+            await db.updateGraduationData(formData['uuid']);
+          }
+        } catch (error) {
+          if (kDebugMode) {
+            print(error);
+          }
+        }
+      }
+    } catch (e) {
+      // Handle the error, you may want to retry or log it
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
   Future<void> syncWorkflows() async {
     final isConnected =
         await Provider.of<ConnectivityProvider>(context, listen: false)
@@ -281,6 +323,7 @@ class _HomepageState extends State<Homepage> {
       await showCountUnsyncedForms();
       await syncHRSFormData();
       await syncHMFFormData();
+      await syncGraduationFormData();
       if (mounted) {
         context.read<StatsProvider>().updateFormStats();
       }

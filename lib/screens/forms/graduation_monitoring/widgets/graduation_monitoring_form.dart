@@ -159,9 +159,12 @@ class _GraduationMonitoringFormScreenState
                             });
 
                             GraduationMonitoringProvider provider =
-                            Provider.of<GraduationMonitoringProvider>(context, listen: false);
+                                Provider.of<GraduationMonitoringProvider>(
+                                    context,
+                                    listen: false);
                             provider.updateGraduationMonitoringModel(
-                              GraduationMonitoringFormModel(dateOfMonitoring: dateOfMonitoring),
+                              GraduationMonitoringFormModel(
+                                  dateOfMonitoring: dateOfMonitoring),
                             );
                           },
                           allowPastDates: true,
@@ -486,31 +489,42 @@ class _GraduationMonitoringFormScreenState
                                     appMetaDataProvider.startTimeInterview ??
                                         DateTime.now().toIso8601String();
                                 String formUuid = Uuid().v4();
-                                await Provider.of<GraduationMonitoringProvider>(
-                                        context,
-                                        listen: false)
-                                    .submitGraduationMonitoringForm(
+                                bool isGraduationMonitoringSaved =
+                                    await Provider.of<
+                                                GraduationMonitoringProvider>(
+                                            context,
+                                            listen: false)
+                                        .submitGraduationMonitoringForm(
                                   widget.caseLoad.cpimsId,
                                   widget.caseLoad.caregiverCpimsId,
                                   formUuid,
                                   startInterviewTime,
                                   formType,
                                 );
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content:
-                                        Text('Form submitted successfully'),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                );
-                                setState(() {
-                                  isLoading = false;
-                                });
-                                Navigator.pop(context);
-                                //update stats
+                                if (isGraduationMonitoringSaved) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content:
+                                          Text('Form submitted successfully'),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  );
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                  Navigator.pop(context);
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Failed to submit form'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                  //update stats
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                }
                               } else {
                                 setState(() {
                                   isLoading = false;

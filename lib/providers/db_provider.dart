@@ -809,6 +809,12 @@ class LocalDb {
         where: 'uuid = ?', whereArgs: [id]);
   }
 
+  Future<void> updateGraduationData(String id) async {
+    final db = await LocalDb.instance.database;
+    await db.update(graduation_monitoring, {'form_date_synced': DateTime.now().toString()},
+        where: 'uuid = ?', whereArgs: [id]);
+  }
+
   // create HIVManagement table
   Future<void> createHMFForms(Database db, int version) async {
     const String createTableQuery = '''
@@ -2192,7 +2198,7 @@ class LocalDb {
     }
   }
 
-  Future<void> insertGraduationMonitoringFormData(
+  Future<bool> insertGraduationMonitoringFormData(
     String? cpmisId,
     String? caregiverCpimsId,
     GraduationMonitoringFormModel graduationMonitoringFormModel,
@@ -2203,43 +2209,53 @@ class LocalDb {
     String? rejectedMessage,
   ) async {
     final db = await instance.database;
-    if (uuid != null || startTimeInterview != null) {
-      await insertAppFormMetaData(uuid, startTimeInterview, formType);
-    }
-    await db.insert(
-      graduation_monitoring,
-      {
-        'ovc_cpims_id': cpmisId,
-        'caregiver_cpims_id': caregiverCpimsId,
-        'date_of_monitoring': graduationMonitoringFormModel.dateOfMonitoring,
-        'form_type': graduationMonitoringFormModel.formType,
-        'benchmark_1': graduationMonitoringFormModel.benchmark1,
-        'benchmark_2': graduationMonitoringFormModel.benchmark2,
-        'benchmark_3': graduationMonitoringFormModel.benchmark3,
-        'benchmark_4': graduationMonitoringFormModel.benchmark4,
-        'benchmark_5': graduationMonitoringFormModel.benchmark5,
-        'benchmark_6': graduationMonitoringFormModel.benchmark6,
-        'benchmark_7': graduationMonitoringFormModel.benchmark7,
-        'benchmark_8': graduationMonitoringFormModel.benchmark8,
-        'benchmark_9': graduationMonitoringFormModel.benchmark9,
-        'householdReadyToExit':
-            graduationMonitoringFormModel.householdReadyToExit,
-        'caseDeterminedReadyForClosure':
-            graduationMonitoringFormModel.caseDeterminedReadyForClosure,
-        'uuid': uuid,
-        'form_date_synced': null,
-        'message': rejectedMessage,
-        'rejected': isRejected,
-      },
-    );
-    if (isRejected == true) {
-      var dio = Dio();
-      var prefs = await SharedPreferences.getInstance();
-      var accessToken = prefs.getString('access');
-      String bearerAuth = "Bearer $accessToken";
 
-      var updateUpstreamEndpoint = "${cpimsApiUrl}mobile/record_saved";
-      var response = await dio.post(updateUpstreamEndpoint,
+    try {
+      if (uuid != null || startTimeInterview != null) {
+        await insertAppFormMetaData(uuid, startTimeInterview, formType);
+      }
+
+      int? insertedId = await db.insert(
+        graduation_monitoring,
+        {
+          'ovc_cpims_id': cpmisId,
+          'caregiver_cpims_id': caregiverCpimsId,
+          'date_of_monitoring': graduationMonitoringFormModel.dateOfMonitoring,
+          'form_type': graduationMonitoringFormModel.formType,
+          'benchmark_1': graduationMonitoringFormModel.benchmark1,
+          'benchmark_2': graduationMonitoringFormModel.benchmark2,
+          'benchmark_3': graduationMonitoringFormModel.benchmark3,
+          'benchmark_4': graduationMonitoringFormModel.benchmark4,
+          'benchmark_5': graduationMonitoringFormModel.benchmark5,
+          'benchmark_6': graduationMonitoringFormModel.benchmark6,
+          'benchmark_7': graduationMonitoringFormModel.benchmark7,
+          'benchmark_8': graduationMonitoringFormModel.benchmark8,
+          'benchmark_9': graduationMonitoringFormModel.benchmark9,
+          'householdReadyToExit':
+              graduationMonitoringFormModel.householdReadyToExit,
+          'caseDeterminedReadyForClosure':
+              graduationMonitoringFormModel.caseDeterminedReadyForClosure,
+          'uuid': uuid,
+          'form_date_synced': null,
+          'message': rejectedMessage,
+          'rejected': isRejected,
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+
+      if (insertedId == null || insertedId == 0) {
+        // Data was not inserted successfully
+        return false;
+      }
+
+      if (isRejected == true) {
+        var dio = Dio();
+        var prefs = await SharedPreferences.getInstance();
+        var accessToken = prefs.getString('access');
+        String bearerAuth = "Bearer $accessToken";
+        var updateUpstreamEndpoint = "${cpimsApiUrl}mobile/record_saved";
+        var response = await dio.post(
+          updateUpstreamEndpoint,
           data: {
             "record_id": uuid,
             "saved": 1,
@@ -2248,13 +2264,45 @@ class LocalDb {
                     ? "Benchmark Monitoring"
                     : "Households Reaching Case Plan Achievement"
           },
-          options: Options(headers: {"Authorization": bearerAuth}));
-      if (response.statusCode == 200) {
-        debugPrint("Data sent successfully");
-      } else {
-        debugPrint("Data not sent");
+          options: Options(headers: {"Authorization": bearerAuth}),
+        );
+
+        if (response.statusCode == 200) {
+          debugPrint("Data sent successfully");
+        } else {
+          debugPrint("Data not sent");
+        }
       }
+
+      return true; // Data was saved successfully
+    } catch (e) {
+      debugPrint('Error inserting graduation monitoring data: $e');
+      return false; // Data was not saved
     }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchGraduationMonitoringData() async {
+    try {
+      final db = await LocalDb.instance.database;
+      final graduationData = await db.query(graduation_monitoring,
+          where:
+              'form_date_synced IS NULL OR form_date_synced = "" AND rejected = 0');
+      List<Map<String, dynamic>> updatedGraduationFormData = [];
+
+      for (Map<String, dynamic> graduationRow in graduationData) {
+        final AppFormMetaData appFormMetaData =
+            await getAppFormMetaData(graduationRow['uuid']);
+        Map<String, dynamic> updatedGraduationRow = {
+          ...graduationRow,
+          'app_form_metadata': appFormMetaData.toJson(),
+        };
+        updatedGraduationFormData.add(updatedGraduationRow);
+      }
+      return updatedGraduationFormData;
+    } catch (e) {
+      debugPrint("Error fetching graduation monitoring data: $e");
+    }
+    return [];
   }
 }
 

@@ -1,3 +1,4 @@
+import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/forms/graduation_monitoring/model/graduation_monitoring_form_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -18,7 +19,12 @@ class GraduationMonitoringProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> submitGraduationMonitoringForm(
+  void clearForm() {
+    _graduationMonitoringFormModel = GraduationMonitoringFormModel();
+    notifyListeners();
+  }
+
+  Future<bool> submitGraduationMonitoringForm(
     String? cpimsID,
     String? caregiverCpimsId,
     uuid,
@@ -32,8 +38,22 @@ class GraduationMonitoringProvider extends ChangeNotifier {
         ..._graduationMonitoringFormModel.toMap()
       };
 
-      if (kDebugMode) {
-        print(formData);
+      bool isFormSaved = await LocalDb.instance
+          .insertGraduationMonitoringFormData(
+              cpimsID,
+              caregiverCpimsId,
+              _graduationMonitoringFormModel,
+              uuid,
+              startTimeInterview,
+              formType,
+              false,
+              null);
+
+      if (isFormSaved) {
+        clearForm();
+        return true;
+      } else {
+        return false;
       }
     } catch (e) {
       rethrow;
