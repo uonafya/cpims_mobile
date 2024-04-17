@@ -293,7 +293,12 @@ class DateTextField2 extends StatelessWidget {
   final String initialValue;
   final UpdateDate updateDate;
 
-  DateTextField2({required this.label, required this.enabled, required this.initialValue, required this.updateDate, super.key});
+  DateTextField2(
+      {required this.label,
+      required this.enabled,
+      required this.initialValue,
+      required this.updateDate,
+      super.key});
 
   final TextEditingController controller = TextEditingController();
 
@@ -333,6 +338,62 @@ class DateTextField2 extends StatelessWidget {
         border: const OutlineInputBorder(),
       ),
       controller: controller,
+    );
+  }
+}
+
+class DateTextField2New extends StatefulWidget {
+  final String label;
+  final bool enabled;
+  final UpdateDate updateDate;
+  final bool allowPastDates;
+
+  DateTextField2New({
+    required this.label,
+    required this.enabled,
+    required this.updateDate,
+    this.allowPastDates = false,
+    super.key,
+  });
+
+  @override
+  State<DateTextField2New> createState() => _DateTextField2NewState();
+}
+
+class _DateTextField2NewState extends State<DateTextField2New> {
+  final TextEditingController _controller = TextEditingController(text: '');
+  late DateTime? _selectedDate;
+
+  @override
+  Widget build(BuildContext context) {
+    var dateFormat = DateFormat('MMMM d, yyyy');
+
+    return TextField(
+      onTap: () {
+        if (widget.enabled) {
+          showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: widget.allowPastDates ? DateTime(1900) : DateTime.now(),
+            lastDate: DateTime.now(),
+          ).then((pickedDate) {
+            if (pickedDate != null) {
+              setState(() {
+                _selectedDate = pickedDate;
+                _controller.text = dateFormat.format(pickedDate);
+              });
+              widget.updateDate(DateFormat('yyyy-MM-dd').format(pickedDate));
+            }
+          });
+        }
+      },
+      readOnly: true,
+      enabled: widget.enabled,
+      decoration: InputDecoration(
+        labelText: widget.label,
+        border: const OutlineInputBorder(),
+      ),
+      controller: _controller,
     );
   }
 }
@@ -712,6 +773,4 @@ enum DateTextFieldIdentifier {
   labInvestigationsDate,
   nextAppointmentDate,
   visitDate
-
-
 }

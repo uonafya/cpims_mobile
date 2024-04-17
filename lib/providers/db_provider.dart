@@ -13,6 +13,7 @@ import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/db_util.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
+import 'package:cpims_mobile/screens/forms/graduation_monitoring/model/graduation_monitoring_form_model.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_form.dart';
@@ -205,6 +206,7 @@ class LocalDb {
     await createHRSForms(db, version);
     await createUnapprovedCparaTables(db, version);
     await createHMFForms(db, version);
+    await createGraduationMonitoringTable(db, version);
     final unapprovedCptDb = UnapprovedCptProvider();
     await unapprovedCptDb.createTable(db, version);
   }
@@ -2147,6 +2149,113 @@ class LocalDb {
       whereArgs: [thirtyDaysAgo.toIso8601String()],
     );
   }
+
+  //graduation monitoring
+  Future<void> createGraduationMonitoringTable(Database db, int version) async {
+    const String createTableQuery = '''
+    CREATE TABLE $graduation_monitoring (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      ovc_cpims_id TEXT,
+      caregiver_cpims_id TEXT,
+      date_of_monitoring TEXT NOT NULL,
+      form_type TEXT NOT NULL,
+      benchmark_1 TEXT NOT NULL,
+      benchmark_2 TEXT NOT NULL,
+      benchmark_3 TEXT NOT NULL,
+      benchmark_4 TEXT NOT NULL,
+      benchmark_5 TEXT NOT NULL,
+      benchmark_6 TEXT NOT NULL,
+      benchmark_7 TEXT NOT NULL,
+      benchmark_8 TEXT NOT NULL,
+      benchmark_9 TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      householdReadyToExit TEXT NOT NULL,
+      caseDeterminedReadyForClosure TEXT NOT NULL,
+      uuid TEXT,
+      form_date_synced TEXT NULL,
+      message TEXT NULL,
+      rejected BOOLEAN 
+    )
+  ''';
+
+    try {
+      await db.execute(createTableQuery);
+      if (kDebugMode) {
+        debugPrint(
+            "------------------Function ----Creating Graduation Monitoring Forms---------------------------");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint(
+            "-------------------Error Graduation Monitoring Forms---------------------------$e");
+      }
+    }
+  }
+
+  Future<void> insertGraduationMonitoringFormData(
+    String? cpmisId,
+    String? caregiverCpimsId,
+    GraduationMonitoringFormModel graduationMonitoringFormModel,
+    String? uuid,
+    String? startTimeInterview,
+    String? formType,
+    bool? isRejected,
+    String? rejectedMessage,
+  ) async {
+    final db = await instance.database;
+    if (uuid != null || startTimeInterview != null) {
+      await insertAppFormMetaData(uuid, startTimeInterview, formType);
+    }
+    await db.insert(
+      graduation_monitoring,
+      {
+        'ovc_cpims_id': cpmisId,
+        'caregiver_cpims_id': caregiverCpimsId,
+        'date_of_monitoring': graduationMonitoringFormModel.dateOfMonitoring,
+        'form_type': graduationMonitoringFormModel.formType,
+        'benchmark_1': graduationMonitoringFormModel.benchmark1,
+        'benchmark_2': graduationMonitoringFormModel.benchmark2,
+        'benchmark_3': graduationMonitoringFormModel.benchmark3,
+        'benchmark_4': graduationMonitoringFormModel.benchmark4,
+        'benchmark_5': graduationMonitoringFormModel.benchmark5,
+        'benchmark_6': graduationMonitoringFormModel.benchmark6,
+        'benchmark_7': graduationMonitoringFormModel.benchmark7,
+        'benchmark_8': graduationMonitoringFormModel.benchmark8,
+        'benchmark_9': graduationMonitoringFormModel.benchmark9,
+        'householdReadyToExit':
+            graduationMonitoringFormModel.householdReadyToExit,
+        'caseDeterminedReadyForClosure':
+            graduationMonitoringFormModel.caseDeterminedReadyForClosure,
+        'uuid': uuid,
+        'form_date_synced': null,
+        'message': rejectedMessage,
+        'rejected': isRejected,
+      },
+    );
+    if (isRejected == true) {
+      var dio = Dio();
+      var prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getString('access');
+      String bearerAuth = "Bearer $accessToken";
+
+      var updateUpstreamEndpoint = "${cpimsApiUrl}mobile/record_saved";
+      var response = await dio.post(updateUpstreamEndpoint,
+          data: {
+            "record_id": uuid,
+            "saved": 1,
+            "form_type":
+                graduationMonitoringFormModel.formType == "Benchmark Monitoring"
+                    ? "Benchmark Monitoring"
+                    : "Households Reaching Case Plan Achievement"
+          },
+          options: Options(headers: {"Authorization": bearerAuth}));
+      if (response.statusCode == 200) {
+        debugPrint("Data sent successfully");
+      } else {
+        debugPrint("Data not sent");
+      }
+    }
+  }
 }
 
 // table name and field names
@@ -2166,6 +2275,7 @@ const HRSForms = 'HRSForm';
 const HMForms = 'HMFForm';
 const cparaHouseholdAnswers = 'cpara_household_answers';
 const cparaChildAnswers = 'cpara_child_answers';
+const graduation_monitoring = 'graduation_monitoring';
 
 class OvcFields {
   static final List<String> values = [

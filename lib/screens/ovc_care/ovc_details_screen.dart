@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 
 import '../forms/case_plan/cpt/new_case_plan_template.dart';
 import '../forms/form1a/new/form_one_a.dart';
+import '../forms/graduation_monitoring/widgets/graduation_monitoring_form.dart';
 
 class OVCDetailsScreen extends StatefulWidget {
   const OVCDetailsScreen({super.key, required this.caseLoadModel});
@@ -138,8 +139,7 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
             ChildDetailsWorkflowButton(
               workflowName: "Form 1A",
               onClick: () {
-                context
-                    .read<Form1AProvider>();
+                context.read<Form1AProvider>();
                 String startDateTime = DateTime.now().toString();
                 context
                     .read<AppMetaDataProvider>()
@@ -230,6 +230,17 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
               ),
             const SizedBox(
               height: 10,
+            ),
+            ChildDetailsWorkflowButton(
+              workflowName: "Graduation Monitoring",
+              onClick: () {
+                String startDateTime = DateTime.now().toString();
+                context
+                    .read<AppMetaDataProvider>()
+                    .updateStartTimeInterview(startDateTime);
+                Get.to(() => GraduationMonitoringFormScreen(
+                    caseLoad: widget.caseLoadModel));
+              },
             ),
             const Footer(),
           ],
