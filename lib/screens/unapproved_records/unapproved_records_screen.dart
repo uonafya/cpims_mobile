@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/providers/case_plan_provider.dart';
 import 'package:cpims_mobile/providers/hiv_management_form_provider.dart';
@@ -15,6 +17,9 @@ import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
 import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
+import 'package:cpims_mobile/screens/forms/graduation_monitoring/model/graduation_monitoring_form_model.dart';
+import 'package:cpims_mobile/screens/forms/graduation_monitoring/provider/graduation_monitoring_provider.dart';
+import 'package:cpims_mobile/screens/forms/graduation_monitoring/widgets/graduation_monitoring_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/unapproved/hiv_risk_assessment_form_model.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/unapproved/unapproved_hrs_model.dart';
@@ -45,6 +50,7 @@ import '../forms/form1a/new/utils/form_one_a_provider.dart';
 import '../forms/form1a/utils/form_1a_options.dart';
 import '../forms/form1b/form_1B.dart';
 import '../forms/form1b/utils/form1bConstants.dart';
+import '../forms/graduation_monitoring/unapproved/unapproved_graduation_form.dart';
 import '../forms/hiv_assessment/hiv_assessment.dart';
 import '../forms/hiv_management/models/hiv_management_form_model.dart';
 import '../homepage/provider/stats_provider.dart';
@@ -64,7 +70,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     'CPT',
     'CPARA',
     'HMF',
-    'HRS'
+    'HRS',
+    'CPA'
   ];
 
   @override
@@ -81,6 +88,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
   List<UnapprovedCasePlanModel> unapprovedCaseplanData = [];
   List<UnApprovedHivManagementForm> unapprovedHMFData = [];
   List<UnapprovedHrsModel> unapprovedHRSData = [];
+  List<UnApprovedGraduationFormModel> unnapprovedGraduationData = [];
 
   void deleteUnapprovedForm1(int id) async {
     bool success = await UnapprovedDataService.deleteUnapprovedForm1(id);
@@ -119,12 +127,15 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
         await UnapprovedDataService.fetchRejectedHMFForms();
     final List<UnapprovedHrsModel> unapprovedHRSRecords =
         await UnapprovedDataService.fetchRejectedHRSForms();
+    final List<UnApprovedGraduationFormModel> unapprovedGraduationRecords =
+        await UnapprovedDataService.fetchRejectedGraduationForms();
     setState(() {
       unapprovedForm1AData = form1ARecords;
       unapprovedForm1BData = form1BRecords;
       unapprovedCaseplanData = unapprovedCaseplanRecords;
       unapprovedHMFData = unapprovedHMFRecords;
       unapprovedHRSData = unapprovedHRSRecords;
+      unnapprovedGraduationData = unapprovedGraduationRecords;
     });
   }
 
@@ -571,6 +582,57 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       }
     }
 
+    void editGraduationForm(
+        UnApprovedGraduationFormModel unapprovedGraduationForm) async {
+      final db = LocalDb.instance;
+      CaseLoadModel caseLoad =
+          await db.getCaseLoad(int.parse(unapprovedGraduationForm.ovcCpimsId!));
+      GraduationMonitoringFormModel graduationMonitoringFormModel = context
+          .read<GraduationMonitoringProvider>()
+          .graduationMonitoringFormModel;
+
+      context
+          .read<GraduationMonitoringProvider>()
+          .updateGraduationMonitoringModel(
+            graduationMonitoringFormModel.copyWith(
+              formType: unapprovedGraduationForm.formType,
+              dateOfMonitoring: unapprovedGraduationForm.dateOfMonitoring,
+              benchmark1: unapprovedGraduationForm.benchmark1,
+              benchmark2: unapprovedGraduationForm.benchmark2,
+              benchmark3: unapprovedGraduationForm.benchmark3,
+              benchmark4: unapprovedGraduationForm.benchmark4,
+              benchmark5: unapprovedGraduationForm.benchmark5,
+              benchmark6: unapprovedGraduationForm.benchmark6,
+              benchmark7: unapprovedGraduationForm.benchmark7,
+              benchmark8: unapprovedGraduationForm.benchmark8,
+              benchmark9: unapprovedGraduationForm.benchmark9,
+              householdReadyToExit:
+                  unapprovedGraduationForm.householdReadyToExit,
+              caseDeterminedReadyForClosure:
+                  unapprovedGraduationForm.caseDeterminedReadyForClosure,
+            ),
+          );
+
+      await Future.delayed(const Duration(milliseconds: 300));
+      context.read<GraduationMonitoringProvider>();
+      Get.to(() => GraduationMonitoringFormScreen(caseLoad: caseLoad));
+      Provider.of<StatsProvider>(context, listen: false)
+          .updateUnapprovedFormStats();
+    }
+
+    void deleteUnapprovedGraduationForm(String? id) async {
+      bool success =
+          await UnapprovedDataService.deleteUnapprovedgraduation(id!);
+      if (success) {
+        setState(() {
+          unnapprovedGraduationData
+              .removeWhere((element) => element.formUuid == id);
+        });
+        Provider.of<StatsProvider>(context, listen: false)
+            .updateUnapprovedFormStats();
+      }
+    }
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -622,6 +684,11 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
                   unapprovedHrsData: unapprovedHRSData,
                   onEdit: editHrsForm,
                   onDelete: deleteUnapprovedHrs),
+            if (selectedRecord == "CPA")
+              UnapprovedGraduationList(
+                  unapprovedGraduationData: unnapprovedGraduationData,
+                  onEdit: editGraduationForm,
+                  onDelete: deleteUnapprovedGraduationForm),
             if (selectedRecord == unapprovedRecords[0])
               Expanded(
                 child: FormTab(
@@ -1341,6 +1408,77 @@ class UnapprovedHrsCard extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () => onDelete(unapprovedHrs.riskId!),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class UnapprovedGraduationList extends StatelessWidget {
+  final List<UnApprovedGraduationFormModel> unapprovedGraduationData;
+  final Function(UnApprovedGraduationFormModel) onEdit;
+  final Function(String) onDelete;
+
+  const UnapprovedGraduationList({
+    super.key,
+    required this.unapprovedGraduationData,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: unapprovedGraduationData.length,
+        itemBuilder: (BuildContext context, int index) {
+          final UnApprovedGraduationFormModel unapprovedGraduationForm =
+              unapprovedGraduationData[index];
+          return UnapprovedGraduationCard(
+            unapprovedGraduationForm: unapprovedGraduationForm,
+            onEdit: onEdit,
+            onDelete: onDelete,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class UnapprovedGraduationCard extends StatelessWidget {
+  final UnApprovedGraduationFormModel unapprovedGraduationForm;
+  final Function(UnApprovedGraduationFormModel) onEdit;
+  final Function(String) onDelete;
+
+  const UnapprovedGraduationCard({
+    super.key,
+    required this.unapprovedGraduationForm,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: Text('CPIMS ID: ${unapprovedGraduationForm.ovcCpimsId}'),
+        subtitle:
+            Text('Reason For rejection: ${unapprovedGraduationForm.message}'),
+        onTap: () {
+          onEdit(unapprovedGraduationForm);
+        },
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () => onEdit(unapprovedGraduationForm),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () => onDelete(unapprovedGraduationForm.formUuid!),
             ),
           ],
         ),

@@ -12,6 +12,7 @@ import '../providers/db_provider.dart';
 
 // import '../screens/cpara/widgets/cpara_details_widget.dart';
 import '../providers/unapproved_cpt_provider.dart';
+import '../screens/forms/graduation_monitoring/unapproved/unapproved_graduation_form.dart';
 import '../screens/forms/hiv_assessment/unapproved/unapproved_hrs_model.dart';
 import '../screens/forms/hiv_management/models/hiv_management_form_model.dart';
 import '../screens/forms/hiv_management/unapproved/UnApprovedHmfModel.dart';
@@ -31,6 +32,7 @@ class UnapprovedDataService {
       "mobile/unaccepted_records/cpara/",
       "mobile/unaccepted_records/hmf/",
       "mobile/unaccepted_records/hrs/",
+      "mobile/unaccepted_records/graduation/",
     ];
 
     List<Future<void>> futures = endpoints.map((endpoint) async {
@@ -108,6 +110,21 @@ class UnapprovedDataService {
           final unapprovedHrs = UnapprovedHrsModel.fromJson(map);
           db.insertHRSData(unapprovedHrs.ovcCpimsId.toString(), null,
               unapprovedHrs, unapprovedHrs.riskId, null, "hrs", true);
+        }
+      } else if (endpoint == endpoints[6]) {
+        for (var map in jsonData) {
+          final unapprovedGraduation =
+              UnApprovedGraduationFormModel.fromMap(map);
+          db.insertGraduationMonitoringFormData(
+            unapprovedGraduation.ovcCpimsId.toString(),
+            null,
+            unapprovedGraduation,
+            unapprovedGraduation.formUuid,
+            unapprovedGraduation.appFormMetaData?.startOfInterview,
+            unapprovedGraduation.appFormMetaData?.formType,
+            true,
+            unapprovedGraduation.message ?? "",
+          );
         }
       }
       return;
@@ -197,6 +214,23 @@ class UnapprovedDataService {
     return unapprovedHrs;
   }
 
+  static Future<List<UnApprovedGraduationFormModel>>
+      fetchRejectedGraduationForms() async {
+    final db = LocalDb.instance;
+    List<Map<String, dynamic>> maps =
+        await db.fetchUnapprovedGraduationMonitoringData();
+    List<UnApprovedGraduationFormModel> unapprovedGraduation = [];
+    for (var map in maps) {
+      unapprovedGraduation.add(UnApprovedGraduationFormModel.fromMap(map));
+    }
+    return unapprovedGraduation;
+  }
+
+  static Future<bool> deleteUnapprovedgraduation(String id) async {
+    final db = LocalDb.instance;
+    return await db.deleteGraduationMonitoringFormData(id);
+  }
+
   static Future<bool> deleteUnapprovedForm1(int id) async {
     final db = LocalDb.instance;
     return await db.deleteUnApprovedForm1Data(id);
@@ -226,5 +260,4 @@ class UnapprovedDataService {
     final db = LocalDb.instance;
     return await db.deleteUnApprovedHRSFData(id);
   }
-
 }
