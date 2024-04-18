@@ -530,4 +530,72 @@ class CasePlanService {
     }
     return 0; // Return 0 if there is an error.
   }
+
+  static getCountOfHRSFormsUnApproved() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.countUnApprovedHRSFormData();
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error on getCountOfHmfForms: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
+  }
+
+  static getCountOfRejectedGraduationForms() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.countUnApprovedGraduationMonitoringFormData();
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error on Rejected: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
+  }
+
+  static getCountOnUnsycedGraduationForms() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.countUnsyncedGraduationMonitoringFormData();
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error on unsynced gaduation form: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
+  }
+
+  static getCountOnUnsycedGraduationFormsDistinct() async {
+    final db = LocalDb.instance;
+    try {
+      final count = await db.countGraduationFormDataDistinctByCareGiver();
+      if (count != null) {
+        return count;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error on unsynced gaduation form: ${e.toString()}");
+      }
+    }
+    return 0; // Return 0 if there is an error.
+  }
 }

@@ -19,6 +19,8 @@ class StatisticsItem extends StatelessWidget {
       required this.cparaCount,
       required this.hrsCount,
       required this.hmfCount,
+      required this.graduationMonitoringCount,
+      required this.graduationMonitoringSummary,
       required this.onClick})
       : super(key: key);
   final String title;
@@ -37,6 +39,8 @@ class StatisticsItem extends StatelessWidget {
   final String cparaCount;
   final String hrsCount;
   final String hmfCount;
+  final String graduationMonitoringCount;
+  final String graduationMonitoringSummary;
   final VoidCallback onClick;
 
   @override
@@ -78,7 +82,13 @@ class StatisticsItem extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        (int.parse(form1ACount) + int.parse(form1BCount) + int.parse(cpaCount) + int.parse(cparaCount)+int.parse(hrsCount)+int.parse(hmfCount))
+                        (int.parse(form1ACount) +
+                                int.parse(form1BCount) +
+                                int.parse(cpaCount) +
+                                int.parse(cparaCount) +
+                                int.parse(hrsCount) +
+                                int.parse(hmfCount) +
+                                int.parse(graduationMonitoringCount))
                             .toString(),
                         style: const TextStyle(
                           fontSize: 24,
@@ -148,6 +158,20 @@ class StatisticsItem extends StatelessWidget {
                         ),
                         const Spacer(),
                       ]),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "CPA Form($graduationMonitoringSummary)",
+                            style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),

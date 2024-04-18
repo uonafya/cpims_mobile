@@ -16,6 +16,7 @@ import '../../../../widgets/drawer.dart';
 import '../../../../widgets/footer.dart';
 import '../../../cpara/widgets/cpara_details_widget.dart';
 import '../../../cpara/widgets/cpara_stable_widget.dart';
+import '../../../homepage/provider/stats_provider.dart';
 import '../model/graduation_monitoring_form_model.dart';
 
 class GraduationMonitoringFormScreen extends StatefulWidget {
@@ -512,6 +513,9 @@ class _GraduationMonitoringFormScreenState
                                   setState(() {
                                     isLoading = false;
                                   });
+                                  Provider.of<StatsProvider>(context,
+                                          listen: false)
+                                      .updateFormStats();
                                   Navigator.pop(context);
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(

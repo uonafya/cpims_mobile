@@ -775,6 +775,22 @@ class LocalDb {
     }
   }
 
+  Future<int> countUnApprovedHRSFormData() async {
+    try {
+      final db = await LocalDb.instance.database;
+
+      final count = Sqflite.firstIntValue(await db.rawQuery(
+          'SELECT COUNT(*) FROM $HRSForms WHERE ("form_date_synced" IS NULL OR "form_date_synced" = "") AND "rejected" = 1'));
+
+      return count ?? 0;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error counting HRS form data: $e");
+      }
+      return 0;
+    }
+  }
+
   Future<int> countHRSFormDataDistinctByCareGiver() async {
     try {
       final db = await LocalDb.instance.database;
@@ -811,7 +827,8 @@ class LocalDb {
 
   Future<void> updateGraduationData(String id) async {
     final db = await LocalDb.instance.database;
-    await db.update(graduation_monitoring, {'form_date_synced': DateTime.now().toString()},
+    await db.update(
+        graduation_monitoring, {'form_date_synced': DateTime.now().toString()},
         where: 'uuid = ?', whereArgs: [id]);
   }
 
@@ -2303,6 +2320,98 @@ class LocalDb {
       debugPrint("Error fetching graduation monitoring data: $e");
     }
     return [];
+  }
+
+  Future<int> countUnsyncedGraduationMonitoringFormData() async {
+    try {
+      final db = await LocalDb.instance.database;
+      final count = Sqflite.firstIntValue(await db.rawQuery(
+          'SELECT COUNT(*) FROM "$graduation_monitoring" WHERE ("form_date_synced" IS NULL OR "form_date_synced" = "") AND "rejected" = 0'));
+      return count ?? 0;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error counting HMF form data: $e");
+      }
+      return 0;
+    }
+  }
+
+  Future<int> countUnApprovedGraduationMonitoringFormData() async {
+    try {
+      final db = await LocalDb.instance.database;
+      final count = Sqflite.firstIntValue(await db.rawQuery(
+          'SELECT COUNT(*) FROM "$graduation_monitoring" WHERE ("form_date_synced" IS NULL OR "form_date_synced" = "") AND "rejected" = 1'));
+      return count ?? 0;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error counting HMF form data: $e");
+      }
+      return 0;
+    }
+  }
+
+  Future<int> countGraduationFormDataDistinctByCareGiver() async {
+    try {
+      final db = await LocalDb.instance.database;
+      final count = Sqflite.firstIntValue(await db.rawQuery(
+          'SELECT COUNT(DISTINCT "caregiver_cpims_id") FROM "$graduation_monitoring" WHERE ("form_date_synced" IS NULL OR "form_date_synced" = "") AND "rejected" = 0'));
+      return count ?? 0;
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error counting HMF form data: $e");
+      }
+      return 0;
+    }
+  }
+
+  //delete graduation monitoring forms older than 30 days and whose syncing has been successful remember to delete also its data in app form metadata
+  Future<bool> deleteGraduationMonitoringFormData(String uuid) async {
+    final db = await instance.database;
+
+    try {
+      // Check if the data is already synced
+      final List<Map<String, dynamic>> graduationData = await db.query(
+        graduation_monitoring,
+        where: 'uuid = ? AND form_date_synced IS NOT NULL',
+        whereArgs: [uuid],
+      );
+
+      final List<Map<String, dynamic>> metaData = await db.query(
+        appFormMetaDataTable,
+        where: 'form_id = ? AND form_date_synced IS NOT NULL',
+        whereArgs: [uuid],
+      );
+
+      if (graduationData.isEmpty || metaData.isEmpty) {
+        // Data is not synced yet
+        return false;
+      }
+
+      // Delete from graduation_monitoring table
+      int deletedRows = await db.delete(
+        graduation_monitoring,
+        where: 'uuid = ?',
+        whereArgs: [uuid],
+      );
+
+      // Delete from appFormMetaDataTable
+      int deletedMetaRows = await db.delete(
+        appFormMetaDataTable,
+        where: 'form_id = ?',
+        whereArgs: [uuid],
+      );
+
+      // Check if deletion was successful
+      if (deletedRows == 0 || deletedMetaRows == 0) {
+        // Data was not deleted successfully
+        return false;
+      }
+
+      return true; // Data was deleted successfully
+    } catch (e) {
+      debugPrint('Error deleting graduation monitoring data: $e');
+      return false; // Data was not deleted
+    }
   }
 }
 

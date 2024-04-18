@@ -165,25 +165,6 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
-  // Future<void> syncHMFFormData() async {
-  //   final db = LocalDb.instance;
-  //   try {
-  //     // read from localdb
-  //     final queryResults = await db.fetchHMFFormData();
-  //     // submit data
-  //     for (final formData in queryResults) {
-  //       final Response response =
-  //           await apiServiceConstructor.postSecData(formData, "mobile/hmf/");
-  //       if (kDebugMode) {
-  //         print("Data ${response.data}");
-  //       }
-  //     }
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       print(e);
-  //     }
-  //   }
-  // }
 
   Future<void> syncHMFFormData() async {
     var prefs = await SharedPreferences.getInstance();
@@ -452,6 +433,8 @@ class _HomepageState extends State<Homepage> {
                       cparaCount: "${formStats.cparaCount}",
                       hrsCount: "${formStats.hrsCount}",
                       hmfCount: "${formStats.hmfCount}",
+                      graduationMonitoringCount: "${formStats.graduationMonitoringFormCount}",
+                      graduationMonitoringSummary: "${formStats.distinctGraduationMonitoringForm} / ${formStats.graduationMonitoringFormCount}",
                       onClick: () {},
                     ),
                     StatisticsItem(
@@ -463,14 +446,16 @@ class _HomepageState extends State<Homepage> {
                       form1BCount: "${formStats.unapprovedFormOneBCount}",
                       cpaCount: "${formStats.unapprovedCptCount}",
                       cparaCount: "${formStats.unapprovedCparaCount}",
-                      hrsCount: "0",
+                      hrsCount: "${formStats.unapprovedHrsCount}",
                       hmfCount: "${formStats.unapprovedHmfCount}",
                       formoneasummary: "${formStats.unapprovedFormOneACount}",
                       formonebsummary: "${formStats.unapprovedFormOneBCount}",
                       caseplanSummary: "${formStats.unapprovedCptCount}",
-                      hrsSummary: "0",
+                      hrsSummary: "${formStats.unapprovedHrsCount}",
                       hmfSummary: "${formStats.unapprovedHmfCount}",
                       cparaSummary: "${formStats.unapprovedCparaCount}",
+                      graduationMonitoringCount: "${formStats.unapprovedGraduationMonitoringFormCount}",
+                      graduationMonitoringSummary: "${formStats.unapprovedGraduationMonitoringFormCount}",
                       onClick: () {
                         Get.to(() => const UnapprovedRecordsScreens());
                       },

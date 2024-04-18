@@ -14,6 +14,8 @@ class StatsProvider extends ChangeNotifier {
   int cptCount = 0;
   int hrsCount = 0;
   int hmfCount = 0;
+  int graduationMonitoringFormCount = 0;
+  int distinctGraduationMonitoringForm = 0;
 
   //unnapproved forms
   int unapprovedFormOneACount = 0;
@@ -28,6 +30,8 @@ class StatsProvider extends ChangeNotifier {
   int unapprovedCptCount = 0;
   int unapprovedHrsCount = 0;
   int unapprovedHmfCount = 0;
+  int unapprovedGraduationMonitoringFormCount = 0;
+  int unapprovedDistinctGraduationMonitoringForm = 0;
 
   void updateFormStats() async {
     formOneACount = await Form1Service.getCountAllFormOneA() ?? 0;
@@ -47,6 +51,10 @@ class StatsProvider extends ChangeNotifier {
     cparaDistinctCount = await Form1Service.getCountAllFormCparaDistinct() ?? 0;
     hrsDistinctCount = await CasePlanService.getCountOfHRSFormsDistinct() ?? 0;
     hmfDistinctCount = await CasePlanService.getCountOfHmfFormsDistinct() ?? 0;
+    graduationMonitoringFormCount =
+        await CasePlanService.getCountOnUnsycedGraduationForms() ?? 0;
+    distinctGraduationMonitoringForm =
+        await CasePlanService.getCountOnUnsycedGraduationFormsDistinct() ?? 0;
 
     unapprovedFormOneACount =
         await Form1Service.getCountAllFormOneAUnApproved() ?? 0;
@@ -55,9 +63,12 @@ class StatsProvider extends ChangeNotifier {
     unapprovedCparaCount = await Form1Service.countCparaUnApprovedForms() ?? 0;
     unapprovedCptCount =
         await CasePlanService.getAllUnApprovedCaseplanCount() ?? 0;
-    // unapprovedHrsCount = await CasePlanService.getCountOfHRSFormsUnApproved() ?? 0;
+    unapprovedHrsCount =
+        await CasePlanService.getCountOfHRSFormsUnApproved() ?? 0;
     unapprovedHmfCount =
         await CasePlanService.getCountOfRejectedHmfForms() ?? 0;
+    unapprovedGraduationMonitoringFormCount =
+        await CasePlanService.getCountOfRejectedGraduationForms() ?? 0;
 
     notifyListeners();
   }
@@ -125,6 +136,62 @@ class StatsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateGraduationMonitoringFormStats() async {
+    graduationMonitoringFormCount =
+        await CasePlanService.getCountOnUnsycedGraduationForms() ?? 0;
+    notifyListeners();
+  }
+
+  void updateDistinctGraduationMonitoringFormStats() async {
+    distinctGraduationMonitoringForm =
+        await CasePlanService.getCountOnUnsycedGraduationFormsDistinct() ?? 0;
+    notifyListeners();
+  }
+
+  void updateUnapprovedFormOneAStats() async {
+    unapprovedFormOneACount =
+        await Form1Service.getCountAllFormOneAUnApproved() ?? 0;
+    notifyListeners();
+  }
+
+  void updateUnapprovedFormOneBDistinctStats() async {
+    unapprovedFormOneBDistictCount =
+        await Form1Service.getCountAllFormOneBDistinct() ?? 0;
+    notifyListeners();
+  }
+
+  void updateUnapprovedCasePlanDistinctStats() async {
+    unapprovedCasePlanDistinctCount =
+        await CasePlanService.getAllUnApprovedCaseplanCount() ?? 0;
+    notifyListeners();
+  }
+
+  void updateUnapprovedCparaDistinctStats() async {
+    unapprovedCparaDistinctCount =
+        await Form1Service.countCparaUnApprovedForms() ?? 0;
+    notifyListeners();
+  }
+
+  void updateUnapprovedHrsDistinctStats() async {
+    unapprovedHrsDistinctCount =
+        await CasePlanService.getCountOfHRSFormsUnApproved() ?? 0;
+    notifyListeners();
+  }
+
+  void updateUnapprovedHmfDistinctStats() async {
+    unapprovedHmfDistinctCount =
+        await CasePlanService.getCountOfRejectedHmfForms() ?? 0;
+    notifyListeners();
+  }
+
+  void updateUnapprovedGraduationMonitoringFormStats() async {
+    unapprovedGraduationMonitoringFormCount =
+        await CasePlanService.getCountOfRejectedGraduationForms() ?? 0;
+    notifyListeners();
+  }
+
+  
+
   void updateUnapprovedFormStats() async {
     debugPrint('Updating form counter.....');
     unapprovedFormOneACount =
@@ -134,8 +201,13 @@ class StatsProvider extends ChangeNotifier {
     unapprovedCparaCount = await Form1Service.countCparaUnApprovedForms() ?? 0;
     unapprovedCptCount =
         await CasePlanService.getAllUnApprovedCaseplanCount() ?? 0;
-    // unapprovedHrsCount = await CasePlanService.getCountOfHRSFormsUnApproved() ?? 0;
-    // unapprovedHmfCount = await CasePlanService.getCountOfHmfFormsUnApproved() ?? 0;
+    unapprovedHrsCount =
+        await CasePlanService.getCountOfHRSFormsUnApproved() ?? 0;
+    unapprovedHmfCount =
+        await CasePlanService.getCountOfRejectedHmfForms() ?? 0;
+    unapprovedGraduationMonitoringFormCount =
+        await CasePlanService.getCountOfRejectedGraduationForms() ?? 0;
+
     notifyListeners();
   }
 }
