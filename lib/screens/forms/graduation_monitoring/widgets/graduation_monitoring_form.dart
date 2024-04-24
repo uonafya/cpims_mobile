@@ -345,6 +345,10 @@ class _GraduationMonitoringFormScreenState
                             'Yes',
                             'No',
                           ],
+                          valueOptions: const [
+                            'AYES',
+                            'ANNO',
+                          ],
                         ),
                         const SizedBox(height: 20),
                         const Text(

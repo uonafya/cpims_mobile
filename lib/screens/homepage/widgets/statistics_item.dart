@@ -57,7 +57,7 @@ class StatisticsItem extends StatelessWidget {
         onClick();
       },
       child: Container(
-        height: 220,
+        height: 250,
         width: double.infinity,
         color: color,
         margin: const EdgeInsets.symmetric(vertical: 7.5),
