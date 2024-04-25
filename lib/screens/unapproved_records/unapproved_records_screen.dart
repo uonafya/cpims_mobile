@@ -11,16 +11,10 @@ import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_case_plan_template.
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/utils/case_plan_dummy_data.dart';
 import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
-import 'package:cpims_mobile/constants.dart';
-import 'package:cpims_mobile/providers/cpara/unapproved_cpara_database.dart';
-import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
-import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
-import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
 import 'package:cpims_mobile/screens/forms/graduation_monitoring/model/graduation_monitoring_form_model.dart';
 import 'package:cpims_mobile/screens/forms/graduation_monitoring/provider/graduation_monitoring_provider.dart';
 import 'package:cpims_mobile/screens/forms/graduation_monitoring/widgets/graduation_monitoring_form.dart';
-import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/unapproved/hiv_risk_assessment_form_model.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/unapproved/unapproved_hrs_model.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/screens/hiv_management_form_screen.dart';
@@ -34,14 +28,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
-import '../../providers/app_meta_data_provider.dart';
-import '../cpara/cpara_forms.dart';
 import '../cpara/model/unnaproved_cpara_screen.dart';
 import 'package:multi_dropdown/models/value_item.dart';
-import 'package:provider/provider.dart';
 import '../../Models/unapproved_caseplan_form_model.dart';
-import '../../Models/unapproved_form_1_model.dart';
-import '../../providers/db_provider.dart';
 import '../../providers/form1a_provider.dart';
 import '../../providers/form1b_provider.dart';
 import '../cpara/provider/hiv_assessment_provider.dart';
@@ -127,15 +116,15 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
         await UnapprovedDataService.fetchRejectedHMFForms();
     final List<UnapprovedHrsModel> unapprovedHRSRecords =
         await UnapprovedDataService.fetchRejectedHRSForms();
-    final List<UnApprovedGraduationFormModel> unapprovedGraduationRecords =
-        await UnapprovedDataService.fetchRejectedGraduationForms();
+    // final List<UnApprovedGraduationFormModel> unapprovedGraduationRecords =
+    //     await UnapprovedDataService.fetchRejectedGraduationForms();
     setState(() {
       unapprovedForm1AData = form1ARecords;
       unapprovedForm1BData = form1BRecords;
       unapprovedCaseplanData = unapprovedCaseplanRecords;
       unapprovedHMFData = unapprovedHMFRecords;
       unapprovedHRSData = unapprovedHRSRecords;
-      unnapprovedGraduationData = unapprovedGraduationRecords;
+      // unnapprovedGraduationData = unapprovedGraduationRecords;
     });
   }
 
@@ -464,11 +453,14 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
             dateTreatmentInitiated: unapprovedHMF.dateTreatmentInitiated,
             baselineHEILoad: unapprovedHMF.baselineHEILoad,
             dateStartedFirstLine: unapprovedHMF.dateStartedFirstLine,
-            arvsSubWithFirstLine: unapprovedHMF.arvsSubWithFirstLine,
+            arvsSubWithFirstLine:
+                unapprovedHMF.arvsSubWithFirstLine == true ? "Yes" : "No",
             arvsSubWithFirstLineDate: unapprovedHMF.arvsSubWithFirstLineDate,
-            switchToSecondLine: unapprovedHMF.switchToSecondLine,
+            switchToSecondLine:
+                unapprovedHMF.switchToSecondLine == true ? "Yes" : "No",
             switchToSecondLineDate: unapprovedHMF.switchToSecondLineDate,
-            switchToThirdLine: unapprovedHMF.switchToThirdLine,
+            switchToThirdLine:
+                unapprovedHMF.switchToThirdLine == true ? "Yes" : "No",
             switchToThirdLineDate: unapprovedHMF.switchToThirdLineDate,
             visitDate: unapprovedHMF.visitDate,
             durationOnARTs: unapprovedHMF.durationOnARTs,
@@ -491,7 +483,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
             zScore: unapprovedHMF.zScore,
             nutritionalSupport: unapprovedHMF.nutritionalSupport,
             supportGroupStatus: unapprovedHMF.supportGroupStatus,
-            nhifEnrollment: unapprovedHMF.nhifEnrollment,
+            nhifEnrollment: unapprovedHMF.nhifEnrollment == true ? "Yes" : "No",
             nhifEnrollmentStatus: unapprovedHMF.nhifEnrollmentStatus,
             referralServices: unapprovedHMF.referralServices,
             nextAppointmentDate: unapprovedHMF.nextAppointmentDate,
