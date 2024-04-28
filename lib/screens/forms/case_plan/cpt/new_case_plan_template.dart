@@ -347,6 +347,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                   .clearProviderData();
               context.read<CptProvider>().updateClearServicesList();
               context.read<StatsProvider>().updateCptStats();
+              context.read<StatsProvider>().updateUnapprovedFormStats();
+              context.read<StatsProvider>().updateUnapprovedCasePlanDistinctStats();
               //delete the edited form from unapproved cpt table
               bool editedFormDeleted =
                   await UnapprovedDataService.deleteUnapprovedCptAfterEdit(
