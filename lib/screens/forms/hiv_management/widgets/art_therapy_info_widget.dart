@@ -75,7 +75,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
     final requiredFields = [
       dateHIVConfirmedPositive,
       dateTreatmentInitiated,
-      baselineHEILoad,
+      artTherapyInfoFormData.baselineHEILoad.isEmpty ? baselineHEILoad : '',
       dateStartedFirstLine,
       arvsSubWithFirstLine,
       switchToSecondLine,
@@ -108,7 +108,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
             const SizedBox(
               height: 10,
             ),
-            DateTextField(
+            NewDateTextField(
               label: artTherapyInfoFormData.dateHIVConfirmedPositive.isNotEmpty
                   ? artTherapyInfoFormData.dateHIVConfirmedPositive
                   : 'Date',
@@ -116,7 +116,6 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               onDateSelected: (date) {
                 _handleDateHIVConfirmedPositiveChanged(formattedDate(date!));
               },
-              identifier: DateTextFieldIdentifier.dateHIVConfirmedPositive,
             ),
           ],
         ),
@@ -179,7 +178,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
             const SizedBox(
               height: 10,
             ),
-            DateTextField(
+            NewDateTextField(
               label: artTherapyInfoFormData.dateStartedFirstLine.isNotEmpty
                   ? artTherapyInfoFormData.dateStartedFirstLine
                   : 'Date',
@@ -190,7 +189,6 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                   handleOnSave();
                 });
               },
-              identifier: DateTextFieldIdentifier.dateStartedFirstLine,
             ),
           ],
         ),
@@ -224,7 +222,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               },
             ),
             if (arvsSubWithFirstLine == 'Yes')
-              DateTextField(
+              NewDateTextField(
                 label:
                     artTherapyInfoFormData.arvsSubWithFirstLineDate.isNotEmpty
                         ? artTherapyInfoFormData.arvsSubWithFirstLineDate
@@ -236,7 +234,6 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                     handleOnSave();
                   });
                 },
-                identifier: DateTextFieldIdentifier.arvsSubWithFirstLineDate,
               ),
           ],
         ),
@@ -270,7 +267,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               },
             ),
             if (switchToSecondLine == 'Yes')
-              DateTextField(
+              NewDateTextField(
                 label: artTherapyInfoFormData.switchToSecondLineDate.isNotEmpty
                     ? artTherapyInfoFormData.switchToSecondLineDate
                     : 'If Yes, Date',
@@ -281,7 +278,6 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
                     handleOnSave();
                   });
                 },
-                identifier: DateTextFieldIdentifier.switchToSecondLineDate,
               ),
           ],
         ),

@@ -469,6 +469,72 @@ class _DateTextFieldState extends State<DateTextField> {
   }
 }
 
+class NewDateTextField extends StatefulWidget {
+  const NewDateTextField({
+    Key? key,
+    required this.label,
+    required this.enabled,
+    required this.onDateSelected,
+    this.allowFutureDates = false,
+  }) : super(key: key);
+
+  final String label;
+  final bool enabled;
+  final Function(DateTime?)? onDateSelected;
+  final bool allowFutureDates;
+
+  @override
+  State<NewDateTextField> createState() => NewDateTextFieldState();
+}
+
+class NewDateTextFieldState extends State<NewDateTextField> {
+  DateTime? selectedDate;
+
+  void clearDate() {
+    setState(() {
+      selectedDate = null;
+    });
+  }
+
+  DateTime? getSelectedDate() {
+    return selectedDate;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String textFieldText = selectedDate != null
+        ? DateFormat('MMMM d, yyyy').format(selectedDate!)
+        : '';
+    return TextField(
+      onTap: () {
+        if (widget.enabled) {
+          showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate:
+                      widget.allowFutureDates ? DateTime(2101) : DateTime.now())
+              .then((pickedDate) {
+            if (pickedDate != null && mounted) {
+              setState(() {
+                selectedDate = pickedDate;
+                widget.onDateSelected!(selectedDate);
+              });
+            }
+          });
+        }
+      },
+      readOnly: true,
+      enabled: widget.enabled,
+      decoration: InputDecoration(
+        labelText: widget.label,
+        border: const OutlineInputBorder(),
+      ),
+      controller: TextEditingController(text: textFieldText),
+    );
+  }
+}
+
 // class class TextViewsColumn
 class TextViewsColumn extends StatefulWidget {
   const TextViewsColumn({super.key});

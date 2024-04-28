@@ -95,7 +95,7 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
               const SizedBox(
                 height: 10,
               ),
-              DateTextField(
+              NewDateTextField(
                 label: dateOfAssessment,
                 enabled: true,
                 onDateSelected: (date) {
@@ -104,7 +104,6 @@ class _HIVCurrentStatusFormState extends State<HIVCurrentStatusForm> {
                     handleOnFormSaved();
                   });
                 },
-                identifier: DateTextFieldIdentifier.dateOfAssessment,
               ),
               const SizedBox(height: 14),
             ],

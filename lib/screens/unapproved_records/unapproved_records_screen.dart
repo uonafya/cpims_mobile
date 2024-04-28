@@ -451,7 +451,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
             dateOfEvent: unapprovedHMF.dateOfEvent,
             dateHIVConfirmedPositive: unapprovedHMF.dateHIVConfirmedPositive,
             dateTreatmentInitiated: unapprovedHMF.dateTreatmentInitiated,
-            baselineHEILoad: unapprovedHMF.baselineHEILoad,
+            baselineHEILoad:  "",
             dateStartedFirstLine: unapprovedHMF.dateStartedFirstLine,
             arvsSubWithFirstLine:
                 unapprovedHMF.arvsSubWithFirstLine == true ? "Yes" : "No",
@@ -491,7 +491,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
             peerEducatorContact: unapprovedHMF.peerEducatorContact,
           ));
 
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(Duration(milliseconds: 300));
 
       context.read<HIVManagementFormProvider>();
       Get.to(() => HIVManagementForm(caseLoad: caseLoad));

@@ -170,7 +170,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             const SizedBox(
               height: 10,
             ),
-            DateTextField(
+            NewDateTextField(
               label: hivVisitationFormData.visitDate.isNotEmpty
                   ? hivVisitationFormData.visitDate
                   : 'Date',
@@ -181,7 +181,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                   handleOnSave();
                 });
               },
-              identifier: DateTextFieldIdentifier.visitDate,
             ),
           ],
         ),
@@ -493,7 +492,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             const SizedBox(
               height: 10,
             ),
-            DateTextField(
+            NewDateTextField(
               label: hivVisitationFormData.labInvestigationsDate.isNotEmpty
                   ? hivVisitationFormData.labInvestigationsDate
                   : 'Date',
@@ -504,7 +503,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                   handleOnSave();
                 });
               },
-              identifier: DateTextFieldIdentifier.labInvestigationsDate,
             ),
           ],
         ),
