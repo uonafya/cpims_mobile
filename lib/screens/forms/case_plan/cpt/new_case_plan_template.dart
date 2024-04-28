@@ -328,7 +328,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
             print("Final payload is${jsonEncode(payload)}");
           }
 
-          String formUuid =  const Uuid().v4();
+          String formUuid = const Uuid().v4();
           // cptProvider.updateFormUuid(formUuid);
           AppMetaDataProvider appMetaDataProvider =
               Provider.of<AppMetaDataProvider>(context, listen: false);
@@ -348,7 +348,9 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
               context.read<CptProvider>().updateClearServicesList();
               context.read<StatsProvider>().updateCptStats();
               context.read<StatsProvider>().updateUnapprovedFormStats();
-              context.read<StatsProvider>().updateUnapprovedCasePlanDistinctStats();
+              context
+                  .read<StatsProvider>()
+                  .updateUnapprovedCasePlanDistinctStats();
               //delete the edited form from unapproved cpt table
               bool editedFormDeleted =
                   await UnapprovedDataService.deleteUnapprovedCptAfterEdit(
@@ -357,6 +359,8 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                 context.read<StatsProvider>().updateCptStats();
                 Provider.of<StatsProvider>(context, listen: false)
                     .updateUnapprovedFormStats();
+                context.read<StatsProvider>().updateFormStats();
+
                 Navigator.pop(context);
                 Get.snackbar(
                   'Success',

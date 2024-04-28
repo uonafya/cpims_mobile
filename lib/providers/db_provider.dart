@@ -669,7 +669,8 @@ class LocalDb {
       final db = await LocalDb.instance.database;
 
       final hrsData = await db.query(HRSForms,
-          where: 'form_date_synced IS NULL OR form_date_synced = ""');
+          where:
+              '"rejected" = 0 AND (form_date_synced IS NULL OR form_date_synced = "")');
 
       List<Map<String, dynamic>> updatedHRSData = [];
 
@@ -762,10 +763,9 @@ class LocalDb {
   Future<int> countHRSFormData() async {
     try {
       final db = await LocalDb.instance.database;
-
-      final count = Sqflite.firstIntValue(await db.rawQuery(
-          'SELECT COUNT(*) FROM $HRSForms WHERE form_date_synced IS NULL OR form_date_synced = ""'));
-
+      final count = Sqflite.firstIntValue(await db
+          .rawQuery('SELECT COUNT(*) FROM $HRSForms WHERE "rejected" = 0'));
+      debugPrint("The count hrs is $count");
       return count ?? 0;
     } catch (e) {
       if (kDebugMode) {
@@ -796,7 +796,7 @@ class LocalDb {
       final db = await LocalDb.instance.database;
 
       final count = Sqflite.firstIntValue(await db.rawQuery(
-          'SELECT COUNT(*) FROM $HRSForms WHERE form_date_synced IS NULL OR form_date_synced = ""'));
+          'SELECT COUNT(DISTINCT caregiver_cpims_id) FROM $HRSForms WHERE form_date_synced IS NULL OR form_date_synced = "" AND "rejected" = 0'));
 
       return count ?? 0;
     } catch (e) {
@@ -2214,8 +2214,6 @@ class LocalDb {
       }
     }
   }
-
-
 
   Future<List<Map<String, dynamic>>> fetchGraduationMonitoringData() async {
     try {
