@@ -895,7 +895,7 @@ class LocalDb {
     }
   }
 
-  Future<void> insertHMFFormData(
+  Future<bool> insertHMFFormData(
     String? cpmisId,
     String? caregiverCpimsId,
     HivManagementFormModel hivManagementFormModel,
@@ -905,71 +905,79 @@ class LocalDb {
     bool? isRejected,
     String? rejectedMessage,
   ) async {
-    final db = await instance.database;
-    if (uuid != null || startTimeInterview != null) {
-      await insertAppFormMetaData(uuid, startTimeInterview, formType);
-    }
-    await db.insert(
-      HMForms,
-      {
-        'ovc_cpims_id': cpmisId,
-        'caregiver_cpims_id': caregiverCpimsId,
-        'HIV_MGMT_1_A': hivManagementFormModel.dateHIVConfirmedPositive,
-        'HIV_MGMT_1_B': hivManagementFormModel.dateTreatmentInitiated,
-        'HIV_MGMT_1_C': hivManagementFormModel.baselineHEILoad,
-        'HIV_MGMT_1_D': hivManagementFormModel.dateStartedFirstLine,
-        'HIV_MGMT_1_E': hivManagementFormModel.arvsSubWithFirstLine,
-        'HIV_MGMT_1_E_DATE': hivManagementFormModel.arvsSubWithFirstLineDate,
-        'HIV_MGMT_1_F': hivManagementFormModel.switchToSecondLine,
-        'HIV_MGMT_1_F_DATE': hivManagementFormModel.switchToSecondLineDate,
-        'HIV_MGMT_1_G': hivManagementFormModel.switchToThirdLine,
-        'HIV_MGMT_1_G_DATE': hivManagementFormModel.switchToThirdLineDate,
-        'HIV_MGMT_2_A': hivManagementFormModel.visitDate,
-        'HIV_MGMT_2_B': hivManagementFormModel.durationOnARTs,
-        'HIV_MGMT_2_C': hivManagementFormModel.height,
-        'HIV_MGMT_2_D': hivManagementFormModel.mUAC,
-        'HIV_MGMT_2_E': hivManagementFormModel.arvDrugsAdherence,
-        'HIV_MGMT_2_F': hivManagementFormModel.arvDrugsDuration,
-        'HIV_MGMT_2_G': hivManagementFormModel.adherenceCounseling,
-        'HIV_MGMT_2_H_2': hivManagementFormModel.treatmentSupporter,
-        'HIV_MGMT_2_H_3': hivManagementFormModel.treatmentSupporterSex,
-        'HIV_MGMT_2_H_4': hivManagementFormModel.treatmentSupporterAge,
-        'HIV_MGMT_2_H_5': hivManagementFormModel.treatmentSupporterHIVStatus,
-        'HIV_MGMT_2_I_1': hivManagementFormModel.viralLoadResults,
-        'HIV_MGMT_2_I_DATE': hivManagementFormModel.labInvestigationsDate,
-        'HIV_MGMT_2_J': hivManagementFormModel.detectableViralLoadInterventions,
-        'HIV_MGMT_2_K': hivManagementFormModel.disclosure,
-        'HIV_MGMT_2_L_1': hivManagementFormModel.mUACScore,
-        'HIV_MGMT_2_L_2': hivManagementFormModel.zScore,
-        'HIV_MGMT_2_M': hivManagementFormModel.nutritionalSupport.join(', '),
-        'HIV_MGMT_2_N': hivManagementFormModel.supportGroupStatus,
-        'HIV_MGMT_2_O_1': hivManagementFormModel.nhifEnrollment,
-        'HIV_MGMT_2_O_2': hivManagementFormModel.nhifEnrollmentStatus,
-        'HIV_MGMT_2_P': hivManagementFormModel.referralServices,
-        'HIV_MGMT_2_Q': hivManagementFormModel.nextAppointmentDate,
-        'HIV_MGMT_2_R': hivManagementFormModel.peerEducatorName,
-        'HIV_MGMT_2_S': hivManagementFormModel.peerEducatorContact,
-        'uuid': uuid,
-        'form_date_synced': null,
-        'message': rejectedMessage,
-        'rejected': isRejected,
-      },
-    );
-    if (isRejected == true) {
-      var dio = Dio();
-      var prefs = await SharedPreferences.getInstance();
-      var accessToken = prefs.getString('access');
-      String bearerAuth = "Bearer $accessToken";
-
-      var updateUpstreamEndpoint = "${cpimsApiUrl}mobile/record_saved";
-      var response = await dio.post(updateUpstreamEndpoint,
-          data: {"record_id": uuid, "saved": 1, "form_type": "hmf"},
-          options: Options(headers: {"Authorization": bearerAuth}));
-      if (response.statusCode == 200) {
-        debugPrint("Data sent successfully");
-      } else {
-        debugPrint("Data not sent");
+    try {
+      final db = await instance.database;
+      if (uuid != null || startTimeInterview != null) {
+        await insertAppFormMetaData(uuid, startTimeInterview, formType);
       }
+      await db.insert(
+        HMForms,
+        {
+          'ovc_cpims_id': cpmisId,
+          'caregiver_cpims_id': caregiverCpimsId,
+          'HIV_MGMT_1_A': hivManagementFormModel.dateHIVConfirmedPositive,
+          'HIV_MGMT_1_B': hivManagementFormModel.dateTreatmentInitiated,
+          'HIV_MGMT_1_C': hivManagementFormModel.baselineHEILoad,
+          'HIV_MGMT_1_D': hivManagementFormModel.dateStartedFirstLine,
+          'HIV_MGMT_1_E': hivManagementFormModel.arvsSubWithFirstLine,
+          'HIV_MGMT_1_E_DATE': hivManagementFormModel.arvsSubWithFirstLineDate,
+          'HIV_MGMT_1_F': hivManagementFormModel.switchToSecondLine,
+          'HIV_MGMT_1_F_DATE': hivManagementFormModel.switchToSecondLineDate,
+          'HIV_MGMT_1_G': hivManagementFormModel.switchToThirdLine,
+          'HIV_MGMT_1_G_DATE': hivManagementFormModel.switchToThirdLineDate,
+          'HIV_MGMT_2_A': hivManagementFormModel.visitDate,
+          'HIV_MGMT_2_B': hivManagementFormModel.durationOnARTs,
+          'HIV_MGMT_2_C': hivManagementFormModel.height,
+          'HIV_MGMT_2_D': hivManagementFormModel.mUAC,
+          'HIV_MGMT_2_E': hivManagementFormModel.arvDrugsAdherence,
+          'HIV_MGMT_2_F': hivManagementFormModel.arvDrugsDuration,
+          'HIV_MGMT_2_G': hivManagementFormModel.adherenceCounseling,
+          'HIV_MGMT_2_H_2': hivManagementFormModel.treatmentSupporter,
+          'HIV_MGMT_2_H_3': hivManagementFormModel.treatmentSupporterSex,
+          'HIV_MGMT_2_H_4': hivManagementFormModel.treatmentSupporterAge,
+          'HIV_MGMT_2_H_5': hivManagementFormModel.treatmentSupporterHIVStatus,
+          'HIV_MGMT_2_I_1': hivManagementFormModel.viralLoadResults,
+          'HIV_MGMT_2_I_DATE': hivManagementFormModel.labInvestigationsDate,
+          'HIV_MGMT_2_J':
+              hivManagementFormModel.detectableViralLoadInterventions,
+          'HIV_MGMT_2_K': hivManagementFormModel.disclosure,
+          'HIV_MGMT_2_L_1': hivManagementFormModel.mUACScore,
+          'HIV_MGMT_2_L_2': hivManagementFormModel.zScore,
+          'HIV_MGMT_2_M': hivManagementFormModel.nutritionalSupport.join(', '),
+          'HIV_MGMT_2_N': hivManagementFormModel.supportGroupStatus,
+          'HIV_MGMT_2_O_1': hivManagementFormModel.nhifEnrollment,
+          'HIV_MGMT_2_O_2': hivManagementFormModel.nhifEnrollmentStatus,
+          'HIV_MGMT_2_P': hivManagementFormModel.referralServices,
+          'HIV_MGMT_2_Q': hivManagementFormModel.nextAppointmentDate,
+          'HIV_MGMT_2_R': hivManagementFormModel.peerEducatorName,
+          'HIV_MGMT_2_S': hivManagementFormModel.peerEducatorContact,
+          'uuid': uuid,
+          'form_date_synced': null,
+          'message': rejectedMessage,
+          'rejected': isRejected,
+        },
+      );
+      if (isRejected == true) {
+        var dio = Dio();
+        var prefs = await SharedPreferences.getInstance();
+        var accessToken = prefs.getString('access');
+        String bearerAuth = "Bearer $accessToken";
+
+        var updateUpstreamEndpoint = "${cpimsApiUrl}mobile/record_saved";
+        var response = await dio.post(updateUpstreamEndpoint,
+            data: {"record_id": uuid, "saved": 1, "form_type": "hmf"},
+            options: Options(headers: {"Authorization": bearerAuth}));
+        if (response.statusCode == 200) {
+          debugPrint("Data sent successfully");
+        } else {
+          debugPrint("Data not sent");
+        }
+      }
+
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false; // Exception occurred during form data insert
     }
   }
 

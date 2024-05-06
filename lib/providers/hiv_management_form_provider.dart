@@ -37,13 +37,13 @@ class HIVManagementFormProvider extends ChangeNotifier {
   }
 
   // submit form
-  Future<void> submitHIVManagementForm(
-    String? cpimsID,
-    String? caregiverCpimsId,
-    uuid,
-    startTimeInterview,
-    formType,
-  ) async {
+  Future<bool> submitHIVManagementForm(
+      String? cpimsID,
+      String? caregiverCpimsId,
+      String uuid,
+      String startTimeInterview,
+      String formType,
+      ) async {
     try {
       final formData = {
         'ovc_cpims_id': cpimsID,
@@ -51,8 +51,10 @@ class HIVManagementFormProvider extends ChangeNotifier {
         ..._hivManagementFormModel.toJson()
       };
 
+      print("The data being saved is $formData");
+
       if (kDebugMode) {
-        print(formData);
+        print("The data being saved is $formData");
       }
 
       if (kDebugMode) {
@@ -60,7 +62,7 @@ class HIVManagementFormProvider extends ChangeNotifier {
       }
 
       // save data locally
-      await LocalDb.instance.insertHMFFormData(
+      bool isFormSaved = await LocalDb.instance.insertHMFFormData(
         cpimsID!,
         caregiverCpimsId!,
         _hivManagementFormModel,
@@ -71,12 +73,17 @@ class HIVManagementFormProvider extends ChangeNotifier {
         null,
       );
 
-      //reset form Data
-      clearForms();
+      if (isFormSaved) {
+        clearForms();
+        return true; // Form saved successfully
+      } else {
+        return false; // Form save failed
+      }
     } catch (e) {
       if (kDebugMode) {
         print(e);
       }
+      return false; // Exception occurred during form save
     }
   }
 }

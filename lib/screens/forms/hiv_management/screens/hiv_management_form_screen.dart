@@ -47,11 +47,12 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
   }
 
   // submit hivmanagementform
-  Future<void> submitHIVManagementForm(String startInterviewTime) async {
+  Future<bool> submitHIVManagementForm(String startInterviewTime) async {
     try {
       String formUUid = const Uuid().v4();
-      await Provider.of<HIVManagementFormProvider>(context, listen: false)
-          .submitHIVManagementForm(
+      bool isFormSaved =
+          await Provider.of<HIVManagementFormProvider>(context, listen: false)
+              .submitHIVManagementForm(
         widget.caseLoad.cpimsId,
         widget.caseLoad.caregiverCpimsId,
         formUUid,
@@ -59,9 +60,10 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
         "HIV Management Form",
       );
 
-      if (context.mounted) {
-        context.read<StatsProvider>().updateHmfStats();
 
+
+      if (isFormSaved && context.mounted) {
+        context.read<StatsProvider>().updateHmfStats();
         Get.snackbar(
           'Success',
           'HIV Management Form submitted successfully',
@@ -70,6 +72,8 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
           colorText: Colors.white,
         );
       }
+
+      return isFormSaved;
     } catch (e) {
       rethrow;
     }
@@ -383,48 +387,52 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                           appMetaDataProvider
                                                   .startTimeInterview ??
                                               DateTime.now().toIso8601String();
-                                      await submitHIVManagementForm(
-                                          startInterviewTime);
+                                      bool isFormSubmitted =
+                                          await submitHIVManagementForm(
+                                              startInterviewTime);
 
-                                      // Set isLoading to false when form submission is complete
-                                      setState(() {
-                                        isLoading = false;
-                                      });
+                                      if (isFormSubmitted) {
+                                        setState(() {
+                                          isLoading = false;
+                                        });
 
-                                      if (context.mounted) {
-                                        HIVManagementFormProvider
-                                            hivManagementFormProvider = Provider
-                                                .of<HIVManagementFormProvider>(
-                                          context,
-                                          listen: false,
+                                        if (context.mounted) {
+                                          HIVManagementFormProvider
+                                              hivManagementFormProvider =
+                                              Provider.of<
+                                                  HIVManagementFormProvider>(
+                                            context,
+                                            listen: false,
+                                          );
+                                          hivManagementFormProvider
+                                              .clearForms();
+                                          context
+                                              .read<StatsProvider>()
+                                              .updateFormStats();
+                                          context
+                                              .read<StatsProvider>()
+                                              .updateHmfStats();
+                                          context
+                                              .read<StatsProvider>()
+                                              .updateHmfDistinctStats();
+                                          Navigator.pop(context);
+                                        }
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                "Please fill in the required fields in visitation Section"),
+                                            backgroundColor: Colors.red,
+                                          ),
                                         );
-                                        hivManagementFormProvider.clearForms();
-                                        context
-                                            .read<StatsProvider>()
-                                            .updateFormStats();
-                                        context
-                                            .read<StatsProvider>()
-                                            .updateHmfStats();
-                                        context
-                                            .read<StatsProvider>()
-                                            .updateHmfDistinctStats();
-                                        Navigator.pop(context);
-                                      }
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              "Please fill in the required fields in visitation Section"),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      );
 
-                                      // Set isLoading to false when form submission fails
-                                      setState(() {
-                                        isLoading = false;
-                                      });
-                                      return;
+                                        // Set isLoading to false when form submission fails
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                        return;
+                                      }
                                     }
                                   } else {
                                     setState(
