@@ -451,7 +451,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
             dateOfEvent: unapprovedHMF.dateOfEvent,
             dateHIVConfirmedPositive: unapprovedHMF.dateHIVConfirmedPositive,
             dateTreatmentInitiated: unapprovedHMF.dateTreatmentInitiated,
-            baselineHEILoad:  "",
+            baselineHEILoad: "",
             dateStartedFirstLine: unapprovedHMF.dateStartedFirstLine,
             arvsSubWithFirstLine:
                 unapprovedHMF.arvsSubWithFirstLine == true ? "Yes" : "No",
@@ -522,34 +522,57 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           .updateRiskAssessmentModel(riskAssessmentFormModel.copyWith(
             formUuid: unapprovedHrsModel.formUuid,
             dateOfAssessment: unapprovedHrsModel.dateOfAssessment,
-            statusOfChild: unapprovedHrsModel.statusOfChild == "true" ? "Yes" : "No",
+            statusOfChild:
+                unapprovedHrsModel.statusOfChild == "true" ? "Yes" : "No",
             hivStatus: unapprovedHrsModel.hivStatus,
-            hivTestDone: unapprovedHrsModel.hivTestDone == "true" ? "Yes" : "No",
-            biologicalFather: unapprovedHrsModel.biologicalFather == "true" ? "Yes" : "No",
-            malnourished: unapprovedHrsModel.malnourished == "true" ? "Yes" : "No",
-            sexualAbuse: unapprovedHrsModel.sexualAbuse == "true" ? "Yes" : "No",
-            sexualAbuseAdolescent: unapprovedHrsModel.sexualAbuseAdolescent == "true" ? "Yes" : "No",
-            traditionalProcedures: unapprovedHrsModel.traditionalProcedures == "true" ? "Yes" : "No",
+            hivTestDone:
+                unapprovedHrsModel.hivTestDone == "true" ? "Yes" : "No",
+            biologicalFather:
+                unapprovedHrsModel.biologicalFather == "true" ? "Yes" : "No",
+            malnourished:
+                unapprovedHrsModel.malnourished == "true" ? "Yes" : "No",
+            sexualAbuse:
+                unapprovedHrsModel.sexualAbuse == "true" ? "Yes" : "No",
+            sexualAbuseAdolescent:
+                unapprovedHrsModel.sexualAbuseAdolescent == "true"
+                    ? "Yes"
+                    : "No",
+            traditionalProcedures:
+                unapprovedHrsModel.traditionalProcedures == "true"
+                    ? "Yes"
+                    : "No",
             persistentlySick: unapprovedHrsModel.persistentlySick,
             tb: unapprovedHrsModel.tb,
             sexualIntercourse: unapprovedHrsModel.sexualIntercourse,
             symptomsOfSTI: unapprovedHrsModel.symptomsOfSTI,
             ivDrugUser: unapprovedHrsModel.ivDrugUser,
-            finalEvaluation: unapprovedHrsModel.finalEvaluation == "true" ? "Yes" : "No",
-            parentAcceptHivTesting: unapprovedHrsModel.parentAcceptHivTesting == "true" ? "Yes" : "No",
+            finalEvaluation:
+                unapprovedHrsModel.finalEvaluation == "true" ? "Yes" : "No",
+            parentAcceptHivTesting:
+                unapprovedHrsModel.parentAcceptHivTesting == "true"
+                    ? "Yes"
+                    : "No",
             parentAcceptHivTestingDate:
                 unapprovedHrsModel.parentAcceptHivTestingDate,
-            formalReferralMade: unapprovedHrsModel.formalReferralMade == "true" ? "Yes" : "No",
+            formalReferralMade:
+                unapprovedHrsModel.formalReferralMade == "true" ? "Yes" : "No",
             formalReferralMadeDate: unapprovedHrsModel.formalReferralMadeDate,
-            formalReferralCompleted: unapprovedHrsModel.formalReferralCompleted == "true" ? "Yes" : "No",
+            formalReferralCompleted:
+                unapprovedHrsModel.formalReferralCompleted == "true"
+                    ? "Yes"
+                    : "No",
             formalReferralCompletedDate:
                 unapprovedHrsModel.formalReferralCompletedDate,
             reasonForNotMakingReferral:
                 unapprovedHrsModel.reasonForNotMakingReferral,
             hivTestResult: unapprovedHrsModel.hivTestResult,
-            referredForArt: unapprovedHrsModel.referredForArt == "true" ? "Yes" : "No",
+            referredForArt:
+                unapprovedHrsModel.referredForArt == "true" ? "Yes" : "No",
             referredForArtDate: unapprovedHrsModel.referredForArtDate,
-            artReferralCompleted: unapprovedHrsModel.artReferralCompleted == "true" ? "Yes" : "No",
+            artReferralCompleted:
+                unapprovedHrsModel.artReferralCompleted == "true"
+                    ? "Yes"
+                    : "No",
             artReferralCompletedDate:
                 unapprovedHrsModel.artReferralCompletedDate,
             facilityOfArtEnrollment: unapprovedHrsModel.facilityOfArtEnrollment,
@@ -587,21 +610,19 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           .read<GraduationMonitoringProvider>()
           .updateGraduationMonitoringModel(
             graduationMonitoringFormModel.copyWith(
-              formType: unapprovedGraduationForm.formType,
-              dateOfMonitoring: unapprovedGraduationForm.dateOfMonitoring,
-              benchmark1: unapprovedGraduationForm.benchmark1,
-              benchmark2: unapprovedGraduationForm.benchmark2,
-              benchmark3: unapprovedGraduationForm.benchmark3,
-              benchmark4: unapprovedGraduationForm.benchmark4,
-              benchmark5: unapprovedGraduationForm.benchmark5,
-              benchmark6: unapprovedGraduationForm.benchmark6,
-              benchmark7: unapprovedGraduationForm.benchmark7,
-              benchmark8: unapprovedGraduationForm.benchmark8,
-              benchmark9: unapprovedGraduationForm.benchmark9,
-              householdReadyToExit:
-                  unapprovedGraduationForm.householdReadyToExit,
-              caseDeterminedReadyForClosure:
-                  unapprovedGraduationForm.caseDeterminedReadyForClosure,
+              formType: unapprovedGraduationForm.form_type,
+              dateOfMonitoring: unapprovedGraduationForm.gm1d,
+              benchmark1: unapprovedGraduationForm.cm2q,
+              benchmark2: unapprovedGraduationForm.cm3q,
+              benchmark3: unapprovedGraduationForm.cm4q,
+              benchmark4: unapprovedGraduationForm.cm5q,
+              benchmark5: unapprovedGraduationForm.cm6q,
+              benchmark6: unapprovedGraduationForm.cm7q,
+              benchmark7: unapprovedGraduationForm.cm8q,
+              benchmark8: unapprovedGraduationForm.cm9q,
+              benchmark9: unapprovedGraduationForm.cm10q,
+              householdReadyToExit: unapprovedGraduationForm.cm13q,
+              caseDeterminedReadyForClosure: unapprovedGraduationForm.cm14q,
             ),
           );
 

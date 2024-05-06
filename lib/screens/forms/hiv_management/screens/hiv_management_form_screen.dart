@@ -52,11 +52,11 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
       String formUUid = const Uuid().v4();
       await Provider.of<HIVManagementFormProvider>(context, listen: false)
           .submitHIVManagementForm(
-          widget.caseLoad.cpimsId,
-          widget.caseLoad.caregiverCpimsId,
-          formUUid,
-          startInterviewTime,
-          "HIV Management Form",
+        widget.caseLoad.cpimsId,
+        widget.caseLoad.caregiverCpimsId,
+        formUUid,
+        startInterviewTime,
+        "HIV Management Form",
       );
 
       if (context.mounted) {
@@ -177,96 +177,239 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
 
                                     // logic for verifying form and submitting
                                     //print all the fields
-                                    print("Question 1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.dateHIVConfirmedPositive }");
+                                    print(
+                                        "Question 1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.dateHIVConfirmedPositive}");
                                     //print all the fields
-                                    print("Question 2: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.dateTreatmentInitiated }");
-                                    print("Question 3: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.baselineHEILoad }");
-                                    print("Question 4: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.dateStartedFirstLine }");
-                                    print("Question 5: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.arvsSubWithFirstLine }");
-                                    print("Question 5.1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.arvsSubWithFirstLineDate }");
-                                    print("Question 6: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToSecondLine }");
-                                    print("Question 6.1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToSecondLineDate }");
-                                    print("Question 7: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToThirdLine }");
-                                    print("Question 7.1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToThirdLineDate }");
-                                    print("Question 1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.visitDate }");
-                                    print("Question 2: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.durationOnARTs }");
-                                    print("Question 3: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.height }");
-                                    print("Question 4: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.mUAC }");
-                                    print("Question 5: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.arvDrugsAdherence }");
-                                    print("Question 6: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.arvDrugsDuration }");
-                                    print("Question 7: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.adherenceCounseling }");
-                                    print("Question 8: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporter }");
-                                    print("Question 9: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporterSex }");
-                                    print("Question 10: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporterAge }");
-                                    print("Question 11: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporterHIVStatus }");
-                                    print("Question 12: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.viralLoadResults }");
-                                    print("Question 13: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.labInvestigationsDate }");
-                                    print("Question 14: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.detectableViralLoadInterventions }");
-                                    print("Question 15: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.disclosure }");
-                                    print("Question 16: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.mUACScore }");
-                                    print("Question 17: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.zScore }");
-                                    print("Question 18: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.nutritionalSupport }");
-                                    print("Question 19: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.supportGroupStatus }");
-                                    print("Question 20: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.nhifEnrollment }");
-                                    print("Question 21: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.nhifEnrollmentStatus }");
-                                    print("Question 22: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.referralServices }");
-                                    print("Question 23: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.nextAppointmentDate }");
-                                    print("Question 24: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.peerEducatorName }");
-                                    print("Question 25: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.peerEducatorContact }");
+                                    print(
+                                        "Question 2: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.dateTreatmentInitiated}");
+                                    print(
+                                        "Question 3: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.baselineHEILoad}");
+                                    print(
+                                        "Question 4: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.dateStartedFirstLine}");
+                                    print(
+                                        "Question 5: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.arvsSubWithFirstLine}");
+                                    print(
+                                        "Question 5.1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.arvsSubWithFirstLineDate}");
+                                    print(
+                                        "Question 6: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToSecondLine}");
+                                    print(
+                                        "Question 6.1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToSecondLineDate}");
+                                    print(
+                                        "Question 7: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToThirdLine}");
+                                    print(
+                                        "Question 7.1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToThirdLineDate}");
+                                    print(
+                                        "Question 1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.visitDate}");
+                                    print(
+                                        "Question 2: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.durationOnARTs}");
+                                    print(
+                                        "Question 3: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.height}");
+                                    print(
+                                        "Question 4: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.mUAC}");
+                                    print(
+                                        "Question 5: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.arvDrugsAdherence}");
+                                    print(
+                                        "Question 6: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.arvDrugsDuration}");
+                                    print(
+                                        "Question 7: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.adherenceCounseling}");
+                                    print(
+                                        "Question 8: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporter}");
+                                    print(
+                                        "Question 9: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporterSex}");
+                                    print(
+                                        "Question 10: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporterAge}");
+                                    print(
+                                        "Question 11: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporterHIVStatus}");
+                                    print(
+                                        "Question 12: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.viralLoadResults}");
+                                    print(
+                                        "Question 13: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.labInvestigationsDate}");
+                                    print(
+                                        "Question 14: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.detectableViralLoadInterventions}");
+                                    print(
+                                        "Question 15: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.disclosure}");
+                                    print(
+                                        "Question 16: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.mUACScore}");
+                                    print(
+                                        "Question 17: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.zScore}");
+                                    print(
+                                        "Question 18: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.nutritionalSupport}");
+                                    print(
+                                        "Question 19: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.supportGroupStatus}");
+                                    print(
+                                        "Question 20: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.nhifEnrollment}");
+                                    print(
+                                        "Question 21: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.nhifEnrollmentStatus}");
+                                    print(
+                                        "Question 22: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.referralServices}");
+                                    print(
+                                        "Question 23: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.nextAppointmentDate}");
+                                    print(
+                                        "Question 24: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.peerEducatorName}");
+                                    print(
+                                        "Question 25: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.peerEducatorContact}");
 
-                                    if (
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.visitDate.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.durationOnARTs.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.height.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.mUAC.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.arvDrugsAdherence.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.arvDrugsDuration.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.adherenceCounseling.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporter.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporterSex.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporterAge.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.treatmentSupporterHIVStatus.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.viralLoadResults.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.labInvestigationsDate.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.detectableViralLoadInterventions.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.disclosure.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.mUACScore.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.zScore.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.nutritionalSupport.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.supportGroupStatus.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.nhifEnrollment.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.nhifEnrollmentStatus.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.referralServices.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.nextAppointmentDate.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.peerEducatorName.isNotEmpty &&
-                                        context.read<HIVManagementFormProvider>().hivManagementFormModel.peerEducatorContact.isNotEmpty
-                                    ) {
+                                    if (context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .visitDate
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .durationOnARTs
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .height
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .mUAC
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .arvDrugsAdherence
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .arvDrugsDuration
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .adherenceCounseling
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .treatmentSupporter
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .treatmentSupporterSex
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .treatmentSupporterAge
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .treatmentSupporterHIVStatus
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .viralLoadResults
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .labInvestigationsDate
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .detectableViralLoadInterventions
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .disclosure
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .mUACScore
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .zScore
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .nutritionalSupport
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .supportGroupStatus
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .nhifEnrollment
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .nhifEnrollmentStatus
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .referralServices
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .nextAppointmentDate
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .peerEducatorName
+                                            .isNotEmpty &&
+                                        context
+                                            .read<HIVManagementFormProvider>()
+                                            .hivManagementFormModel
+                                            .peerEducatorContact
+                                            .isNotEmpty) {
                                       AppMetaDataProvider appMetaDataProvider =
                                           Provider.of<AppMetaDataProvider>(
                                         context,
                                         listen: false,
                                       );
-                                      String startInterviewTime = appMetaDataProvider.startTimeInterview ?? DateTime.now().toIso8601String();
-                                      await submitHIVManagementForm(startInterviewTime);
+                                      String startInterviewTime =
+                                          appMetaDataProvider
+                                                  .startTimeInterview ??
+                                              DateTime.now().toIso8601String();
+                                      await submitHIVManagementForm(
+                                          startInterviewTime);
 
                                       // Set isLoading to false when form submission is complete
                                       setState(() {
                                         isLoading = false;
                                       });
 
-                                     if(context.mounted){
-                                       HIVManagementFormProvider
-                                       hivManagementFormProvider = Provider
-                                           .of<HIVManagementFormProvider>(
-                                         context,
-                                         listen: false,
-                                       );
-                                       hivManagementFormProvider.clearForms();
-                                       context.read<StatsProvider>().updateFormStats();
-                                       context.read<StatsProvider>().updateHmfStats();
-                                       context.read<StatsProvider>().updateHmfDistinctStats();
-                                       Navigator.pop(context);
-                                     }
+                                      if (context.mounted) {
+                                        HIVManagementFormProvider
+                                            hivManagementFormProvider = Provider
+                                                .of<HIVManagementFormProvider>(
+                                          context,
+                                          listen: false,
+                                        );
+                                        hivManagementFormProvider.clearForms();
+                                        context
+                                            .read<StatsProvider>()
+                                            .updateFormStats();
+                                        context
+                                            .read<StatsProvider>()
+                                            .updateHmfStats();
+                                        context
+                                            .read<StatsProvider>()
+                                            .updateHmfDistinctStats();
+                                        Navigator.pop(context);
+                                      }
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
@@ -287,28 +430,73 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                     setState(
                                       () {
                                         if (selectedStep < steps.length - 1) {
-                                          print("Question 1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.dateHIVConfirmedPositive }");
+                                          print(
+                                              "Question 1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.dateHIVConfirmedPositive}");
                                           //print all the fields
-                                          print("Question 2: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.dateTreatmentInitiated }");
-                                          print("Question 3: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.baselineHEILoad }");
-                                          print("Question 4: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.dateStartedFirstLine }");
-                                          print("Question 5: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.arvsSubWithFirstLine }");
-                                          print("Question 5.1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.arvsSubWithFirstLineDate }");
-                                          print("Question 6: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToSecondLine }");
-                                          print("Question 6.1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToSecondLineDate }");
-                                          print("Question 7: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToThirdLine }");
-                                          print("Question 7.1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToThirdLineDate }");
+                                          print(
+                                              "Question 2: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.dateTreatmentInitiated}");
+                                          print(
+                                              "Question 3: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.baselineHEILoad}");
+                                          print(
+                                              "Question 4: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.dateStartedFirstLine}");
+                                          print(
+                                              "Question 5: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.arvsSubWithFirstLine}");
+                                          print(
+                                              "Question 5.1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.arvsSubWithFirstLineDate}");
+                                          print(
+                                              "Question 6: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToSecondLine}");
+                                          print(
+                                              "Question 6.1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToSecondLineDate}");
+                                          print(
+                                              "Question 7: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToThirdLine}");
+                                          print(
+                                              "Question 7.1: ${context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToThirdLineDate}");
 
-                                          if(context.read<HIVManagementFormProvider>().hivManagementFormModel.dateHIVConfirmedPositive.isNotEmpty &&
-                                              context.read<HIVManagementFormProvider>().hivManagementFormModel.dateTreatmentInitiated.isNotEmpty &&
-                                              context.read<HIVManagementFormProvider>().hivManagementFormModel.baselineHEILoad.isNotEmpty &&
-                                              context.read<HIVManagementFormProvider>().hivManagementFormModel.dateStartedFirstLine.isNotEmpty &&
-                                              context.read<HIVManagementFormProvider>().hivManagementFormModel.arvsSubWithFirstLine.isNotEmpty &&
-                                              context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToSecondLine.isNotEmpty &&
-                                              context.read<HIVManagementFormProvider>().hivManagementFormModel.switchToThirdLine.isNotEmpty){
+                                          if (context
+                                                  .read<
+                                                      HIVManagementFormProvider>()
+                                                  .hivManagementFormModel
+                                                  .dateHIVConfirmedPositive
+                                                  .isNotEmpty &&
+                                              context
+                                                  .read<
+                                                      HIVManagementFormProvider>()
+                                                  .hivManagementFormModel
+                                                  .dateTreatmentInitiated
+                                                  .isNotEmpty &&
+                                              context
+                                                  .read<
+                                                      HIVManagementFormProvider>()
+                                                  .hivManagementFormModel
+                                                  .baselineHEILoad
+                                                  .isNotEmpty &&
+                                              context
+                                                  .read<
+                                                      HIVManagementFormProvider>()
+                                                  .hivManagementFormModel
+                                                  .dateStartedFirstLine
+                                                  .isNotEmpty &&
+                                              context
+                                                  .read<
+                                                      HIVManagementFormProvider>()
+                                                  .hivManagementFormModel
+                                                  .arvsSubWithFirstLine
+                                                  .isNotEmpty &&
+                                              context
+                                                  .read<
+                                                      HIVManagementFormProvider>()
+                                                  .hivManagementFormModel
+                                                  .switchToSecondLine
+                                                  .isNotEmpty &&
+                                              context
+                                                  .read<
+                                                      HIVManagementFormProvider>()
+                                                  .hivManagementFormModel
+                                                  .switchToThirdLine
+                                                  .isNotEmpty) {
                                             selectedStep++;
                                             debugPrint("Moving to hiv screen");
-                                          }else{
+                                          } else {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               const SnackBar(
@@ -318,7 +506,6 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                               ),
                                             );
                                           }
-
                                         }
                                       },
                                     );

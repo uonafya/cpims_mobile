@@ -29,19 +29,19 @@ class UnApprovedGraduationFormModel extends GraduationMonitoringFormModel {
     this.formUuid,
     this.appFormMetaData,
   }) : super(
-          formType: formType,
-          dateOfMonitoring: dateOfMonitoring,
-          benchmark1: benchmark1,
-          benchmark2: benchmark2,
-          benchmark3: benchmark3,
-          benchmark4: benchmark4,
-          benchmark5: benchmark5,
-          benchmark6: benchmark6,
-          benchmark7: benchmark7,
-          benchmark8: benchmark8,
-          benchmark9: benchmark9,
-          householdReadyToExit: householdReadyToExit,
-          caseDeterminedReadyForClosure: caseDeterminedReadyForClosure,
+          form_type: formType,
+          gm1d: dateOfMonitoring,
+          cm2q: benchmark1,
+          cm3q: benchmark2,
+          cm4q: benchmark3,
+          cm5q: benchmark4,
+          cm6q: benchmark5,
+          cm7q: benchmark6,
+          cm8q: benchmark7,
+          cm9q: benchmark8,
+          cm10q: benchmark9,
+          cm13q: householdReadyToExit,
+          cm14q: caseDeterminedReadyForClosure,
         );
 
   Map<String, dynamic> toMap() {
@@ -100,20 +100,20 @@ class UnApprovedGraduationFormModel extends GraduationMonitoringFormModel {
     AppFormMetaData? appFormMetaData,
   }) {
     return UnApprovedGraduationFormModel(
-      formType: formType ?? this.formType,
-      dateOfMonitoring: dateOfMonitoring ?? this.dateOfMonitoring,
-      benchmark1: benchmark1 ?? this.benchmark1,
-      benchmark2: benchmark2 ?? this.benchmark2,
-      benchmark3: benchmark3 ?? this.benchmark3,
-      benchmark4: benchmark4 ?? this.benchmark4,
-      benchmark5: benchmark5 ?? this.benchmark5,
-      benchmark6: benchmark6 ?? this.benchmark6,
-      benchmark7: benchmark7 ?? this.benchmark7,
-      benchmark8: benchmark8 ?? this.benchmark8,
-      benchmark9: benchmark9 ?? this.benchmark9,
-      householdReadyToExit: householdReadyToExit ?? this.householdReadyToExit,
+      formType: formType ?? this.form_type,
+      dateOfMonitoring: dateOfMonitoring ?? this.gm1d,
+      benchmark1: benchmark1 ?? this.cm2q,
+      benchmark2: benchmark2 ?? this.cm3q,
+      benchmark3: benchmark3 ?? this.cm4q,
+      benchmark4: benchmark4 ?? this.cm5q,
+      benchmark5: benchmark5 ?? this.cm6q,
+      benchmark6: benchmark6 ?? this.cm7q,
+      benchmark7: benchmark7 ?? this.cm8q,
+      benchmark8: benchmark8 ?? this.cm9q,
+      benchmark9: benchmark9 ?? this.cm10q,
+      householdReadyToExit: householdReadyToExit ?? this.cm13q,
       caseDeterminedReadyForClosure:
-          caseDeterminedReadyForClosure ?? this.caseDeterminedReadyForClosure,
+          caseDeterminedReadyForClosure ?? this.cm14q,
       message: message ?? this.message,
       ovcCpimsId: ovcCpimsId ?? this.ovcCpimsId,
       caregiverCpimsId: caregiverCpimsId ?? this.caregiverCpimsId,
@@ -124,6 +124,6 @@ class UnApprovedGraduationFormModel extends GraduationMonitoringFormModel {
 
   @override
   String toString() {
-    return 'UnApprovedGraduationFormModel(formType: $formType, dateOfMonitoring: $dateOfMonitoring, benchmark1: $benchmark1, benchmark2: $benchmark2, benchmark3: $benchmark3, benchmark4: $benchmark4, benchmark5: $benchmark5, benchmark6: $benchmark6, benchmark7: $benchmark7, benchmark8: $benchmark8, benchmark9: $benchmark9, householdReadyToExit: $householdReadyToExit, caseDeterminedReadyForClosure: $caseDeterminedReadyForClosure, message: $message, ovcCpimsId: $ovcCpimsId, caregiverCpimsId: $caregiverCpimsId, formUuid: $formUuid)';
+    return 'UnApprovedGraduationFormModel(formType: $form_type, dateOfMonitoring: $gm1d, benchmark1: $cm2q, benchmark2: $cm3q, benchmark3: $cm4q, benchmark4: $cm5q, benchmark5: $cm6q, benchmark6: $cm7q, benchmark7: $cm8q, benchmark8: $cm9q, benchmark9: $cm10q, householdReadyToExit: $cm13q, caseDeterminedReadyForClosure: $cm14q, message: $message, ovcCpimsId: $ovcCpimsId, caregiverCpimsId: $caregiverCpimsId, formUuid: $formUuid, appFormMetaData: $appFormMetaData)';
   }
 }

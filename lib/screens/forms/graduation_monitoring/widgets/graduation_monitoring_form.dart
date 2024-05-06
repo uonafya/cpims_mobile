@@ -1,5 +1,4 @@
 import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
-import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
 import 'package:cpims_mobile/screens/forms/graduation_monitoring/provider/graduation_monitoring_provider.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
@@ -8,14 +7,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-
 import '../../../../Models/case_load_model.dart';
 import '../../../../constants.dart';
 import '../../../../widgets/custom_dynamic_radio_button.dart';
 import '../../../../widgets/drawer.dart';
 import '../../../../widgets/footer.dart';
 import '../../../cpara/widgets/cpara_details_widget.dart';
-import '../../../cpara/widgets/cpara_stable_widget.dart';
 import '../../../homepage/provider/stats_provider.dart';
 import '../model/graduation_monitoring_form_model.dart';
 
@@ -56,20 +53,19 @@ class _GraduationMonitoringFormScreenState
         Provider.of<GraduationMonitoringProvider>(context, listen: false)
             .graduationMonitoringFormModel;
 
-    graduationModel.formType = formType;
-    graduationModel.dateOfMonitoring = dateOfMonitoring;
-    graduationModel.benchmark1 = benchmark1;
-    graduationModel.benchmark2 = benchmark2;
-    graduationModel.benchmark3 = benchmark3;
-    graduationModel.benchmark4 = benchmark4;
-    graduationModel.benchmark5 = benchmark5;
-    graduationModel.benchmark6 = benchmark6;
-    graduationModel.benchmark7 = benchmark7;
-    graduationModel.benchmark8 = benchmark8;
-    graduationModel.benchmark9 = benchmark9;
-    graduationModel.householdReadyToExit = householdReadyToExit;
-    graduationModel.caseDeterminedReadyForClosure =
-        caseDeterminedReadyForClosure;
+    graduationModel.form_type = formType;
+    graduationModel.gm1d = dateOfMonitoring;
+    graduationModel.cm2q = benchmark1;
+    graduationModel.cm3q = benchmark2;
+    graduationModel.cm4q = benchmark3;
+    graduationModel.cm5q = benchmark4;
+    graduationModel.cm6q = benchmark5;
+    graduationModel.cm7q = benchmark6;
+    graduationModel.cm8q = benchmark7;
+    graduationModel.cm9q = benchmark8;
+    graduationModel.cm10q = benchmark9;
+    graduationModel.cm13q = householdReadyToExit;
+    graduationModel.cm14q = caseDeterminedReadyForClosure;
 
     Provider.of<GraduationMonitoringProvider>(context, listen: false)
         .notifyListeners();
@@ -163,10 +159,11 @@ class _GraduationMonitoringFormScreenState
                                 Provider.of<GraduationMonitoringProvider>(
                                     context,
                                     listen: false);
-                            provider.updateGraduationMonitoringModel(
-                              GraduationMonitoringFormModel(
-                                  dateOfMonitoring: dateOfMonitoring),
-                            );
+                            GraduationMonitoringFormModel updatedModel =
+                                provider.graduationMonitoringFormModel.copyWith(
+                                    dateOfMonitoring: dateOfMonitoring);
+                            provider
+                                .updateGraduationMonitoringModel(updatedModel);
                           },
                           allowPastDates: true,
                         ),
@@ -182,10 +179,10 @@ class _GraduationMonitoringFormScreenState
                         CustomDynamicRadioButtonNew(
                           isNaAvailable: false,
                           option:
-                              graduationMonitoringFormModel.formType != null &&
+                              graduationMonitoringFormModel.form_type != null &&
                                       graduationMonitoringFormModel
-                                          .formType!.isNotEmpty
-                                  ? graduationMonitoringFormModel.formType
+                                          .form_type!.isNotEmpty
+                                  ? graduationMonitoringFormModel.form_type
                                   : null,
                           optionSelected: (String? option) {
                             formType = option!;
@@ -196,8 +193,8 @@ class _GraduationMonitoringFormScreenState
                             'Households Reaching Case Plan Achievement',
                           ],
                           valueOptions: const [
-                            'BM',
-                            'HA',
+                            'bm',
+                            'hhrcpa',
                           ],
                         ),
                         const SizedBox(height: 20),
@@ -211,7 +208,7 @@ class _GraduationMonitoringFormScreenState
                         const SizedBox(height: 10),
                         CustomDynamicRadioButtonNew(
                           isNaAvailable: false,
-                          option: graduationMonitoringFormModel.benchmark1,
+                          option: graduationMonitoringFormModel.cm2q,
                           optionSelected: (String? option) {
                             benchmark1 = option;
                             handleOnFormSave();
@@ -236,7 +233,7 @@ class _GraduationMonitoringFormScreenState
                         const SizedBox(height: 10),
                         CustomDynamicRadioButtonNew(
                           isNaAvailable: false,
-                          option: graduationMonitoringFormModel.benchmark2,
+                          option: graduationMonitoringFormModel.cm3q,
                           optionSelected: (String? option) {
                             benchmark2 = option;
                             handleOnFormSave();
@@ -261,7 +258,7 @@ class _GraduationMonitoringFormScreenState
                         const SizedBox(height: 10),
                         CustomDynamicRadioButtonNew(
                           isNaAvailable: false,
-                          option: graduationMonitoringFormModel.benchmark3,
+                          option: graduationMonitoringFormModel.cm4q,
                           optionSelected: (String? option) {
                             benchmark3 = option;
                             handleOnFormSave();
@@ -286,7 +283,7 @@ class _GraduationMonitoringFormScreenState
                         const SizedBox(height: 10),
                         CustomDynamicRadioButtonNew(
                           isNaAvailable: false,
-                          option: graduationMonitoringFormModel.benchmark4,
+                          option: graduationMonitoringFormModel.cm5q,
                           optionSelected: (String? option) {
                             benchmark4 = option;
                             handleOnFormSave();
@@ -311,7 +308,7 @@ class _GraduationMonitoringFormScreenState
                         const SizedBox(height: 10),
                         CustomDynamicRadioButtonNew(
                           isNaAvailable: false,
-                          option: graduationMonitoringFormModel.benchmark5,
+                          option: graduationMonitoringFormModel.cm6q,
                           optionSelected: (String? option) {
                             benchmark5 = option;
                             handleOnFormSave();
@@ -336,7 +333,7 @@ class _GraduationMonitoringFormScreenState
                         const SizedBox(height: 10),
                         CustomDynamicRadioButtonNew(
                           isNaAvailable: false,
-                          option: graduationMonitoringFormModel.benchmark6,
+                          option: graduationMonitoringFormModel.cm7q,
                           optionSelected: (String? option) {
                             benchmark6 = option;
                             handleOnFormSave();
@@ -361,7 +358,7 @@ class _GraduationMonitoringFormScreenState
                         const SizedBox(height: 10),
                         CustomDynamicRadioButtonNew(
                           isNaAvailable: false,
-                          option: graduationMonitoringFormModel.benchmark7,
+                          option: graduationMonitoringFormModel.cm8q,
                           optionSelected: (String? option) {
                             benchmark7 = option;
                             handleOnFormSave();
@@ -386,7 +383,7 @@ class _GraduationMonitoringFormScreenState
                         const SizedBox(height: 10),
                         CustomDynamicRadioButtonNew(
                           isNaAvailable: false,
-                          option: graduationMonitoringFormModel.benchmark8,
+                          option: graduationMonitoringFormModel.cm9q,
                           optionSelected: (String? option) {
                             benchmark8 = option;
                             handleOnFormSave();
@@ -411,7 +408,7 @@ class _GraduationMonitoringFormScreenState
                         const SizedBox(height: 10),
                         CustomDynamicRadioButtonNew(
                           isNaAvailable: false,
-                          option: graduationMonitoringFormModel.benchmark9,
+                          option: graduationMonitoringFormModel.cm10q,
                           optionSelected: (String? option) {
                             benchmark9 = option;
                             handleOnFormSave();
@@ -436,8 +433,7 @@ class _GraduationMonitoringFormScreenState
                         const SizedBox(height: 10),
                         CustomDynamicRadioButtonNew(
                           isNaAvailable: false,
-                          option: graduationMonitoringFormModel
-                              .householdReadyToExit,
+                          option: graduationMonitoringFormModel.cm13q,
                           optionSelected: (String? option) {
                             householdReadyToExit = option;
                             handleOnFormSave();
@@ -462,8 +458,7 @@ class _GraduationMonitoringFormScreenState
                         const SizedBox(height: 10),
                         CustomDynamicRadioButtonNew(
                           isNaAvailable: false,
-                          option: graduationMonitoringFormModel
-                              .caseDeterminedReadyForClosure,
+                          option: graduationMonitoringFormModel.cm14q,
                           optionSelected: (String? option) {
                             caseDeterminedReadyForClosure = option;
                             handleOnFormSave();
@@ -480,6 +475,7 @@ class _GraduationMonitoringFormScreenState
                         const SizedBox(height: 20),
                         //   submit button
                         CustomButton(
+                          isLoading: isLoading,
                           text: 'Submit',
                           onTap: () async {
                             try {
@@ -494,6 +490,7 @@ class _GraduationMonitoringFormScreenState
                                     appMetaDataProvider.startTimeInterview ??
                                         DateTime.now().toIso8601String();
                                 String formUuid = Uuid().v4();
+                                debugPrint("The Formtype is $formType");
                                 bool isGraduationMonitoringSaved =
                                     await Provider.of<
                                                 GraduationMonitoringProvider>(

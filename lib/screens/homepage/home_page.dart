@@ -269,8 +269,9 @@ class _HomepageState extends State<Homepage> {
       // Submit data
       for (final formData in queryResults) {
         debugPrint("The graduation data is ${jsonEncode(formData)}");
+        String cpimsId = formData['ovc_cpims_id'];
         try {
-          final response = await dio.post('${cpimsApiUrl}mobile/graduation/',
+          final response = await dio.post('${cpimsApiUrl}mobile/grad_monitor/$cpimsId/',
               data: formData);
           if (kDebugMode) {
             print(response.toString());
