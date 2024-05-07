@@ -597,7 +597,7 @@ class LocalDb {
     }
   }
 
-  Future<void> insertHRSData(
+  Future<bool> insertHRSData(
     String? cpmisId,
     String? caregiverCpimsId,
     RiskAssessmentFormModel assessment,
@@ -606,61 +606,67 @@ class LocalDb {
     String? formType,
     bool? isRejected,
   ) async {
-    final db = await instance.database;
-    await insertAppFormMetaData(uuid, startOfInterview, formType);
-    await db.insert(
-      HRSForms,
-      {
-        'ovc_cpims_id': cpmisId,
-        'caregiver_cpims_id': caregiverCpimsId,
-        'HIV_RA_1A': assessment.dateOfAssessment,
-        'HIV_RS_01': assessment.statusOfChild,
-        'HIV_RS_02': assessment.hivStatus,
-        'HIV_RS_03': assessment.hivTestDone,
-        'HIV_RS_04': assessment.biologicalFather,
-        'HIV_RS_05': assessment.malnourished,
-        'HIV_RS_06': assessment.sexualAbuse,
-        'HIV_RS_09': assessment.sexualAbuseAdolescent,
-        'HIV_RS_06A': assessment.traditionalProcedures,
-        'HIV_RS_07': assessment.persistentlySick,
-        'HIV_RS_08': assessment.tb,
-        'HIV_RS_10': assessment.sexualIntercourse,
-        'HIV_RS_10A': assessment.symptomsOfSTI,
-        'HIV_RS_10B': assessment.ivDrugUser,
-        'HIV_RS_11': assessment.finalEvaluation,
-        'HIV_RS_14': assessment.parentAcceptHivTesting,
-        'HIV_RS_15': assessment.parentAcceptHivTestingDate,
-        'HIV_RS_16': assessment.formalReferralMade,
-        'HIV_RS_17': assessment.formalReferralMadeDate,
-        'HIV_RS_18': assessment.formalReferralCompleted,
-        'HIV_RS_18A': assessment.reasonForNotMakingReferral,
-        'HIV_RS_18B': assessment.hivTestResult,
-        'HIV_RS_21': assessment.referredForArt,
-        'HIV_RS_22': assessment.referredForArtDate,
-        'HIV_RS_23': assessment.artReferralCompleted,
-        'HIV_RS_24': assessment.artReferralCompletedDate,
-        'HIV_RA_3Q6': assessment.facilityOfArtEnrollment,
-        'uuid': uuid,
-        'form_date_synced': null,
-        'message': null,
-        'rejected': isRejected,
-      },
-    );
-    if (isRejected == true) {
-      var dio = Dio();
-      var prefs = await SharedPreferences.getInstance();
-      var accessToken = prefs.getString('access');
-      String bearerAuth = "Bearer $accessToken";
+    try {
+      final db = await instance.database;
+      await insertAppFormMetaData(uuid, startOfInterview, formType);
+      await db.insert(
+        HRSForms,
+        {
+          'ovc_cpims_id': cpmisId,
+          'caregiver_cpims_id': caregiverCpimsId,
+          'HIV_RA_1A': assessment.dateOfAssessment,
+          'HIV_RS_01': assessment.statusOfChild,
+          'HIV_RS_02': assessment.hivStatus,
+          'HIV_RS_03': assessment.hivTestDone,
+          'HIV_RS_04': assessment.biologicalFather,
+          'HIV_RS_05': assessment.malnourished,
+          'HIV_RS_06': assessment.sexualAbuse,
+          'HIV_RS_09': assessment.sexualAbuseAdolescent,
+          'HIV_RS_06A': assessment.traditionalProcedures,
+          'HIV_RS_07': assessment.persistentlySick,
+          'HIV_RS_08': assessment.tb,
+          'HIV_RS_10': assessment.sexualIntercourse,
+          'HIV_RS_10A': assessment.symptomsOfSTI,
+          'HIV_RS_10B': assessment.ivDrugUser,
+          'HIV_RS_11': assessment.finalEvaluation,
+          'HIV_RS_14': assessment.parentAcceptHivTesting,
+          'HIV_RS_15': assessment.parentAcceptHivTestingDate,
+          'HIV_RS_16': assessment.formalReferralMade,
+          'HIV_RS_17': assessment.formalReferralMadeDate,
+          'HIV_RS_18': assessment.formalReferralCompleted,
+          'HIV_RS_18A': assessment.reasonForNotMakingReferral,
+          'HIV_RS_18B': assessment.hivTestResult,
+          'HIV_RS_21': assessment.referredForArt,
+          'HIV_RS_22': assessment.referredForArtDate,
+          'HIV_RS_23': assessment.artReferralCompleted,
+          'HIV_RS_24': assessment.artReferralCompletedDate,
+          'HIV_RA_3Q6': assessment.facilityOfArtEnrollment,
+          'uuid': uuid,
+          'form_date_synced': null,
+          'message': null,
+          'rejected': isRejected,
+        },
+      );
+      if (isRejected == true) {
+        var dio = Dio();
+        var prefs = await SharedPreferences.getInstance();
+        var accessToken = prefs.getString('access');
+        String bearerAuth = "Bearer $accessToken";
 
-      var updateUpstreamEndpoint = "${cpimsApiUrl}mobile/record_saved";
-      var response = await dio.post(updateUpstreamEndpoint,
-          data: {"record_id": uuid, "saved": 1, "form_type": "hrs"},
-          options: Options(headers: {"Authorization": bearerAuth}));
-      if (response.statusCode == 200) {
-        debugPrint("Data sent successfully");
-      } else {
-        debugPrint("Data not sent");
+        var updateUpstreamEndpoint = "${cpimsApiUrl}mobile/record_saved";
+        var response = await dio.post(updateUpstreamEndpoint,
+            data: {"record_id": uuid, "saved": 1, "form_type": "hrs"},
+            options: Options(headers: {"Authorization": bearerAuth}));
+        if (response.statusCode == 200) {
+          debugPrint("Data sent successfully");
+        } else {
+          debugPrint("Data not sent");
+        }
       }
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
     }
   }
 

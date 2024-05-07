@@ -75,7 +75,8 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         setState(() {
           isLoading = true;
         });
-        if (hivCurrentStatusModel.dateOfAssessment.isEmpty || hivCurrentStatusModel.statusOfChild.isEmpty) {
+        if (hivCurrentStatusModel.dateOfAssessment.isEmpty ||
+            hivCurrentStatusModel.statusOfChild.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Please fill in the required fields"),
             backgroundColor: Colors.red,
@@ -85,9 +86,11 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
             Provider.of<AppMetaDataProvider>(context, listen: false);
         String startTime = appMetaDataProvider.startTimeInterview ??
             DateTime.now().toIso8601String();
-        await Provider.of<HIVAssessmentProvider>(context, listen: false).submitHIVAssessmentForm(startTime);
+        bool isFormSubmitted =
+            await Provider.of<HIVAssessmentProvider>(context, listen: false)
+                .submitHIVAssessmentForm(startTime);
 
-        if (context.mounted) {
+        if (context.mounted && isFormSubmitted) {
           setState(() {
             isLoading = false;
           });
@@ -96,19 +99,27 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
           context.read<StatsProvider>().updateHrsDistinctStats();
           context.read<HIVAssessmentProvider>().clearOvcAge();
 
-          Get.snackbar(
-              "HRS Form submitted", "HRS Form submitted successfully",
+          Get.snackbar("HRS Form submitted", "HRS Form submitted successfully",
               snackPosition: SnackPosition.TOP,
               backgroundColor: Colors.green,
               colorText: Colors.white);
 
           Navigator.pop(context);
+        } else {
+          setState(() {
+            isLoading = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Failed to submit form"),
+            backgroundColor: Colors.red,
+          ));
         }
       } catch (e) {
         setState(() {
           isLoading = false;
         });
-        if (e.toString() == locationDisabled || e.toString() == locationDenied) {
+        if (e.toString() == locationDisabled ||
+            e.toString() == locationDenied) {
           if (context.mounted) {
             locationMissingDialog(context);
             setState(() {

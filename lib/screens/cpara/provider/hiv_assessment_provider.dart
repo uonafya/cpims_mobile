@@ -16,7 +16,6 @@ class HIVAssessmentProvider with ChangeNotifier {
 
   CaseLoadModel get caseLoadModel => _caseLoadModel;
 
-
   RiskAssessmentFormModel _riskAssessmentFormModel = RiskAssessmentFormModel();
 
   RiskAssessmentFormModel get riskAssessmentFormModel =>
@@ -87,7 +86,7 @@ class HIVAssessmentProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> submitHIVAssessmentForm(String startTime) async {
+  Future<bool> submitHIVAssessmentForm(String startTime) async {
     try {
       final data = {
         'ovc_cpims_id': caseLoadModel.cpimsId,
@@ -108,17 +107,18 @@ class HIVAssessmentProvider with ChangeNotifier {
       debugPrint("HIV Assessment Data: $data");
 
       String formUuid = const Uuid().v4();
-      await LocalDb.instance.insertHRSData(
+      bool isFormSaved = await LocalDb.instance.insertHRSData(
           caseLoadModel.cpimsId!,
           caseLoadModel.caregiverCpimsId!,
           _riskAssessmentFormModel,
           formUuid,
           startTime,
           "HIV Risk Assessment",
-          false
-      );
+          false);
 
       resetWholeForm();
+
+      return isFormSaved;
     } catch (e) {
       rethrow;
     }
@@ -142,12 +142,13 @@ class HIVAssessmentProvider with ChangeNotifier {
           riskAssessmentFormModel.sexualAbuse == "Yes" ||
           riskAssessmentFormModel.traditionalProcedures == "Yes";
     } else {
-      finalEvaluation = riskAssessmentFormModel.sexualAbuseAdolescent == "Yes" ||
-          riskAssessmentFormModel.persistentlySick == "Yes" ||
-          riskAssessmentFormModel.tb == "Yes" &&
-              riskAssessmentFormModel.sexualIntercourse == "Yes" ||
-          riskAssessmentFormModel.symptomsOfSTI == "Yes" ||
-          riskAssessmentFormModel.ivDrugUser == "Yes";
+      finalEvaluation =
+          riskAssessmentFormModel.sexualAbuseAdolescent == "Yes" ||
+              riskAssessmentFormModel.persistentlySick == "Yes" ||
+              riskAssessmentFormModel.tb == "Yes" &&
+                  riskAssessmentFormModel.sexualIntercourse == "Yes" ||
+              riskAssessmentFormModel.symptomsOfSTI == "Yes" ||
+              riskAssessmentFormModel.ivDrugUser == "Yes";
     }
 
     this.finalEvaluation = finalEvaluation ? "Yes" : "No";
