@@ -212,12 +212,10 @@ Future<void> submitCparaToUpstream() async {
 
 Future<void> singleCparaFormSubmission(
     {required CPARADatabase cparaForm, required String authorization}) async {
-
   // Get signature from payload
   Database db = await LocalDb.instance.database;
   var fetchResult = await db.rawQuery(
-    "SELECT signature FROM Form WHERE uuid = ?", [cparaForm.cparaFormId]
-  );
+      "SELECT signature FROM Form WHERE uuid = ?", [cparaForm.cparaFormId]);
   var signature = (fetchResult[0]['signature'] ?? []) as Uint8List;
   var encodedBlob = base64Encode(signature);
   // var uint8Signature = Uint
@@ -280,7 +278,8 @@ Future<void> singleCparaFormSubmission(
       "individual_questions": individualQuestions,
       "scores": scoreList,
       "app_form_metadata": cparaForm.appFormMetaData.toJson(),
-      "sub_population": List<dynamic>.from(cparaForm.listOfSubOvcs.map((x) => x.toJson())),
+      "sub_population":
+          List<dynamic>.from(cparaForm.listOfSubOvcs.map((x) => x.toJson())),
       "device_id": await getDeviceId(),
       "signature": encodedBlob,
     };
@@ -292,7 +291,8 @@ Future<void> singleCparaFormSubmission(
       "individual_questions": individualQuestions,
       "scores": scoreList,
       "app_form_metadata": cparaForm.appFormMetaData.toJson(),
-      "sub_population": List<dynamic>.from(cparaForm.listOfSubOvcs.map((x) => x.toJson())),
+      "sub_population":
+          List<dynamic>.from(cparaForm.listOfSubOvcs.map((x) => x.toJson())),
       "device_id": await getDeviceId(),
       "signature": encodedBlob,
     };
@@ -308,7 +308,7 @@ Future<void> singleCparaFormSubmission(
           contentType: 'application/json',
           headers: {"Authorization": authorization}));
 
-if (response.statusCode == 403) {
+  if (response.statusCode == 403) {
     Get.dialog(
       AlertDialog(
         title: const Text("Session Expired"),

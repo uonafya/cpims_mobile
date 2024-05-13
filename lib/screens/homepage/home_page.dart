@@ -165,7 +165,6 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
-
   Future<void> syncHMFFormData() async {
     var prefs = await SharedPreferences.getInstance();
     var bearerToken = prefs.getString('access');
@@ -271,7 +270,8 @@ class _HomepageState extends State<Homepage> {
         debugPrint("The graduation data is ${jsonEncode(formData)}");
         String cpimsId = formData['ovc_cpims_id'];
         try {
-          final response = await dio.post('${cpimsApiUrl}mobile/grad_monitor/$cpimsId/',
+          final response = await dio.post(
+              '${cpimsApiUrl}mobile/grad_monitor/$cpimsId/',
               data: formData);
           if (kDebugMode) {
             print(response.toString());
@@ -323,10 +323,12 @@ class _HomepageState extends State<Homepage> {
     updatedCountCpara = (await Form1Service.getCountAllFormCpara())!;
     updatedCountOvcSubpopulation = await Form1Service.ovcSubCount();
     updatedCptCount = await CasePlanService.getCaseplanUnsyncedCount();
-    updatedHrsCount = await CasePlanService.getCountOfHmfForms();
-    updatedHmfCount = await CasePlanService.getCountOfHRSForms();
-    //clear synced forms from local db
+    updatedHrsCount = await CasePlanService.getCountOfHRSForms();
+    updatedHmfCount = await CasePlanService.getCountOfHmfForms();
+    //clear synced forms from local dbgetCountOfHmfForms
     // await Form1Service.deleteForms();
+    debugPrint("The HRS count is $updatedHrsCount");
+    debugPrint("The HMF count is $updatedHmfCount");
 
     setState(() {
       formOneACount = updatedCountA!;
@@ -334,6 +336,8 @@ class _HomepageState extends State<Homepage> {
       cparaCount = updatedCountCpara!;
       ovcSubpopulatoiCount = updatedCountOvcSubpopulation!;
       cptCount = updatedCptCount!;
+      hmfFormCount = updatedHmfCount!;
+      hrsFormCount = updatedHrsCount!;
     });
   }
 
@@ -434,8 +438,10 @@ class _HomepageState extends State<Homepage> {
                       cparaCount: "${formStats.cparaCount}",
                       hrsCount: "${formStats.hrsCount}",
                       hmfCount: "${formStats.hmfCount}",
-                      graduationMonitoringCount: "${formStats.graduationMonitoringFormCount}",
-                      graduationMonitoringSummary: "${formStats.distinctGraduationMonitoringForm} / ${formStats.graduationMonitoringFormCount}",
+                      graduationMonitoringCount:
+                          "${formStats.graduationMonitoringFormCount}",
+                      graduationMonitoringSummary:
+                          "${formStats.distinctGraduationMonitoringForm} / ${formStats.graduationMonitoringFormCount}",
                       onClick: () {},
                     ),
                     StatisticsItem(
@@ -455,8 +461,10 @@ class _HomepageState extends State<Homepage> {
                       hrsSummary: "${formStats.unapprovedHrsCount}",
                       hmfSummary: "${formStats.unapprovedHmfCount}",
                       cparaSummary: "${formStats.unapprovedCparaCount}",
-                      graduationMonitoringCount: "${formStats.unapprovedGraduationMonitoringFormCount}",
-                      graduationMonitoringSummary: "${formStats.unapprovedGraduationMonitoringFormCount}",
+                      graduationMonitoringCount:
+                          "${formStats.unapprovedGraduationMonitoringFormCount}",
+                      graduationMonitoringSummary:
+                          "${formStats.unapprovedGraduationMonitoringFormCount}",
                       onClick: () {
                         Get.to(() => const UnapprovedRecordsScreens());
                       },

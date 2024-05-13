@@ -770,7 +770,7 @@ class LocalDb {
     try {
       final db = await LocalDb.instance.database;
       final count = Sqflite.firstIntValue(await db
-          .rawQuery('SELECT COUNT(*) FROM $HRSForms WHERE "rejected" = 0'));
+          .rawQuery('SELECT COUNT(*) FROM "$HRSForms" WHERE ("form_date_synced" IS NULL OR "form_date_synced" = "") AND "rejected" = 0'));
       debugPrint("The count hrs is $count");
       return count ?? 0;
     } catch (e) {
