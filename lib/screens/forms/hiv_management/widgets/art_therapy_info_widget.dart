@@ -33,20 +33,6 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
   String switchToThirdLine = '';
   String switchToThirdLineDate = '';
 
-  void _handleDateHIVConfirmedPositiveChanged(String value) {
-    setState(() {
-      dateHIVConfirmedPositive = value;
-      handleOnSave();
-    });
-  }
-
-  void _handleDateTreatmentInitiatedChanged(String value) {
-    setState(() {
-      dateTreatmentInitiated = value;
-      handleOnSave();
-    });
-  }
-
   void handleOnSave() {
     // Get the existing instance of HivManagementFormModel from the provider
     final formModel =
@@ -92,6 +78,7 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
     artTherapyInfoFormData =
         Provider.of<HIVManagementFormProvider>(context, listen: false)
             .hivManagementFormModel;
+    // handleOnSave();
   }
 
   @override
@@ -108,14 +95,34 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
             const SizedBox(
               height: 10,
             ),
-            NewDateTextField(
+            // NewDateTextField(
+            //   label: artTherapyInfoFormData.dateHIVConfirmedPositive.isNotEmpty
+            //       ? artTherapyInfoFormData.dateHIVConfirmedPositive
+            //       : 'Date',
+            //   enabled: true,
+            //   onDateSelected: (date) {
+            //     _handleDateHIVConfirmedPositiveChanged(formattedDate(date!));
+            //   },
+            // ),
+            DateTextField2New(
               label: artTherapyInfoFormData.dateHIVConfirmedPositive.isNotEmpty
                   ? artTherapyInfoFormData.dateHIVConfirmedPositive
                   : 'Date',
               enabled: true,
-              onDateSelected: (date) {
-                _handleDateHIVConfirmedPositiveChanged(formattedDate(date!));
+              updateDate: (String? newDate) {
+                setState(() {
+                  dateHIVConfirmedPositive = newDate!;
+                });
+                HIVManagementFormProvider provider =
+                    Provider.of<HIVManagementFormProvider>(context,
+                        listen: false);
+                HivManagementFormModel updatedModel =
+                    provider.hivManagementFormModel.copyWith(
+                        dateHIVConfirmedPositive: dateHIVConfirmedPositive);
+                provider.updateHIVVisitationModel(updatedModel);
+                handleOnSave();
               },
+              allowPastDates: true,
             ),
           ],
         ),
@@ -131,15 +138,35 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
             const SizedBox(
               height: 10,
             ),
-            DateTextField(
+            // DateTextField(
+            //   label: artTherapyInfoFormData.dateTreatmentInitiated.isNotEmpty
+            //       ? artTherapyInfoFormData.dateTreatmentInitiated
+            //       : 'Date',
+            //   enabled: true,
+            //   onDateSelected: (date) {
+            //     _handleDateTreatmentInitiatedChanged(formattedDate(date!));
+            //   },
+            //   identifier: DateTextFieldIdentifier.dateTreatmentInitiated,
+            // ),
+            DateTextField2New(
               label: artTherapyInfoFormData.dateTreatmentInitiated.isNotEmpty
                   ? artTherapyInfoFormData.dateTreatmentInitiated
                   : 'Date',
               enabled: true,
-              onDateSelected: (date) {
-                _handleDateTreatmentInitiatedChanged(formattedDate(date!));
+              updateDate: (String? newDate) {
+                setState(() {
+                  dateTreatmentInitiated = newDate!;
+                });
+                HIVManagementFormProvider provider =
+                    Provider.of<HIVManagementFormProvider>(context,
+                        listen: false);
+                HivManagementFormModel updatedModel = provider
+                    .hivManagementFormModel
+                    .copyWith(dateTreatmentInitiated: dateTreatmentInitiated);
+                provider.updateHIVVisitationModel(updatedModel);
+                handleOnSave();
               },
-              identifier: DateTextFieldIdentifier.dateTreatmentInitiated,
+              allowPastDates: true,
             ),
           ],
         ),
@@ -178,17 +205,37 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
             const SizedBox(
               height: 10,
             ),
-            NewDateTextField(
+            // NewDateTextField(
+            //   label: artTherapyInfoFormData.dateStartedFirstLine.isNotEmpty
+            //       ? artTherapyInfoFormData.dateStartedFirstLine
+            //       : 'Date',
+            //   enabled: true,
+            //   onDateSelected: (date) {
+            //     setState(() {
+            //       dateStartedFirstLine = formattedDate(date!);
+            //       handleOnSave();
+            //     });
+            //   },
+            // ),
+            DateTextField2New(
               label: artTherapyInfoFormData.dateStartedFirstLine.isNotEmpty
                   ? artTherapyInfoFormData.dateStartedFirstLine
                   : 'Date',
               enabled: true,
-              onDateSelected: (date) {
+              updateDate: (String? newDate) {
                 setState(() {
-                  dateStartedFirstLine = formattedDate(date!);
-                  handleOnSave();
+                  dateStartedFirstLine = newDate!;
                 });
+                HIVManagementFormProvider provider =
+                    Provider.of<HIVManagementFormProvider>(context,
+                        listen: false);
+                HivManagementFormModel updatedModel = provider
+                    .hivManagementFormModel
+                    .copyWith(dateStartedFirstLine: dateStartedFirstLine);
+                provider.updateHIVVisitationModel(updatedModel);
+                handleOnSave();
               },
+              allowPastDates: true,
             ),
           ],
         ),
@@ -222,18 +269,39 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               },
             ),
             if (arvsSubWithFirstLine == 'Yes')
-              NewDateTextField(
+              // NewDateTextField(
+              //   label:
+              //       artTherapyInfoFormData.arvsSubWithFirstLineDate.isNotEmpty
+              //           ? artTherapyInfoFormData.arvsSubWithFirstLineDate
+              //           : 'If Yes, Date',
+              //   enabled: arvsSubWithFirstLine == "Yes",
+              //   onDateSelected: (date) {
+              //     setState(() {
+              //       arvsSubWithFirstLineDate = formattedDate(date!);
+              //       handleOnSave();
+              //     });
+              //   },
+              // ),
+              DateTextField2New(
                 label:
                     artTherapyInfoFormData.arvsSubWithFirstLineDate.isNotEmpty
                         ? artTherapyInfoFormData.arvsSubWithFirstLineDate
                         : 'If Yes, Date',
-                enabled: arvsSubWithFirstLine == "Yes",
-                onDateSelected: (date) {
+                enabled: true,
+                updateDate: (String? newDate) {
                   setState(() {
-                    arvsSubWithFirstLineDate = formattedDate(date!);
-                    handleOnSave();
+                    arvsSubWithFirstLineDate = newDate!;
                   });
+                  HIVManagementFormProvider provider =
+                      Provider.of<HIVManagementFormProvider>(context,
+                          listen: false);
+                  HivManagementFormModel updatedModel =
+                      provider.hivManagementFormModel.copyWith(
+                          arvsSubWithFirstLineDate: arvsSubWithFirstLineDate);
+                  provider.updateHIVVisitationModel(updatedModel);
+                  handleOnSave();
                 },
+                allowPastDates: true,
               ),
           ],
         ),
@@ -267,17 +335,37 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               },
             ),
             if (switchToSecondLine == 'Yes')
-              NewDateTextField(
+              // NewDateTextField(
+              //   label: artTherapyInfoFormData.switchToSecondLineDate.isNotEmpty
+              //       ? artTherapyInfoFormData.switchToSecondLineDate
+              //       : 'If Yes, Date',
+              //   enabled: switchToSecondLine == "Yes",
+              //   onDateSelected: (date) {
+              //     setState(() {
+              //       switchToSecondLineDate = formattedDate(date!);
+              //       handleOnSave();
+              //     });
+              //   },
+              // ),
+              DateTextField2New(
                 label: artTherapyInfoFormData.switchToSecondLineDate.isNotEmpty
                     ? artTherapyInfoFormData.switchToSecondLineDate
                     : 'If Yes, Date',
-                enabled: switchToSecondLine == "Yes",
-                onDateSelected: (date) {
+                enabled: true,
+                updateDate: (String? newDate) {
                   setState(() {
-                    switchToSecondLineDate = formattedDate(date!);
-                    handleOnSave();
+                    switchToSecondLineDate = newDate!;
                   });
+                  HIVManagementFormProvider provider =
+                      Provider.of<HIVManagementFormProvider>(context,
+                          listen: false);
+                  HivManagementFormModel updatedModel = provider
+                      .hivManagementFormModel
+                      .copyWith(switchToSecondLineDate: switchToSecondLineDate);
+                  provider.updateHIVVisitationModel(updatedModel);
+                  handleOnSave();
                 },
+                allowPastDates: true,
               ),
           ],
         ),
@@ -311,18 +399,38 @@ class _ARTTherapyInfoWidgetState extends State<ARTTherapyInfoWidget> {
               },
             ),
             if (switchToThirdLine == 'Yes')
-              DateTextField(
+              // DateTextField(
+              //   label: artTherapyInfoFormData.switchToThirdLineDate.isNotEmpty
+              //       ? artTherapyInfoFormData.switchToThirdLineDate
+              //       : 'If Yes, Date',
+              //   enabled: switchToThirdLine == "Yes",
+              //   onDateSelected: (date) {
+              //     setState(() {
+              //       switchToThirdLineDate = formattedDate(date!);
+              //       handleOnSave();
+              //     });
+              //   },
+              //   identifier: DateTextFieldIdentifier.switchToThirdLineDate,
+              // ),
+              DateTextField2New(
                 label: artTherapyInfoFormData.switchToThirdLineDate.isNotEmpty
                     ? artTherapyInfoFormData.switchToThirdLineDate
                     : 'If Yes, Date',
-                enabled: switchToThirdLine == "Yes",
-                onDateSelected: (date) {
+                enabled: true,
+                updateDate: (String? newDate) {
                   setState(() {
-                    switchToThirdLineDate = formattedDate(date!);
-                    handleOnSave();
+                    switchToThirdLineDate = newDate!;
                   });
+                  HIVManagementFormProvider provider =
+                      Provider.of<HIVManagementFormProvider>(context,
+                          listen: false);
+                  HivManagementFormModel updatedModel = provider
+                      .hivManagementFormModel
+                      .copyWith(switchToThirdLineDate: switchToThirdLineDate);
+                  provider.updateHIVVisitationModel(updatedModel);
+                  handleOnSave();
                 },
-                identifier: DateTextFieldIdentifier.switchToThirdLineDate,
+                allowPastDates: true,
               ),
           ],
         ),

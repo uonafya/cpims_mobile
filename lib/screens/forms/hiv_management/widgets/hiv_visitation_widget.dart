@@ -114,7 +114,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   bool areAllFieldsFilled() {
     // Define a list of required fields to check if they are filled in
     final List<String> requiredFields = [
-
       visitDate,
       durationOnARTs,
       height,
@@ -170,17 +169,37 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             const SizedBox(
               height: 10,
             ),
-            NewDateTextField(
+            // NewDateTextField(
+            //   label: hivVisitationFormData.visitDate.isNotEmpty
+            //       ? hivVisitationFormData.visitDate
+            //       : 'Date',
+            //   enabled: true,
+            //   onDateSelected: (date) {
+            //     setState(() {
+            //       visitDate = formattedDate(date!);
+            //       handleOnSave();
+            //     });
+            //   },
+            // ),
+            DateTextField2New(
               label: hivVisitationFormData.visitDate.isNotEmpty
                   ? hivVisitationFormData.visitDate
                   : 'Date',
               enabled: true,
-              onDateSelected: (date) {
+              updateDate: (String? newDate) {
                 setState(() {
-                  visitDate = formattedDate(date!);
-                  handleOnSave();
+                  visitDate = newDate!;
                 });
+                HIVManagementFormProvider provider =
+                    Provider.of<HIVManagementFormProvider>(context,
+                        listen: false);
+                HivManagementFormModel updatedModel = provider
+                    .hivManagementFormModel
+                    .copyWith(visitDate: visitDate);
+                provider.updateHIVVisitationModel(updatedModel);
+                handleOnSave();
               },
+              allowPastDates: true,
             ),
           ],
         ),
@@ -472,6 +491,13 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                 if (viralLoadResults.isEmpty) {
                   labInvestigationsDate = '';
                 }
+                HIVManagementFormProvider provider =
+                    Provider.of<HIVManagementFormProvider>(context,
+                        listen: false);
+                HivManagementFormModel updatedModel = provider
+                    .hivManagementFormModel
+                    .copyWith(viralLoadResults: viralLoadResults);
+                provider.updateHIVVisitationModel(updatedModel);
                 handleOnSave();
               },
             ),
@@ -481,9 +507,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
           height: 15,
         ),
         FormSection(
-          isVisibleCondition: () {
-            return hivVisitationFormData.viralLoadResults.isNotEmpty;
-          },
           children: [
             const Text(
               'Q14) Lab Investigations - Date*',
@@ -492,17 +515,37 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             const SizedBox(
               height: 10,
             ),
-            NewDateTextField(
+            // NewDateTextField(
+            //   label: hivVisitationFormData.labInvestigationsDate.isNotEmpty
+            //       ? hivVisitationFormData.labInvestigationsDate
+            //       : 'Date',
+            //   enabled: true,
+            //   onDateSelected: (date) {
+            //     setState(() {
+            //       labInvestigationsDate = formattedDate(date!);
+            //       handleOnSave();
+            //     });
+            //   },
+            // ),
+            DateTextField2New(
               label: hivVisitationFormData.labInvestigationsDate.isNotEmpty
                   ? hivVisitationFormData.labInvestigationsDate
-                  : 'Date',
+                  : 'Lab Investigations Date',
               enabled: true,
-              onDateSelected: (date) {
+              updateDate: (String? newDate) {
                 setState(() {
-                  labInvestigationsDate = formattedDate(date!);
-                  handleOnSave();
+                  labInvestigationsDate = newDate!;
                 });
+                HIVManagementFormProvider provider =
+                    Provider.of<HIVManagementFormProvider>(context,
+                        listen: false);
+                HivManagementFormModel updatedModel = provider
+                    .hivManagementFormModel
+                    .copyWith(labInvestigationsDate: labInvestigationsDate);
+                provider.updateHIVVisitationModel(updatedModel);
+                handleOnSave();
               },
+              allowPastDates: true,
             ),
           ],
         ),
@@ -772,19 +815,39 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             const SizedBox(
               height: 10,
             ),
-            DateTextField(
+            // DateTextField(
+            //   label: hivVisitationFormData.nextAppointmentDate.isNotEmpty
+            //       ? hivVisitationFormData.nextAppointmentDate
+            //       : 'Date',
+            //   enabled: true,
+            //   allowFutureDates: true,
+            //   identifier: DateTextFieldIdentifier.nextAppointmentDate,
+            //   onDateSelected: (DateTime? date) {
+            //     setState(() {
+            //       nextAppointmentDate = formattedDate(date!);
+            //       handleOnSave();
+            //     });
+            //   },
+            // ),
+            DateTextField2New(
               label: hivVisitationFormData.nextAppointmentDate.isNotEmpty
                   ? hivVisitationFormData.nextAppointmentDate
                   : 'Date',
               enabled: true,
-              allowFutureDates: true,
-              identifier: DateTextFieldIdentifier.nextAppointmentDate,
-              onDateSelected: (DateTime? date) {
+              updateDate: (String? newDate) {
                 setState(() {
-                  nextAppointmentDate = formattedDate(date!);
-                  handleOnSave();
+                  nextAppointmentDate = newDate!;
                 });
+                HIVManagementFormProvider provider =
+                    Provider.of<HIVManagementFormProvider>(context,
+                        listen: false);
+                HivManagementFormModel updatedModel = provider
+                    .hivManagementFormModel
+                    .copyWith(nextAppointmentDate: nextAppointmentDate);
+                provider.updateHIVVisitationModel(updatedModel);
+                handleOnSave();
               },
+              allowPastDates: true,
             ),
           ],
         ),

@@ -317,7 +317,7 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                             .read<HIVManagementFormProvider>()
                                             .hivManagementFormModel
                                             .labInvestigationsDate
-                                            .isNotEmpty &&
+                                            !="" &&
                                         context
                                             .read<HIVManagementFormProvider>()
                                             .hivManagementFormModel
@@ -387,6 +387,7 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                           appMetaDataProvider
                                                   .startTimeInterview ??
                                               DateTime.now().toIso8601String();
+
                                       bool isFormSubmitted =
                                           await submitHIVManagementForm(
                                               startInterviewTime);
