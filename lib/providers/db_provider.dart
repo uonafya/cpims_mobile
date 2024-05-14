@@ -995,7 +995,7 @@ class LocalDb {
 
       final hmfFormData = await db.query(HMForms,
           where:
-              'form_date_synced IS NULL OR form_date_synced = "" AND rejected = 0');
+          '"rejected" = 0 AND (form_date_synced IS NULL OR form_date_synced = "")');
 
       List<Map<String, dynamic>> updatedHMFFormData = [];
 

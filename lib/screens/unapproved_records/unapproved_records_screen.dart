@@ -751,20 +751,27 @@ class FormTab extends StatelessWidget {
           title: 'Unapproved $selectedRecord List',
           children: [
             if (selectedRecord == "Form 1A" || selectedRecord == "Form 1B")
-              ...List.generate(
-                unapprovedForm1aData!.length,
-                (index) {
-                  final UnapprovedForm1DataModel dataModel =
-                      unapprovedForm1aData![index];
-                  return UnapprovedForm1CardDetails<UnapprovedForm1DataModel>(
-                    unapprovedData: dataModel,
-                    eventOrDomainId: dataModel.services[0].domainId,
-                    isService: true,
-                    onDelete: onDelete,
-                    onEdit: onEdit,
-                  );
-                },
-              )
+              if (unapprovedForm1aData != null &&
+                  unapprovedForm1aData!.isNotEmpty)
+                ...List.generate(
+                  unapprovedForm1aData!.length,
+                  (index) {
+                    final UnapprovedForm1DataModel dataModel =
+                        unapprovedForm1aData![index];
+                    String? eventOrDomainId;
+                    if (dataModel.services != null &&
+                        dataModel.services.isNotEmpty) {
+                      eventOrDomainId = dataModel.services[0].domainId;
+                    }
+                    return UnapprovedForm1CardDetails<UnapprovedForm1DataModel>(
+                      unapprovedData: dataModel,
+                      eventOrDomainId: eventOrDomainId,
+                      isService: true,
+                      onDelete: onDelete,
+                      onEdit: onEdit,
+                    );
+                  },
+                )
           ],
         ),
       ],
