@@ -242,12 +242,12 @@ class UnapprovedDataService {
     return await unapprovedCpt.deleteUnapprovedCasePlanData(localdb, id);
   }
 
-  static Future<bool> deleteUnapprovedCptAfterEdit(String formUuid) async {
+  static Future<bool> deleteUnapprovedCptAfterEdit(String ovcId) async {
     final db = LocalDb.instance;
     final unapprovedCpt = UnapprovedCptProvider();
     var localdb = await db.database;
     return await unapprovedCpt.deleteUnapprovedCasePlanDataByUuid(
-        localdb, formUuid);
+        localdb, ovcId);
   }
 
   static Future<bool> deleteUnapprovedHMF(String id) async {

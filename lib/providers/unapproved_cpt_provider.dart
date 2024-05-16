@@ -172,7 +172,7 @@ class UnapprovedCptProvider {
     try {
       final formQuery = await db.query(
         'unapproved_cpt',
-        where: 'form_uuid = ?',
+        where: 'ovc_cpims_id = ?',
         whereArgs: [uuid],
       );
 

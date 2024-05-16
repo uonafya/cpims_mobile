@@ -351,23 +351,18 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
               context
                   .read<StatsProvider>()
                   .updateUnapprovedCasePlanDistinctStats();
-              //delete the edited form from unapproved cpt table
-              bool editedFormDeleted =
+              //get initial formuuid from provider
+              String? initialFormUuid = cptProvider.formUuid;
+              //delete the initial form from unapproved cpt table
+              bool? initialFormDeleted =
                   await UnapprovedDataService.deleteUnapprovedCptAfterEdit(
-                      formUuid);
-              if (editedFormDeleted) {
-                context.read<StatsProvider>().updateCptStats();
-                Provider.of<StatsProvider>(context, listen: false)
-                    .updateUnapprovedFormStats();
-                context.read<StatsProvider>().updateFormStats();
+                      ovsId);
+              if (initialFormDeleted) {
+                debugPrint(
+                    "Deleted unnapproved cpt with id $initialFormDeleted");
+                //reload the unapproved forms
+                context.read<StatsProvider>().updateUnapprovedFormStats();
 
-                Navigator.pop(context);
-                Get.snackbar(
-                  'Success',
-                  'Successfully edited CasePlan form',
-                  backgroundColor: Colors.green,
-                  colorText: Colors.white,
-                );
               }
 
               Get.snackbar(

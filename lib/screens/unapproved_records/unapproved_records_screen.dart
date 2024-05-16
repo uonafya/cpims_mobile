@@ -339,7 +339,6 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     }
 
     void editUnapprovedCptForm(UnapprovedCasePlanModel unapprovedCpt) async {
-      // TODO : Refactor for efficiency
       final db = LocalDb.instance;
       CaseLoadModel caseLoad =
           await db.getCaseLoad(int.parse(unapprovedCpt.ovcCpimsId));
@@ -428,6 +427,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
               ));
         }
       }
+
+      await Future.delayed(Duration(milliseconds: 300));
 
       context.read<CasePlanProvider>();
       Get.to(
