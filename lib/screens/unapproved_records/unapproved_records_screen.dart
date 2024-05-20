@@ -340,9 +340,11 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
 
     void editUnapprovedCptForm(UnapprovedCasePlanModel unapprovedCpt) async {
       final db = LocalDb.instance;
-      CaseLoadModel caseLoad =
-          await db.getCaseLoad(int.parse(unapprovedCpt.ovcCpimsId));
+      CaseLoadModel caseLoad = await db.getCaseLoad(int.parse(unapprovedCpt.ovcCpimsId));
+      int? unapprovedCptId=unapprovedCpt.id;
+      debugPrint('Kanye: $unapprovedCptId');
       context.read<CptProvider>().updateFormUuid(unapprovedCpt.formUuid);
+      context.read<CptProvider>().updateCptUnapprovedID(unapprovedCptId);
       // Healthy Services
       CptHealthFormData cptHealtFormData =
           context.read<CptProvider>().cptHealthFormData ?? CptHealthFormData();
@@ -501,11 +503,12 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     }
 
     void deleteUnapprovedHMF(String id) async {
+      print("Deleting HMF with id $id");
       bool success = await UnapprovedDataService.deleteUnapprovedHMF(id);
       if (success) {
         setState(() {
           unapprovedHMFData
-              .removeWhere((element) => element.adherenceId == id.toString());
+              .removeWhere((element) => element.ovcCpimsId == id.toString());
         });
         Provider.of<StatsProvider>(context, listen: false)
             .updateUnapprovedFormStats();
@@ -1358,7 +1361,7 @@ class UnapprovedHMFCard extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.delete),
-              onPressed: () => onDelete(unapprovedHMF.adherenceId!),
+              onPressed: () => onDelete(unapprovedHMF.ovcCpimsId!),
             ),
           ],
         ),

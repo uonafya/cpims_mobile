@@ -57,6 +57,7 @@ class CptProvider extends ChangeNotifier {
   CptStableFormData? cptStableFormData;
   CptschooledFormData? cptschooledFormData;
   CptHealthFormData? cptHealthFormData;
+
   CptHealthFormData get cptHealth => cptHealthFormData!;
 
   List<CptHealthFormData> cptHealthFormDataList = [];
@@ -66,6 +67,7 @@ class CptProvider extends ChangeNotifier {
 
   late CasePlanModel casePlanModel;
   String? formUuid;
+  int? unapprovedId;
 
   void updateCptFormData(CptHealthFormData cptHealthFormData) {
     this.cptHealthFormData = cptHealthFormData;
@@ -97,6 +99,11 @@ class CptProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateCptUnapprovedID(int? unapprovedId) {
+    this.unapprovedId = unapprovedId;
+    notifyListeners();
+  }
+
   void clearProviderData() {
     casePlanHealthyModel = null;
     casePlanSafeModel = null;
@@ -113,6 +120,13 @@ class CptProvider extends ChangeNotifier {
     cptSafeFormDataList.clear();
     cptStableFormDataList.clear();
     cptschooledFormDataList.clear();
+    casePlanModel = CasePlanModel(
+      ovcCpimsId: '',
+      dateOfEvent: '',
+      caregiverCpimsId: '',
+      services: [],
+    );
+    unapprovedId = null;
     notifyListeners();
   }
 
@@ -141,7 +155,6 @@ class CptProvider extends ChangeNotifier {
     cptschooledFormData = null;
     notifyListeners();
   }
-
 
   void updateDateOfCasePlanList(String? dateCPlan) {
     casePlanModel.dateOfEvent = dateCPlan!;
@@ -192,7 +205,6 @@ class CptProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
   void resetForm() {
     // Reset all properties to their initial values
     csAllDomains = allDomains;
@@ -242,7 +254,7 @@ class CptProvider extends ChangeNotifier {
       caregiverCpimsId: '',
       services: [],
     );
+    unapprovedId = null;
     notifyListeners();
   }
-
 }

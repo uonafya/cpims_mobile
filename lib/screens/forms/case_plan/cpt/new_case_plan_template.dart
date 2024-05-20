@@ -329,6 +329,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
           }
 
           String formUuid = const Uuid().v4();
+          int? unapprovedId=context.read<CptProvider>().unapprovedId;
           // cptProvider.updateFormUuid(formUuid);
           AppMetaDataProvider appMetaDataProvider =
               Provider.of<AppMetaDataProvider>(context, listen: false);
@@ -348,21 +349,11 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
               context.read<CptProvider>().updateClearServicesList();
               context.read<StatsProvider>().updateCptStats();
               context.read<StatsProvider>().updateUnapprovedFormStats();
-              context
-                  .read<StatsProvider>()
-                  .updateUnapprovedCasePlanDistinctStats();
-              //get initial formuuid from provider
-              String? initialFormUuid = cptProvider.formUuid;
-              //delete the initial form from unapproved cpt table
-              bool? initialFormDeleted =
-                  await UnapprovedDataService.deleteUnapprovedCptAfterEdit(
-                      ovsId);
+              context.read<StatsProvider>().updateUnapprovedCasePlanDistinctStats();
+              bool? initialFormDeleted = await UnapprovedDataService.deleteUnapprovedCpt(unapprovedId!);
               if (initialFormDeleted) {
-                debugPrint(
-                    "Deleted unnapproved cpt with id $initialFormDeleted");
-                //reload the unapproved forms
+                debugPrint("Deleted unnapproved cpt with id $initialFormDeleted");
                 context.read<StatsProvider>().updateUnapprovedFormStats();
-
               }
 
               Get.snackbar(
@@ -379,7 +370,6 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
               // Reset the list when the form is submitted
               formSubmitted = true;
             });
-
             // setState(() {});
           } else {
             Get.snackbar(

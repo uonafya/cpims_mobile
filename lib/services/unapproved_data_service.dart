@@ -204,7 +204,6 @@ class UnapprovedDataService {
 
   static Future<List<UnapprovedHrsModel>> fetchRejectedHRSForms() async {
     final db = LocalDb.instance;
-    print("Unapproved hrs called");
     List<Map<String, dynamic>> maps = await db.fetchRejectedHRSFormData();
     List<UnapprovedHrsModel> unapprovedHrs = [];
     for (var map in maps) {
@@ -251,6 +250,7 @@ class UnapprovedDataService {
   }
 
   static Future<bool> deleteUnapprovedHMF(String id) async {
+    print("delete hmf function called $id");
     final db = LocalDb.instance;
     return await db.deleteUnApprovedHMFData(id);
   }
