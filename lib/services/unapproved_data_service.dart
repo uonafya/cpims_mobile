@@ -31,7 +31,9 @@ class UnapprovedDataService {
       "mobile/unaccepted_records/cpt/",
       "mobile/unaccepted_records/cpara/",
       "mobile/unaccepted_records/hmf/",
-      "mobile/unaccepted_records/hrs/"
+      "mobile/unaccepted_records/hrs/",
+      "mobile/unaccepted_records/hhrcpa",
+      "mobile/unaccepted_records/bm"
     ];
 
     List<Future<void>> futures = endpoints.map((endpoint) async {
@@ -111,20 +113,35 @@ class UnapprovedDataService {
               unapprovedHrs, unapprovedHrs.riskId, null, "hrs", true);
         }
       } else if (endpoint == endpoints[6]) {
-        // for (var map in jsonData) {
-        //   final unapprovedGraduation =
-        //       UnApprovedGraduationFormModel.fromMap(map);
-        //   db.insertGraduationMonitoringFormData(
-        //     unapprovedGraduation.ovcCpimsId.toString(),
-        //     null,
-        //     unapprovedGraduation,
-        //     unapprovedGraduation.formUuid,
-        //     unapprovedGraduation.appFormMetaData?.startOfInterview,
-        //     unapprovedGraduation.appFormMetaData?.formType,
-        //     true,
-        //     unapprovedGraduation.message ?? "",
-        //   );
-        // }
+        for (var map in jsonData) {
+          final unapprovedGraduation =
+              UnApprovedGraduationFormModel.fromMap(map);
+          db.insertGraduationMonitoringFormData(
+            unapprovedGraduation.ovcCpimsId.toString(),
+            null,
+            unapprovedGraduation,
+            unapprovedGraduation.formUuid,
+            unapprovedGraduation.appFormMetaData?.startOfInterview,
+            "hhrcpa",
+            true,
+            unapprovedGraduation.message ?? "",
+          );
+        }
+      } else if (endpoint == endpoints[7]) {
+        for (var map in jsonData) {
+          final unapprovedGraduation =
+              UnApprovedGraduationFormModel.fromMap(map);
+          db.insertGraduationMonitoringFormData(
+            unapprovedGraduation.ovcCpimsId.toString(),
+            null,
+            unapprovedGraduation,
+            unapprovedGraduation.formUuid,
+            unapprovedGraduation.appFormMetaData?.startOfInterview,
+            "bm",
+            true,
+            unapprovedGraduation.message ?? "",
+          );
+        }
       }
       return;
     }).toList();

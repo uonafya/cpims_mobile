@@ -56,26 +56,30 @@ class UnApprovedGraduationFormModel extends GraduationMonitoringFormModel {
     return map;
   }
 
-  factory UnApprovedGraduationFormModel.fromMap(Map<String, dynamic> map) {
+  factory UnApprovedGraduationFormModel.fromMap(Map<String, dynamic>? map) {
+    if (map == null) return UnApprovedGraduationFormModel();
+
     return UnApprovedGraduationFormModel(
-      formType: map['formType'],
-      dateOfMonitoring: map['dateOfMonitoring'],
-      benchmark1: map['benchmark1'],
-      benchmark2: map['benchmark2'],
-      benchmark3: map['benchmark3'],
-      benchmark4: map['benchmark4'],
-      benchmark5: map['benchmark5'],
-      benchmark6: map['benchmark6'],
-      benchmark7: map['benchmark7'],
-      benchmark8: map['benchmark8'],
-      benchmark9: map['benchmark9'],
-      householdReadyToExit: map['householdReadyToExit'],
-      caseDeterminedReadyForClosure: map['caseDeterminedReadyForClosure'],
+      formType: map['formType'] ?? '',
+      dateOfMonitoring: map['dateOfMonitoring'] ?? '',
+      benchmark1: map['benchmark1'] ?? '',
+      benchmark2: map['benchmark2'] ?? '',
+      benchmark3: map['benchmark3'] ?? '',
+      benchmark4: map['benchmark4'] ?? '',
+      benchmark5: map['benchmark5'] ?? '',
+      benchmark6: map['benchmark6'] ?? '',
+      benchmark7: map['benchmark7'] ?? '',
+      benchmark8: map['benchmark8'] ?? '',
+      benchmark9: map['benchmark9'] ?? '',
+      householdReadyToExit: map['householdReadyToExit'] ?? '',
+      caseDeterminedReadyForClosure: map['caseDeterminedReadyForClosure'] ?? '',
       message: map['message'] ?? '',
-      ovcCpimsId: map['ovcCpimsId'],
-      caregiverCpimsId: map['caregiverCpimsId'],
-      formUuid: map['formUuid'],
-      appFormMetaData: AppFormMetaData.fromJson(map['appFormMetaData']),
+      ovcCpimsId: map['ovcCpimsId'] ?? '',
+      caregiverCpimsId: map['caregiverCpimsId'] ?? '',
+      formUuid: map['formUuid'] ?? '',
+      appFormMetaData: map['appFormMetaData'] != null
+          ? AppFormMetaData.fromJson(map['appFormMetaData'])
+          : null,
     );
   }
 

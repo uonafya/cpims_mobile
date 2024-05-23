@@ -271,7 +271,7 @@ class _HomepageState extends State<Homepage> {
         String cpimsId = formData['ovc_cpims_id'];
         try {
           final response = await dio.post(
-              '${cpimsApiUrl}mobile/grad_monitor/$cpimsId/',
+              '${cpimsApiUrl}mobile/grad_monitor/',
               data: formData);
           if (kDebugMode) {
             print(response.toString());
