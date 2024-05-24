@@ -66,7 +66,6 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
   @override
   void initState() {
     super.initState();
-
     Future.delayed(Duration.zero, () {
       getRecords();
     });
@@ -116,15 +115,15 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
         await UnapprovedDataService.fetchRejectedHMFForms();
     final List<UnapprovedHrsModel> unapprovedHRSRecords =
         await UnapprovedDataService.fetchRejectedHRSForms();
-    // final List<UnApprovedGraduationFormModel> unapprovedGraduationRecords =
-    //     await UnapprovedDataService.fetchRejectedGraduationForms();
+    final List<UnApprovedGraduationFormModel> unapprovedGraduationRecords =
+        await UnapprovedDataService.fetchRejectedGraduationForms();
     setState(() {
       unapprovedForm1AData = form1ARecords;
       unapprovedForm1BData = form1BRecords;
       unapprovedCaseplanData = unapprovedCaseplanRecords;
       unapprovedHMFData = unapprovedHMFRecords;
       unapprovedHRSData = unapprovedHRSRecords;
-      // unnapprovedGraduationData = unapprovedGraduationRecords;
+      unnapprovedGraduationData = unapprovedGraduationRecords;
     });
   }
 
@@ -340,8 +339,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
 
     void editUnapprovedCptForm(UnapprovedCasePlanModel unapprovedCpt) async {
       final db = LocalDb.instance;
-      CaseLoadModel caseLoad = await db.getCaseLoad(int.parse(unapprovedCpt.ovcCpimsId));
-      int? unapprovedCptId=unapprovedCpt.id;
+      CaseLoadModel caseLoad =
+          await db.getCaseLoad(int.parse(unapprovedCpt.ovcCpimsId));
+      int? unapprovedCptId = unapprovedCpt.id;
       debugPrint('Kanye: $unapprovedCptId');
       context.read<CptProvider>().updateFormUuid(unapprovedCpt.formUuid);
       context.read<CptProvider>().updateCptUnapprovedID(unapprovedCptId);
@@ -638,6 +638,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     }
 
     void deleteUnapprovedGraduationForm(String? id) async {
+      debugPrint("Deleting Graduation Form with id $id");
       bool success =
           await UnapprovedDataService.deleteUnapprovedgraduation(id!);
       if (success) {

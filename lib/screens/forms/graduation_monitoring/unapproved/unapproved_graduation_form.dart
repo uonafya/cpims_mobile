@@ -59,27 +59,30 @@ class UnApprovedGraduationFormModel extends GraduationMonitoringFormModel {
   factory UnApprovedGraduationFormModel.fromMap(Map<String, dynamic>? map) {
     if (map == null) return UnApprovedGraduationFormModel();
 
+    final appFormMetaData = map['app_form_metadata'] != null
+        ? AppFormMetaData.fromJson(map['app_form_metadata'])
+        : null;
+
     return UnApprovedGraduationFormModel(
-      formType: map['formType'] ?? '',
-      dateOfMonitoring: map['dateOfMonitoring'] ?? '',
-      benchmark1: map['benchmark1'] ?? '',
-      benchmark2: map['benchmark2'] ?? '',
-      benchmark3: map['benchmark3'] ?? '',
-      benchmark4: map['benchmark4'] ?? '',
-      benchmark5: map['benchmark5'] ?? '',
-      benchmark6: map['benchmark6'] ?? '',
-      benchmark7: map['benchmark7'] ?? '',
-      benchmark8: map['benchmark8'] ?? '',
-      benchmark9: map['benchmark9'] ?? '',
-      householdReadyToExit: map['householdReadyToExit'] ?? '',
-      caseDeterminedReadyForClosure: map['caseDeterminedReadyForClosure'] ?? '',
+      formType: appFormMetaData?.formType ?? '',
+      dateOfMonitoring: map['gm1d'] ?? '',
+      benchmark1: map['cm2q'] != null ? map['cm2q'].toString() : '',
+      benchmark2: map['cm3q'] != null ? map['cm3q'].toString() : '',
+      benchmark3: map['cm4q'] != null ? map['cm4q'].toString() : '',
+      benchmark4: map['cm5q'] != null ? map['cm5q'].toString() : '',
+      benchmark5: map['cm6q'] != null ? map['cm6q'].toString() : '',
+      benchmark6: map['cm7q'] != null ? map['cm7q'].toString() : '',
+      benchmark7: map['cm8q'] != null ? map['cm8q'].toString() : '',
+      benchmark8: map['cm9q'] != null ? map['cm9q'].toString() : '',
+      benchmark9: map['cm10q'] != null ? map['cm10q'].toString() : '',
+      householdReadyToExit: map['cm13q'] != null ? map['cm13q'].toString() : '',
+      caseDeterminedReadyForClosure:
+          map['cm14q'] != null ? map['cm14q'].toString() : '',
       message: map['message'] ?? '',
       ovcCpimsId: map['ovcCpimsId'] ?? '',
       caregiverCpimsId: map['caregiverCpimsId'] ?? '',
-      formUuid: map['formUuid'] ?? '',
-      appFormMetaData: map['appFormMetaData'] != null
-          ? AppFormMetaData.fromJson(map['appFormMetaData'])
-          : null,
+      formUuid: map['obm_id'] ?? '',
+      appFormMetaData: appFormMetaData,
     );
   }
 

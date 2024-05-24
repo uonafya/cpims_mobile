@@ -2246,9 +2246,10 @@ class LocalDb {
         };
         updatedGraduationFormData.add(updatedGraduationRow);
       }
+      debugPrint("GradMonitoring 1: $updatedGraduationFormData");
       return updatedGraduationFormData;
     } catch (e) {
-      debugPrint("Error fetching graduation monitoring data: $e");
+      debugPrint("Error fetching graduation monitoring data 2: $e");
     }
     return [];
   }
@@ -2270,7 +2271,7 @@ class LocalDb {
         await insertAppFormMetaData(uuid, startTimeInterview, formType);
       }
 
-      int? insertedId = await db.insert(
+      await db.insert(
         graduation_monitoring,
         {
           'ovc_cpims_id': cpmisId,
@@ -2295,13 +2296,10 @@ class LocalDb {
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-
-      if (insertedId == null || insertedId == 0) {
-        // Data was not inserted successfully
-        return false;
-      }
+      debugPrint("Inserted ID: $uuid");
 
       if (isRejected == true) {
+        debugPrint("2 :Posting rejected form");
         var dio = Dio();
         var prefs = await SharedPreferences.getInstance();
         var accessToken = prefs.getString('access');
@@ -2312,17 +2310,18 @@ class LocalDb {
           data: {
             "record_id": uuid,
             "saved": 1,
-            "form_type": graduationMonitoringFormModel.form_type == "bm"
-                ? "bm"
-                : "hhrcpa"
+            "form_type": graduationMonitoringFormModel.form_type
           },
           options: Options(headers: {"Authorization": bearerAuth}),
         );
+        print("GradMonit uuid: $uuid");
 
         if (response.statusCode == 200) {
-          debugPrint("Data sent successfully");
+          debugPrint(
+              "Data sent successfully ${response.data} form type: ${graduationMonitoringFormModel.form_type}");
         } else {
-          debugPrint("Data not sent");
+          debugPrint(
+              "Data not sent ${response.data} form type: ${graduationMonitoringFormModel.form_type}");
         }
       }
 
@@ -2351,9 +2350,10 @@ class LocalDb {
         };
         updatedGraduationFormData.add(updatedGraduationRow);
       }
+      debugPrint("GradMonitoring 2: $updatedGraduationFormData");
       return updatedGraduationFormData;
     } catch (e) {
-      debugPrint("Error fetching graduation monitoring data: $e");
+      debugPrint("Error fetching graduation monitoring data 1: $e");
     }
     return [];
   }
@@ -2400,7 +2400,6 @@ class LocalDb {
     }
   }
 
-  //delete graduation monitoring forms older than 30 days and whose syncing has been successful remember to delete also its data in app form metadata
   Future<bool> deleteGraduationMonitoringFormData(String uuid) async {
     final db = await instance.database;
 
@@ -2408,13 +2407,13 @@ class LocalDb {
       // Check if the data is already synced
       final List<Map<String, dynamic>> graduationData = await db.query(
         graduation_monitoring,
-        where: 'uuid = ? AND form_date_synced IS NOT NULL',
+        where: 'uuid = ?',
         whereArgs: [uuid],
       );
 
       final List<Map<String, dynamic>> metaData = await db.query(
         appFormMetaDataTable,
-        where: 'form_id = ? AND form_date_synced IS NOT NULL',
+        where: 'form_id = ?',
         whereArgs: [uuid],
       );
 

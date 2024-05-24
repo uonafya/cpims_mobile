@@ -6,6 +6,7 @@ import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
 import 'package:cpims_mobile/screens/cpara/cpara_util.dart';
 import 'package:cpims_mobile/screens/cpara/model/unnaproved_cpara_database_model.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constants.dart';
 import '../providers/db_provider.dart';
@@ -32,8 +33,8 @@ class UnapprovedDataService {
       "mobile/unaccepted_records/cpara/",
       "mobile/unaccepted_records/hmf/",
       "mobile/unaccepted_records/hrs/",
-      "mobile/unaccepted_records/hhrcpa",
-      "mobile/unaccepted_records/bm"
+      "mobile/unaccepted_records/hhrcpa/",
+      "mobile/unaccepted_records/bm/"
     ];
 
     List<Future<void>> futures = endpoints.map((endpoint) async {
@@ -122,7 +123,7 @@ class UnapprovedDataService {
             unapprovedGraduation,
             unapprovedGraduation.formUuid,
             unapprovedGraduation.appFormMetaData?.startOfInterview,
-            "hhrcpa",
+            unapprovedGraduation.appFormMetaData?.formType,
             true,
             unapprovedGraduation.message ?? "",
           );
@@ -137,7 +138,7 @@ class UnapprovedDataService {
             unapprovedGraduation,
             unapprovedGraduation.formUuid,
             unapprovedGraduation.appFormMetaData?.startOfInterview,
-            "bm",
+            unapprovedGraduation.appFormMetaData?.formType,
             true,
             unapprovedGraduation.message ?? "",
           );
@@ -210,7 +211,6 @@ class UnapprovedDataService {
   static Future<List<UnApprovedHivManagementForm>>
       fetchRejectedHMFForms() async {
     final db = LocalDb.instance;
-    print("Unapproved function called");
     List<Map<String, dynamic>> maps = await db.fetchRejectedHMFFormData();
     List<UnApprovedHivManagementForm> unapprovedHmfData = [];
     for (var map in maps) {
