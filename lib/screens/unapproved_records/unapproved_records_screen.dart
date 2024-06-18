@@ -443,63 +443,63 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     }
 
     void editHMF(UnApprovedHivManagementForm unapprovedHMF) async {
-      final db = LocalDb.instance;
-      CaseLoadModel caseLoad =
-          await db.getCaseLoad(int.parse(unapprovedHMF.ovcCpimsId!));
-      HivManagementFormModel hivManagementFormModel =
-          context.read<HIVManagementFormProvider>().hivManagementFormModel;
-      context
-          .read<HIVManagementFormProvider>()
-          .updateHIVVisitationModel(hivManagementFormModel.copyWith(
-            dateOfEvent: unapprovedHMF.dateOfEvent,
-            dateHIVConfirmedPositive: unapprovedHMF.dateHIVConfirmedPositive,
-            dateTreatmentInitiated: unapprovedHMF.dateTreatmentInitiated,
-            baselineHEILoad: "",
-            dateStartedFirstLine: unapprovedHMF.dateStartedFirstLine,
-            arvsSubWithFirstLine:
-                unapprovedHMF.arvsSubWithFirstLine == true ? "Yes" : "No",
-            arvsSubWithFirstLineDate: unapprovedHMF.arvsSubWithFirstLineDate,
-            switchToSecondLine:
-                unapprovedHMF.switchToSecondLine == true ? "Yes" : "No",
-            switchToSecondLineDate: unapprovedHMF.switchToSecondLineDate,
-            switchToThirdLine:
-                unapprovedHMF.switchToThirdLine == true ? "Yes" : "No",
-            switchToThirdLineDate: unapprovedHMF.switchToThirdLineDate,
-            visitDate: unapprovedHMF.visitDate,
-            durationOnARTs: unapprovedHMF.durationOnARTs,
-            height: unapprovedHMF.height,
-            mUAC: unapprovedHMF.mUAC,
-            arvDrugsAdherence: unapprovedHMF.arvDrugsAdherence,
-            arvDrugsDuration: unapprovedHMF.arvDrugsDuration,
-            adherenceCounseling: unapprovedHMF.adherenceCounseling,
-            treatmentSupporter: unapprovedHMF.treatmentSupporter,
-            treatmentSupporterSex: unapprovedHMF.treatmentSupporterSex,
-            treatmentSupporterAge: unapprovedHMF.treatmentSupporterAge,
-            treatmentSupporterHIVStatus:
-                unapprovedHMF.treatmentSupporterHIVStatus,
-            viralLoadResults: unapprovedHMF.viralLoadResults,
-            labInvestigationsDate: unapprovedHMF.labInvestigationsDate,
-            detectableViralLoadInterventions:
-                unapprovedHMF.detectableViralLoadInterventions,
-            disclosure: unapprovedHMF.disclosure,
-            mUACScore: unapprovedHMF.mUACScore,
-            zScore: unapprovedHMF.zScore,
-            nutritionalSupport: unapprovedHMF.nutritionalSupport,
-            supportGroupStatus: unapprovedHMF.supportGroupStatus,
-            nhifEnrollment: unapprovedHMF.nhifEnrollment == true ? "Yes" : "No",
-            nhifEnrollmentStatus: unapprovedHMF.nhifEnrollmentStatus,
-            referralServices: unapprovedHMF.referralServices,
-            nextAppointmentDate: unapprovedHMF.nextAppointmentDate,
-            peerEducatorName: unapprovedHMF.peerEducatorName,
-            peerEducatorContact: unapprovedHMF.peerEducatorContact,
-          ));
-
-      await Future.delayed(Duration(milliseconds: 300));
-
-      context.read<HIVManagementFormProvider>();
-      Get.to(() => HIVManagementForm(caseLoad: caseLoad));
-      Provider.of<StatsProvider>(context, listen: false)
-          .updateUnapprovedFormStats();
+      // final db = LocalDb.instance;
+      // CaseLoadModel caseLoad =
+      //     await db.getCaseLoad(int.parse(unapprovedHMF.ovcCpimsId!));
+      // HivManagementFormModel hivManagementFormModel =
+      //     context.read<HIVManagementFormProvider>().hivManagementFormModel;
+      // context
+      //     .read<HIVManagementFormProvider>()
+      //     .updateHIVVisitationModel(hivManagementFormModel.copyWith(
+      //       dateOfEvent: unapprovedHMF.dateOfEvent,
+      //       dateHIVConfirmedPositive: unapprovedHMF.dateHIVConfirmedPositive,
+      //       dateTreatmentInitiated: unapprovedHMF.dateTreatmentInitiated,
+      //       baselineHEILoad: "",
+      //       dateStartedFirstLine: unapprovedHMF.dateStartedFirstLine,
+      //       arvsSubWithFirstLine:
+      //           unapprovedHMF.arvsSubWithFirstLine == true ? "Yes" : "No",
+      //       arvsSubWithFirstLineDate: unapprovedHMF.arvsSubWithFirstLineDate,
+      //       switchToSecondLine:
+      //           unapprovedHMF.switchToSecondLine == true ? "Yes" : "No",
+      //       switchToSecondLineDate: unapprovedHMF.switchToSecondLineDate,
+      //       switchToThirdLine:
+      //           unapprovedHMF.switchToThirdLine == true ? "Yes" : "No",
+      //       switchToThirdLineDate: unapprovedHMF.switchToThirdLineDate,
+      //       visitDate: unapprovedHMF.visitDate,
+      //       durationOnARTs: unapprovedHMF.durationOnARTs,
+      //       height: unapprovedHMF.height,
+      //       mUAC: unapprovedHMF.mUAC,
+      //       arvDrugsAdherence: unapprovedHMF.arvDrugsAdherence,
+      //       arvDrugsDuration: unapprovedHMF.arvDrugsDuration,
+      //       adherenceCounseling: unapprovedHMF.adherenceCounseling,
+      //       treatmentSupporter: unapprovedHMF.treatmentSupporter,
+      //       treatmentSupporterSex: unapprovedHMF.treatmentSupporterSex,
+      //       treatmentSupporterAge: unapprovedHMF.treatmentSupporterAge,
+      //       treatmentSupporterHIVStatus:
+      //           unapprovedHMF.treatmentSupporterHIVStatus,
+      //       viralLoadResults: unapprovedHMF.viralLoadResults,
+      //       labInvestigationsDate: unapprovedHMF.labInvestigationsDate,
+      //       detectableViralLoadInterventions:
+      //           unapprovedHMF.detectableViralLoadInterventions,
+      //       disclosure: unapprovedHMF.disclosure,
+      //       mUACScore: unapprovedHMF.mUACScore,
+      //       zScore: unapprovedHMF.zScore,
+      //       nutritionalSupport: unapprovedHMF.nutritionalSupport,
+      //       supportGroupStatus: unapprovedHMF.supportGroupStatus,
+      //       nhifEnrollment: unapprovedHMF.nhifEnrollment == true ? "Yes" : "No",
+      //       nhifEnrollmentStatus: unapprovedHMF.nhifEnrollmentStatus,
+      //       referralServices: unapprovedHMF.referralServices,
+      //       nextAppointmentDate: unapprovedHMF.nextAppointmentDate,
+      //       peerEducatorName: unapprovedHMF.peerEducatorName,
+      //       peerEducatorContact: unapprovedHMF.peerEducatorContact,
+      //     ));
+      //
+      // await Future.delayed(Duration(milliseconds: 300));
+      //
+      // context.read<HIVManagementFormProvider>();
+      // Get.to(() => HIVManagementForm(caseLoad: caseLoad));
+      // Provider.of<StatsProvider>(context, listen: false)
+      //     .updateUnapprovedFormStats();
     }
 
     void deleteUnapprovedHMF(String id) async {
