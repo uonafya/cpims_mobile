@@ -2336,9 +2336,8 @@ class LocalDb {
       fetchUnapprovedGraduationMonitoringData() async {
     try {
       final db = await LocalDb.instance.database;
-      final graduationData = await db.query(graduation_monitoring,
-          where:
-              'form_date_synced IS NULL OR form_date_synced = "" AND rejected = 1');
+      final graduationData = await db.rawQuery('SELECT * FROM "$graduation_monitoring" WHERE ("form_date_synced" IS NULL OR "form_date_synced" = "") AND "rejected" = 1');
+
       List<Map<String, dynamic>> updatedGraduationFormData = [];
 
       for (Map<String, dynamic> graduationRow in graduationData) {

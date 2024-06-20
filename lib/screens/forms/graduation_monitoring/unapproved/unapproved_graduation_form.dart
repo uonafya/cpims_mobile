@@ -48,10 +48,10 @@ class UnApprovedGraduationFormModel extends GraduationMonitoringFormModel {
     final map = super.toMap();
     map.addAll({
       'message': message,
-      'ovcCpimsId': ovcCpimsId,
+      'ovc_cpims_id': ovcCpimsId,
       'caregiverCpimsId': caregiverCpimsId,
       'formUuid': formUuid,
-      'appFormMetaData': appFormMetaData?.toJson() ?? '',
+      'app_form_metadata': appFormMetaData?.toJson() ?? '',
     });
     return map;
   }
@@ -79,7 +79,7 @@ class UnApprovedGraduationFormModel extends GraduationMonitoringFormModel {
       caseDeterminedReadyForClosure:
           map['cm14q'] != null ? map['cm14q'].toString() : '',
       message: map['message'] ?? '',
-      ovcCpimsId: map['ovcCpimsId'] ?? '',
+      ovcCpimsId: map['ovc_cpims_id'] != null ? map['ovc_cpims_id'].toString() :'',
       caregiverCpimsId: map['caregiverCpimsId'] ?? '',
       formUuid: map['obm_id'] ?? '',
       appFormMetaData: appFormMetaData,
