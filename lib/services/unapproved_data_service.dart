@@ -231,8 +231,7 @@ class UnapprovedDataService {
   static Future<List<UnApprovedGraduationFormModel>>
       fetchRejectedGraduationForms() async {
     final db = LocalDb.instance;
-    List<Map<String, dynamic>> maps =
-        await db.fetchUnapprovedGraduationMonitoringData();
+    List<Map<String, dynamic>> maps = await db.fetchUnapprovedGraduationMonitoringData();
     List<UnApprovedGraduationFormModel> unapprovedGraduation = [];
     for (var map in maps) {
       unapprovedGraduation.add(UnApprovedGraduationFormModel.fromMap(map));

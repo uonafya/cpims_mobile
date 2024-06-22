@@ -124,10 +124,12 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       unapprovedHMFData = unapprovedHMFRecords;
       unapprovedHRSData = unapprovedHRSRecords;
       unnapprovedGraduationData = unapprovedGraduationRecords;
+
     });
     debugPrint("The record is $unapprovedGraduationRecords");
   }
   String selectedRecord = 'Form 1A';
+
 
   @override
   Widget build(BuildContext context) {
@@ -630,27 +632,26 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
 
       await Future.delayed(const Duration(milliseconds: 300));
       context.read<GraduationMonitoringProvider>();
+      getRecords();
       Get.to(() => GraduationMonitoringFormScreen(caseLoad: caseLoad));
       Provider.of<StatsProvider>(context, listen: false)
           .updateUnapprovedFormStats();
     }
 
-    // void deleteUnapprovedGraduationForm(String? id) async {
-    //   debugPrint("Deleting Graduation Form with id $id");
-    //   bool success = await UnapprovedDataService.deleteUnapprovedgraduation(id!);
-    //   if (success) {
-    //     setState(() {
-    //       unnapprovedGraduationData
-    //           .removeWhere((element) => element.formUuid == id);
-    //     });
-    //     Provider.of<StatsProvider>(context, listen: false)
-    //         .updateUnapprovedFormStats();
-    //   }
-    // }
-
-    void handleDelete(String id) {
-      deleteUnapprovedGraduationForm(context, id, unnapprovedGraduationData);
+    void deleteUnapprovedGraduationFormListItem(String? id) async {
+      debugPrint("Deleting Graduation Form with id $id");
+      bool success = await UnapprovedDataService.deleteUnapprovedgraduation(id!);
+      if (success) {
+        setState(() {
+          unnapprovedGraduationData
+              .removeWhere((element) => element.formUuid == id);
+        });
+        Provider.of<StatsProvider>(context, listen: false)
+            .updateUnapprovedFormStats();
+      }
     }
+
+    UnapprovedDataService.fetchRejectedGraduationForms();
 
     return Scaffold(
       appBar: customAppBar(),
@@ -707,7 +708,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
               UnapprovedGraduationList(
                   unapprovedGraduationData: unnapprovedGraduationData,
                   onEdit: editGraduationForm,
-                  onDelete:handleDelete),
+                  onDelete:deleteUnapprovedGraduationFormListItem),
             if (selectedRecord == unapprovedRecords[0])
               Expanded(
                 child: FormTab(
@@ -1453,6 +1454,7 @@ class UnapprovedGraduationList extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
   });
+
 
   @override
   Widget build(BuildContext context) {

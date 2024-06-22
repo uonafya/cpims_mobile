@@ -2332,8 +2332,7 @@ class LocalDb {
     }
   }
 
-  Future<List<Map<String, dynamic>>>
-      fetchUnapprovedGraduationMonitoringData() async {
+  Future<List<Map<String, dynamic>>> fetchUnapprovedGraduationMonitoringData() async {
     try {
       final db = await LocalDb.instance.database;
       final graduationData = await db.rawQuery(
@@ -2351,6 +2350,7 @@ class LocalDb {
         updatedGraduationFormData.add(updatedGraduationRow);
       }
       debugPrint("GradMonitoring 2: $updatedGraduationFormData");
+      debugPrint("CALLED THIS AFTER EDIT");
       return updatedGraduationFormData;
     } catch (e) {
       debugPrint("Error fetching graduation monitoring data 1: $e");

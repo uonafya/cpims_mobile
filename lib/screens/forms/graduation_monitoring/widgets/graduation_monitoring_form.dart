@@ -10,12 +10,15 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../Models/case_load_model.dart';
 import '../../../../constants.dart';
+import '../../../../utils/unnapproved_delete_utils.dart';
 import '../../../../widgets/custom_dynamic_radio_button.dart';
 import '../../../../widgets/drawer.dart';
 import '../../../../widgets/footer.dart';
 import '../../../cpara/widgets/cpara_details_widget.dart';
 import '../../../homepage/provider/stats_provider.dart';
+import '../../../unapproved_records/unapproved_records_screen.dart';
 import '../model/graduation_monitoring_form_model.dart';
+import '../unapproved/unapproved_graduation_form.dart';
 
 class GraduationMonitoringFormScreen extends StatefulWidget {
   final CaseLoadModel caseLoad;
@@ -495,13 +498,16 @@ class _GraduationMonitoringFormScreenState
                                 debugPrint("The previous FormUuid is $previousFormUuid");
                                 if (previousFormUuid.isNotEmpty) {
                                   UnapprovedDataService.deleteUnapprovedGraduationMonitoringForm(previousFormUuid);
+                                  final List<UnApprovedGraduationFormModel> unapprovedGraduationRecords = await UnapprovedDataService.fetchRejectedGraduationForms();
+                                  void handleDelete(String id) {
+                                    deleteUnapprovedGraduationForm(context, id, unapprovedGraduationRecords);
+                                  }
+                                  handleDelete(previousFormUuid);
+                                  //clear context
+                                  Provider.of<GraduationMonitoringProvider>(context, listen: false).clearForm();
                                 }
                                 bool isGraduationMonitoringSaved =
-                                    await Provider.of<
-                                                GraduationMonitoringProvider>(
-                                            context,
-                                            listen: false)
-                                        .submitGraduationMonitoringForm(
+                                    await Provider.of<GraduationMonitoringProvider>(context, listen: false).submitGraduationMonitoringForm(
                                   widget.caseLoad.cpimsId,
                                   widget.caseLoad.caregiverCpimsId,
                                   formUuid,
@@ -523,7 +529,10 @@ class _GraduationMonitoringFormScreenState
                                   Provider.of<StatsProvider>(context,
                                           listen: false)
                                       .updateFormStats();
-                                  Navigator.pop(context);
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const UnapprovedRecordsScreens()),
+                                  );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
