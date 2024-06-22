@@ -1,4 +1,5 @@
 import 'package:cpims_mobile/screens/forms/graduation_monitoring/model/graduation_monitoring_form_model.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../../../../utils/app_form_metadata.dart';
 
@@ -77,9 +78,39 @@ class UnApprovedGraduationFormModel extends GraduationMonitoringFormModel {
       benchmark9: map['cm10q'] != null ? map['cm10q'].toString() : '',
       householdReadyToExit: map['cm13q'] != null ? map['cm13q'].toString() : '',
       caseDeterminedReadyForClosure:
-          map['cm14q'] != null ? map['cm14q'].toString() : '',
+      map['cm14q'] != null ? map['cm14q'].toString() : '',
       message: map['message'] ?? '',
-      ovcCpimsId: map['ovc_cpims_id'] != null ? map['ovc_cpims_id'].toString() :'',
+      ovcCpimsId: map['ovc_cpims_id'] != null ? map['ovc_cpims_id'].toString() : '',
+      caregiverCpimsId: map['caregiverCpimsId'] ?? '',
+      formUuid: map['uuid'] ?? '',
+      appFormMetaData: appFormMetaData,
+    );
+  }
+
+  factory UnApprovedGraduationFormModel.fromMapTwo(Map<String, dynamic>? map) {
+    if (map == null) return UnApprovedGraduationFormModel();
+
+    final appFormMetaData = map['app_form_metadata'] != null
+        ? AppFormMetaData.fromJson(map['app_form_metadata'])
+        : null;
+
+    return UnApprovedGraduationFormModel(
+      formType: appFormMetaData?.formType ?? '',
+      dateOfMonitoring: map['gm1d'] ?? '',
+      benchmark1: map['cm2q'] != null ? map['cm2q'].toString() : '',
+      benchmark2: map['cm3q'] != null ? map['cm3q'].toString() : '',
+      benchmark3: map['cm4q'] != null ? map['cm4q'].toString() : '',
+      benchmark4: map['cm5q'] != null ? map['cm5q'].toString() : '',
+      benchmark5: map['cm6q'] != null ? map['cm6q'].toString() : '',
+      benchmark6: map['cm7q'] != null ? map['cm7q'].toString() : '',
+      benchmark7: map['cm8q'] != null ? map['cm8q'].toString() : '',
+      benchmark8: map['cm9q'] != null ? map['cm9q'].toString() : '',
+      benchmark9: map['cm10q'] != null ? map['cm10q'].toString() : '',
+      householdReadyToExit: map['cm13q'] != null ? map['cm13q'].toString() : '',
+      caseDeterminedReadyForClosure:
+      map['cm14q'] != null ? map['cm14q'].toString() : '',
+      message: map['message'] ?? '',
+      ovcCpimsId: map['ovc_cpims_id'] != null ? map['ovc_cpims_id'].toString() : '',
       caregiverCpimsId: map['caregiverCpimsId'] ?? '',
       formUuid: map['obm_id'] ?? '',
       appFormMetaData: appFormMetaData,

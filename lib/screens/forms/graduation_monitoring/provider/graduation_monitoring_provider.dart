@@ -10,6 +10,9 @@ class GraduationMonitoringProvider extends ChangeNotifier {
   GraduationMonitoringFormModel get graduationMonitoringFormModel =>
       _graduationMonitoringFormModel;
 
+  String? formUuid;
+
+
   void updateGraduationMonitoringModel(
       GraduationMonitoringFormModel formModel) {
     _graduationMonitoringFormModel = formModel;
@@ -21,6 +24,12 @@ class GraduationMonitoringProvider extends ChangeNotifier {
 
   void clearForm() {
     _graduationMonitoringFormModel = GraduationMonitoringFormModel();
+    formUuid = null;
+    notifyListeners();
+  }
+
+  void updateFormUuid(String? formUuid) {
+    this.formUuid = formUuid;
     notifyListeners();
   }
 

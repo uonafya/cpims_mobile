@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/screens/forms/graduation_monitoring/provider/graduation_monitoring_provider.dart';
+import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -490,7 +491,11 @@ class _GraduationMonitoringFormScreenState
                                     appMetaDataProvider.startTimeInterview ??
                                         DateTime.now().toIso8601String();
                                 String formUuid = Uuid().v4();
-                                debugPrint("The Formtype is $formType");
+                                String previousFormUuid = Provider.of<GraduationMonitoringProvider>(context, listen: false).formUuid ?? "";
+                                debugPrint("The previous FormUuid is $previousFormUuid");
+                                if (previousFormUuid.isNotEmpty) {
+                                  UnapprovedDataService.deleteUnapprovedGraduationMonitoringForm(previousFormUuid);
+                                }
                                 bool isGraduationMonitoringSaved =
                                     await Provider.of<
                                                 GraduationMonitoringProvider>(
@@ -511,6 +516,7 @@ class _GraduationMonitoringFormScreenState
                                       backgroundColor: Colors.green,
                                     ),
                                   );
+                                  UnapprovedDataService.deleteUnapprovedGraduationMonitoringForm("");
                                   setState(() {
                                     isLoading = false;
                                   });

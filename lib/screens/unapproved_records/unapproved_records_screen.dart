@@ -115,8 +115,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
         await UnapprovedDataService.fetchRejectedHMFForms();
     final List<UnapprovedHrsModel> unapprovedHRSRecords =
         await UnapprovedDataService.fetchRejectedHRSForms();
-    final List<UnApprovedGraduationFormModel> unapprovedGraduationRecords =
-        await UnapprovedDataService.fetchRejectedGraduationForms();
+    final List<UnApprovedGraduationFormModel> unapprovedGraduationRecords = await UnapprovedDataService.fetchRejectedGraduationForms();
     setState(() {
       unapprovedForm1AData = form1ARecords;
       unapprovedForm1BData = form1BRecords;
@@ -125,8 +124,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       unapprovedHRSData = unapprovedHRSRecords;
       unnapprovedGraduationData = unapprovedGraduationRecords;
     });
+    debugPrint("The record is $unapprovedGraduationRecords");
   }
-
   String selectedRecord = 'Form 1A';
 
   @override
@@ -445,56 +444,58 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     void editHMF(UnApprovedHivManagementForm unapprovedHMF) async {
       final db = LocalDb.instance;
       CaseLoadModel caseLoad =
-      await db.getCaseLoad(int.parse(unapprovedHMF.ovcCpimsId!));
+          await db.getCaseLoad(int.parse(unapprovedHMF.ovcCpimsId!));
       HivManagementFormModel hivManagementFormModel =
           context.read<HIVManagementFormProvider>().hivManagementFormModel;
       context.read<HIVManagementFormProvider>().updateFormHivManagementModel(
-        dateHIVConfirmedPositive: unapprovedHMF.dateHIVConfirmedPositive,
-        dateTreatmentInitiated: unapprovedHMF.dateTreatmentInitiated,
-        baselineHEILoad: unapprovedHMF.baselineHEILoad,
-        dateStartedFirstLine: unapprovedHMF.dateStartedFirstLine,
-        arvsSubWithFirstLine:
-        unapprovedHMF.arvsSubWithFirstLine == true ? "Yes" : "No",
-        arvsSubWithFirstLineDate: unapprovedHMF.arvsSubWithFirstLineDate,
-        switchToSecondLine:
-        unapprovedHMF.switchToSecondLine == true ? "Yes" : "No",
-        switchToSecondLineDate: unapprovedHMF.switchToSecondLineDate,
-        switchToThirdLine:
-        unapprovedHMF.switchToThirdLine == true ? "Yes" : "No",
-        switchToThirdLineDate: unapprovedHMF.switchToThirdLineDate,
-        visitDate: unapprovedHMF.visitDate,
-        durationOnARTs: unapprovedHMF.durationOnARTs,
-        height: unapprovedHMF.height,
-        mUAC: unapprovedHMF.mUAC,
-        arvDrugsAdherence: unapprovedHMF.arvDrugsAdherence,
-        arvDrugsDuration: unapprovedHMF.arvDrugsDuration,
-        adherenceCounseling: unapprovedHMF.adherenceCounseling,
-        treatmentSupporter: unapprovedHMF.treatmentSupporter,
-        treatmentSupporterSex: unapprovedHMF.treatmentSupporterSex,
-        treatmentSupporterAge: unapprovedHMF.treatmentSupporterAge,
-        treatmentSupporterHIVStatus: unapprovedHMF.treatmentSupporterHIVStatus,
-        viralLoadResults: unapprovedHMF.viralLoadResults,
-        labInvestigationsDate: unapprovedHMF.labInvestigationsDate,
-        detectableViralLoadInterventions:
-        unapprovedHMF.detectableViralLoadInterventions,
-        disclosure: unapprovedHMF.disclosure,
-        mUACScore: unapprovedHMF.mUACScore,
-        zScore: unapprovedHMF.zScore,
-        nutritionalSupport: unapprovedHMF.nutritionalSupport,
-        supportGroupStatus: unapprovedHMF.supportGroupStatus,
-        nhifEnrollment: unapprovedHMF.nhifEnrollment == true ? "Yes" : "No",
-        nhifEnrollmentStatus: unapprovedHMF.nhifEnrollmentStatus,
-        referralServices: unapprovedHMF.referralServices,
-        nextAppointmentDate: unapprovedHMF.nextAppointmentDate,
-        peerEducatorName: unapprovedHMF.peerEducatorName,
-        peerEducatorContact: unapprovedHMF.peerEducatorContact,
-      );
+            dateHIVConfirmedPositive: unapprovedHMF.dateHIVConfirmedPositive,
+            dateTreatmentInitiated: unapprovedHMF.dateTreatmentInitiated,
+            baselineHEILoad: unapprovedHMF.baselineHEILoad,
+            dateStartedFirstLine: unapprovedHMF.dateStartedFirstLine,
+            arvsSubWithFirstLine:
+                unapprovedHMF.arvsSubWithFirstLine == true ? "Yes" : "No",
+            arvsSubWithFirstLineDate: unapprovedHMF.arvsSubWithFirstLineDate,
+            switchToSecondLine:
+                unapprovedHMF.switchToSecondLine == true ? "Yes" : "No",
+            switchToSecondLineDate: unapprovedHMF.switchToSecondLineDate,
+            switchToThirdLine:
+                unapprovedHMF.switchToThirdLine == true ? "Yes" : "No",
+            switchToThirdLineDate: unapprovedHMF.switchToThirdLineDate,
+            visitDate: unapprovedHMF.visitDate,
+            durationOnARTs: unapprovedHMF.durationOnARTs,
+            height: unapprovedHMF.height,
+            mUAC: unapprovedHMF.mUAC,
+            arvDrugsAdherence: unapprovedHMF.arvDrugsAdherence,
+            arvDrugsDuration: unapprovedHMF.arvDrugsDuration,
+            adherenceCounseling: unapprovedHMF.adherenceCounseling,
+            treatmentSupporter: unapprovedHMF.treatmentSupporter,
+            treatmentSupporterSex: unapprovedHMF.treatmentSupporterSex,
+            treatmentSupporterAge: unapprovedHMF.treatmentSupporterAge,
+            treatmentSupporterHIVStatus:
+                unapprovedHMF.treatmentSupporterHIVStatus,
+            viralLoadResults: unapprovedHMF.viralLoadResults,
+            labInvestigationsDate: unapprovedHMF.labInvestigationsDate,
+            detectableViralLoadInterventions:
+                unapprovedHMF.detectableViralLoadInterventions,
+            disclosure: unapprovedHMF.disclosure,
+            mUACScore: unapprovedHMF.mUACScore,
+            zScore: unapprovedHMF.zScore,
+            nutritionalSupport: unapprovedHMF.nutritionalSupport,
+            supportGroupStatus: unapprovedHMF.supportGroupStatus,
+            nhifEnrollment: unapprovedHMF.nhifEnrollment == true ? "Yes" : "No",
+            nhifEnrollmentStatus: unapprovedHMF.nhifEnrollmentStatus,
+            referralServices: unapprovedHMF.referralServices,
+            nextAppointmentDate: unapprovedHMF.nextAppointmentDate,
+            peerEducatorName: unapprovedHMF.peerEducatorName,
+            peerEducatorContact: unapprovedHMF.peerEducatorContact,
+          );
 
       await Future.delayed(const Duration(milliseconds: 1000));
 
       context.read<HIVManagementFormProvider>();
       Get.to(() => HIVManagementForm(caseLoad: caseLoad));
-      Provider.of<StatsProvider>(context, listen: false).updateUnapprovedFormStats();
+      Provider.of<StatsProvider>(context, listen: false)
+          .updateUnapprovedFormStats();
     }
 
     void deleteUnapprovedHMF(String id) async {
@@ -599,8 +600,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     void editGraduationForm(
         UnApprovedGraduationFormModel unapprovedGraduationForm) async {
       final db = LocalDb.instance;
-      CaseLoadModel caseLoad =
-          await db.getCaseLoad(int.parse(unapprovedGraduationForm.ovcCpimsId!));
+      CaseLoadModel caseLoad = await db.getCaseLoad(int.parse(unapprovedGraduationForm.ovcCpimsId!));
+      String? formUuid = unapprovedGraduationForm.formUuid;
+      context.read<GraduationMonitoringProvider>().updateFormUuid(formUuid);
       GraduationMonitoringFormModel graduationMonitoringFormModel = context
           .read<GraduationMonitoringProvider>()
           .graduationMonitoringFormModel;

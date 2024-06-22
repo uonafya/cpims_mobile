@@ -2401,6 +2401,7 @@ class LocalDb {
 
   Future<bool> deleteGraduationMonitoringFormData(String uuid) async {
     final db = await instance.database;
+    debugPrint("The  id being deleted is $uuid");
 
     try {
       // Check if the data is already synced
