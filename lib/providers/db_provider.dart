@@ -2336,7 +2336,8 @@ class LocalDb {
       fetchUnapprovedGraduationMonitoringData() async {
     try {
       final db = await LocalDb.instance.database;
-      final graduationData = await db.rawQuery('SELECT * FROM "$graduation_monitoring" WHERE ("form_date_synced" IS NULL OR "form_date_synced" = "") AND "rejected" = 1');
+      final graduationData = await db.rawQuery(
+          'SELECT * FROM "$graduation_monitoring" WHERE ("form_date_synced" IS NULL OR "form_date_synced" = "") AND "rejected" = 1');
 
       List<Map<String, dynamic>> updatedGraduationFormData = [];
 
@@ -2441,6 +2442,8 @@ class LocalDb {
         // Data was not deleted successfully
         return false;
       }
+      //call function for fetching unapproved forms
+      await fetchUnapprovedGraduationMonitoringData();
 
       return true; // Data was deleted successfully
     } catch (e) {

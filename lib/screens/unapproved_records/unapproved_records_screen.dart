@@ -28,6 +28,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
+import '../../utils/unnapproved_delete_utils.dart';
 import '../cpara/model/unnaproved_cpara_screen.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import '../../Models/unapproved_caseplan_form_model.dart';
@@ -634,18 +635,21 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           .updateUnapprovedFormStats();
     }
 
-    void deleteUnapprovedGraduationForm(String? id) async {
-      debugPrint("Deleting Graduation Form with id $id");
-      bool success =
-          await UnapprovedDataService.deleteUnapprovedgraduation(id!);
-      if (success) {
-        setState(() {
-          unnapprovedGraduationData
-              .removeWhere((element) => element.formUuid == id);
-        });
-        Provider.of<StatsProvider>(context, listen: false)
-            .updateUnapprovedFormStats();
-      }
+    // void deleteUnapprovedGraduationForm(String? id) async {
+    //   debugPrint("Deleting Graduation Form with id $id");
+    //   bool success = await UnapprovedDataService.deleteUnapprovedgraduation(id!);
+    //   if (success) {
+    //     setState(() {
+    //       unnapprovedGraduationData
+    //           .removeWhere((element) => element.formUuid == id);
+    //     });
+    //     Provider.of<StatsProvider>(context, listen: false)
+    //         .updateUnapprovedFormStats();
+    //   }
+    // }
+
+    void handleDelete(String id) {
+      deleteUnapprovedGraduationForm(context, id, unnapprovedGraduationData);
     }
 
     return Scaffold(
@@ -703,7 +707,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
               UnapprovedGraduationList(
                   unapprovedGraduationData: unnapprovedGraduationData,
                   onEdit: editGraduationForm,
-                  onDelete: deleteUnapprovedGraduationForm),
+                  onDelete:handleDelete),
             if (selectedRecord == unapprovedRecords[0])
               Expanded(
                 child: FormTab(
@@ -1508,3 +1512,5 @@ class UnapprovedGraduationCard extends StatelessWidget {
     );
   }
 }
+
+
