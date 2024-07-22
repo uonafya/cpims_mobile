@@ -60,59 +60,54 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
 
   void handleOnSave() {
     // Get the existing instance of HivManagementFormModel from the provider
-    final formModel =
-        Provider.of<HIVManagementFormProvider>(context, listen: false)
-            .hivManagementFormModel;
+    final provider = Provider.of<HIVManagementFormProvider>(context, listen: false);
 
-    // Update the fields of the existing formModel instance
-    formModel.visitDate = visitDate;
-    formModel.durationOnARTs = durationOnARTs;
-    formModel.height = height;
-    formModel.mUAC = mUAC;
-    formModel.arvDrugsAdherence =
-        arvDrugsAdherence.split(' ').where((s) => s.length > 1).join(' ');
-    formModel.arvDrugsDuration = arvDrugsDuration;
-    formModel.adherenceCounseling = adherenceCounseling;
-    formModel.treatmentSupporter = treatmentSupporter;
-    formModel.treatmentSupporterSex = treatmentSupporterSex;
-    formModel.treatmentSupporterAge = treatmentSupporterAge;
-    formModel.treatmentSupporterHIVStatus = treatmentSupporterHIVStatus;
-    formModel.viralLoadResults = viralLoadResults;
-    formModel.labInvestigationsDate = labInvestigationsDate;
-    formModel.detectableViralLoadInterventions =
-        detectableViralLoadInterventions;
-    formModel.disclosure = disclosure;
-    formModel.mUACScore = mUACScore;
-    formModel.zScore = zScore;
-    formModel.nutritionalSupport = nutritionalSupport.toList();
-    formModel.supportGroupStatus = supportGroupStatus;
-    formModel.nhifEnrollment = nhifEnrollment;
-    formModel.nhifEnrollmentStatus = nhifEnrollmentStatus;
-    formModel.referralServices = referralServices;
-    formModel.nextAppointmentDate = nextAppointmentDate;
-    formModel.peerEducatorName = peerEducatorName;
-    formModel.peerEducatorContact = peerEducatorContact;
+    provider.updateFormHivManagementModel(
+      visitDate: visitDate,
+        durationOnARTs: durationOnARTs,
+      height : height,
+      mUAC : mUAC,
+      arvDrugsAdherence : arvDrugsAdherence.split(' ').where((s) => s.length > 1).join(' '),
+      arvDrugsDuration : arvDrugsDuration,
+      adherenceCounseling : adherenceCounseling,
+      treatmentSupporter : treatmentSupporter,
+      treatmentSupporterSex : treatmentSupporterSex,
+      treatmentSupporterAge : treatmentSupporterAge,
+      treatmentSupporterHIVStatus :treatmentSupporterHIVStatus,
+      viralLoadResults : viralLoadResults,
+      labInvestigationsDate : labInvestigationsDate,
+      detectableViralLoadInterventions : detectableViralLoadInterventions,
+      disclosure : disclosure,
+      mUACScore : mUACScore,
+      zScore : zScore,
+      nutritionalSupport : nutritionalSupport.toList(),
+      supportGroupStatus : supportGroupStatus,
+      nhifEnrollment : nhifEnrollment,
+      nhifEnrollmentStatus : nhifEnrollmentStatus,
+      referralServices : referralServices,
+      nextAppointmentDate : nextAppointmentDate,
+      peerEducatorName : peerEducatorName,
+      peerEducatorContact : peerEducatorContact
+    );
 
-    // Notify the provider about the changes
-    Provider.of<HIVManagementFormProvider>(context, listen: false)
-        .notifyListeners();
-
-    final isComplete = areAllFieldsFilled();
-    final formCompletionStatus = context.read<FormCompletionStatusProvider>();
-
-    if (isComplete) {
-      formCompletionStatus.setHIVManagementFormCompleted(true);
-    } else {
-      formCompletionStatus.setHIVManagementFormCompleted(false);
-    }
-
-    if (kDebugMode) {
-      print(formModel.toJson());
-    }
+    // // Notify the provider about the changes
+    // Provider.of<HIVManagementFormProvider>(context, listen: false).notifyListeners();
+    //
+    // final isComplete = areAllFieldsFilled();
+    // final formCompletionStatus = context.read<FormCompletionStatusProvider>();
+    //
+    // if (isComplete) {
+    //   formCompletionStatus.setHIVManagementFormCompleted(true);
+    // } else {
+    //   formCompletionStatus.setHIVManagementFormCompleted(false);
+    // }
+    //
+    // if (kDebugMode) {
+    //   print(formModel.toJson());
+    // }
   }
 
   bool areAllFieldsFilled() {
-    // Define a list of required fields to check if they are filled in
     final List<String> requiredFields = [
       visitDate,
       durationOnARTs,
@@ -148,9 +143,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
   @override
   void initState() {
     super.initState();
-    hivVisitationFormData =
-        Provider.of<HIVManagementFormProvider>(context, listen: false)
-            .hivManagementFormModel;
+    hivVisitationFormData = Provider.of<HIVManagementFormProvider>(context, listen: false).hivManagementFormModel;
   }
 
   @override
@@ -169,18 +162,6 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
             const SizedBox(
               height: 10,
             ),
-            // NewDateTextField(
-            //   label: hivVisitationFormData.visitDate.isNotEmpty
-            //       ? hivVisitationFormData.visitDate
-            //       : 'Date',
-            //   enabled: true,
-            //   onDateSelected: (date) {
-            //     setState(() {
-            //       visitDate = formattedDate(date!);
-            //       handleOnSave();
-            //     });
-            //   },
-            // ),
             DateTextField2New(
               label: hivVisitationFormData.visitDate.isNotEmpty
                   ? hivVisitationFormData.visitDate
@@ -190,13 +171,14 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                 setState(() {
                   visitDate = newDate!;
                 });
-                HIVManagementFormProvider provider =
-                    Provider.of<HIVManagementFormProvider>(context,
-                        listen: false);
-                HivManagementFormModel updatedModel = provider
-                    .hivManagementFormModel
-                    .copyWith(visitDate: visitDate);
-                provider.updateHIVVisitationModel(updatedModel);
+                debugPrint('Visit Date: $visitDate');
+                // HIVManagementFormProvider provider =
+                //     Provider.of<HIVManagementFormProvider>(context,
+                //         listen: false);
+                // HivManagementFormModel updatedModel = provider
+                //     .hivManagementFormModel
+                //     .copyWith(visitDate: visitDate);
+                // provider.updateHIVVisitationModel(updatedModel);
                 handleOnSave();
               },
               allowPastDates: true,
@@ -220,6 +202,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               initialValue: hivVisitationFormData.durationOnARTs,
               onChanged: (val) {
                 durationOnARTs = val;
+                debugPrint('Duration on ARTs: $durationOnARTs');
                 handleOnSave();
               },
             ),
@@ -242,6 +225,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               initialValue: hivVisitationFormData.height,
               onChanged: (val) {
                 height = val;
+                debugPrint('Height: $height');
                 handleOnSave();
               },
             ),
@@ -263,6 +247,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               initialValue: hivVisitationFormData.mUAC,
               onChanged: (val) {
                 mUAC = val;
+                debugPrint('MUAC: $mUAC');
                 handleOnSave();
               },
             ),
@@ -290,6 +275,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               optionSelected: (String? option) {
                 setState(() {
                   arvDrugsAdherence = option!;
+                  debugPrint('ARV Drugs Adherence: $arvDrugsAdherence');
                   handleOnSave();
                 });
               },
@@ -315,6 +301,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               onChanged: (val) {
                 setState(() {
                   arvDrugsDuration = val;
+                  debugPrint('ARV Drugs Duration: $arvDrugsDuration');
                   handleOnSave();
                 });
               },
@@ -372,6 +359,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               optionSelected: (String? option) {
                 setState(() {
                   treatmentSupporter = option!;
+                  debugPrint('Treatment Supporter: $treatmentSupporter');
                   handleOnSave();
                 });
               },
@@ -405,6 +393,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               optionSelected: (String? option) {
                 setState(() {
                   treatmentSupporterSex = option!;
+                  debugPrint('Treatment support-sex : $treatmentSupporterSex');
                   handleOnSave();
                 });
               },
@@ -491,13 +480,14 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                 if (viralLoadResults.isEmpty) {
                   labInvestigationsDate = '';
                 }
-                HIVManagementFormProvider provider =
-                    Provider.of<HIVManagementFormProvider>(context,
-                        listen: false);
-                HivManagementFormModel updatedModel = provider
-                    .hivManagementFormModel
-                    .copyWith(viralLoadResults: viralLoadResults);
-                provider.updateHIVVisitationModel(updatedModel);
+                debugPrint('Viral Load Results: $viralLoadResults');
+                // HIVManagementFormProvider provider =
+                //     Provider.of<HIVManagementFormProvider>(context,
+                //         listen: false);
+                // HivManagementFormModel updatedModel = provider
+                //     .hivManagementFormModel
+                //     .copyWith(viralLoadResults: viralLoadResults);
+                // provider.updateHIVVisitationModel(updatedModel);
                 handleOnSave();
               },
             ),
@@ -536,13 +526,14 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                 setState(() {
                   labInvestigationsDate = newDate!;
                 });
-                HIVManagementFormProvider provider =
-                    Provider.of<HIVManagementFormProvider>(context,
-                        listen: false);
-                HivManagementFormModel updatedModel = provider
-                    .hivManagementFormModel
-                    .copyWith(labInvestigationsDate: labInvestigationsDate);
-                provider.updateHIVVisitationModel(updatedModel);
+                debugPrint('Lab Investigations Date: $labInvestigationsDate');
+                // HIVManagementFormProvider provider =
+                //     Provider.of<HIVManagementFormProvider>(context,
+                //         listen: false);
+                // HivManagementFormModel updatedModel = provider
+                //     .hivManagementFormModel
+                //     .copyWith(labInvestigationsDate: labInvestigationsDate);
+                // provider.updateHIVVisitationModel(updatedModel);
                 handleOnSave();
               },
               allowPastDates: true,
@@ -569,6 +560,8 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                   : null,
               optionSelected: (String? option) {
                 detectableViralLoadInterventions = option!;
+                debugPrint(
+                    'Detectable Viral Load Interventions: $detectableViralLoadInterventions');
                 handleOnSave();
               },
               customOptions: const [
@@ -607,6 +600,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                   : null,
               optionSelected: (String? option) {
                 disclosure = option!;
+                debugPrint('Disclosure: $disclosure');
                 handleOnSave();
               },
               customOptions: const [
@@ -639,6 +633,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                   : null,
               optionSelected: (String? option) {
                 mUACScore = option!;
+                debugPrint('MUAC Score: $mUACScore');
                 handleOnSave();
               },
               customOptions: const [
@@ -666,6 +661,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               initialValue: hivVisitationFormData.zScore,
               onChanged: (val) {
                 zScore = val;
+                debugPrint('Z Score: $zScore');
                 handleOnSave();
               },
             ),
@@ -838,13 +834,14 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
                 setState(() {
                   nextAppointmentDate = newDate!;
                 });
-                HIVManagementFormProvider provider =
-                    Provider.of<HIVManagementFormProvider>(context,
-                        listen: false);
-                HivManagementFormModel updatedModel = provider
-                    .hivManagementFormModel
-                    .copyWith(nextAppointmentDate: nextAppointmentDate);
-                provider.updateHIVVisitationModel(updatedModel);
+                debugPrint('Next Appointment Date: $nextAppointmentDate');
+                // HIVManagementFormProvider provider =
+                //     Provider.of<HIVManagementFormProvider>(context,
+                //         listen: false);
+                // HivManagementFormModel updatedModel = provider
+                //     .hivManagementFormModel
+                //     .copyWith(nextAppointmentDate: nextAppointmentDate);
+                // provider.updateHIVVisitationModel(updatedModel);
                 handleOnSave();
               },
               allowPastDates: true,
@@ -867,6 +864,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               initialValue: hivVisitationFormData.peerEducatorName,
               onChanged: (val) {
                 peerEducatorName = val;
+                debugPrint('Peer Educator Name: $peerEducatorName');
                 handleOnSave();
               },
             ),
@@ -888,6 +886,7 @@ class _HIVVisitationWidgetState extends State<HIVVisitationWidget> {
               initialValue: hivVisitationFormData.peerEducatorContact,
               onChanged: (val) {
                 peerEducatorContact = val;
+                debugPrint('Peer Educator Contact: $peerEducatorContact');
                 handleOnSave();
               },
             ),

@@ -28,6 +28,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
+import '../../utils/unnapproved_delete_utils.dart';
 import '../cpara/model/unnaproved_cpara_screen.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import '../../Models/unapproved_caseplan_form_model.dart';
@@ -115,8 +116,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
         await UnapprovedDataService.fetchRejectedHMFForms();
     final List<UnapprovedHrsModel> unapprovedHRSRecords =
         await UnapprovedDataService.fetchRejectedHRSForms();
-    final List<UnApprovedGraduationFormModel> unapprovedGraduationRecords =
-        await UnapprovedDataService.fetchRejectedGraduationForms();
+    final List<UnApprovedGraduationFormModel> unapprovedGraduationRecords = await UnapprovedDataService.fetchRejectedGraduationForms();
     setState(() {
       unapprovedForm1AData = form1ARecords;
       unapprovedForm1BData = form1BRecords;
@@ -124,10 +124,12 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       unapprovedHMFData = unapprovedHMFRecords;
       unapprovedHRSData = unapprovedHRSRecords;
       unnapprovedGraduationData = unapprovedGraduationRecords;
-    });
-  }
 
+    });
+    debugPrint("The record is $unapprovedGraduationRecords");
+  }
   String selectedRecord = 'Form 1A';
+
 
   @override
   Widget build(BuildContext context) {
@@ -448,13 +450,10 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
           await db.getCaseLoad(int.parse(unapprovedHMF.ovcCpimsId!));
       HivManagementFormModel hivManagementFormModel =
           context.read<HIVManagementFormProvider>().hivManagementFormModel;
-      context
-          .read<HIVManagementFormProvider>()
-          .updateHIVVisitationModel(hivManagementFormModel.copyWith(
-            dateOfEvent: unapprovedHMF.dateOfEvent,
+      context.read<HIVManagementFormProvider>().updateFormHivManagementModel(
             dateHIVConfirmedPositive: unapprovedHMF.dateHIVConfirmedPositive,
             dateTreatmentInitiated: unapprovedHMF.dateTreatmentInitiated,
-            baselineHEILoad: "",
+            baselineHEILoad: unapprovedHMF.baselineHEILoad,
             dateStartedFirstLine: unapprovedHMF.dateStartedFirstLine,
             arvsSubWithFirstLine:
                 unapprovedHMF.arvsSubWithFirstLine == true ? "Yes" : "No",
@@ -492,9 +491,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
             nextAppointmentDate: unapprovedHMF.nextAppointmentDate,
             peerEducatorName: unapprovedHMF.peerEducatorName,
             peerEducatorContact: unapprovedHMF.peerEducatorContact,
-          ));
+          );
 
-      await Future.delayed(Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 1000));
 
       context.read<HIVManagementFormProvider>();
       Get.to(() => HIVManagementForm(caseLoad: caseLoad));
@@ -604,8 +603,9 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     void editGraduationForm(
         UnApprovedGraduationFormModel unapprovedGraduationForm) async {
       final db = LocalDb.instance;
-      CaseLoadModel caseLoad =
-          await db.getCaseLoad(int.parse(unapprovedGraduationForm.ovcCpimsId!));
+      CaseLoadModel caseLoad = await db.getCaseLoad(int.parse(unapprovedGraduationForm.ovcCpimsId ?? '0'));
+      String? formUuid = unapprovedGraduationForm.formUuid;
+      context.read<GraduationMonitoringProvider>().updateFormUuid(formUuid);
       GraduationMonitoringFormModel graduationMonitoringFormModel = context
           .read<GraduationMonitoringProvider>()
           .graduationMonitoringFormModel;
@@ -613,34 +613,33 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       context
           .read<GraduationMonitoringProvider>()
           .updateGraduationMonitoringModel(
-            graduationMonitoringFormModel.copyWith(
-              formType: unapprovedGraduationForm.form_type,
-              dateOfMonitoring: unapprovedGraduationForm.gm1d,
-              benchmark1: unapprovedGraduationForm.cm2q,
-              benchmark2: unapprovedGraduationForm.cm3q,
-              benchmark3: unapprovedGraduationForm.cm4q,
-              benchmark4: unapprovedGraduationForm.cm5q,
-              benchmark5: unapprovedGraduationForm.cm6q,
-              benchmark6: unapprovedGraduationForm.cm7q,
-              benchmark7: unapprovedGraduationForm.cm8q,
-              benchmark8: unapprovedGraduationForm.cm9q,
-              benchmark9: unapprovedGraduationForm.cm10q,
-              householdReadyToExit: unapprovedGraduationForm.cm13q,
-              caseDeterminedReadyForClosure: unapprovedGraduationForm.cm14q,
-            ),
-          );
+        graduationMonitoringFormModel.copyWith(
+          formType: unapprovedGraduationForm.form_type,
+          dateOfMonitoring: unapprovedGraduationForm.gm1d,
+          benchmark1: unapprovedGraduationForm.cm2q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark2: unapprovedGraduationForm.cm3q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark3: unapprovedGraduationForm.cm4q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark4: unapprovedGraduationForm.cm5q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark5: unapprovedGraduationForm.cm6q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark6: unapprovedGraduationForm.cm7q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark7: unapprovedGraduationForm.cm8q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark8: unapprovedGraduationForm.cm9q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark9: unapprovedGraduationForm.cm10q?.toLowerCase() == 'true' ? "Yes" : "No",
+          householdReadyToExit: unapprovedGraduationForm.cm13q?.toLowerCase() == 'true' ? "Yes" : "No",
+          caseDeterminedReadyForClosure: unapprovedGraduationForm.cm14q?.toLowerCase() == 'true' ? "Yes" : "No",
+        ),
+      );
 
       await Future.delayed(const Duration(milliseconds: 300));
       context.read<GraduationMonitoringProvider>();
+      getRecords();
       Get.to(() => GraduationMonitoringFormScreen(caseLoad: caseLoad));
       Provider.of<StatsProvider>(context, listen: false)
           .updateUnapprovedFormStats();
     }
-
-    void deleteUnapprovedGraduationForm(String? id) async {
+    void deleteUnapprovedGraduationFormListItem(String? id) async {
       debugPrint("Deleting Graduation Form with id $id");
-      bool success =
-          await UnapprovedDataService.deleteUnapprovedgraduation(id!);
+      bool success = await UnapprovedDataService.deleteUnapprovedgraduation(id!);
       if (success) {
         setState(() {
           unnapprovedGraduationData
@@ -650,6 +649,8 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
             .updateUnapprovedFormStats();
       }
     }
+
+    UnapprovedDataService.fetchRejectedGraduationForms();
 
     return Scaffold(
       appBar: customAppBar(),
@@ -706,7 +707,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
               UnapprovedGraduationList(
                   unapprovedGraduationData: unnapprovedGraduationData,
                   onEdit: editGraduationForm,
-                  onDelete: deleteUnapprovedGraduationForm),
+                  onDelete:deleteUnapprovedGraduationFormListItem),
             if (selectedRecord == unapprovedRecords[0])
               Expanded(
                 child: FormTab(
@@ -1453,6 +1454,7 @@ class UnapprovedGraduationList extends StatelessWidget {
     required this.onDelete,
   });
 
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -1511,3 +1513,5 @@ class UnapprovedGraduationCard extends StatelessWidget {
     );
   }
 }
+
+

@@ -115,8 +115,7 @@ class UnapprovedDataService {
         }
       } else if (endpoint == endpoints[6]) {
         for (var map in jsonData) {
-          final unapprovedGraduation =
-              UnApprovedGraduationFormModel.fromMap(map);
+          final unapprovedGraduation = UnApprovedGraduationFormModel.fromMapTwo(map);
           db.insertGraduationMonitoringFormData(
             unapprovedGraduation.ovcCpimsId.toString(),
             null,
@@ -131,7 +130,7 @@ class UnapprovedDataService {
       } else if (endpoint == endpoints[7]) {
         for (var map in jsonData) {
           final unapprovedGraduation =
-              UnApprovedGraduationFormModel.fromMap(map);
+              UnApprovedGraduationFormModel.fromMapTwo(map);
           db.insertGraduationMonitoringFormData(
             unapprovedGraduation.ovcCpimsId.toString(),
             null,
@@ -232,8 +231,7 @@ class UnapprovedDataService {
   static Future<List<UnApprovedGraduationFormModel>>
       fetchRejectedGraduationForms() async {
     final db = LocalDb.instance;
-    List<Map<String, dynamic>> maps =
-        await db.fetchUnapprovedGraduationMonitoringData();
+    List<Map<String, dynamic>> maps = await db.fetchUnapprovedGraduationMonitoringData();
     List<UnApprovedGraduationFormModel> unapprovedGraduation = [];
     for (var map in maps) {
       unapprovedGraduation.add(UnApprovedGraduationFormModel.fromMap(map));
@@ -275,5 +273,11 @@ class UnapprovedDataService {
   static Future<bool> deleteUnapprovedHrs(String id) async {
     final db = LocalDb.instance;
     return await db.deleteUnApprovedHRSFData(id);
+  }
+
+  static Future<bool> deleteUnapprovedGraduationMonitoringForm(
+      String id) async {
+    final db = LocalDb.instance;
+    return await db.deleteGraduationMonitoringFormData(id);
   }
 }

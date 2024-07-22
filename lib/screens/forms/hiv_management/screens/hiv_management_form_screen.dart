@@ -60,8 +60,6 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
         "HIV Management Form",
       );
 
-
-
       if (isFormSaved && context.mounted) {
         context.read<StatsProvider>().updateHmfStats();
         Get.snackbar(
@@ -314,10 +312,11 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                             .viralLoadResults
                                             .isNotEmpty &&
                                         context
-                                            .read<HIVManagementFormProvider>()
-                                            .hivManagementFormModel
-                                            .labInvestigationsDate
-                                            !="" &&
+                                                .read<
+                                                    HIVManagementFormProvider>()
+                                                .hivManagementFormModel
+                                                .labInvestigationsDate !=
+                                            "" &&
                                         context
                                             .read<HIVManagementFormProvider>()
                                             .hivManagementFormModel
@@ -406,7 +405,7 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                             listen: false,
                                           );
                                           hivManagementFormProvider
-                                              .clearForms();
+                                              .clearFormHmF();
                                           context
                                               .read<StatsProvider>()
                                               .updateFormStats();
@@ -562,7 +561,7 @@ class _HIVManagementFormState extends State<HIVManagementForm> {
                                                 context
                                                     .read<
                                                         HIVManagementFormProvider>()
-                                                    .clearForms();
+                                                    .clearFormHmF();
                                                 Navigator.pop(context);
                                                 Navigator.pop(context);
                                               },

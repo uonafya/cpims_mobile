@@ -1,5 +1,6 @@
 import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/screens/forms/graduation_monitoring/provider/graduation_monitoring_provider.dart';
+import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,12 +10,15 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../Models/case_load_model.dart';
 import '../../../../constants.dart';
+import '../../../../utils/unnapproved_delete_utils.dart';
 import '../../../../widgets/custom_dynamic_radio_button.dart';
 import '../../../../widgets/drawer.dart';
 import '../../../../widgets/footer.dart';
 import '../../../cpara/widgets/cpara_details_widget.dart';
 import '../../../homepage/provider/stats_provider.dart';
+import '../../../unapproved_records/unapproved_records_screen.dart';
 import '../model/graduation_monitoring_form_model.dart';
+import '../unapproved/unapproved_graduation_form.dart';
 
 class GraduationMonitoringFormScreen extends StatefulWidget {
   final CaseLoadModel caseLoad;
@@ -490,13 +494,20 @@ class _GraduationMonitoringFormScreenState
                                     appMetaDataProvider.startTimeInterview ??
                                         DateTime.now().toIso8601String();
                                 String formUuid = Uuid().v4();
-                                debugPrint("The Formtype is $formType");
+                                String previousFormUuid = Provider.of<GraduationMonitoringProvider>(context, listen: false).formUuid ?? "";
+                                debugPrint("The previous FormUuid is $previousFormUuid");
+                                if (previousFormUuid.isNotEmpty) {
+                                  UnapprovedDataService.deleteUnapprovedGraduationMonitoringForm(previousFormUuid);
+                                  final List<UnApprovedGraduationFormModel> unapprovedGraduationRecords = await UnapprovedDataService.fetchRejectedGraduationForms();
+                                  void handleDelete(String id) {
+                                    deleteUnapprovedGraduationForm(context, id, unapprovedGraduationRecords);
+                                  }
+                                  handleDelete(previousFormUuid);
+                                  //clear context
+                                  Provider.of<GraduationMonitoringProvider>(context, listen: false).clearForm();
+                                }
                                 bool isGraduationMonitoringSaved =
-                                    await Provider.of<
-                                                GraduationMonitoringProvider>(
-                                            context,
-                                            listen: false)
-                                        .submitGraduationMonitoringForm(
+                                    await Provider.of<GraduationMonitoringProvider>(context, listen: false).submitGraduationMonitoringForm(
                                   widget.caseLoad.cpimsId,
                                   widget.caseLoad.caregiverCpimsId,
                                   formUuid,
@@ -511,13 +522,17 @@ class _GraduationMonitoringFormScreenState
                                       backgroundColor: Colors.green,
                                     ),
                                   );
+                                  UnapprovedDataService.deleteUnapprovedGraduationMonitoringForm("");
                                   setState(() {
                                     isLoading = false;
                                   });
                                   Provider.of<StatsProvider>(context,
                                           listen: false)
                                       .updateFormStats();
-                                  Navigator.pop(context);
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const UnapprovedRecordsScreens()),
+                                  );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(

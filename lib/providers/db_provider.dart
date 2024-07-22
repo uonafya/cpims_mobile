@@ -2332,13 +2332,12 @@ class LocalDb {
     }
   }
 
-  Future<List<Map<String, dynamic>>>
-      fetchUnapprovedGraduationMonitoringData() async {
+  Future<List<Map<String, dynamic>>> fetchUnapprovedGraduationMonitoringData() async {
     try {
       final db = await LocalDb.instance.database;
-      final graduationData = await db.query(graduation_monitoring,
-          where:
-              'form_date_synced IS NULL OR form_date_synced = "" AND rejected = 1');
+      final graduationData = await db.rawQuery(
+          'SELECT * FROM "$graduation_monitoring" WHERE ("form_date_synced" IS NULL OR "form_date_synced" = "") AND "rejected" = 1');
+
       List<Map<String, dynamic>> updatedGraduationFormData = [];
 
       for (Map<String, dynamic> graduationRow in graduationData) {
@@ -2351,6 +2350,7 @@ class LocalDb {
         updatedGraduationFormData.add(updatedGraduationRow);
       }
       debugPrint("GradMonitoring 2: $updatedGraduationFormData");
+      debugPrint("CALLED THIS AFTER EDIT");
       return updatedGraduationFormData;
     } catch (e) {
       debugPrint("Error fetching graduation monitoring data 1: $e");
@@ -2402,6 +2402,7 @@ class LocalDb {
 
   Future<bool> deleteGraduationMonitoringFormData(String uuid) async {
     final db = await instance.database;
+    debugPrint("The  id being deleted is $uuid");
 
     try {
       // Check if the data is already synced
@@ -2441,6 +2442,8 @@ class LocalDb {
         // Data was not deleted successfully
         return false;
       }
+      //call function for fetching unapproved forms
+      await fetchUnapprovedGraduationMonitoringData();
 
       return true; // Data was deleted successfully
     } catch (e) {
