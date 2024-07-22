@@ -603,7 +603,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
     void editGraduationForm(
         UnApprovedGraduationFormModel unapprovedGraduationForm) async {
       final db = LocalDb.instance;
-      CaseLoadModel caseLoad = await db.getCaseLoad(int.parse(unapprovedGraduationForm.ovcCpimsId!));
+      CaseLoadModel caseLoad = await db.getCaseLoad(int.parse(unapprovedGraduationForm.ovcCpimsId ?? '0'));
       String? formUuid = unapprovedGraduationForm.formUuid;
       context.read<GraduationMonitoringProvider>().updateFormUuid(formUuid);
       GraduationMonitoringFormModel graduationMonitoringFormModel = context
@@ -613,22 +613,22 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       context
           .read<GraduationMonitoringProvider>()
           .updateGraduationMonitoringModel(
-            graduationMonitoringFormModel.copyWith(
-              formType: unapprovedGraduationForm.form_type,
-              dateOfMonitoring: unapprovedGraduationForm.gm1d,
-              benchmark1: unapprovedGraduationForm.cm2q,
-              benchmark2: unapprovedGraduationForm.cm3q,
-              benchmark3: unapprovedGraduationForm.cm4q,
-              benchmark4: unapprovedGraduationForm.cm5q,
-              benchmark5: unapprovedGraduationForm.cm6q,
-              benchmark6: unapprovedGraduationForm.cm7q,
-              benchmark7: unapprovedGraduationForm.cm8q,
-              benchmark8: unapprovedGraduationForm.cm9q,
-              benchmark9: unapprovedGraduationForm.cm10q,
-              householdReadyToExit: unapprovedGraduationForm.cm13q,
-              caseDeterminedReadyForClosure: unapprovedGraduationForm.cm14q,
-            ),
-          );
+        graduationMonitoringFormModel.copyWith(
+          formType: unapprovedGraduationForm.form_type,
+          dateOfMonitoring: unapprovedGraduationForm.gm1d,
+          benchmark1: unapprovedGraduationForm.cm2q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark2: unapprovedGraduationForm.cm3q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark3: unapprovedGraduationForm.cm4q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark4: unapprovedGraduationForm.cm5q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark5: unapprovedGraduationForm.cm6q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark6: unapprovedGraduationForm.cm7q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark7: unapprovedGraduationForm.cm8q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark8: unapprovedGraduationForm.cm9q?.toLowerCase() == 'true' ? "Yes" : "No",
+          benchmark9: unapprovedGraduationForm.cm10q?.toLowerCase() == 'true' ? "Yes" : "No",
+          householdReadyToExit: unapprovedGraduationForm.cm13q?.toLowerCase() == 'true' ? "Yes" : "No",
+          caseDeterminedReadyForClosure: unapprovedGraduationForm.cm14q?.toLowerCase() == 'true' ? "Yes" : "No",
+        ),
+      );
 
       await Future.delayed(const Duration(milliseconds: 300));
       context.read<GraduationMonitoringProvider>();
@@ -637,7 +637,6 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
       Provider.of<StatsProvider>(context, listen: false)
           .updateUnapprovedFormStats();
     }
-
     void deleteUnapprovedGraduationFormListItem(String? id) async {
       debugPrint("Deleting Graduation Form with id $id");
       bool success = await UnapprovedDataService.deleteUnapprovedgraduation(id!);
