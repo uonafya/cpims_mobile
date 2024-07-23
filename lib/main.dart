@@ -20,10 +20,12 @@ import 'package:cpims_mobile/screens/initial_loader.dart';
 import 'package:cpims_mobile/screens/locked_screen.dart';
 import 'package:cpims_mobile/screens/splash_screen.dart';
 import 'package:cpims_mobile/theme.dart';
+import 'package:cpims_mobile/widgets/location_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -51,7 +53,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => HIVManagementFormProvider()),
         ChangeNotifierProvider(create: (_) => FormCompletionStatusProvider()),
         ChangeNotifierProvider(create: (_) => AppMetaDataProvider()),
-        ChangeNotifierProvider(create: (_) => UnapprovedRecordsScreenProvider()),
+        ChangeNotifierProvider(
+            create: (_) => UnapprovedRecordsScreenProvider()),
         ChangeNotifierProvider(create: (_) => PreventiveAssessmentProvider()),
         ChangeNotifierProvider(create: (_) => GraduationMonitoringProvider()),
       ],
@@ -71,6 +74,7 @@ class _CPIMSState extends State<CPIMS> {
   @override
   void initState() {
     super.initState();
+    _requestLocationPermission(context);
   }
 
   @override
@@ -130,4 +134,19 @@ Future<Map<String, dynamic>> intialSetup(BuildContext context) async {
     'isAuthenticated': isAuthenticated,
     'isAppLocked': lockApp
   };
+}
+
+Future<void> _requestLocationPermission(BuildContext context) async {
+  PermissionStatus status = await Permission.location.status;
+
+  if (status.isDenied || status.isPermanentlyDenied) {
+    status = await Permission.location.request();
+  }
+
+  if (status.isGranted) {
+    debugPrint("Location permission granted");
+  } else {
+    locationMissingDialog(context);
+    print('Location permission denied');
+  }
 }
