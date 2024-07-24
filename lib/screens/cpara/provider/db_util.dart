@@ -224,14 +224,24 @@ Future<void> singleCparaFormSubmission(
 // household questions
   final houseHoldQuestions = [];
   for (int i = 0; i < cparaForm.questions.length; i++) {
+    final questionCode = convertQuestionIdsStandardFormat(text: cparaForm.questions[i].questionCode);
+    String answerId;
+
+    // Check if the question is PCPA or DDOA
+    if (questionCode == "qd1" || questionCode == "qd3") {
+      // For date fields, use the original answerId without conversion
+      answerId = cparaForm.questions[i].answerId;
+    } else {
+      // For other questions, use the convertOptionStandardFormat
+      answerId = convertOptionStandardFormat(text: cparaForm.questions[i].answerId);
+    }
+
     houseHoldQuestions.add({
-      "question_code": convertQuestionIdsStandardFormat(
-          text: cparaForm.questions[i].questionCode),
-      "answer_id":
-          convertOptionStandardFormat(text: cparaForm.questions[i].answerId),
+      "question_code": questionCode,
+      "answer_id": answerId,
     });
-    debugPrint(
-        "Household ${cparaForm.questions[i].questionCode} - ${cparaForm.questions[i].answerId}");
+
+    debugPrint("Monday Household ${cparaForm.questions[i].questionCode} - ${answerId}");
   }
 
   // child questions

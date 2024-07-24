@@ -116,26 +116,29 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
         return StepsWrapper(
           title: 'CPARA Details',
           children: [
-            // DateTextField(
-            //   key: _dateTextFieldKey,
-            //   label: 'Date of Assessment',
-            //   enabled: true,
-            //   identifier: DateTextFieldIdentifier.dateOfAssessment,
-            //   onDateSelected: (date) {
-            //     print('Date selected: $date');
-            //     DetailModel detailModel =
-            //         context.read<CparaProvider>().detailModel ?? DetailModel();
-            //     context.read<CparaProvider>().updateDetailModel(
-            //         detailModel.copyWith(dateOfAssessment: date.toString()));
-            //   },
-            // ),
-            DateTextField2(
-                label: 'Date of Assessment',
-                enabled: true,
-                initialValue: model.detailModel?.dateOfAssessment ?? "",
-                updateDate: (String? newDate) {
-                  updateDate('assesment', newDate);
-                }),
+            DateTextField(
+              key: _dateTextFieldKey,
+              label: 'Date of Assessment',
+              enabled: true,
+              identifier: DateTextFieldIdentifier.dateOfAssessment,
+              onDateSelected: (date) {
+                if (date != null) {
+                  String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+                  print('Date selected: $formattedDate');
+                  DetailModel detailModel =
+                      context.read<CparaProvider>().detailModel ?? DetailModel();
+                  context.read<CparaProvider>().updateDetailModel(
+                      detailModel.copyWith(dateOfAssessment: formattedDate));
+                }
+              },
+            ),
+            // DateTextField2(
+            //     label: 'Date of Assessment',
+            //     enabled: true,
+            //     initialValue: model.detailModel?.dateOfAssessment ?? "",
+            //     updateDate: (String? newDate) {
+            //       updateDate('assesment', newDate);
+            //     }),
             const Divider(
               height: 20,
               thickness: 2,
@@ -165,28 +168,21 @@ class _CparaDetailsWidgetState extends State<CparaDetailsWidget> {
             ),
 
             const SizedBox(height: 20),
-            // DateTextField(
-            //   key: _dateTextFieldPreviousKey,
-            //   label:
-            //       'If No, give date of Previous Case Plan Readiness Assessment',
-            //   enabled: isFirstAssessment == RadioButtonOptions.no,
-            //   identifier: DateTextFieldIdentifier.previousAssessment,
-            //   onDateSelected: (date) {
-            //     print('Date selected: $date');
-            //     DetailModel detailModel =
-            //         context.read<CparaProvider>().detailModel ?? DetailModel();
-            //     context.read<CparaProvider>().updateDetailModel(detailModel
-            //         .copyWith(dateOfLastAssessment: date.toString()));
-            //   },
-            // ),
-            DateTextField2(
-                label:
-                    'If No, give date of Previous Case Plan Readiness Assessment',
-                enabled: isFirstAssessment == RadioButtonOptions.no,
-                initialValue: model.detailModel?.dateOfLastAssessment ?? "",
-                updateDate: (String? newDate) {
-                  updateDate('previous', newDate);
-                }),
+            DateTextField(
+              key: _dateTextFieldPreviousKey,
+              label:
+                  'If No, give date of Previous Case Plan Readiness Assessment',
+              enabled: isFirstAssessment == RadioButtonOptions.no,
+              identifier: DateTextFieldIdentifier.previousAssessment,
+              onDateSelected: (date) {
+                if(date != null) {
+                  String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+                  print('Previous Date selected: $formattedDate');
+                  DetailModel detailModel = context.read<CparaProvider>().detailModel ?? DetailModel();
+                  context.read<CparaProvider>().updateDetailModel(detailModel.copyWith(dateOfLastAssessment: formattedDate));
+                }
+              },
+            ),
             const SizedBox(height: 20),
             const ReusableTitleText(
                 title:
@@ -452,7 +448,8 @@ class _DateTextFieldState extends State<DateTextField> {
             if (pickedDate != null && mounted) {
               setState(() {
                 selectedDate = pickedDate;
-                widget.onDateSelected!(selectedDate);
+                String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+                widget.onDateSelected!(pickedDate);
               });
             }
           });
@@ -571,19 +568,6 @@ class _TextViewsColumnState extends State<TextViewsColumn> {
         const SizedBox(height: 10),
         Text("${caseLoadModel.registrationDate}"),
         const SizedBox(height: 10),
-        // const ReusableTitleText(title: "County"),
-        // const SizedBox(height: 10),
-        // Text("details.countyName *"),
-        // const SizedBox(height: 10),
-        // const ReusableTitleText(title: 'Sub County'),
-        // const SizedBox(height: 10),
-        // Text("details.subCountyName *"),
-        // const SizedBox(height: 10),
-        // const ReusableTitleText(
-        //     title: 'Name of caseworker/CHV conducting assessment'),
-        // const SizedBox(height: 10),
-        // Text("details.chvNames *"),
-        // const SizedBox(height: 10),
         const ReusableTitleText(title: 'Name of SDP staff/Case Manager'),
         const SizedBox(height: 10),
         Text(dashData.orgUnit),
@@ -596,19 +580,7 @@ class _TextViewsColumnState extends State<TextViewsColumn> {
         const SizedBox(height: 10),
         Text("${caseLoadModel.caregiverCpimsId}"),
         const SizedBox(height: 10),
-        // const SizedBox(height: 10),
-        // const ReusableTitleText(title: 'Caregiver Gender'),
         const SizedBox(height: 10),
-        // Text("Female *"),
-        // const SizedBox(height: 10),
-        // const ReusableTitleText(title: 'Caregiver DOB'),
-        // const SizedBox(height: 10),
-        // Text('August 21, 1973 *'),
-        // const SizedBox(height: 10),
-        // const ReusableTitleText(title: 'Caregiver Phone Number'),
-        // const SizedBox(height: 10),
-        // Text('708568702 *'),
-        // const SizedBox(height: 10),
         const Divider(height: 20, thickness: 2),
         const SizedBox(height: 20),
       ],
@@ -624,12 +596,6 @@ class ChildCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // caseLoadModel =
-    //     context.read<CparaProvider>().caseLoadModel ?? CaseLoadModel();
-    // final careGiverChildren = allCaseLoadData
-    //     .where((element) =>
-    // element.caregiverNames == widget.caseLoadModel.caregiverNames)
-    //     .toList();
     return Card(
       margin: const EdgeInsets.all(10),
       elevation: 5,

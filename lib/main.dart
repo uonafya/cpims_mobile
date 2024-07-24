@@ -146,7 +146,9 @@ Future<void> _requestLocationPermission(BuildContext context) async {
   if (status.isGranted) {
     debugPrint("Location permission granted");
   } else {
-    locationMissingDialog(context);
+    if (context.mounted) {
+      await locationMissingDialog(context);
+    }
     print('Location permission denied');
   }
 }
