@@ -174,8 +174,7 @@ class _CareGiverDetailsScreenState extends State<CareGiverDetailsScreen> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  calculateAge(child.dateOfBirth!),
+                                child: Text(child.age!.toString(),
                                   style: const TextStyle(
                                     fontSize: 12,
                                   ),

@@ -229,7 +229,7 @@ class _OVCCardItemState extends State<OVCCardItem> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.grey),
                       ),
-                      Text(calculateAge(widget.caseLoadModel.dateOfBirth!))
+                      Text(widget.caseLoadModel.age!.toString()),
                     ],
                   ),
                   const SizedBox(
@@ -253,7 +253,7 @@ class _OVCCardItemState extends State<OVCCardItem> {
                     title: Text(
                         '${children[index].ovcSurname!} ${children[index].ovcFirstName!}'),
                     trailing: Text(
-                        "${children[index].sex!}(${calculateAge(children[index].dateOfBirth!)})"),
+                        "${children[index].sex!}(${children[index].age!.toString()})"),
                     tileColor: Colors.grey[200],
                   )),
         if (isExpanded)
@@ -263,22 +263,6 @@ class _OVCCardItemState extends State<OVCCardItem> {
       ],
     );
   }
-}
-
-int calculateAgeInt(String date) {
-  final dob = DateTime.parse(date);
-  final now = DateTime.now();
-  final difference = now.difference(dob);
-  final age = difference.inDays / 365;
-  return age.toInt();
-}
-
-String calculateAge(String date) {
-  final dob = DateTime.parse(date);
-  final now = DateTime.now();
-  final difference = now.difference(dob);
-  final age = difference.inDays / 365;
-  return age.toStringAsFixed(0);
 }
 
 String formatSex(String sex) {

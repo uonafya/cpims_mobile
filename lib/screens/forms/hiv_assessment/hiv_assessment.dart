@@ -157,7 +157,7 @@ class _HIVAssessmentScreenState extends State<HIVAssessmentScreen> {
         Provider.of<HIVAssessmentProvider>(context, listen: false)
             .resetWholeForm();
       }
-      int ovcAge = calculateAgeInt(widget.caseLoadModel.dateOfBirth!);
+      int ovcAge = widget.caseLoadModel.age!;
 
       Provider.of<HIVAssessmentProvider>(context, listen: false)
           .updateOvcAge(ovcAge);

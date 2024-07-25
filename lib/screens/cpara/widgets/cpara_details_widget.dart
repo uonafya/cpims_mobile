@@ -620,7 +620,7 @@ class ChildCard extends StatelessWidget {
               children: [
                 Text(
                     '${childDetails.ovcFirstName!} ${childDetails.ovcSurname!}'),
-                Text("${calculateAge(childDetails.dateOfBirth!)} years"),
+                Text("${childDetails.age!.toString()} years"),
               ],
             ),
             const SizedBox(height: 8),

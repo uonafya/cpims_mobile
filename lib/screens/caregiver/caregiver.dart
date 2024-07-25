@@ -158,7 +158,7 @@ class _CaregiverCardItemState extends State<CaregiverCardItem> {
                   title: Text(
                       '${children[index].ovcSurname!} ${children[index].ovcFirstName!}'),
                   trailing: Text(
-                      "${children[index].sex!}(${calculateAge(children[index].dateOfBirth!)})"),
+                      "${children[index].sex!}(${children[index].age!.toString()})"),
                   tileColor: Colors.grey[200],
                 ),
               ),

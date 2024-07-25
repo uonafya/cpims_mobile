@@ -198,17 +198,6 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
 
   void noChangeToRadio(RadioButtonOptions? val) {}
 
-  int calculateAge(DateTime birthDate) {
-    final now = DateTime.now();
-    final age = now.year -
-        birthDate.year -
-        (now.month > birthDate.month ||
-                (now.month == birthDate.month && now.day >= birthDate.day)
-            ? 0
-            : 1);
-    return age;
-  }
-
   @override
   void initState() {
     children = [];
@@ -269,16 +258,6 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
     //      SafeChild(id: "45", question1: "question1"),
     //       SafeChild(id: "76", question1: "question1")
     //     ];
-    int calculateAge(DateTime birthDate) {
-      final now = DateTime.now();
-      final age = now.year -
-          birthDate.year -
-          (now.month > birthDate.month ||
-                  (now.month == birthDate.month && now.day >= birthDate.day)
-              ? 0
-              : 1);
-      return age;
-    }
 
     if (widget.isRejected == true) {
       for (SafeChild child in safeModel.childrenQuestions ?? []) {
@@ -288,7 +267,7 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
       for (CaseLoadModel model in models) {
         final DateTime? birthDate = DateTime.tryParse(model.dateOfBirth ?? "");
         if (birthDate != null) {
-          final age = calculateAge(birthDate);
+          final age = model.age!;
           if (age > 11) {
             // Only add children with age less than 12
             children.add(

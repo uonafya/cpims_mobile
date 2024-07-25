@@ -112,8 +112,7 @@ class _OVCDetailsScreenState extends State<OVCDetailsScreen> {
                           ),
                           CustomCardGridItem(
                             header: "Age",
-                            details: calculateAge(
-                                widget.caseLoadModel.dateOfBirth ?? ''),
+                            details: widget.caseLoadModel.age.toString() ?? '',
                           ),
                           // CustomCardGridItem(
                           //   header: "",

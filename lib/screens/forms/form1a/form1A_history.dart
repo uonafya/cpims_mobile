@@ -76,8 +76,7 @@ class _HistoryForm1AState extends State<HistoryForm1A> {
                       ),
                       CustomCardGridItem(
                         header: "Age",
-                        details: calculateAge(
-                            widget.caseLoadModel.dateOfBirth ?? '10/10/2008'),
+                        details: widget.caseLoadModel.age.toString() ?? '10/10/2008',
                       ),
                       CustomCardGridItem(
                         header: "Caregiver",
