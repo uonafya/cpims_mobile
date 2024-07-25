@@ -81,6 +81,7 @@ class LocalDb {
         ${OvcFields.ovcSurname} $textType,
         ${OvcFields.registationDate} $textType,
         ${OvcFields.dateOfBirth} $textType,
+        ${OvcFields.age} $intTypeNull,
         ${OvcFields.caregiverNames} $textType,
         ${OvcFields.sex} $textType,
         ${OvcFields.caregiverCpimsId} $textType,
@@ -2491,6 +2492,7 @@ class OvcFields {
   static const String ovcFirstName = 'ovc_first_name';
   static const String ovcSurname = 'ovc_surname';
   static const String dateOfBirth = 'date_of_birth';
+  static const String age= 'age';
   static const String registationDate = 'registration_date';
   static const String caregiverNames = 'caregiver_names';
   static const String sex = 'sex';
