@@ -1,5 +1,7 @@
 import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/screens/forms/graduation_monitoring/provider/graduation_monitoring_provider.dart';
+import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
+import 'package:cpims_mobile/screens/ovc_care/ovc_details_screen.dart';
 import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
@@ -531,7 +533,7 @@ class _GraduationMonitoringFormScreenState
                                       .updateFormStats();
                                   Navigator.pushReplacement(
                                     context,
-                                    MaterialPageRoute(builder: (context) => const UnapprovedRecordsScreens()),
+                                    MaterialPageRoute(builder: (context) => OVCDetailsScreen(caseLoadModel: widget.caseLoad)),
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(

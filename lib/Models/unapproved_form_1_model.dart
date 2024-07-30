@@ -34,14 +34,16 @@ class UnapprovedForm1DataModel extends Form1DataModel {
 
     return UnapprovedForm1DataModel(
       localId: json['local_id'] as int?,
-      formUuid: json['id'] == null ? "" : json['id'].toString(),
-      ovcCpimsId: json['ovc_cpims_id'].toString(),
-      dateOfEvent: json['date_of_event'] as String,
-      caregiverCpimsId: json['caregiver_cpims_id'] == null ? "N/A" : json['caregiver_cpims_id'].toString(),
+      formUuid: json['id']?.toString() ?? "",
+      ovcCpimsId: json['ovc_cpims_id']?.toString() ?? "",
+      dateOfEvent: json['date_of_event'] as String? ?? "",
+      caregiverCpimsId: json['caregiver_cpims_id']?.toString() ?? "N/A",
       services: services,
       criticalEvents: criticalEvents,
-      appFormMetaData: AppFormMetaData.fromJson(json['app_form_metadata']),
-      message: json['message']?? "", // Add the 'message' field
+      appFormMetaData: json['app_form_metadata'] != null
+          ? AppFormMetaData.fromJson(json['app_form_metadata'] as Map<String, dynamic>)
+          : AppFormMetaData(),
+      message: json['message'] as String? ?? "",
     );
   }
 

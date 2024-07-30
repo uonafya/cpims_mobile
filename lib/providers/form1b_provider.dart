@@ -158,8 +158,8 @@ class Form1bProvider extends ChangeNotifier {
       formType: "form1b",
       formId: formUuid,
       startOfInterview: startInterviewTime,
-      location_lat: unapprovedForm1?.appFormMetaData.location_lat,
-      location_long: unapprovedForm1?.appFormMetaData.location_long,
+      location_lat: unapprovedForm1!.appFormMetaData.location_lat,
+      location_long: unapprovedForm1.appFormMetaData.location_long,
     );
 
     if (!(finalServicesFormData.date_of_event == '')) {
