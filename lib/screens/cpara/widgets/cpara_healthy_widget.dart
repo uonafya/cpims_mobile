@@ -579,14 +579,12 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
   //   }
   // }
 
-  RadioButtonOptions allShouldBeYesOrNA(
-      List<RadioButtonOptions?> members, String message) {
+  RadioButtonOptions allShouldBeYesOrNA(List<RadioButtonOptions?> members, String message) {
     debugPrint(members.toString() + message);
     // If all the values are yes return RadioButtonOptions.yes, if not return RadioButtonOptions.no
     if (members.isEmpty) {
       return RadioButtonOptions.na;
-    } else if (members.any(
-        (element) => element == RadioButtonOptions.no || element == null)) {
+    } else if (members.any((element) => element == RadioButtonOptions.no || element == null)) {
       return RadioButtonOptions.no;
     } else {
       return RadioButtonOptions.yes;
@@ -626,7 +624,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           updateFinalFormRadio: noChangeToRadio,
           showNAInFinalResult: false,
           finalBlockQuestion: "Has the household achieved this benchmark?",
-          finalResult: allShouldBeYes([
+          finalResult: allShouldBeYesOrNA([
             q1_1ChildrenHivTested,
             q1_2childrenUnknownStatus,
             q1_3InfantExposedHIV,
@@ -711,8 +709,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
                   question:
                       "1.5 For caregiver with unknown HIV status have they been screened for HIV risk and the results showing test not required?",
                   isNAAvailable: true,
-                  updateRadioButton: (RadioButtonOptions? val) =>
-                      updateQuestion("q1_5", val),
+                  updateRadioButton: (RadioButtonOptions? val) => updateQuestion("q1_5", val),
                 ),
               ],
             ),
@@ -1168,7 +1165,7 @@ class _CparaHealthyWidgetState extends State<CparaHealthyWidget> {
           initalQuestion: "Is there child < 5 years in the household ?",
           finalBlockQuestion: "Has the household achieved this benchmarks?",
           showNAInFinalResult: true,
-          finalResult: allShouldBeYes([
+          finalResult: allShouldBeYesOrNA([
             q4_1BelowAge5MUAC,
             q4_2Below5BipedalEdema,
             q4_3MalnourishedTreated,
