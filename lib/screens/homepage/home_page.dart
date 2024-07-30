@@ -630,7 +630,8 @@ class _HomepageState extends State<Homepage> {
     setState(() {
       isSyncing = true;
     });
-    if (mounted) {
+
+    if (mounted && ScaffoldMessenger.maybeOf(context) != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Syncing forms...'),
@@ -638,8 +639,8 @@ class _HomepageState extends State<Homepage> {
         ),
       );
     }
-    noFormsToSync = false;
 
+    noFormsToSync = false;
     int totalFormsToSync = 0;
     int formsSynced = 0;
 
@@ -680,7 +681,7 @@ class _HomepageState extends State<Homepage> {
             AlertDialog(
               title: const Text("Session Expired"),
               content:
-                  const Text("Your session has expired. Please log in again"),
+              const Text("Your session has expired. Please log in again"),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -718,4 +719,5 @@ class _HomepageState extends State<Homepage> {
       Get.closeAllSnackbars();
     }
   }
+
 }
