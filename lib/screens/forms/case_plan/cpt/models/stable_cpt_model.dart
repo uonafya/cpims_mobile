@@ -70,11 +70,11 @@ class CasePlanStableModel {
 
 class CasePlanServiceStableModel {
   late final String domainId;
-  late final List<String?> serviceIds;
+  late final List<dynamic> serviceIds;
   late final String goalId;
   late final String gapId;
   late final String priorityId;
-  late final List<String?> responsibleIds;
+  late final List<dynamic> responsibleIds;
   late final String resultsId;
   late final String reasonId;
   late final String completionDate;
@@ -94,7 +94,7 @@ class CasePlanServiceStableModel {
   factory CasePlanServiceStableModel.fromJson(Map<String, dynamic> json) {
     return CasePlanServiceStableModel(
       domainId: json['domain_id'] as String,
-      serviceIds: List<String>.from(json['service_id']),
+      serviceIds: List<dynamic>.from(json['service_id']),
       goalId: json['goal_id'] as String,
       gapId: json['gap_id'] as String,
       priorityId: json['priority_id'] as String,
@@ -161,11 +161,11 @@ class CasePlanServiceStableModel {
 
 class CptStableFormData {
   String? domainId = "DHES";
-  final List<String?>? serviceIds;
+  final List<dynamic>? serviceIds;
   final String? goalId;
   final String? gapId;
   final String? priorityId;
-  final List<String?>? responsibleIds;
+  final List<dynamic>? responsibleIds;
   final String? resultsId;
   final String? reasonId;
   final String? completionDate;
@@ -184,11 +184,11 @@ class CptStableFormData {
 
   CptStableFormData copyWith({
     String? domainId,
-    List<String?>? serviceIds,
+    List<dynamic>? serviceIds,
     String? goalId,
     String? gapId,
     String? priorityId,
-    List<String?>? responsibleIds,
+    List<dynamic>? responsibleIds,
     String? resultsId,
     String? reasonId,
     String? completionDate,
@@ -237,7 +237,7 @@ class CptStableFormData {
   factory CptStableFormData.fromJson(Map<String, dynamic> json) {
     return CptStableFormData(
       domainId: json['domain_id'],
-      serviceIds: List<String?>.from(json['service_id']),
+      serviceIds: List<dynamic>.from(json['service_id']),
       goalId: json['goal_id'],
       gapId: json['gap_id'],
       priorityId: json['priority_id'],
@@ -285,7 +285,7 @@ CasePlanModel mapCasePlanStableToCasePlan(CasePlanStableModel stableModel) {
   if (stableModel.services != null) {
     for (CasePlanServiceStableModel serviceStable in stableModel.services!) {
       // Convert serviceHealthy to serviceModel
-      List<String?> serviceIds = serviceStable.serviceIds;
+      List<dynamic> serviceIds = serviceStable.serviceIds;
       CasePlanServiceModel serviceModel = CasePlanServiceModel(
         domainId: serviceStable.domainId,
         serviceIds: serviceIds,

@@ -1,8 +1,6 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
-import 'package:app_settings/app_settings.dart';
 
 Future<void> locationMissingDialog(BuildContext context) async {
   await showDialog(
@@ -38,7 +36,7 @@ Future<void> locationMissingDialog(BuildContext context) async {
             children: [
               ElevatedButton(
                 style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(Colors.red),
+                  backgroundColor: WidgetStatePropertyAll(Colors.red),
                 ),
                 onPressed: () {
                   Navigator.pop(context);

@@ -112,6 +112,7 @@ class UnapprovedHrsModel extends RiskAssessmentFormModel {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = super.toJson();
     data['message'] = message;

@@ -41,7 +41,6 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             selectedCareGiverServices = selectedServices;

@@ -1,9 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 
 import '../screens/forms/form1b/utils/form1bConstants.dart';
-
 
 class CustomMultiSelectDropDown extends StatefulWidget {
   final bool showClearIcon;
@@ -35,10 +33,9 @@ class CustomMultiSelectDropDown extends StatefulWidget {
     required this.borderRadius,
   }) : super(key: key);
 
-
   @override
-  State<CustomMultiSelectDropDown> createState() => _CustomMultiSelectDropDownState();
-
+  State<CustomMultiSelectDropDown> createState() =>
+      _CustomMultiSelectDropDownState();
 }
 
 class _CustomMultiSelectDropDownState extends State<CustomMultiSelectDropDown> {
@@ -47,7 +44,6 @@ class _CustomMultiSelectDropDownState extends State<CustomMultiSelectDropDown> {
   @override
   Widget build(BuildContext context) {
     return MultiSelectDropDown(
-      showClearIcon: widget.showClearIcon,
       hint: widget.hint,
       onOptionSelected: (selectedServices) {
         setState(() {
@@ -63,20 +59,19 @@ class _CustomMultiSelectDropDownState extends State<CustomMultiSelectDropDown> {
       dropdownHeight: widget.dropdownHeight,
       optionTextStyle: widget.optionTextStyle,
       selectedOptionIcon: widget.selectedOptionIcon,
-      borderRadius: widget.borderRadius .topLeft
-          .x,
+      borderRadius: widget.borderRadius.topLeft.x,
     );
   }
 }
 
-
 //SAMPLE USE CASE
-List<ValueItem> caregiverHealthServiceItems = careGiverHealthServices.map((service) {
+List<ValueItem> caregiverHealthServiceItems =
+    careGiverHealthServices.map((service) {
   return ValueItem(label: "- ${service['subtitle']}", value: service['title']);
 }).toList();
 
 // CustomMultiSelectDropDown(
-//   showClearIcon: true,
+//   
 //   hint: 'Services(s)',
 //   onOptionSelected: (selectedServices) {
 //   // Handle selected services

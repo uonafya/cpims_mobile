@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
 import '../../../../cpara/widgets/cpara_details_widget.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
@@ -33,8 +32,8 @@ class _StableCasePlanState extends State<StableCasePlan> {
   List<ValueItem> selectedServicesOptions = [];
   List<ValueItem> selectedPersonsResponsibleOptions = [];
   List<ValueItem> selectedResultsOptions = [];
-  List<String?> selectedServiceIds = [];
-  List<String?> selectedPersonResponsibleIds = [];
+  List<dynamic> selectedServiceIds = [];
+  List<dynamic> selectedPersonResponsibleIds = [];
 
   TextEditingController textEditingController = TextEditingController();
   List<ValueItem> cptProviderDomainList = [];
@@ -223,7 +222,6 @@ class _StableCasePlanState extends State<StableCasePlan> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please select the Goal',
           onOptionSelected: (selectedEvents) {
             CptStableFormData cptStableFormData =
@@ -260,7 +258,6 @@ class _StableCasePlanState extends State<StableCasePlan> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please select the Needs/Gaps',
           onOptionSelected: (selectedEvents) {
             CptStableFormData cptStableFormData =
@@ -297,7 +294,6 @@ class _StableCasePlanState extends State<StableCasePlan> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please select the Priority Actions',
           onOptionSelected: (selectedEvents) {
             CptStableFormData cptStableFormData =
@@ -335,7 +331,6 @@ class _StableCasePlanState extends State<StableCasePlan> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please Select the Services',
           onOptionSelected: (selectedEvents) {
             CptStableFormData cptStableFormData =
@@ -376,7 +371,6 @@ class _StableCasePlanState extends State<StableCasePlan> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please select Person(s) Responsible',
           onOptionSelected: (selectedEvents) {
             CptStableFormData cptStableFormData =
@@ -419,7 +413,6 @@ class _StableCasePlanState extends State<StableCasePlan> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please select the Result(s)',
           onOptionSelected: (selectedEvents) {
             CptStableFormData cptStableFormData =

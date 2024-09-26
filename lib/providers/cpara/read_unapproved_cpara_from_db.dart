@@ -25,12 +25,12 @@ Future<List> fetchUnapprovedCparaForms() async{
   }
 }
 
-Future<UnapprovedCparaModel> getUnaprovedCparaFromDb(String formID, String message, String cpms_id, String date_of_event) async{
+Future<UnapprovedCparaModel> getUnaprovedCparaFromDb(String formID, String message, String cpmsId, String dateOfEvent) async{
   // Create an empty instance of UnapprovedCpara
   var unaprovedToReturn = UnapprovedCparaModel(
-      appFormMetaData: AppFormMetaData(),
+      appFormMetaData: const AppFormMetaData(),
       detail: DetailModel(
-        dateOfAssessment: date_of_event
+        dateOfAssessment: dateOfEvent
       ),
       health: HealthModel(),
       ovcSubPopulations: CparaOvcSubPopulation(),
@@ -39,7 +39,7 @@ Future<UnapprovedCparaModel> getUnaprovedCparaFromDb(String formID, String messa
       stable: StableModel(),
       uuid: formID,
       message: message,
-      cpmis_id: cpms_id
+      cpmis_id: cpmsId
   );
 
   var db = await LocalDb.instance.database;
@@ -48,7 +48,7 @@ Future<UnapprovedCparaModel> getUnaprovedCparaFromDb(String formID, String messa
   List<Map<String, dynamic>> formsFetchResult = await db.rawQuery(
       "SELECT question_code, answer_id, ovc_cpims_id FROM UnapprovedCPARAAnswers WHERE form_id = ?", [formID]);
 
-  unaprovedToReturn = await fillCparaFromQuestions(unaprovedToReturn, cpms_id, formsFetchResult);
+  unaprovedToReturn = await fillCparaFromQuestions(unaprovedToReturn, cpmsId, formsFetchResult);
   return unaprovedToReturn;
 }
 

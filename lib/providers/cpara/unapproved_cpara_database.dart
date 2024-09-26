@@ -1,6 +1,4 @@
-import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
-import 'package:sqflite/sqflite.dart';
 
 var cannot_store_unapproved_cpara = "Could Not Store Unapproved CPARA Data";
 

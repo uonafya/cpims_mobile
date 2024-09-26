@@ -1,14 +1,13 @@
-import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/safe_cpt_model.dart';
 import 'package:flutter/material.dart';
 
 class CPTDomainModel {
   String? domainId;
   final String? domain;
-  final List<String?>? serviceIds;
+  final List<dynamic>? serviceIds;
   final String? goalId;
   final String? gapId;
   final String? priorityId;
-  final List<String?>? responsibleIds;
+  final List<dynamic>? responsibleIds;
   final String? resultsId;
   final String? reasonId;
   String? completionDate = "";

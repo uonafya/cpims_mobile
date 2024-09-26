@@ -39,7 +39,6 @@ class _FormOneACritical extends State<FormOneACritical> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             form1aProvider.setCriticalEventsSelectedEvents(selectedServices);

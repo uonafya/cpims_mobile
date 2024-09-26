@@ -2,7 +2,6 @@ import 'package:cpims_mobile/providers/preventive_assesment_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_schooled_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
-import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/preventive/preventive_assesment_attendance.dart';
 import 'package:cpims_mobile/widgets/custom_dropdown.dart';
 import 'package:cpims_mobile/widgets/form_section.dart';
 import 'package:flutter/cupertino.dart';

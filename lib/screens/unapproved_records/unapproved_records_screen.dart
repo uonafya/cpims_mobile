@@ -26,9 +26,7 @@ import 'package:cpims_mobile/widgets/custom_chip.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
-import '../../utils/unnapproved_delete_utils.dart';
 import '../cpara/model/unnaproved_cpara_screen.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import '../../Models/unapproved_caseplan_form_model.dart';
@@ -432,7 +430,7 @@ class _UnapprovedRecordsScreensState extends State<UnapprovedRecordsScreens> {
         }
       }
 
-      await Future.delayed(Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 300));
 
       context.read<CasePlanProvider>();
       Get.to(
@@ -765,8 +763,7 @@ class FormTab extends StatelessWidget {
                     final UnapprovedForm1DataModel dataModel =
                         unapprovedForm1aData![index];
                     String? eventOrDomainId;
-                    if (dataModel.services != null &&
-                        dataModel.services.isNotEmpty) {
+                    if (dataModel.services.isNotEmpty) {
                       eventOrDomainId = dataModel.services[0].domainId;
                     }
                     return UnapprovedForm1CardDetails<UnapprovedForm1DataModel>(

@@ -7,7 +7,6 @@ import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../Models/case_load_model.dart';
-import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
 import '../../../../cpara/widgets/cpara_details_widget.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
@@ -32,8 +31,8 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
   List<ValueItem> selectedServicesOptions = [];
   List<ValueItem> selectedPersonsResponsibleOptions = [];
   List<ValueItem> selectedResultsOptions = [];
-  List<String?> selectedServiceIds = [];
-  List<String?> selectedPersonResponsibleIds = [];
+  List<dynamic> selectedServiceIds = [];
+  List<dynamic> selectedPersonResponsibleIds = [];
 
   TextEditingController textEditingController = TextEditingController();
   List<ValueItem> casePlanProviderDomainList = [];
@@ -119,12 +118,13 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
               cptsafeFormData.priorityId?.trim().toLowerCase())
           .toList();
     }
-    if (cptsafeFormData.serviceIds != null && cptsafeFormData.serviceIds!.isNotEmpty) {
+    if (cptsafeFormData.serviceIds != null &&
+        cptsafeFormData.serviceIds!.isNotEmpty) {
       for (String? serviceId in cptsafeFormData.serviceIds!) {
         final matchingOption = casePlanServicesSafeList
             .where((element) =>
-        element.value?.trim().toLowerCase() ==
-            serviceId?.trim().toLowerCase())
+                element.value?.trim().toLowerCase() ==
+                serviceId?.trim().toLowerCase())
             .firstOrNull;
         if (matchingOption != null) {
           selectedServicesOptions.add(matchingOption);
@@ -132,12 +132,13 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
       }
     }
 
-    if (cptsafeFormData.responsibleIds != null && cptsafeFormData.responsibleIds!.isNotEmpty) {
+    if (cptsafeFormData.responsibleIds != null &&
+        cptsafeFormData.responsibleIds!.isNotEmpty) {
       for (String? responsibleId in cptsafeFormData.responsibleIds!) {
         final matchingOption = casePlanProviderPersonsResponsibleList
             .where((element) =>
-        element.value?.trim().toLowerCase() ==
-            responsibleId?.trim().toLowerCase())
+                element.value?.trim().toLowerCase() ==
+                responsibleId?.trim().toLowerCase())
             .firstOrNull;
         if (matchingOption != null) {
           selectedPersonsResponsibleOptions.add(matchingOption);
@@ -209,7 +210,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
       ),
       const SizedBox(height: 10),
       MultiSelectDropDown(
-        showClearIcon: true,
         hint: 'Please select the Goal',
         onOptionSelected: (selectedEvents) {
           CptSafeFormData cptSafeFormData =
@@ -245,7 +245,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
       ),
       const SizedBox(height: 10),
       MultiSelectDropDown(
-        showClearIcon: true,
         hint: 'Please select the Needs/Gaps',
         onOptionSelected: (selectedEvents) {
           CptSafeFormData cptSafeFormData =
@@ -281,7 +280,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
       ),
       const SizedBox(height: 10),
       MultiSelectDropDown(
-        showClearIcon: true,
         hint: 'Please select the Priority Actions',
         onOptionSelected: (selectedEvents) {
           CptSafeFormData cptSafeFormData =
@@ -316,7 +314,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
       ),
       const SizedBox(height: 10),
       MultiSelectDropDown(
-        showClearIcon: true,
         hint: 'Please Select the Services',
         onOptionSelected: (selectedEvents) {
           CptSafeFormData cptSafeFormData =
@@ -356,7 +353,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
       ),
       const SizedBox(height: 10),
       MultiSelectDropDown(
-        showClearIcon: true,
         hint: 'Please select Person(s) Responsible',
         onOptionSelected: (selectedEvents) {
           CptSafeFormData cptSafeFormData =
@@ -398,7 +394,6 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
       ),
       const SizedBox(height: 10),
       MultiSelectDropDown(
-        showClearIcon: true,
         hint: 'Please select the Result(s)',
         onOptionSelected: (selectedEvents) {
           CptSafeFormData cptSafeFormData =

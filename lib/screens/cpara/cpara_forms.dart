@@ -10,7 +10,6 @@ import 'package:cpims_mobile/screens/cpara/model/safe_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/schooled_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/cpara_provider.dart';
-import 'package:cpims_mobile/screens/cpara/provider/unnaproved_cparas_provider.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_healthy_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_safe_widget.dart';
@@ -85,7 +84,7 @@ class _CparaFormsScreenState extends State<CparaFormsScreen> {
       penStrokeWidth: 2,
       exportBackgroundColor: Colors.white,
       penColor: Colors.black,
-      points: _signature_controller!.points,
+      points: _signature_controller.points,
     );
     //converting the signature to png bytes
     final signature = exportController.toPngBytes();

@@ -7,8 +7,6 @@ import 'package:cpims_mobile/screens/cpara/model/stable_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:dio/dio.dart';
-import 'package:uuid/uuid.dart';
-import '../widgets/ovc_sub_population_form.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 
 final dio = Dio();

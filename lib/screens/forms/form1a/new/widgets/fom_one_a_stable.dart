@@ -8,20 +8,17 @@ import '../../../form1b/utils/form1bConstants.dart';
 import '../../utils/form_1a_options.dart';
 import '../utils/form_one_a_provider.dart';
 
-
 class FormOneAStable extends StatefulWidget {
   const FormOneAStable({super.key});
-
 
   @override
   State<FormOneAStable> createState() => _FormOneAStableState();
 }
 
 class _FormOneAStableState extends State<FormOneAStable> {
-
-  List<ValueItem> stableServices =
-  stableServicesOptions.map((service) {
-    return ValueItem(label: service['item_description'], value: service['item_id']);
+  List<ValueItem> stableServices = stableServicesOptions.map((service) {
+    return ValueItem(
+        label: service['item_description'], value: service['item_id']);
   }).toList();
 
   List<ValueItem> selectedCareGiverStableServices = [];
@@ -30,9 +27,9 @@ class _FormOneAStableState extends State<FormOneAStable> {
   @override
   Widget build(BuildContext context) {
     Form1AProviderNew form1aProvider = Provider.of<Form1AProviderNew>(context);
-    selectedCareGiverStableServicesOptions = form1aProvider.stableFormData.selectedServices;
+    selectedCareGiverStableServicesOptions =
+        form1aProvider.stableFormData.selectedServices;
     String domainId = domainsList[2]['item_id'];
-
 
     return StepsWrapper(
       title: 'Stable',
@@ -43,15 +40,17 @@ class _FormOneAStableState extends State<FormOneAStable> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             selectedCareGiverStableServices = selectedServices;
-            form1aProvider.setSelectedStableFormDataServices(selectedCareGiverStableServices, domainId);
-            debugPrint('selectedCareGiverStableServices: $selectedCareGiverStableServices');
+            form1aProvider.setSelectedStableFormDataServices(
+                selectedCareGiverStableServices, domainId);
+            debugPrint(
+                'selectedCareGiverStableServices: $selectedCareGiverStableServices');
           },
           options: stableServices,
-          selectedOptions: selectedCareGiverStableServicesOptions.cast<ValueItem>(),
+          selectedOptions:
+              selectedCareGiverStableServicesOptions.cast<ValueItem>(),
           maxItems: 50,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
@@ -68,4 +67,3 @@ class _FormOneAStableState extends State<FormOneAStable> {
     );
   }
 }
-

@@ -6,7 +6,6 @@ import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/services/api_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../constants.dart';
@@ -80,12 +79,8 @@ class Form1Service {
     try {
       final count = await db.getUnsyncedCparaFormCount();
       debugPrint("Form count: $count");
-      if (count != null) {
-        return count;
-      } else {
-        return 0;
-      }
-    } catch (e) {
+      return count;
+        } catch (e) {
       if (kDebugMode) {
         print("An error on getFormCount: ${e.toString()}");
       }
@@ -98,12 +93,8 @@ class Form1Service {
     try {
       final count = await db.getUnApprovedCparaFormCount();
       debugPrint("Form count: $count");
-      if (count != null) {
-        return count;
-      } else {
-        return 0;
-      }
-    } catch (e) {
+      return count;
+        } catch (e) {
       if (kDebugMode) {
         print("An error on getFormCount: ${e.toString()}");
       }
@@ -116,12 +107,8 @@ class Form1Service {
     try {
       final count = await db.getUnsyncedCparaFormCountDistinct();
       debugPrint("Form count: $count");
-      if (count != null) {
-        return count;
-      } else {
-        return 0;
-      }
-    } catch (e) {
+      return count;
+        } catch (e) {
       if (kDebugMode) {
         print("An error on getFormCount: ${e.toString()}");
       }
@@ -134,12 +121,8 @@ class Form1Service {
     try {
       final count = await db.countOvcSubpopulationDataWithNullDateSynced();
       debugPrint("Form count ovc_sub_populatuion: $count");
-      if (count != null) {
-        return count;
-      } else {
-        return 0;
-      }
-    } catch (e) {
+      return count;
+        } catch (e) {
       if (kDebugMode) {
         print(
             "An error on getFormCount for ovc sub population: ${e.toString()}");
@@ -209,6 +192,7 @@ class Form1Service {
         print("An error on getFormCountByDistinctCareGiver: ${e.toString()}");
       }
     }
+    return null;
   }
 
   Future<void> updateFormCount(String formType) async {
@@ -393,12 +377,8 @@ class CasePlanService {
     final db = LocalDb.instance;
     try {
       final count = await db.getUnApprovedCasePlanCount();
-      if (count != null) {
-        return count;
-      } else {
-        return 0;
-      }
-    } catch (e) {
+      return count;
+        } catch (e) {
       if (kDebugMode) {
         print("An error on getCaseplanUnsyncedCount: ${e.toString()}");
       }
@@ -428,12 +408,8 @@ class CasePlanService {
     final db = LocalDb.instance;
     try {
       final count = await db.getUnsyncedCasePlanCount();
-      if (count != null) {
-        return count;
-      } else {
-        return 0;
-      }
-    } catch (e) {
+      return count;
+        } catch (e) {
       if (kDebugMode) {
         print("An error on getCaseplanUnsyncedCount: ${e.toString()}");
       }
@@ -458,12 +434,8 @@ class CasePlanService {
     final db = LocalDb.instance;
     try {
       final count = await db.countHMFFormData();
-      if (count != null) {
-        return count;
-      } else {
-        return 0;
-      }
-    } catch (e) {
+      return count;
+        } catch (e) {
       if (kDebugMode) {
         print("An error on getCountOfHmfForms: ${e.toString()}");
       }
@@ -475,12 +447,8 @@ class CasePlanService {
     final db = LocalDb.instance;
     try {
       final count = await db.countUnApprovedHMFFormData();
-      if (count != null) {
-        return count;
-      } else {
-        return 0;
-      }
-    } catch (e) {
+      return count;
+        } catch (e) {
       if (kDebugMode) {
         print("An error on getCountOfHmfForms: ${e.toString()}");
       }
@@ -505,12 +473,8 @@ class CasePlanService {
     final db = LocalDb.instance;
     try {
       final count = await db.countHRSFormData();
-      if (count != null) {
-        return count;
-      } else {
-        return 0;
-      }
-    } catch (e) {
+      return count;
+        } catch (e) {
       if (kDebugMode) {
         print("An error on getCountOfHmfForms: ${e.toString()}");
       }
@@ -535,12 +499,8 @@ class CasePlanService {
     final db = LocalDb.instance;
     try {
       final count = await db.countUnApprovedHRSFormData();
-      if (count != null) {
-        return count;
-      } else {
-        return 0;
-      }
-    } catch (e) {
+      return count;
+        } catch (e) {
       if (kDebugMode) {
         print("An error on getCountOfHmfForms: ${e.toString()}");
       }
@@ -552,12 +512,8 @@ class CasePlanService {
     final db = LocalDb.instance;
     try {
       final count = await db.countUnApprovedGraduationMonitoringFormData();
-      if (count != null) {
-        return count;
-      } else {
-        return 0;
-      }
-    } catch (e) {
+      return count;
+        } catch (e) {
       if (kDebugMode) {
         print("An error on Rejected: ${e.toString()}");
       }
@@ -569,12 +525,8 @@ class CasePlanService {
     final db = LocalDb.instance;
     try {
       final count = await db.countUnsyncedGraduationMonitoringFormData();
-      if (count != null) {
-        return count;
-      } else {
-        return 0;
-      }
-    } catch (e) {
+      return count;
+        } catch (e) {
       if (kDebugMode) {
         print("An error on unsynced gaduation form: ${e.toString()}");
       }
@@ -586,12 +538,8 @@ class CasePlanService {
     final db = LocalDb.instance;
     try {
       final count = await db.countGraduationFormDataDistinctByCareGiver();
-      if (count != null) {
-        return count;
-      } else {
-        return 0;
-      }
-    } catch (e) {
+      return count;
+        } catch (e) {
       if (kDebugMode) {
         print("An error on unsynced gaduation form: ${e.toString()}");
       }

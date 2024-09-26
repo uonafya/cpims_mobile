@@ -41,14 +41,12 @@ class _FormOneAHealthy extends State<FormOneAHealthy> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             selectedCareGiverServices = selectedServices;
             form1aProvider.setSelectedHealthServices(
                 selectedCareGiverServices, healthDomainId);
             debugPrint('selectedCareGiverServices: $selectedCareGiverServices');
-
           },
           options: healthServices,
           maxItems: 13,

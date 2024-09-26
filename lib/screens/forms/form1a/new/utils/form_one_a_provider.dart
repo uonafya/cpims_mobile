@@ -197,7 +197,7 @@ class Form1AProviderNew extends ChangeNotifier {
         appFormMetaData,
         formUUID,
       );
-      if (unapprovedForm1 != null && unapprovedForm1.localId != null) {
+      if (unapprovedForm1.localId != null) {
         bool isUnapprovedDeleted = await UnapprovedDataService.deleteUnapprovedForm1(unapprovedForm1.localId!);
         if (isUnapprovedDeleted) {
           debugPrint("Unapproved delete success");

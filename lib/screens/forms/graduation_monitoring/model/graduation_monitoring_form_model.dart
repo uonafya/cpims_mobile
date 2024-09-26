@@ -82,19 +82,19 @@ class GraduationMonitoringFormModel {
     String? caseDeterminedReadyForClosure,
   }) {
     return GraduationMonitoringFormModel(
-      form_type: formType ?? this.form_type,
-      gm1d: dateOfMonitoring ?? this.gm1d,
-      cm2q: benchmark1 ?? this.cm2q,
-      cm3q: benchmark2 ?? this.cm3q,
-      cm4q: benchmark3 ?? this.cm4q,
-      cm5q: benchmark4 ?? this.cm5q,
-      cm6q: benchmark5 ?? this.cm6q,
-      cm7q: benchmark6 ?? this.cm7q,
-      cm8q: benchmark7 ?? this.cm8q,
-      cm9q: benchmark8 ?? this.cm9q,
-      cm10q: benchmark9 ?? this.cm10q,
-      cm13q: householdReadyToExit ?? this.cm13q,
-      cm14q: caseDeterminedReadyForClosure ?? this.cm14q,
+      form_type: formType ?? form_type,
+      gm1d: dateOfMonitoring ?? gm1d,
+      cm2q: benchmark1 ?? cm2q,
+      cm3q: benchmark2 ?? cm3q,
+      cm4q: benchmark3 ?? cm4q,
+      cm5q: benchmark4 ?? cm5q,
+      cm6q: benchmark5 ?? cm6q,
+      cm7q: benchmark6 ?? cm7q,
+      cm8q: benchmark7 ?? cm8q,
+      cm9q: benchmark8 ?? cm9q,
+      cm10q: benchmark9 ?? cm10q,
+      cm13q: householdReadyToExit ?? cm13q,
+      cm14q: caseDeterminedReadyForClosure ?? cm14q,
     );
   }
 

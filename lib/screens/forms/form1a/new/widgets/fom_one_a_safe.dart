@@ -41,7 +41,6 @@ class _FormOneASafeState extends State<FormOneASafe> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             selectedSafeServicesOptions = selectedServices;
@@ -51,8 +50,7 @@ class _FormOneASafeState extends State<FormOneASafe> {
                 'selectedSafeServicesOptions: $selectedSafeServicesOptions');
           },
           options: safeServicesOptions,
-          selectedOptions:
-              selectedSafeServicesOptionsOptions.cast<ValueItem>(),
+          selectedOptions: selectedSafeServicesOptionsOptions.cast<ValueItem>(),
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,

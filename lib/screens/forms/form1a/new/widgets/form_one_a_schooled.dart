@@ -16,9 +16,9 @@ class FormOneASchooled extends StatefulWidget {
 }
 
 class _FormOneASchooledState extends State<FormOneASchooled> {
-  List<ValueItem> schooledServices =
-  schooledServicesOptions.map((service) {
-    return ValueItem(label: service['item_description'], value: service['item_id']);
+  List<ValueItem> schooledServices = schooledServicesOptions.map((service) {
+    return ValueItem(
+        label: service['item_description'], value: service['item_id']);
   }).toList();
 
   List<ValueItem> selectedSchooledServices = [];
@@ -26,9 +26,9 @@ class _FormOneASchooledState extends State<FormOneASchooled> {
 
   @override
   Widget build(BuildContext context) {
-
     Form1AProviderNew form1aProvider = Provider.of<Form1AProviderNew>(context);
-    selectedSchooledServicesOptions = form1aProvider.schooledFormData.selectedServices;
+    selectedSchooledServicesOptions =
+        form1aProvider.schooledFormData.selectedServices;
     String domainId = domainsList[0]['item_id'];
 
     return StepsWrapper(
@@ -40,7 +40,6 @@ class _FormOneASchooledState extends State<FormOneASchooled> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             selectedSchooledServices = selectedServices;
@@ -49,8 +48,7 @@ class _FormOneASchooledState extends State<FormOneASchooled> {
             debugPrint('selectedSchooledServices: $selectedSchooledServices');
           },
           options: schooledServices,
-          selectedOptions:
-          selectedSchooledServicesOptions.cast<ValueItem>(),
+          selectedOptions: selectedSchooledServicesOptions.cast<ValueItem>(),
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,

@@ -30,6 +30,7 @@ class UnapprovedCasePlanModel extends CasePlanModel {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> baseJson = super.toJson();
     baseJson['event_id'] = formUuid; // Add the 'event_id' field

@@ -1,7 +1,6 @@
 import 'dart:core';
 
 import 'package:cpims_mobile/Models/case_load_model.dart';
-import 'package:cpims_mobile/screens/forms/case_plan/cpt/add_cpt_button.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
-import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
 import '../../../../cpara/widgets/cpara_details_widget.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
@@ -34,8 +32,8 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
   List<ValueItem> selectedServicesOptions = [];
   List<ValueItem> selectedPersonsResponsibleOptions = [];
   List<ValueItem> selectedResultsOptions = [];
-  List<String?> selectedServiceIds = [];
-  List<String?> selectedPersonResponsibleIds = [];
+  List<dynamic> selectedServiceIds = [];
+  List<dynamic> selectedPersonResponsibleIds = [];
 
   TextEditingController textEditingController = TextEditingController();
   List<ValueItem> casePlanProviderDomainList = [];
@@ -114,12 +112,13 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
               cptHealthFormData.priorityId?.trim().toLowerCase())
           .toList();
     }
-    if (cptHealthFormData.serviceIds != null && cptHealthFormData.serviceIds!.isNotEmpty) {
+    if (cptHealthFormData.serviceIds != null &&
+        cptHealthFormData.serviceIds!.isNotEmpty) {
       for (String? serviceId in cptHealthFormData.serviceIds!) {
         final matchingOption = casePlanServicesHealthList
             .where((element) =>
-        element.value?.trim().toLowerCase() ==
-            serviceId?.trim().toLowerCase())
+                element.value?.trim().toLowerCase() ==
+                serviceId?.trim().toLowerCase())
             .firstOrNull;
         if (matchingOption != null) {
           selectedServicesOptions.add(matchingOption);
@@ -127,12 +126,13 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
       }
     }
 
-    if (cptHealthFormData.responsibleIds != null && cptHealthFormData.responsibleIds!.isNotEmpty) {
+    if (cptHealthFormData.responsibleIds != null &&
+        cptHealthFormData.responsibleIds!.isNotEmpty) {
       for (String? responsibleId in cptHealthFormData.responsibleIds!) {
         final matchingOption = casePlanProviderPersonsResponsibleList
             .where((element) =>
-        element.value?.trim().toLowerCase() ==
-            responsibleId?.trim().toLowerCase())
+                element.value?.trim().toLowerCase() ==
+                responsibleId?.trim().toLowerCase())
             .firstOrNull;
         if (matchingOption != null) {
           selectedPersonsResponsibleOptions.add(matchingOption);
@@ -212,7 +212,6 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please select the Goal',
           onOptionSelected: (selectedEvents) {
             CptHealthFormData cptHealtFormData =
@@ -249,7 +248,6 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please select the Needs/Gaps',
           onOptionSelected: (selectedEvents) {
             // Ensure that you have a valid CasePlanHealthyModel instance
@@ -287,7 +285,6 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please select the Priority Actions',
           onOptionSelected: (selectedEvents) {
             // Ensure that you have a valid CasePlanHealthyModel instance
@@ -325,7 +322,6 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please Select the Services',
           onOptionSelected: (selectedEvents) {
             // Ensure that you have a valid CasePlanHealthyModel instance
@@ -367,7 +363,6 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please select Person(s) Responsible',
           onOptionSelected: (selectedEvents) {
             // Ensure that you have a valid CasePlanHealthyModel instance
@@ -412,7 +407,6 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please select the Result(s)',
           onOptionSelected: (selectedEvents) {
             CptHealthFormData cptHealtFormData =
@@ -465,7 +459,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
         //   },
         // ),
         DateTextField(
-          allowFutureDates: true,
+            allowFutureDates: true,
             label: completionDate,
             enabled: true,
             identifier: DateTextFieldIdentifier.dateOfAssessment,

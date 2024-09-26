@@ -1,5 +1,3 @@
-import 'package:cpims_mobile/constants.dart';
-import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 
 class Form1DataModel {

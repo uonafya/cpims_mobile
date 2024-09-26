@@ -6,7 +6,6 @@ import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
 import 'package:cpims_mobile/screens/cpara/cpara_util.dart';
 import 'package:cpims_mobile/screens/cpara/model/unnaproved_cpara_database_model.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constants.dart';
 import '../providers/db_provider.dart';
@@ -15,7 +14,6 @@ import '../providers/db_provider.dart';
 import '../providers/unapproved_cpt_provider.dart';
 import '../screens/forms/graduation_monitoring/unapproved/unapproved_graduation_form.dart';
 import '../screens/forms/hiv_assessment/unapproved/unapproved_hrs_model.dart';
-import '../screens/forms/hiv_management/models/hiv_management_form_model.dart';
 import '../screens/forms/hiv_management/unapproved/UnApprovedHmfModel.dart';
 import 'api_service.dart';
 
@@ -77,7 +75,7 @@ class UnapprovedDataService {
           var fetchResult = await localDB.rawQuery(
               "SELECT * FROM UnapprovedCPARA WHERE id = ?", [model.uuid]);
 
-          if (fetchResult == null || fetchResult.isEmpty) {
+          if (fetchResult.isEmpty) {
             try {
               await UnapprovedCparaService.storeInDB(
                 localDB,

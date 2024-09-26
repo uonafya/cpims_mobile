@@ -3,14 +3,11 @@
 
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/models/value_item.dart';
 import 'package:uuid/uuid.dart';
 import '../Models/form_1_model.dart';
-import 'package:get/get.dart';
 import '../Models/unapproved_form_1_model.dart';
 import '../screens/forms/form1b/model/critical_events_form1b_model.dart';
 import '../screens/forms/form1b/model/health_form1b_model.dart';
@@ -19,7 +16,6 @@ import '../screens/forms/form1b/utils/MasterServicesForm1bModel.dart';
 import '../screens/forms/form1b/utils/SafeForm1bModel.dart';
 import '../screens/forms/form1b/utils/StableForm1bModel.dart';
 import '../services/unapproved_data_service.dart';
-import 'connection_provider.dart';
 
 class Form1bProvider extends ChangeNotifier {
   final HealthFormData _formData =
@@ -179,7 +175,7 @@ class Form1bProvider extends ChangeNotifier {
         appFormMetaData,
         formUuid,
       );
-      if (unapprovedForm1 != null && unapprovedForm1.localId != null) {
+      if (unapprovedForm1.localId != null) {
         bool isUnapprovedDeleted = await UnapprovedDataService.deleteUnapprovedForm1(unapprovedForm1.localId!);
         if (isUnapprovedDeleted) {
           debugPrint("Unapproved delete success");

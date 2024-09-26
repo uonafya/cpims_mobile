@@ -1,5 +1,4 @@
 import 'package:cpims_mobile/screens/forms/graduation_monitoring/model/graduation_monitoring_form_model.dart';
-import 'package:flutter/cupertino.dart';
 
 import '../../../../utils/app_form_metadata.dart';
 
@@ -45,6 +44,7 @@ class UnApprovedGraduationFormModel extends GraduationMonitoringFormModel {
           cm14q: caseDeterminedReadyForClosure,
         );
 
+  @override
   Map<String, dynamic> toMap() {
     final map = super.toMap();
     map.addAll({
@@ -117,6 +117,7 @@ class UnApprovedGraduationFormModel extends GraduationMonitoringFormModel {
     );
   }
 
+  @override
   UnApprovedGraduationFormModel copyWith({
     String? formType,
     String? dateOfMonitoring,
@@ -138,20 +139,20 @@ class UnApprovedGraduationFormModel extends GraduationMonitoringFormModel {
     AppFormMetaData? appFormMetaData,
   }) {
     return UnApprovedGraduationFormModel(
-      formType: formType ?? this.form_type,
-      dateOfMonitoring: dateOfMonitoring ?? this.gm1d,
-      benchmark1: benchmark1 ?? this.cm2q,
-      benchmark2: benchmark2 ?? this.cm3q,
-      benchmark3: benchmark3 ?? this.cm4q,
-      benchmark4: benchmark4 ?? this.cm5q,
-      benchmark5: benchmark5 ?? this.cm6q,
-      benchmark6: benchmark6 ?? this.cm7q,
-      benchmark7: benchmark7 ?? this.cm8q,
-      benchmark8: benchmark8 ?? this.cm9q,
-      benchmark9: benchmark9 ?? this.cm10q,
-      householdReadyToExit: householdReadyToExit ?? this.cm13q,
+      formType: formType ?? form_type,
+      dateOfMonitoring: dateOfMonitoring ?? gm1d,
+      benchmark1: benchmark1 ?? cm2q,
+      benchmark2: benchmark2 ?? cm3q,
+      benchmark3: benchmark3 ?? cm4q,
+      benchmark4: benchmark4 ?? cm5q,
+      benchmark5: benchmark5 ?? cm6q,
+      benchmark6: benchmark6 ?? cm7q,
+      benchmark7: benchmark7 ?? cm8q,
+      benchmark8: benchmark8 ?? cm9q,
+      benchmark9: benchmark9 ?? cm10q,
+      householdReadyToExit: householdReadyToExit ?? cm13q,
       caseDeterminedReadyForClosure:
-          caseDeterminedReadyForClosure ?? this.cm14q,
+          caseDeterminedReadyForClosure ?? cm14q,
       message: message ?? this.message,
       ovcCpimsId: ovcCpimsId ?? this.ovcCpimsId,
       caregiverCpimsId: caregiverCpimsId ?? this.caregiverCpimsId,

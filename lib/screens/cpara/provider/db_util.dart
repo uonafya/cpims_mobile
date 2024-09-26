@@ -82,10 +82,10 @@ Future<CPARADatabase> getFormFromDB(int formID, Database? db) async {
         "INNER JOIN Form ON Form.id = HouseholdAnswer.formID "
         "WHERE formID =  $formID");
 
-    var is_rejected = fetchResult1[0]['is_rejected'] == 1 ? true : false;
+    var isRejected = fetchResult1[0]['is_rejected'] == 1 ? true : false;
     var uuid = fetchResult1[0]['uuid'];
     form.cparaFormId = "$uuid";
-    form.isRejected = is_rejected;
+    form.isRejected = isRejected;
     var ovcpmisID = fetchResult1[0]['houseHoldID'];
     form.ovcCpimsId = ovcpmisID;
     if (kDebugMode) {
@@ -241,7 +241,7 @@ Future<void> singleCparaFormSubmission(
       "answer_id": answerId,
     });
 
-    debugPrint("Monday Household ${cparaForm.questions[i].questionCode} - ${answerId}");
+    debugPrint("Monday Household ${cparaForm.questions[i].questionCode} - $answerId");
   }
 
   // child questions

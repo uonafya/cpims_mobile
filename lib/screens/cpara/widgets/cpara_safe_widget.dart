@@ -123,9 +123,9 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             // Set values of radio buttons for questions 6.3 and 6.5 to yes
             exposedToViolence = RadioButtonOptions.yes;
             List<SafeChild> newChildren = List.from(children);
-            newChildren.forEach((element) {
+            for (var element in newChildren) {
               element.question1 = "yes";
-            });
+            }
             children = newChildren;
             // _no_siblings_over_10 = RadioButtonOptions.yes;
           }
@@ -133,9 +133,9 @@ class _CparaSafeWidgetState extends State<CparaSafeWidget> {
             // Set values of radio buttons for questions 6.3 and 6.5 to null
             exposedToViolence = null;
             List<SafeChild> newChildren = List.from(children);
-            newChildren.forEach((element) {
+            for (var element in newChildren) {
               element.question1 = "";
-            });
+            }
             children = newChildren;
             // _no_siblings_over_10 = null;
           }
@@ -1096,17 +1096,14 @@ RadioButtonOptions allShouldBeOnlyYes(
     List<RadioButtonOptions?> members, String message) {
   debugPrint(members.toString() + message);
   // If all the values are yes return RadioButtonOptions.yes, if not return RadioButtonOptions.no
-  if (members == null) {
-    return RadioButtonOptions.no;
-  }
-  else if (members == []) {
-    return RadioButtonOptions.yes;
-  }
-  else if (members.any((element) => element != RadioButtonOptions.yes)) {
-    return RadioButtonOptions.no;
-  } else {
-    return RadioButtonOptions.yes;
-  }
+  if (members == []) {
+  return RadioButtonOptions.yes;
+}
+else if (members.any((element) => element != RadioButtonOptions.yes)) {
+  return RadioButtonOptions.no;
+} else {
+  return RadioButtonOptions.yes;
+}
 }
 
 RadioButtonOptions allShouldBeYesOrNA(List<RadioButtonOptions?> members, String message) {

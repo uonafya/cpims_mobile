@@ -1,4 +1,3 @@
-import 'package:cpims_mobile/Models/unnaproved_cpara_data.dart';
 import 'package:cpims_mobile/providers/cpara/unapproved_cpara_database.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 

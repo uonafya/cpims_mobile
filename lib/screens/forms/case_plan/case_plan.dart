@@ -273,7 +273,6 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           ),
                           const SizedBox(height: 10),
                           MultiSelectDropDown(
-                            showClearIcon: true,
                             hint: 'Please select the Domains',
                             onOptionSelected: (selectedEvents) {
                               casePlanProvider
@@ -315,7 +314,6 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           ),
                           const SizedBox(height: 10),
                           MultiSelectDropDown(
-                            showClearIcon: true,
                             hint: 'Please select the Goal',
                             onOptionSelected: (selectedEvents) {
                               casePlanProvider.setSelectedGoal(selectedEvents);
@@ -362,7 +360,6 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           ),
                           const SizedBox(height: 10),
                           MultiSelectDropDown(
-                            showClearIcon: true,
                             hint: 'Please select the Needs/Gaps',
                             onOptionSelected: (selectedEvents) {
                               casePlanProvider.setSelectedNeed(selectedEvents);
@@ -409,7 +406,6 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           ),
                           const SizedBox(height: 10),
                           MultiSelectDropDown(
-                            showClearIcon: true,
                             hint: 'Please select the Priority Actions',
                             onOptionSelected: (selectedEvents) {
                               casePlanProvider
@@ -458,7 +454,6 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           ),
                           const SizedBox(height: 10),
                           MultiSelectDropDown(
-                            showClearIcon: true,
                             hint: 'Please Select the Services',
                             onOptionSelected: (selectedEvents) {
                               casePlanProvider
@@ -511,7 +506,6 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           ),
                           const SizedBox(height: 10),
                           MultiSelectDropDown(
-                            showClearIcon: true,
                             hint: 'Please select Person(s) Responsible',
                             onOptionSelected: (selectedEvents) {
                               casePlanProvider
@@ -546,7 +540,6 @@ class _CasePlanTemplateScreenState extends State<CasePlanTemplateScreen> {
                           ),
                           const SizedBox(height: 10),
                           MultiSelectDropDown(
-                            showClearIcon: true,
                             hint: 'Please select the Result(s)',
                             onOptionSelected: (selectedEvents) {
                               casePlanProvider

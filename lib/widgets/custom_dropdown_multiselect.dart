@@ -27,7 +27,6 @@ class _CustomDropDownMultiSelectState extends State<CustomDropDownMultiSelect> {
   @override
   Widget build(BuildContext context) {
     return MultiSelectDropDown(
-      showClearIcon: true,
       hint: widget.hint,
       onOptionSelected: (selectedValues) {
         setState(() {

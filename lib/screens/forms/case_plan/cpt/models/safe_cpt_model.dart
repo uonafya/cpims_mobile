@@ -70,11 +70,11 @@ class CasePlanSafeModel {
 
 class CasePlanServiceSafeModel {
   late final String domainId;
-  late final List<String?> serviceIds;
+  late final List<dynamic> serviceIds;
   late final String goalId;
   late final String gapId;
   late final String priorityId;
-  late final List<String?> responsibleIds;
+  late final List<dynamic> responsibleIds;
   late final String resultsId;
   late final String reasonId;
   late final String completionDate;
@@ -161,11 +161,11 @@ class CasePlanServiceSafeModel {
 
 class CptSafeFormData {
   String? domainId = "DPRO";
-  final List<String?>? serviceIds;
+  final List<dynamic>? serviceIds;
   final String? goalId;
   final String? gapId;
   final String? priorityId;
-  final List<String?>? responsibleIds;
+  final List<dynamic>? responsibleIds;
   final String? resultsId;
   final String? reasonId;
    String? completionDate = "";
@@ -184,11 +184,11 @@ class CptSafeFormData {
 
   CptSafeFormData copyWith({
     String? domainId,
-    List<String?>? serviceIds,
+    List<dynamic>? serviceIds,
     String? goalId,
     String? gapId,
     String? priorityId,
-    List<String?>? responsibleIds,
+    List<dynamic>? responsibleIds,
     String? resultsId,
     String? reasonId,
     String? completionDate,
@@ -285,7 +285,7 @@ CasePlanModel mapCasePlanSafeToCasePlan(CasePlanSafeModel safeModel) {
   if (safeModel.services != null) {
     for (CasePlanServiceSafeModel serviceSafe in safeModel.services!) {
       // Convert serviceHealthy to serviceModel
-      List<String?> serviceIds = serviceSafe.serviceIds;
+      List<dynamic> serviceIds = serviceSafe.serviceIds;
       CasePlanServiceModel serviceModel = CasePlanServiceModel(
         domainId: serviceSafe.domainId,
         serviceIds: serviceIds,

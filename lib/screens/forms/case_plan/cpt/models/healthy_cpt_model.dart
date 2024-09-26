@@ -70,11 +70,11 @@ class CasePlanHealthyModel {
 
 class CasePlanServiceHealthyModel {
   late final String domainId;
-  late final List<String?> serviceIds;
+  late final List<dynamic> serviceIds;
   late final String goalId;
   late final String gapId;
   late final String priorityId;
-  late final List<String?> responsibleIds;
+  late final List<dynamic> responsibleIds;
   late final String resultsId;
   late final String reasonId;
   late final String completionDate;
@@ -161,11 +161,11 @@ class CasePlanServiceHealthyModel {
 
 class CptHealthFormData {
   String? domainId = "DHNU";
-  final List<String?>? serviceIds;
+  final List<dynamic>? serviceIds;
   late final String? goalId;
   final String? gapId;
   final String? priorityId;
-  final List<String?>? responsibleIds;
+  final List<dynamic>? responsibleIds;
   final String? resultsId;
   final String? reasonId;
   final String? completionDate;
@@ -186,11 +186,11 @@ class CptHealthFormData {
     String? ovcCpimsId,
     String? dateOfEvent,
     String? domainId,
-    List<String?>? serviceIds,
+    List<dynamic>? serviceIds,
     String? goalId,
     String? gapId,
     String? priorityId,
-    List<String?>? responsibleIds,
+    List<dynamic>? responsibleIds,
     String? resultsId,
     String? reasonId,
     String? completionDate,
@@ -288,7 +288,7 @@ CasePlanModel mapCasePlanHealthyToCasePlan(CasePlanHealthyModel healthyModel) {
   if (healthyModel.services != null) {
     for (CasePlanServiceHealthyModel serviceHealthy in healthyModel.services!) {
       // Convert serviceHealthy to serviceModel
-      List<String?> serviceIds = serviceHealthy.serviceIds;
+      List<dynamic> serviceIds = serviceHealthy.serviceIds;
       CasePlanServiceModel serviceModel = CasePlanServiceModel(
         domainId: serviceHealthy.domainId,
         serviceIds: serviceIds,

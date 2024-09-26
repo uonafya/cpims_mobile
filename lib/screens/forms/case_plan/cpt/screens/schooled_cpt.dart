@@ -6,7 +6,6 @@ import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../Models/case_load_model.dart';
-import '../../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../../widgets/custom_text_field.dart';
 import '../../../../cpara/widgets/cpara_details_widget.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
@@ -35,8 +34,8 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
   List<ValueItem> selectedPersonsResponsibleOptions = [];
   List<ValueItem> selectedResultsOptions = [];
 
-  List<String?> selectedServiceIds = [];
-  List<String?> selectedPersonResponsibleIds = [];
+  List<dynamic> selectedServiceIds = [];
+  List<dynamic> selectedPersonResponsibleIds = [];
   List<ValueItem> casePlanProviderDomainList = [];
   List<ValueItem> casePlanGoalSchooledList = [];
   List<ValueItem> casePlanGapsSchooledList = [];
@@ -115,12 +114,13 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
               cptSchooledFormData.priorityId?.trim().toLowerCase())
           .toList();
     }
-    if (cptSchooledFormData.serviceIds != null && cptSchooledFormData.serviceIds!.isNotEmpty) {
+    if (cptSchooledFormData.serviceIds != null &&
+        cptSchooledFormData.serviceIds!.isNotEmpty) {
       for (String? serviceId in cptSchooledFormData.serviceIds!) {
         final matchingOption = casePlanServicesSchooledList
             .where((element) =>
-        element.value?.trim().toLowerCase() ==
-            serviceId?.trim().toLowerCase())
+                element.value?.trim().toLowerCase() ==
+                serviceId?.trim().toLowerCase())
             .firstOrNull;
         if (matchingOption != null) {
           selectedServicesOptions.add(matchingOption);
@@ -128,12 +128,13 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
       }
     }
 
-    if (cptSchooledFormData.responsibleIds != null && cptSchooledFormData.responsibleIds!.isNotEmpty) {
+    if (cptSchooledFormData.responsibleIds != null &&
+        cptSchooledFormData.responsibleIds!.isNotEmpty) {
       for (String? responsibleId in cptSchooledFormData.responsibleIds!) {
         final matchingOption = casePlanProviderPersonsResponsibleList
             .where((element) =>
-        element.value?.trim().toLowerCase() ==
-            responsibleId?.trim().toLowerCase())
+                element.value?.trim().toLowerCase() ==
+                responsibleId?.trim().toLowerCase())
             .firstOrNull;
         if (matchingOption != null) {
           selectedPersonsResponsibleOptions.add(matchingOption);
@@ -214,7 +215,6 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please select the Goal',
           onOptionSelected: (selectedEvents) {
             CptschooledFormData cptschooledFormData =
@@ -251,7 +251,6 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please select the Needs/Gaps',
           onOptionSelected: (selectedEvents) {
             CptschooledFormData cptschooledFormData =
@@ -288,7 +287,6 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please select the Priority Actions',
           onOptionSelected: (selectedEvents) {
             CptschooledFormData cptschooledFormData =
@@ -325,7 +323,6 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please Select the Services',
           onOptionSelected: (selectedEvents) {
             // Ensure that you have a valid CasePlanHealthyModel instance
@@ -367,7 +364,6 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please select Person(s) Responsible',
           onOptionSelected: (selectedEvents) {
             // Ensure that you have a valid CasePlanHealthyModel instance
@@ -412,7 +408,6 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Please select the Result(s)',
           onOptionSelected: (selectedEvents) {
             CptschooledFormData cptschooledFormData =
@@ -469,8 +464,7 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
                       context.read<CptProvider>().cptschooledFormData ??
                           CptschooledFormData();
                   context.read<CptProvider>().updateCptSchooledFormData(
-                      cptschooledFormData.copyWith(
-                          completionDate: ""));
+                      cptschooledFormData.copyWith(completionDate: ""));
                 }
               });
             }),
@@ -491,8 +485,9 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
             CptschooledFormData cptSchooledFormData =
                 context.read<CptProvider>().cptschooledFormData ??
                     CptschooledFormData();
-            if(val.isEmpty){
-              CptschooledFormData updatedFormData = cptSchooledFormData.copyWith(
+            if (val.isEmpty) {
+              CptschooledFormData updatedFormData =
+                  cptSchooledFormData.copyWith(
                 reasonId: "",
               );
               context

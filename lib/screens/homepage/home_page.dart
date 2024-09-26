@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/connection_provider.dart';
-import 'package:cpims_mobile/providers/cpara/unapproved_records_screen_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/caregiver/caregiver.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/preventive/preventive_assesment_attendance.dart';
@@ -12,12 +11,10 @@ import 'package:cpims_mobile/screens/homepage/widgets/statistics_item.dart';
 import 'package:cpims_mobile/screens/homepage/widgets/statistics_grid_item.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
-import 'package:cpims_mobile/services/api_service.dart';
 import 'package:cpims_mobile/services/form_service.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_button.dart';
 import 'package:cpims_mobile/widgets/custom_grid_view.dart';
-import 'package:cpims_mobile/widgets/custom_toast.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -172,7 +169,7 @@ class _HomepageState extends State<Homepage> {
     if (bearerToken == null) {
       return;
     }
-    final db = await LocalDb.instance;
+    final db = LocalDb.instance;
     try {
       final queryResults = await db.fetchHMFFormData();
       final Dio dio = Dio();
@@ -215,7 +212,7 @@ class _HomepageState extends State<Homepage> {
       // Handle the case where the token is not available.
       return;
     }
-    final db = await LocalDb.instance;
+    final db = LocalDb.instance;
     try {
       final queryResults = await db.fetchHRSFormData();
       final Dio dio = Dio();
@@ -258,7 +255,7 @@ class _HomepageState extends State<Homepage> {
       // Handle the case where the token is not available.
       return;
     }
-    final db = await LocalDb.instance;
+    final db = LocalDb.instance;
     try {
       final queryResults = await db.fetchGraduationMonitoringData();
       final Dio dio = Dio();
@@ -500,15 +497,15 @@ class _HomepageState extends State<Homepage> {
                           title: 'CPT',
                           value: "0",
                           icon: FontAwesomeIcons.fileLines,
-                          color: const Color(0xff49B6D5),
-                          secondaryColor: const Color(0xff2C6E80),
+                          color: Color(0xff49B6D5),
+                          secondaryColor: Color(0xff2C6E80),
                         ),
-                        StatisticsGridItem(
+                        const StatisticsGridItem(
                           title: 'CLHIV',
                           value: "0",
                           icon: FontAwesomeIcons.heart,
-                          color: const Color(0xff49B6D5),
-                          secondaryColor: const Color(0xff2C6E80),
+                          color: Color(0xff49B6D5),
+                          secondaryColor: Color(0xff2C6E80),
                         ),
                         StatisticsGridItem(
                           title: 'Org Unit Id',

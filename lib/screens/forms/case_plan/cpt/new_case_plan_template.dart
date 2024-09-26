@@ -23,7 +23,6 @@ import '../../../../Models/caseplan_form_model.dart';
 import '../../../../constants.dart';
 import '../../../../widgets/app_bar.dart';
 import '../../../../widgets/custom_button.dart';
-import '../../../../widgets/custom_forms_date_picker.dart';
 import '../../../../widgets/custom_stepper.dart';
 import '../../../../widgets/drawer.dart';
 import '../../../../widgets/footer.dart';
@@ -264,24 +263,6 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
                                 (index) => getDomainItems(
                                     context, formSubmitted)[index]),
                             const SizedBox(height: 20),
-                            // GestureDetector(
-                            //   onTap: () {},
-                            //   child: const Row(
-                            //     children: [
-                            //       Text(
-                            //         'Past Assessments',
-                            //         style: TextStyle(color: Colors.blue),
-                            //       ),
-                            //       SizedBox(
-                            //         width: 10,
-                            //       ),
-                            //       Icon(
-                            //         Icons.arrow_forward_ios_rounded,
-                            //         size: 15,
-                            //       )
-                            //     ],
-                            //   ),
-                            // ),
                           ],
                         ),
                       ),
@@ -329,7 +310,7 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
           }
 
           String formUuid = const Uuid().v4();
-          int? unapprovedId=context.read<CptProvider>().unapprovedId;
+          int? unapprovedId = context.read<CptProvider>().unapprovedId;
           // cptProvider.updateFormUuid(formUuid);
           AppMetaDataProvider appMetaDataProvider =
               Provider.of<AppMetaDataProvider>(context, listen: false);
@@ -349,10 +330,15 @@ class _Form1BScreen extends State<CasePlanTemplateForm> {
               context.read<CptProvider>().updateClearServicesList();
               context.read<StatsProvider>().updateCptStats();
               context.read<StatsProvider>().updateUnapprovedFormStats();
-              context.read<StatsProvider>().updateUnapprovedCasePlanDistinctStats();
-              bool? initialFormDeleted = await UnapprovedDataService.deleteUnapprovedCpt(unapprovedId!);
+              context
+                  .read<StatsProvider>()
+                  .updateUnapprovedCasePlanDistinctStats();
+              bool? initialFormDeleted =
+                  await UnapprovedDataService.deleteUnapprovedCpt(
+                      unapprovedId!);
               if (initialFormDeleted) {
-                debugPrint("Deleted unnapproved cpt with id $initialFormDeleted");
+                debugPrint(
+                    "Deleted unnapproved cpt with id $initialFormDeleted");
                 context.read<StatsProvider>().updateUnapprovedFormStats();
               }
 

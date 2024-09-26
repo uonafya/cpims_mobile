@@ -42,7 +42,7 @@ class UnapprovedForm1DataModel extends Form1DataModel {
       criticalEvents: criticalEvents,
       appFormMetaData: json['app_form_metadata'] != null
           ? AppFormMetaData.fromJson(json['app_form_metadata'] as Map<String, dynamic>)
-          : AppFormMetaData(),
+          : const AppFormMetaData(),
       message: json['message'] as String? ?? "",
     );
   }

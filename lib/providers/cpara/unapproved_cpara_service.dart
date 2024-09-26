@@ -92,7 +92,7 @@ class UnapprovedCparaService {
       }
 
       // Add CPARA form
-      if (model.uuid == null || model.uuid == "") {
+      if (model.uuid == "") {
         var uuid = const Uuid();
         var formID = uuid.v4();
         model.uuid = formID;
@@ -115,52 +115,49 @@ class UnapprovedCparaService {
         });
       }
       await batch.commit(noResult: true);
-
     } catch (err) {
       debugPrint(err.toString());
       throw (cannot_store_unapproved_cpara);
     }
   }
 
-  static deleteUnapprovedCparaForm(String formID) async{
+  static deleteUnapprovedCparaForm(String formID) async {
     try {
       var db = await LocalDb.instance.database;
 
       // Delete CPARA table
-      db.rawQuery(
-        "DELETE FROM UnapprovedCPARA WHERE id = ?", [formID]
-      );
+      db.rawQuery("DELETE FROM UnapprovedCPARA WHERE id = ?", [formID]);
 
       // Delete entries for unapproved table
       db.rawQuery(
-        "DELETE FROM UnapprovedCPARAAnswers WHERE form_id = ? ", [formID]
-      );
-    } catch(err) {
-      print(err.toString());
+          "DELETE FROM UnapprovedCPARAAnswers WHERE form_id = ? ", [formID]);
+    } catch (err) {
+      if (kDebugMode) {
+        print(err.toString());
+      }
       throw "Could Not Delete Unapproved CPARA";
     }
   }
 
-  static Future<List<UnapprovedCparaModel>> getUnapprovedFromDB() async{
+  static Future<List<UnapprovedCparaModel>> getUnapprovedFromDB() async {
     var unapprovedForms = await fetchUnapprovedCparaForms();
     List<UnapprovedCparaModel> formsToBeReturned = [];
 
     for (Map i in unapprovedForms) {
       var id = i['id'] ?? "";
       var message = i['message'] ?? "";
-      var ovc_id = i['ovc_id'] ?? "";
-      var date_of_event = i['date_of_event'] ?? "";
-      formsToBeReturned.add(
-        await getUnaprovedCparaFromDb(id, message, ovc_id, date_of_event)
-      );
+      var ovcId = i['ovc_id'] ?? "";
+      var dateOfEvent = i['date_of_event'] ?? "";
+      formsToBeReturned
+          .add(await getUnaprovedCparaFromDb(id, message, ovcId, dateOfEvent));
     }
     return formsToBeReturned;
   }
 
-  static List _cparaovcchildtojson(CparaOvcChild child, String form_id) {
+  static List _cparaovcchildtojson(CparaOvcChild child, String formId) {
     // For each question return entry
     var entries = [];
-    var baseJSON = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
+    var baseJSON = {"ovc_cpims_id": child.ovcId, "form_id": formId};
 
     if (child.question1 != null && child.question1?.isNotEmpty == true) {
       var question1 = baseJSON;
@@ -170,49 +167,49 @@ class UnapprovedCparaService {
     }
 
     if (child.question2 != null && child.question2?.isNotEmpty == true) {
-      var question2 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
+      var question2 = {"ovc_cpims_id": child.ovcId, "form_id": formId};
       question2.addAll({"question_code": CparaRemoteQuestionIds.ovcQuestion2});
       question2.addAll({"answer_id": child.question2});
       entries.add(question2);
     }
 
     if (child.question3 != null && child.question3?.isNotEmpty == true) {
-      var question3 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
+      var question3 = {"ovc_cpims_id": child.ovcId, "form_id": formId};
       question3.addAll({"question_code": CparaRemoteQuestionIds.ovcQuestion3});
       question3.addAll({"answer_id": child.question3});
       entries.add(question3);
     }
 
     if (child.question4 != null && child.question4?.isNotEmpty == true) {
-      var question4 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
+      var question4 = {"ovc_cpims_id": child.ovcId, "form_id": formId};
       question4.addAll({"question_code": CparaRemoteQuestionIds.ovcQuestion4});
       question4.addAll({"answer_id": child.question4});
       entries.add(question4);
     }
 
     if (child.question5 != null && child.question5?.isNotEmpty == true) {
-      var question5 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
+      var question5 = {"ovc_cpims_id": child.ovcId, "form_id": formId};
       question5.addAll({"question_code": CparaRemoteQuestionIds.ovcQuestion5});
       question5.addAll({"answer_id": child.question5});
       entries.add(question5);
     }
 
     if (child.question6 != null && child.question6?.isNotEmpty == true) {
-      var question6 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
+      var question6 = {"ovc_cpims_id": child.ovcId, "form_id": formId};
       question6.addAll({"question_code": CparaRemoteQuestionIds.ovcQuestion6});
       question6.addAll({"answer_id": child.question6});
       entries.add(question6);
     }
 
     if (child.question7 != null && child.question7?.isNotEmpty == true) {
-      var question7 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
+      var question7 = {"ovc_cpims_id": child.ovcId, "form_id": formId};
       question7.addAll({"question_code": CparaRemoteQuestionIds.ovcQuestion7});
       question7.addAll({"answer_id": child.question7});
       entries.add(question7);
     }
 
     if (child.question8 != null && child.question8?.isNotEmpty == true) {
-      var question8 = {"ovc_cpims_id": child.ovcId, "form_id": form_id};
+      var question8 = {"ovc_cpims_id": child.ovcId, "form_id": formId};
       question8.addAll({"question_code": CparaRemoteQuestionIds.ovcQuestion8});
       question8.addAll({"answer_id": child.question8});
       entries.add(question8);
@@ -221,8 +218,9 @@ class UnapprovedCparaService {
     return entries;
   }
 
-  static void informUpstreamOfStoredUnapproved(String formID, bool saved,String formType) async{
-    try{
+  static void informUpstreamOfStoredUnapproved(
+      String formID, bool saved, String formType) async {
+    try {
       var baseUrl = "mobile/record_saved";
 
       var prefs = await SharedPreferences.getInstance();
@@ -231,29 +229,19 @@ class UnapprovedCparaService {
       var responseData = {};
 
       if (saved == true) {
-        responseData = {
-          "record_id": formID,
-          "saved": 1,
-          "form_type": formType
-        };
+        responseData = {"record_id": formID, "saved": 1, "form_type": formType};
       } else {
-        responseData = {
-          "record_id": formID,
-          "saved": 0,
-          "form_type": formType
-        };
+        responseData = {"record_id": formID, "saved": 0, "form_type": formType};
       }
 
       var response = await dio.post("$cpimsApiUrl$baseUrl",
           data: responseData,
           options: Options(headers: {"Authorization": bearerAuth}));
-    }
-    catch(err){
+    } catch (err) {
       debugPrint(err.toString());
       // throw "Could Not Inform Upstream of Stored Unapproved";
     }
   }
 }
-
 
 final unapprovedcparaserviceconstructor = UnapprovedCparaService();

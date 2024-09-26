@@ -576,7 +576,7 @@ class FinalBenchMark extends StatelessWidget {
             height: 25,
           ),
           DataTable(
-            dataRowColor: MaterialStateColor.resolveWith((states) => lightBlue),
+            dataRowColor: WidgetStateColor.resolveWith((states) => lightBlue),
             dataRowMaxHeight: 60.0,
             dataRowMinHeight: 40.0,
             horizontalMargin: 10.0,
@@ -593,9 +593,9 @@ class FinalBenchMark extends StatelessWidget {
             ],
             rows: [
               DataRow(
-                color: MaterialStateProperty.resolveWith<Color?>(
-                      (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.selected)) {
+                color: WidgetStateProperty.resolveWith<Color?>(
+                      (Set<WidgetState> states) {
+                    if (states.contains(WidgetState.selected)) {
                       // Return the color for selected state.
                       return Colors.grey;
                     } else {
@@ -612,9 +612,9 @@ class FinalBenchMark extends StatelessWidget {
                 ],
               ),
               DataRow(
-                color: MaterialStateProperty.resolveWith<Color?>(
-                      (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.selected)) {
+                color: WidgetStateProperty.resolveWith<Color?>(
+                      (Set<WidgetState> states) {
+                    if (states.contains(WidgetState.selected)) {
                       // Return the color for selected state.
                       return Colors.grey;
                     } else {
@@ -631,9 +631,9 @@ class FinalBenchMark extends StatelessWidget {
                 ],
               ),
               DataRow(
-                color: MaterialStateProperty.resolveWith<Color?>(
-                      (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.selected)) {
+                color: WidgetStateProperty.resolveWith<Color?>(
+                      (Set<WidgetState> states) {
+                    if (states.contains(WidgetState.selected)) {
                       // Return the color for selected state.
                       return Colors.grey;
                     } else {
@@ -650,9 +650,9 @@ class FinalBenchMark extends StatelessWidget {
                 ],
               ),
               DataRow(
-                color: MaterialStateProperty.resolveWith<Color?>(
-                      (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.selected)) {
+                color: WidgetStateProperty.resolveWith<Color?>(
+                      (Set<WidgetState> states) {
+                    if (states.contains(WidgetState.selected)) {
                       // Return the color for selected state.
                       return Colors.grey;
                     } else {

@@ -2,7 +2,6 @@ import 'package:cpims_mobile/screens/cpara/provider/hiv_assessment_provider.dart
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_details_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/cpara_stable_widget.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/custom_radio_buttons.dart';
-import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_assessment.dart';
 import 'package:cpims_mobile/screens/forms/hiv_assessment/unapproved/hiv_risk_assessment_form_model.dart';
 import 'package:cpims_mobile/widgets/custom_dynamic_radio_button.dart';
 import 'package:cpims_mobile/widgets/custom_text_field.dart';
@@ -11,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'hiv_current_status_form.dart';
 
 class ProgressMonitoringForm extends StatefulWidget {
   const ProgressMonitoringForm({super.key});
@@ -129,7 +127,7 @@ class _ProgressMonitoringFormState extends State<ProgressMonitoringForm> {
                 DateTextField2(
                     label: 'Report Date',
                     enabled: true,
-                    initialValue: parentAcceptHivTestingDate ?? "",
+                    initialValue: parentAcceptHivTestingDate,
                     updateDate: (String? newDate) {
                       parentAcceptHivTestingDate = newDate ??
                           DateFormat("yyyy-MM-dd").format(DateTime.now());

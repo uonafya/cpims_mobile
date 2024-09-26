@@ -75,11 +75,11 @@ class CasePlanModel {
 
 class CasePlanServiceModel {
   late final String domainId;
-  late final List<String?> serviceIds;
+  late final List<dynamic> serviceIds;
   late final String goalId;
   late final String gapId;
   late final String priorityId;
-  late final List<String?> responsibleIds;
+  late final List<dynamic> responsibleIds;
   late final String resultsId;
   late final String reasonId;
   late String? completionDate = "";
@@ -103,7 +103,7 @@ class CasePlanServiceModel {
       goalId: json['goal_id'] as String? ?? '',
       gapId: json['gap_id'] as String? ?? '',
       priorityId: json['priority_id'] as String? ?? '',
-      responsibleIds: List<String>.from(json['responsible_id'] ?? []),
+      responsibleIds: List<dynamic>.from(json['responsible_id'] ?? []),
       resultsId: json['results_id'] as String? ?? '',
       reasonId: json['reason_id'] as String? ?? '',
       completionDate: json['completion_date'] as String? ?? '',
@@ -120,7 +120,7 @@ class CasePlanServiceModel {
       gapId: json['gap_id'] as String? ?? '',
       priorityId: json['priority_id'] as String? ?? '',
       responsibleIds: (json['responsible_id'] != null && json['responsible_id'] is Iterable)
-          ? List<String>.from(json['responsible_id'])
+          ? List<dynamic>.from(json['responsible_id'])
           : [],
       resultsId: json['results_id'] as String? ?? '',
       reasonId: json['reason_id'] as String? ?? '',

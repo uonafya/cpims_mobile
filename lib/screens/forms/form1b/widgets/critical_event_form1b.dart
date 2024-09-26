@@ -10,16 +10,16 @@ import '../../../../providers/form1b_provider.dart';
 class CriticalEventForm1b extends StatefulWidget {
   const CriticalEventForm1b({Key? key}) : super(key: key);
 
-
   @override
   State<CriticalEventForm1b> createState() => _CriticalEventForm1bState();
 }
 
 class _CriticalEventForm1bState extends State<CriticalEventForm1b> {
-
   List<Map> careGiverServices = careGiverCriticalEvents;
-  List<ValueItem> careGiverCriticalItems = careGiverCriticalEvents.map((service) {
-    return ValueItem(label: "- ${service['item_description']}", value: service['item_id']);
+  List<ValueItem> careGiverCriticalItems =
+      careGiverCriticalEvents.map((service) {
+    return ValueItem(
+        label: "- ${service['item_description']}", value: service['item_id']);
   }).toList();
 
   List<ValueItem> selectedCriticalEvents = [];
@@ -27,8 +27,8 @@ class _CriticalEventForm1bState extends State<CriticalEventForm1b> {
   @override
   Widget build(BuildContext context) {
     Form1bProvider form1bProvider = Provider.of<Form1bProvider>(context);
-    selectedCriticalEvents = form1bProvider.criticalEventDataForm1b.selectedEvents;
-
+    selectedCriticalEvents =
+        form1bProvider.criticalEventDataForm1b.selectedEvents;
 
     return StepsWrapper(
       title: 'Caregiver critical events',
@@ -39,7 +39,6 @@ class _CriticalEventForm1bState extends State<CriticalEventForm1b> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             form1bProvider.setCriticalEventsSelectedEvents(selectedServices);
@@ -58,7 +57,6 @@ class _CriticalEventForm1bState extends State<CriticalEventForm1b> {
               .topLeft
               .x, // Set the desired border radius value
         ),
-
         const SizedBox(height: 15),
       ],
     );

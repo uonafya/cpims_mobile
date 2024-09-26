@@ -7,23 +7,17 @@ import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/Models/statistic_model.dart';
 import 'package:cpims_mobile/providers/unapproved_cpt_provider.dart';
 import 'package:cpims_mobile/Models/unapproved_form_1_model.dart';
-import 'package:cpims_mobile/providers/app_meta_data_provider.dart';
 import 'package:cpims_mobile/providers/cpara/unapproved_cpara_service.dart';
 import 'package:cpims_mobile/screens/cpara/model/cpara_model.dart';
 import 'package:cpims_mobile/screens/cpara/model/ovc_model.dart';
 import 'package:cpims_mobile/screens/cpara/provider/db_util.dart';
 import 'package:cpims_mobile/screens/cpara/widgets/ovc_sub_population_form.dart';
 import 'package:cpims_mobile/screens/forms/graduation_monitoring/model/graduation_monitoring_form_model.dart';
-import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_current_status_form.dart';
-import 'package:cpims_mobile/screens/forms/hiv_assessment/hiv_risk_assessment_form.dart';
-import 'package:cpims_mobile/screens/forms/hiv_assessment/progress_monitoring_form.dart';
-import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:cpims_mobile/screens/forms/hiv_management/models/hiv_management_form_model.dart';
 import 'package:cpims_mobile/utils/app_form_metadata.dart';
 import 'package:cpims_mobile/utils/strings.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -483,7 +477,7 @@ class LocalDb {
         //     ? DateFormat('yyyy-MM-dd').format(selectedDate)
         //     : null;
         await localDb.insertOvcSubpopulationData(
-            "$formId", "${child.ovcId}", selectedDate, selectedQuestions);
+            formId, "${child.ovcId}", selectedDate, selectedQuestions);
       }
       // if(mounted) {
       //   Navigator.pop(context);
@@ -2132,15 +2126,15 @@ class LocalDb {
   }
 
   // Returns the name of the child who has the given ovc cpims id. If given null it returns the empty string
-  Future<String> getFullChildNameFromOVCID(String? ovc_cpmis_id) async {
-    if (ovc_cpmis_id == null) {
+  Future<String> getFullChildNameFromOVCID(String? ovcCpmisId) async {
+    if (ovcCpmisId == null) {
       return "";
     }
 
     var db = await database;
     var fetchResult = await db.rawQuery(
         "SELECT  ovc_first_name || ' ' || ovc_surname AS name  FROM OVCS WHERE ovc_cpims_id = ?",
-        [ovc_cpmis_id]);
+        [ovcCpmisId]);
 
     if (fetchResult.isEmpty) {
       return "";

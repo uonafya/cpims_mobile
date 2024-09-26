@@ -14,10 +14,10 @@ class SafeForm1b extends StatefulWidget {
 }
 
 class _SafeForm1bState extends State<SafeForm1b> {
-
   List<ValueItem> caregiverProtectionItems =
-  careGiverProtectionServices.map((service) {
-    return ValueItem(label: service['item_description'], value: service['item_id']);
+      careGiverProtectionServices.map((service) {
+    return ValueItem(
+        label: service['item_description'], value: service['item_id']);
   }).toList();
 
   List<ValueItem> selectedCareGiverProtectionServices = [];
@@ -40,7 +40,6 @@ class _SafeForm1bState extends State<SafeForm1b> {
         ),
         const SizedBox(height: 10),
         MultiSelectDropDown(
-          showClearIcon: true,
           hint: 'Services(s)',
           onOptionSelected: (selectedServices) {
             selectedCareGiverProtectionServices = selectedServices;
