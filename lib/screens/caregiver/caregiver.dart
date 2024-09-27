@@ -14,7 +14,7 @@ class CaregiverScreen extends StatefulWidget {
   State<CaregiverScreen> createState() => _CaregiverScreenState();
 }
 
-class _CaregiverScreenState extends State<CaregiverScreen> {``
+class _CaregiverScreenState extends State<CaregiverScreen> {
   @override
   Widget build(BuildContext context) {
     final List<CaseLoadModel> caseLoadModelData =
