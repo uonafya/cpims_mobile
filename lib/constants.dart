@@ -10,6 +10,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 
+import 'services/metadata_service.dart';
+
 const kPrimaryColor = Color(0xff00acac);
 const kTextGrey = Color(0XFF707478);
 const kSystemPadding = EdgeInsets.symmetric(horizontal: 20, vertical: 0);
@@ -238,6 +240,15 @@ List drawerOptions(BuildContext context) {
       'onTap': () => {
             Get.to(() => const UnapprovedRecordsScreens()),
           },
+      'children': []
+    },
+    {
+      'title': 'Test',
+      'icon': FontAwesomeIcons.hackerNews,
+      'onTap': () async {
+          MetadataService metadataService = MetadataService(); // Create instance
+          await metadataService.testGetMetadata(); // Call the method on the instance
+        },
       'children': []
     },
   ];

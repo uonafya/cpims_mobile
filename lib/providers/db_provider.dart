@@ -2466,6 +2466,7 @@ const HMForms = 'HMFForm';
 const cparaHouseholdAnswers = 'cpara_household_answers';
 const cparaChildAnswers = 'cpara_child_answers';
 const graduation_monitoring = 'graduation_monitoring';
+// const String metadataTable = "metadata";
 
 class OvcFields {
   static final List<String> values = [
