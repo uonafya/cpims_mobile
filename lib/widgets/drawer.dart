@@ -1,10 +1,8 @@
-
 import 'package:cpims_mobile/constants.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
@@ -14,6 +12,17 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
+  @override
+  void initState() {
+    super.initState();
+    _initializeAppInfo();
+  }
+
+  Future<void> _initializeAppInfo() async {
+    await AppVersionUtil.initPackageInfo();
+    setState(() {}); // Trigger UI update after loading
+  }
+
   @override
   Widget build(BuildContext context) {
     final drawerProvider = Provider.of<UIProvider>(context);
