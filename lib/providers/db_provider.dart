@@ -66,11 +66,12 @@ class LocalDb {
     const defaultTime = 'DATETIME DEFAULT CURRENT_TIMESTAMP';
     const intType = 'INTEGER';
     const intTypeNull = 'INTEGER NULL';
+    const unique = 'UNIQUE';
 
     await db.execute('''
       CREATE TABLE $caseloadTable (
         ${OvcFields.id} $idType,
-        ${OvcFields.cboID} $textType,
+        ${OvcFields.cboID} $textType $unique,
         ${OvcFields.ovcFirstName} $textType,
         ${OvcFields.ovcSurname} $textType,
         ${OvcFields.registationDate} $textType,
@@ -267,13 +268,9 @@ class LocalDb {
       final batch = db.batch();
 
       for (final caseLoadModel in caseLoadModelList) {
-        batch.update(
+        batch.insert(
           caseloadTable,
           caseLoadModel.toMap(),
-          where: 'ovc_cpims_id = ?',
-          // Provide a condition to specify which records to update
-          whereArgs: [caseLoadModel.cpimsId],
-          // Provide the ID of the record to update
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
       }
