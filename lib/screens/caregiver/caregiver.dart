@@ -1,6 +1,7 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/caregiver_details_screen/caregiver_details_screen.dart';
+import 'package:cpims_mobile/screens/ovc_care/ovc_details_screen.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
@@ -150,15 +151,21 @@ class _CaregiverCardItemState extends State<CaregiverCardItem> {
           if (isExpanded)
             ...List.generate(
               children.length,
-              (index) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: ListTile(
-                  leading: Text(children[index].cpimsId!),
-                  title: Text(
-                      '${children[index].ovcSurname!} ${children[index].ovcFirstName!}'),
-                  trailing: Text(
-                      "${children[index].sex!}(${children[index].age!.toString()})"),
-                  tileColor: Colors.grey[200],
+              (index) => GestureDetector(
+                onTap: () {
+                  Get.to(() => CareGiverDetailsScreen(
+                      caseLoadModel: widget.caseLoadModel, children: children));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: ListTile(
+                    leading: Text(children[index].cpimsId!),
+                    title: Text(
+                        '${children[index].ovcSurname!} ${children[index].ovcFirstName!}'),
+                    trailing: Text(
+                        "${children[index].sex!}(${children[index].age!.toString()})"),
+                    tileColor: Colors.grey[200],
+                  ),
                 ),
               ),
             ),
