@@ -2,6 +2,7 @@ import 'package:android_id/android_id.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
+import 'package:cpims_mobile/screens/profile/profile_screen.dart';
 import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
 import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:flutter/material.dart';
@@ -212,6 +213,16 @@ List drawerOptions(BuildContext context) {
         }
       },
       'children': []
+    },
+    {
+      'title': 'Profile',
+      'icon': FontAwesomeIcons.user,
+      'children': [],
+      'onTap': () => {
+        Get.off(() => const ProfileScreen(),
+            transition: Transition.fadeIn,
+            duration: const Duration(milliseconds: 1000))
+      },
     },
     {
       'title': 'Log Out',
