@@ -289,6 +289,59 @@ class _CareGiverDetailsScreenState extends State<CareGiverDetailsScreen> {
             const SizedBox(
               height: 10,
             ),
+            const Text(
+              "Benchmark Result",
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            const Row(
+              children: [
+                Text(
+                  "Score:",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(width: 5),
+                Text(
+                  "4", // Placeholder value for Total
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            const Row(
+              children: [
+                Text(
+                  "Pathway:",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(width: 5),
+                Text(
+                  "Abandoned", // Placeholder value for Inference
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            const Footer(),
+            const SizedBox(
+              height: 10,
+            ),
             const Footer(),
           ],
         ));
