@@ -150,15 +150,21 @@ class _CaregiverCardItemState extends State<CaregiverCardItem> {
           if (isExpanded)
             ...List.generate(
               children.length,
-              (index) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: ListTile(
-                  leading: Text(children[index].cpimsId!),
-                  title: Text(
-                      '${children[index].ovcSurname!} ${children[index].ovcFirstName!}'),
-                  trailing: Text(
-                      "${children[index].sex!}(${children[index].age!.toString()})"),
-                  tileColor: Colors.grey[200],
+              (index) => GestureDetector(
+                onTap: () {
+                  Get.to(() => CareGiverDetailsScreen(
+                      caseLoadModel: widget.caseLoadModel, children: children));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: ListTile(
+                    leading: Text(children[index].cpimsId!),
+                    title: Text(
+                        '${children[index].ovcSurname!} ${children[index].ovcFirstName!}'),
+                    trailing: Text(
+                        "${children[index].sex!}(${children[index].age!.toString()})"),
+                    tileColor: Colors.grey[200],
+                  ),
                 ),
               ),
             ),
