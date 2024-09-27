@@ -1,7 +1,6 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/screens/caregiver_details_screen/caregiver_details_screen.dart';
-import 'package:cpims_mobile/screens/ovc_care/ovc_details_screen.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ class CaregiverScreen extends StatefulWidget {
   State<CaregiverScreen> createState() => _CaregiverScreenState();
 }
 
-class _CaregiverScreenState extends State<CaregiverScreen> {
+class _CaregiverScreenState extends State<CaregiverScreen> {``
   @override
   Widget build(BuildContext context) {
     final List<CaseLoadModel> caseLoadModelData =
