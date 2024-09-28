@@ -131,6 +131,6 @@ class CaseLoadModel {
 
   @override
   String toString() {
-    return 'CaseLoadModel{cpimsId: $cpimsId, ovcFirstName: $ovcFirstName, ovcSurname: $ovcSurname, benchmarks: $benchmarks, benchmarksScore: $benchmarksScore, benchmarksPathway: $benchmarksPathway}';
+    return 'CaseLoadModel{cpimsId: $cpimsId, ovcFirstName: $ovcFirstName, ovcSurname: $ovcSurname, dateofBirth: $dateOfBirth, registrationDate: $registrationDate, $benchmarks, benchmarksScore: $benchmarksScore, benchmarksPathway: $benchmarksPathway}';
   }
 }
