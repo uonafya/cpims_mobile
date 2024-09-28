@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cpims_mobile/Models/form_metadata_model.dart';
 import 'package:cpims_mobile/providers/db_provider.dart';
 import 'package:cpims_mobile/services/api_service.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -86,6 +87,7 @@ static Future<List<Metadata>> getMetadata(MetadataTypes type) async {
         where: "field_name = ?",
         columns: ['item_description', 'item_id'],
         whereArgs: [type.value]);
+
     return results
         .map((e) => Metadata(
             itemDescription: e['item_description'].toString(),
@@ -128,6 +130,7 @@ enum MetadataTypes {
   casePlanServicesSafe,
   casePlanServicesSchool,
   casePlanServicesStable,
+  olmisCriticalEvent
 }
 
 extension MetadataValues on MetadataTypes {
@@ -185,6 +188,8 @@ extension MetadataValues on MetadataTypes {
         return "case_plan_services_school";
       case MetadataTypes.casePlanServicesStable:
         return "case_plan_services_stable";
+      case MetadataTypes.olmisCriticalEvent:
+        return "olmis_critical_event_id";
       default:
         throw "Unsupported Type";
     }

@@ -36,6 +36,7 @@ class MetadataManager {
   final Map<String, String> _casePlanServicesSafe = {};
   final Map<String, String> _casePlanServicesSchool = {};
   final Map<String, String> _casePlanServicesStable = {};
+  final Map<String, String> _olmisCriticalEvent = {};
   
 
   Map<String, String> get sex => _sex;
@@ -64,6 +65,7 @@ class MetadataManager {
   Map<String, String> get casePlanServicesSafe => _casePlanServicesSafe;
   Map<String, String> get casePlanServicesSchool => _casePlanServicesSchool;
   Map<String, String> get casePlanServicesStable => _casePlanServicesStable;
+  Map<String, String> get olmisCriticalEvent => _olmisCriticalEvent;
  
 
   List<String> get sexNames => _sex.keys.toList();
@@ -89,6 +91,11 @@ class MetadataManager {
   List<String> get casePlanPrioritiesSafeNames => _casePlanPrioritiesSafe.keys.toList();
   List<String> get casePlanPrioritiesSchoolNames => _casePlanPrioritiesSchool.keys.toList();
   List<String> get casePlanPrioritiesStableNames => _casePlanPrioritiesStable.keys.toList();
+  List<String> get casePlanServicesSafeNames => _casePlanServicesSafe.keys.toList();
+  List<String> get casePlanServicesSchoolNames => _casePlanServicesSchool.keys.toList();
+  List<String> get casePlanServicesStableNames => _casePlanServicesStable.keys.toList();
+  List<String> get olmisCriticalEventNames => _olmisCriticalEvent.keys.toList();
+   
  
 
   static MetadataManager getInstance() {
@@ -128,6 +135,7 @@ class MetadataManager {
     _loadCasePlanServicesSafeMetaData();
     _loadCasePlanServicesSchoolMetaData();
     _loadCasePlanServicesStableMetaData();
+    _loadOlmisCriticalEventMetaData();
     
   }
 
@@ -308,6 +316,13 @@ class MetadataManager {
     _casePlanServicesStable.addAll({for (var e in casePlanServicesStableMetadata) e.itemId: e.itemDescription });
   }  
 
+  Future<void> _loadOlmisCriticalEventMetaData() async {
+    List<Metadata> olmisCriticalEventMetadata =
+        await MetadataService.getMetadata(MetadataTypes.olmisCriticalEvent);
+    _olmisCriticalEvent.clear();
+    _olmisCriticalEvent.addAll({for (var e in olmisCriticalEventMetadata) e.itemId: e.itemDescription });
+  }
+
   String getSexValue(String key) {
     return _sex[key] ?? key;
   }
@@ -410,6 +425,10 @@ class MetadataManager {
 
   String getCasePlanServicesStableValue(String key) {
     return _casePlanServicesStable[key] ?? key;
+  }
+
+  String getOlmisCriticalEventValue(String key) {
+    return _olmisCriticalEvent[key] ?? key;
   }
   
 }
