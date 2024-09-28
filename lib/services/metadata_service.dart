@@ -80,7 +80,9 @@ class MetadataService {
   }
 
 static Future<List<Metadata>> getMetadata(MetadataTypes type) async {
+    debugPrint("getMetadata run ${type.value}:");
   try {
+    debugPrint("getMetadata ${type.value}: try  ${type.value}");
     var db = await LocalDb.instance.database;
     var results = await db.query(metadataTable,
         distinct: true,
@@ -88,6 +90,7 @@ static Future<List<Metadata>> getMetadata(MetadataTypes type) async {
         columns: ['item_description', 'item_id'],
         whereArgs: [type.value]);
 
+    debugPrint("getMetadata ${type.value}: $results");
     return results
         .map((e) => Metadata(
             itemDescription: e['item_description'].toString(),
@@ -97,6 +100,7 @@ static Future<List<Metadata>> getMetadata(MetadataTypes type) async {
             itemTheOrder: int.tryParse(e['the_order'].toString()) ?? 0))
         .toList();
   } catch (err) {
+    debugPrint("getMetadata ${type.value}: $err");
     throw "Could Not Get Metadata";
   }
 }
@@ -126,7 +130,7 @@ enum MetadataTypes {
   casePlanPrioritiesSafe,
   casePlanPrioritiesSchool,
   casePlanPrioritiesStable,
-  casePlan,
+  casePlanServicesHealth,
   casePlanServicesSafe,
   casePlanServicesSchool,
   casePlanServicesStable,
@@ -180,7 +184,7 @@ extension MetadataValues on MetadataTypes {
         return "case_plan_priorities_school";
       case MetadataTypes.casePlanPrioritiesStable:
         return "case_plan_priorities_stable";
-      case MetadataTypes.casePlan:
+      case MetadataTypes.casePlanServicesHealth:
         return "case_plan_services_health";
       case MetadataTypes.casePlanServicesSafe:
         return "case_plan_services_safe";

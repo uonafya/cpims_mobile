@@ -33,6 +33,7 @@ class MetadataManager {
   final Map<String, String> _casePlanPrioritiesSchool = {};
   final Map<String, String> _casePlanPrioritiesStable = {};
   final Map<String, String> _category = {};
+  final Map<String, String> _casePlanServicesHealth = {};
   final Map<String, String> _casePlanServicesSafe = {};
   final Map<String, String> _casePlanServicesSchool = {};
   final Map<String, String> _casePlanServicesStable = {};
@@ -62,6 +63,7 @@ class MetadataManager {
   Map<String, String> get casePlanPrioritiesSchool => _casePlanPrioritiesSchool;
   Map<String, String> get casePlanPrioritiesStable => _casePlanPrioritiesStable;
   Map<String, String> get category => _category;
+  Map<String, String> get casePlanServicesHealth => _casePlanServicesHealth;
   Map<String, String> get casePlanServicesSafe => _casePlanServicesSafe;
   Map<String, String> get casePlanServicesSchool => _casePlanServicesSchool;
   Map<String, String> get casePlanServicesStable => _casePlanServicesStable;
@@ -91,6 +93,7 @@ class MetadataManager {
   List<String> get casePlanPrioritiesSafeNames => _casePlanPrioritiesSafe.keys.toList();
   List<String> get casePlanPrioritiesSchoolNames => _casePlanPrioritiesSchool.keys.toList();
   List<String> get casePlanPrioritiesStableNames => _casePlanPrioritiesStable.keys.toList();
+  List<String> get casePlanServicesHealthNames => _casePlanServicesHealth.keys.toList();
   List<String> get casePlanServicesSafeNames => _casePlanServicesSafe.keys.toList();
   List<String> get casePlanServicesSchoolNames => _casePlanServicesSchool.keys.toList();
   List<String> get casePlanServicesStableNames => _casePlanServicesStable.keys.toList();
@@ -131,7 +134,7 @@ class MetadataManager {
     _loadCasePlanPrioritiesSafeMetaData(); 
     _loadCasePlanPrioritiesSchoolMetaData(); 
     _loadCasePlanPrioritiesStableMetaData(); 
-    _loadCasePlanMetaData();
+    _loadCasePlanServicesHealthMetaData();
     _loadCasePlanServicesSafeMetaData();
     _loadCasePlanServicesSchoolMetaData();
     _loadCasePlanServicesStableMetaData();
@@ -289,10 +292,10 @@ class MetadataManager {
     _casePlanPrioritiesStable.addAll({for (var e in casePlanPrioritiesStableMetadata) e.itemId: e.itemDescription });
   }
 
-  Future<void> _loadCasePlanMetaData() async {
-    List<Metadata> casePlanMetadata = await MetadataService.getMetadata(MetadataTypes.casePlan);
-    _category.clear();
-    _category.addAll({for (var e in casePlanMetadata) e.itemId: e.itemDescription });
+  Future<void> _loadCasePlanServicesHealthMetaData() async {
+    List<Metadata> casePlanMetadata = await MetadataService.getMetadata(MetadataTypes.casePlanServicesHealth);
+    _casePlanServicesHealth.clear();
+    _casePlanServicesHealth.addAll({for (var e in casePlanMetadata) e.itemId: e.itemDescription });
   }
 
   Future<void> _loadCasePlanServicesSafeMetaData() async {
@@ -411,8 +414,8 @@ class MetadataManager {
     return _casePlanPrioritiesStable[key] ?? key;
   }
 
-  String getCategoryValue(String key) {
-    return _category[key] ?? key;
+  String getCasePlanServiceHealthValue(String key) {
+    return _casePlanServicesHealth[key] ?? key;
   }
 
   String getCasePlanServicesSafeValue(String key) {
