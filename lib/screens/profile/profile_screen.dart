@@ -133,6 +133,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Table(
                     border: TableBorder.all(), // Adds borders around the table cells
                     children: [
+                      TableRow(children: [
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'HH',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(dashData.caseloadHh > 0 ? dashData.caseloadHh.toString() : "N/A"),
+                        ),
+                      ]),
                       TableRow(
                           children: [
                         const Padding(
@@ -147,21 +162,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(dashData.caseloadOvc > 0 ? dashData.caseloadOvc.toString() : "N/A"),
-                        ),
-                      ]),
-                      TableRow(children: [
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'HH',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(dashData.caseloadHh > 0 ? dashData.caseloadHh.toString() : "N/A"),
                         ),
                       ]),
                       TableRow(children: [
