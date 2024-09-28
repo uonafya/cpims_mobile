@@ -1,3 +1,5 @@
+import 'package:cpims_mobile/services/manager/metadata_manager.dart';
+import 'package:cpims_mobile/utils/map_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -228,7 +230,7 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
             }
           },
           selectedOptions: selectedGoalOptions,
-          options: casePlanGoalSchooledList,
+          options: MetadataManager.getInstance().casePlanGoalsSchool.toValueItemList(),
           maxItems: 35,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.single,
@@ -263,7 +265,7 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
               print("The selected need was ${selectedEvents[0].value}");
             }
           },
-          options: casePlanGapsSchooledList,
+          options: MetadataManager.getInstance().casePlanGapsSchool.toValueItemList(),
           selectedOptions: selectedNeedOptions,
           maxItems: 35,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
@@ -299,7 +301,7 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
               print("The selected priority was ${selectedEvents[0].value}");
             }
           },
-          options: casePlanPrioritiesSchooledList,
+          options: MetadataManager.getInstance().casePlanPrioritiesSchool.toValueItemList(),
           selectedOptions: selectedPriorityActionOptions,
           maxItems: 35,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
@@ -341,7 +343,7 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
             }
           },
           selectedOptions: selectedServicesOptions,
-          options: casePlanServicesSchooledList,
+          options: MetadataManager.getInstance().casePlanServicesSchool.toValueItemList(),
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
@@ -385,7 +387,7 @@ class _SchooledCasePlanTemplateState extends State<SchooledCasePlanTemplate> {
             }
           },
           selectedOptions: selectedPersonsResponsibleOptions,
-          options: casePlanProviderPersonsResponsibleList,
+          options: MetadataManager.getInstance().casePlanResponsible.toValueItemList(),
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
