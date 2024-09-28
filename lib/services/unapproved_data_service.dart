@@ -38,7 +38,7 @@ class UnapprovedDataService {
     List<Future<void>> futures = endpoints.map((endpoint) async {
       final db = LocalDb.instance;
       var response = await ApiService().getSecureData(endpoint, access);
-      final List<dynamic> jsonData = json.decode(response.body);
+      final dynamic jsonData = json.decode(response.body);
       if (endpoint == endpoints[0]) {
         for (var map in jsonData) {
           final unapprovedForm1A = UnapprovedForm1DataModel.fromJson(map);
@@ -113,7 +113,8 @@ class UnapprovedDataService {
         }
       } else if (endpoint == endpoints[6]) {
         for (var map in jsonData) {
-          final unapprovedGraduation = UnApprovedGraduationFormModel.fromMapTwo(map);
+          final unapprovedGraduation =
+              UnApprovedGraduationFormModel.fromMapTwo(map);
           db.insertGraduationMonitoringFormData(
             unapprovedGraduation.ovcCpimsId.toString(),
             null,
@@ -229,7 +230,8 @@ class UnapprovedDataService {
   static Future<List<UnApprovedGraduationFormModel>>
       fetchRejectedGraduationForms() async {
     final db = LocalDb.instance;
-    List<Map<String, dynamic>> maps = await db.fetchUnapprovedGraduationMonitoringData();
+    List<Map<String, dynamic>> maps =
+        await db.fetchUnapprovedGraduationMonitoringData();
     List<UnApprovedGraduationFormModel> unapprovedGraduation = [];
     for (var map in maps) {
       unapprovedGraduation.add(UnApprovedGraduationFormModel.fromMap(map));

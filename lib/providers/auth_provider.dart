@@ -16,6 +16,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
   static const String _lockAppPrefKey = '_lockAppPrefKey';
+  static const String _authRefreshTokenTimeStampKey = 'authRefreshTokenTimeStampKey';
+  static const int _refreshTokenExpiryDurationMilli = 1000 * 3600 * 24 * 12; // 12 days, two day before actually expiration date.
 
   UserModel _user = UserModel(
     username: '',
@@ -103,6 +105,11 @@ class AuthProvider with ChangeNotifier {
             DateTime.now().millisecondsSinceEpoch,
           );
 
+          await prefs.setInt(
+            _authRefreshTokenTimeStampKey,
+            DateTime.now().millisecondsSinceEpoch,
+          );
+
           authProvider.setAccessToken(responseData['access']);
 
           UserModel userModel = UserModel(
@@ -162,11 +169,16 @@ class AuthProvider with ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       String? refreshToken = prefs.getString('refresh');
       int? authTokenTimestamp = prefs.getInt('authTokenTimestamp');
+      int? authRefreshTokenTimestamp = prefs.getInt(_authRefreshTokenTimeStampKey);
+      if (refreshToken != null && authTokenTimestamp != null && authRefreshTokenTimestamp != null) {
 
-      if (refreshToken != null && authTokenTimestamp != null) {
         int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
         int tokenExpiryDuration =
             1800 * 1000; // Token expires after 30 minutes (in milliseconds)
+        if (currentTimestamp - authRefreshTokenTimestamp > _refreshTokenExpiryDurationMilli) {
+          clearUser();
+          return false;
+        }
 
         if (currentTimestamp - authTokenTimestamp > tokenExpiryDuration) {
           // Token has expired -- refresh token

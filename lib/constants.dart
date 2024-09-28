@@ -8,6 +8,7 @@ import 'package:cpims_mobile/services/caseload_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 const kPrimaryColor = Color(0xff00acac);
@@ -219,10 +220,10 @@ List drawerOptions(BuildContext context) {
       'icon': FontAwesomeIcons.user,
       'children': [],
       'onTap': () => {
-        Get.off(() => const ProfileScreen(),
-            transition: Transition.fadeIn,
-            duration: const Duration(milliseconds: 1000))
-      },
+            Get.off(() => const ProfileScreen(),
+                transition: Transition.fadeIn,
+                duration: const Duration(milliseconds: 1000))
+          },
     },
     {
       'title': 'Log Out',
@@ -336,10 +337,19 @@ void errorSnackBar(BuildContext context, String message,
 }
 
 class AppVersionUtil {
-  static String appVersion = '1.1.5';
-  static String buildNumber = '1';
-  static String appName = 'CPIMS Mobile';
-  static String packageName = 'com.healthitkenya.cpims';
+  static String appVersion = '';
+  static String buildNumber = '';
+  static String appName = '';
+  static String packageName = '';
+
+  static Future<void> initPackageInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    appVersion = packageInfo.version;
+    buildNumber = packageInfo.buildNumber;
+    appName = packageInfo.appName;
+    packageName = packageInfo.packageName;
+  }
 
   static String getAppVersion() {
     return appVersion;
