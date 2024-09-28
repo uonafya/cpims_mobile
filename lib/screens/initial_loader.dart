@@ -12,6 +12,7 @@ import 'package:cpims_mobile/screens/biometric_information_screen.dart';
 import 'package:cpims_mobile/screens/connectivity_screen.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
 import 'package:cpims_mobile/services/dash_board_service.dart';
+import 'package:cpims_mobile/services/manager/metadata_manager.dart';
 import 'package:cpims_mobile/services/unapproved_data_service.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:cpims_mobile/services/metadata_service.dart';
@@ -147,6 +148,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
                   print("Error fetching metadata in init load: $e");
                 }
               }
+              MetadataManager.getInstance().loadMetaData();
             }
           }
           Get.off(() => const Homepage());
