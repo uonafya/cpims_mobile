@@ -18,6 +18,12 @@ class SummaryDataModel {
   String orgUnit = '';
   int orgUnitId = 0;
   String details = '';
+  String userOrgUnits = '';
+  String username = '';
+  int userCpimsId = 0;
+  String email = '';
+  String ward = '';
+  String subCounties = '';
 
   SummaryDataModel({
     required this.children,
@@ -38,6 +44,12 @@ class SummaryDataModel {
     required this.orgUnit,
     required this.orgUnitId,
     required this.details,
+    required this.userOrgUnits,
+    required this.username,
+    required this.userCpimsId,
+    required this.email,
+    required this.ward,
+    required this.subCounties,
   });
 
   factory SummaryDataModel.fromJson(Map<String, dynamic> json) {
@@ -48,7 +60,7 @@ class SummaryDataModel {
       ngo: json['ngo'],
       caseRecords: json['case_records'],
       pendingCases: json['pending_cases'],
-      orgUnits: int.tryParse(json['org_units']) ?? 0,
+      orgUnits: json['org_units'],
       workforceMembers: json['workforce_members'],
       household: json['household'],
       childrenAll: json['children_all'],
@@ -60,6 +72,12 @@ class SummaryDataModel {
       orgUnit: json['org_unit'],
       orgUnitId: json['org_unit_id'],
       details: json['details'],
+      userOrgUnits: json['user_org_units'],
+      username: json['username'],
+      userCpimsId: json['user_cpims_id'],
+      email: json['email'],
+      ward: json['wards'],
+      subCounties: json['sub_counties'],
     );
   }
 
@@ -83,6 +101,12 @@ class SummaryDataModel {
       'org_unit': orgUnit,
       'org_unit_id': orgUnitId,
       'details': details,
+      'user_org_units': userOrgUnits,
+      'username': username,
+      'user_cpims_id': userCpimsId,
+      'email': email,
+      'wards': ward,
+      'sub_counties': subCounties,
     };
   }
 
@@ -106,7 +130,14 @@ class SummaryDataModel {
         'criteria: $criteria, '
         'orgUnit: $orgUnit, '
         'orgUnitId: $orgUnitId, '
-        'details: $details}';
+        'details: $details, '
+        'user_org_units: $userOrgUnits,'
+        'username: $username,'
+        'user_cpims_id: $userCpimsId,'
+        'email: $email,'
+        'wards: $ward,'
+        'sub_counties: $subCounties}'
+    ;
   }
 }
 
