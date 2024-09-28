@@ -1,3 +1,5 @@
+import 'package:cpims_mobile/services/manager/metadata_manager.dart';
+import 'package:cpims_mobile/utils/map_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -48,7 +50,7 @@ class _FormOneAHealthy extends State<FormOneAHealthy> {
                 selectedCareGiverServices, healthDomainId);
             debugPrint('selectedCareGiverServices: $selectedCareGiverServices');
           },
-          options: healthServices,
+          options: MetadataManager.getInstance().olmisHealthServices.toValueItemList(),
           maxItems: 13,
           selectedOptions: selectedCareGiverServicesOptions.cast<ValueItem>(),
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],

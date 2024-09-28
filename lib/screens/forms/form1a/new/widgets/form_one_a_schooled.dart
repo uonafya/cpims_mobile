@@ -1,3 +1,5 @@
+import 'package:cpims_mobile/services/manager/metadata_manager.dart';
+import 'package:cpims_mobile/utils/map_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -47,7 +49,7 @@ class _FormOneASchooledState extends State<FormOneASchooled> {
                 selectedSchooledServices, domainId);
             debugPrint('selectedSchooledServices: $selectedSchooledServices');
           },
-          options: schooledServices,
+          options: MetadataManager.getInstance().olmisEducationServices.toValueItemList(),
           selectedOptions: selectedSchooledServicesOptions.cast<ValueItem>(),
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],

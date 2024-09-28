@@ -1,8 +1,11 @@
+import 'package:cpims_mobile/services/metadata_service.dart';
+import 'package:cpims_mobile/utils/map_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../services/manager/metadata_manager.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
 import '../../../form1b/utils/form1bConstants.dart';
 import '../../utils/form_1a_options.dart';
@@ -48,7 +51,7 @@ class _FormOneAStableState extends State<FormOneAStable> {
             debugPrint(
                 'selectedCareGiverStableServices: $selectedCareGiverStableServices');
           },
-          options: stableServices,
+          options: MetadataManager.getInstance().olmisHeServices.toValueItemList(),
           selectedOptions:
               selectedCareGiverStableServicesOptions.cast<ValueItem>(),
           maxItems: 50,
