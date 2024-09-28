@@ -94,6 +94,7 @@ class Scores {
   String? b7;
   String? b8;
   String? b9;
+  String? date;
 
   Scores({
     this.b1,
@@ -105,18 +106,20 @@ class Scores {
     this.b7,
     this.b8,
     this.b9,
+    this.date,
   });
 
   factory Scores.fromJson(Map<String, dynamic> json) => Scores(
-    b1: json["b1"],
-    b2: json["b2"],
-    b3: json["b3"],
-    b4: json["b4"],
-    b5: json["b5"],
-    b6: json["b6"],
-    b7: json["b7"],
-    b8: json["b8"],
-    b9: json["b9"],
+    b1: json["b1"].toString(),
+    b2: json["b2"].toString(),
+    b3: json["b3"].toString(),
+    b4: json["b4"].toString(),
+    b5: json["b5"].toString(),
+    b6: json["b6"].toString(),
+    b7: json["b7"].toString(),
+    b8: json["b8"].toString(),
+    b9: json["b9"].toString(),
+    date: json["date"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -129,5 +132,6 @@ class Scores {
     "b7": b7,
     "b8": b8,
     "b9": b9,
+    "date": date,
   };
 }
