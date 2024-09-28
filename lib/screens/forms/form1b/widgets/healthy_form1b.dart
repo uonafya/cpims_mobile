@@ -1,5 +1,7 @@
 import 'package:cpims_mobile/providers/form1b_provider.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
+import 'package:cpims_mobile/services/manager/metadata_manager.dart';
+import 'package:cpims_mobile/utils/map_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -47,7 +49,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
             form1bProvider.setSelectedHealthServices(
                 selectedCareGiverServices, healthDomainId);
           },
-          options: caregiverHealthServiceItems,
+          options: MetadataManager.getInstance().form1bitems.toValueItemList(),
           maxItems: 13,
           selectedOptions: selectedCareGiverServicesOptions.cast<ValueItem>(),
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
