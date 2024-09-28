@@ -1,3 +1,5 @@
+import 'package:cpims_mobile/services/manager/metadata_manager.dart';
+import 'package:cpims_mobile/utils/map_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -45,7 +47,7 @@ class _FormOneACritical extends State<FormOneACritical> {
             // CustomToastWidget.showToast(form1bProvider.criticalEventDataForm1b.selectedEvents[0].label);
           },
           selectedOptions: selectedCriticalEvents,
-          options: careGiverCriticalItems,
+          options: MetadataManager.getInstance().olmisCriticalEvent.toValueItemList(),
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
