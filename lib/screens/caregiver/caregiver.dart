@@ -61,6 +61,14 @@ class _CaregiverCardItemState extends State<CaregiverCardItem> {
         .where(
             (e) => e.caregiverCpimsId == widget.caseLoadModel.caregiverCpimsId)
         .toList();
+
+    print(
+        'Children data for caregiver ${widget.caseLoadModel.caregiverCpimsId}:');
+
+    for (var child in children) {
+      print(
+          'Child: ${child.cpimsId}, Benchmarks: ${child.benchmarks}, Score: ${child.benchmarksScore}, Pathway: ${child.benchmarksPathway}');
+    }
     return GestureDetector(
       onTap: () {
         Get.to(() => CareGiverDetailsScreen(

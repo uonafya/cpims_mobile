@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:cpims_mobile/Models/unnaproved_cpara_data.dart';
+
 class CaseLoadModel {
   String? cpimsId;
   String? ovcFirstName;
@@ -10,6 +14,9 @@ class CaseLoadModel {
   String? chvCpimsId;
   String? ovchivstatus;
   int? age;
+  List<Scores>? benchmarks;
+  int? benchmarksScore;
+  String? benchmarksPathway;
 
   CaseLoadModel({
     this.cpimsId,
@@ -22,21 +29,45 @@ class CaseLoadModel {
     this.caregiverCpimsId,
     this.chvCpimsId,
     this.ovchivstatus,
-    this.age
+    this.age,
+    this.benchmarks,
+    this.benchmarksScore,
+    this.benchmarksPathway,
   });
 
-  CaseLoadModel.fromJson(Map<String, dynamic> json) {
-    cpimsId = json['ovc_cpims_id'].toString();
-    ovcFirstName = json['ovc_first_name'];
-    ovcSurname = json['ovc_surname'];
-    dateOfBirth = json['date_of_birth'];
-    registrationDate = json['registration_date'];
-    caregiverNames = json['caregiver_names'];
-    sex = json['sex'];
-    age = json['age'];
-    caregiverCpimsId = json['caregiver_cpims_id'].toString();
-    chvCpimsId = json['chv_cpims_id'].toString();
-    ovchivstatus = json['ovchivstatus'].toString();
+  factory CaseLoadModel.fromJson(Map<String, dynamic> json) {
+    return CaseLoadModel(
+      cpimsId: json['ovc_cpims_id'].toString(),
+      ovcFirstName: json['ovc_first_name'],
+      ovcSurname: json['ovc_surname'],
+      dateOfBirth: json['date_of_birth'],
+      registrationDate: json['registration_date'],
+      caregiverNames: json['caregiver_names'],
+      sex: json['sex'],
+      age: json['age'],
+      caregiverCpimsId: json['caregiver_cpims_id'].toString(),
+      chvCpimsId: json['chv_cpims_id'].toString(),
+      ovchivstatus: json['ovchivstatus'].toString(),
+      // Parse benchmarks
+      benchmarks: _parseBenchmarks(json['benchmarks']),
+      benchmarksScore: json['benchmarks_score'],
+      benchmarksPathway: json['benchmarks_pathway'],
+    );
+  }
+
+  static List<Scores> _parseBenchmarks(dynamic benchmarksData) {
+    if (benchmarksData is String) {
+      try {
+        final List<dynamic> parsedList = json.decode(benchmarksData);
+        return parsedList.map((b) => Scores.fromJson(b)).toList();
+      } catch (e) {
+        print('Error parsing benchmarks: $e');
+        return [];
+      }
+    } else if (benchmarksData is List) {
+      return benchmarksData.map((b) => Scores.fromJson(b)).toList();
+    }
+    return [];
   }
 
   Map<String, dynamic> toJson() {
@@ -52,6 +83,9 @@ class CaseLoadModel {
     data['caregiver_cpims_id'] = caregiverCpimsId;
     data['chv_cpims_id'] = chvCpimsId;
     data['ovchivstatus'] = ovchivstatus;
+    data['benchmarks'] = benchmarks;
+    data['benchmarks_score'] = benchmarksScore;
+    data['benchmarks_pathway'] = benchmarksPathway;
     return data;
   }
 
@@ -68,6 +102,11 @@ class CaseLoadModel {
       'caregiver_cpims_id': caregiverCpimsId,
       'chv_cpims_id': chvCpimsId,
       'ovchivstatus': ovchivstatus,
+      'benchmarks': benchmarks != null && benchmarks!.isNotEmpty
+          ? json.encode(benchmarks!.map((s) => s.toJson()).toList())
+          : json.encode([Scores().toJson()]),
+      'benchmarks_score': benchmarksScore,
+      'benchmarks_pathway': benchmarksPathway,
     };
   }
 
@@ -84,12 +123,14 @@ class CaseLoadModel {
       caregiverCpimsId: map['caregiver_cpims_id'],
       chvCpimsId: map['chv_cpims_id'],
       ovchivstatus: map['h_status'],
+      benchmarks: _parseBenchmarks(map['benchmarks']),
+      benchmarksScore: map['benchmarks_score'],
+      benchmarksPathway: map['benchmarks_pathway'],
     );
   }
 
-  //toString method
   @override
   String toString() {
-    return 'CaseLoadModel{cpimsId: $cpimsId, ovcFirstName: $ovcFirstName, ovcSurname: $ovcSurname, dateOfBirth: $dateOfBirth, registrationDate: $registrationDate';
+    return 'CaseLoadModel{cpimsId: $cpimsId, ovcFirstName: $ovcFirstName, ovcSurname: $ovcSurname, dateofBirth: $dateOfBirth, registrationDate: $registrationDate, $benchmarks, benchmarksScore: $benchmarksScore, benchmarksPathway: $benchmarksPathway}';
   }
 }
