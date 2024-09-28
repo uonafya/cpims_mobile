@@ -142,10 +142,6 @@ class AuthProvider with ChangeNotifier {
 
                 clearUser();
 
-                CaseLoadService.saveCaseLoadLastSave(0);
-
-                CaseLoadService.saveCaseLoadLastSave(0);
-
                 Get.off(
                   () => const LoginScreen(),
                   transition: Transition.fadeIn,
@@ -153,6 +149,7 @@ class AuthProvider with ChangeNotifier {
                 );
               },
               onDeleteDb: () async {
+                CaseLoadService.saveCaseLoadLastSave(0);
                 await LocalDb.instance.deleteDb();
               },
             ));
