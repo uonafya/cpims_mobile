@@ -24,6 +24,10 @@ class SummaryDataModel {
   String email = '';
   String ward = '';
   String subCounties = '';
+  int caseloadOvc = 0;
+  int caseloadHh = 0;
+  int caseloadClhiv = 0;
+  int caseloadHei = 0;
 
   SummaryDataModel({
     required this.children,
@@ -50,6 +54,10 @@ class SummaryDataModel {
     required this.email,
     required this.ward,
     required this.subCounties,
+    required this.caseloadOvc,
+    required this.caseloadHh,
+    required this.caseloadClhiv,
+    required this.caseloadHei,
   });
 
   factory SummaryDataModel.fromJson(Map<String, dynamic> json) {
@@ -72,12 +80,16 @@ class SummaryDataModel {
       orgUnit: json['org_unit'],
       orgUnitId: json['org_unit_id'],
       details: json['details'],
-      userOrgUnits: json['user_org_units'],
+      userOrgUnits: json['user_org_units'] ?? "N/A",
       username: json['username'],
       userCpimsId: json['user_cpims_id'],
       email: json['email'],
       ward: json['wards'],
       subCounties: json['sub_counties'],
+      caseloadOvc: json['caseload_ovc'] ?? 0,
+      caseloadHh: json['caseload_hh'] ?? 0,
+      caseloadClhiv: json['caseload_clhiv'] ?? 0,
+      caseloadHei: json['caseload_hei'] ?? 0,
     );
   }
 
@@ -107,6 +119,10 @@ class SummaryDataModel {
       'email': email,
       'wards': ward,
       'sub_counties': subCounties,
+      'caseload_ovc': caseloadOvc,
+      'caseload_hh': caseloadHh,
+      'caseload_clhiv': caseloadClhiv,
+      'caseload_hei': caseloadHei,
     };
   }
 
@@ -136,7 +152,11 @@ class SummaryDataModel {
         'user_cpims_id: $userCpimsId,'
         'email: $email,'
         'wards: $ward,'
-        'sub_counties: $subCounties}'
+        'sub_counties: $subCounties,'
+        'caseload_ovc: $caseloadOvc,'
+        'caseload_hh: $caseloadHh,'
+        'caseload_clhiv: $caseloadClhiv,'
+        'caseload_hei: $caseloadHei}'
     ;
   }
 }
