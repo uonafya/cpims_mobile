@@ -1,7 +1,11 @@
+import 'package:cpims_mobile/Models/statistic_model.dart';
+import 'package:cpims_mobile/providers/ui_provider.dart';
 import 'package:cpims_mobile/widgets/app_bar.dart';
 import 'package:cpims_mobile/widgets/custom_card.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,6 +17,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
+    SummaryDataModel dashData = context.select((UIProvider provider) => provider.getDashData);
+
     return Scaffold(
       appBar: customAppBar(),
       drawer: const Drawer(
@@ -33,88 +39,88 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
             ),
             const SizedBox(height: 10,),
-            const CustomCard(title: "ACCOUNT DETAILS", children: [
+            CustomCard(title: "ACCOUNT DETAILS", children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                       "Username:",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
                   ),
-                  SizedBox(width: 10,),
-                  Flexible(child: Text("Someusername")),
+                  const SizedBox(width: 10,),
+                  Flexible(child: Text(dashData.username)),
                 ],
               ),
-              SizedBox(height: 4,),
+              const SizedBox(height: 4,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     "CPIMS ID:",
                     style: TextStyle(
                         fontWeight: FontWeight.bold
                     ),
                   ),
-                  SizedBox(width: 10,),
-                  Flexible(child: Text("123134973"))
+                  const SizedBox(width: 10,),
+                  Flexible(child: Text(dashData.userCpimsId.toString()))
                 ],
               ),
-              SizedBox(height: 4,),
+              const SizedBox(height: 4,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     "Email Address:",
                     style: TextStyle(
                         fontWeight: FontWeight.bold
                     ),
                   ),
-                  SizedBox(width: 10,),
-                  Flexible(child: Text("test@gmail.com")),
+                  const SizedBox(width: 10,),
+                  Flexible(child: Text(dashData.email)),
                 ],
               ),
-              SizedBox(height: 4,),
+              const SizedBox(height: 4,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     "Sub-county:",
                     style: TextStyle(
                         fontWeight: FontWeight.bold
                     ),
                   ),
-                  SizedBox(width: 10,),
-                  Flexible(child: Text("Madaraka")),
+                  const SizedBox(width: 10,),
+                  Flexible(child: Text(dashData.subCounties)),
                 ],
               ),
-              SizedBox(height: 4,),
+              const SizedBox(height: 4,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     "Ward:",
                     style: TextStyle(
                         fontWeight: FontWeight.bold
                     ),
                   ),
-                  SizedBox(width: 10,),
-                  Flexible(child: Text("Madaraka")),
+                  const SizedBox(width: 10,),
+                  Flexible(child: Text(dashData.ward)),
                 ],
               ),
-              SizedBox(height: 4,),
+              const SizedBox(height: 4,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     "Organization Unit(s):",
                     style: TextStyle(
                         fontWeight: FontWeight.bold
                     ),
                   ),
-                  SizedBox(width: 10,),
-                  Flexible(child: Text("MAKADARA SUB COUNTY CHILDREN OFFICE")),
+                  const SizedBox(width: 10,),
+                  Flexible(child: Text(dashData.userOrgUnits)),
                   // Text("MAKADARA SUB COUNTY CHILDREN OFFICE")
                 ],
               ),
