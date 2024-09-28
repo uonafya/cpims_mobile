@@ -246,8 +246,7 @@ List drawerOptions(BuildContext context) {
       'title': 'Test',
       'icon': FontAwesomeIcons.hackerNews,
       'onTap': () async {
-          MetadataService metadataService = MetadataService(); // Create instance
-          await metadataService.testGetMetadata(); // Call the method on the instance
+          await MetadataService.testGetMetadata(); // Call the method on the instance
         },
       'children': []
     },

@@ -140,7 +140,8 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
                     .setCaseLoadData();
               }
               try {
-                await MetadataService.fetchMetadata();
+                // await MetadataService.fetchMetadata();
+                await MetadataService.saveMetadata();
               } catch (e) {
                 if (kDebugMode) {
                   print("Error fetching metadata in init load: $e");

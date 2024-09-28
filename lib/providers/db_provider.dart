@@ -28,6 +28,7 @@ import '../Models/caseplan_form_model.dart';
 import '../constants.dart';
 import '../screens/forms/form1a/new/form_one_a.dart';
 import '../screens/forms/hiv_assessment/unapproved/hiv_risk_assessment_form_model.dart';
+import '../services/metadata_service.dart';
 
 class LocalDb {
   static const String _databaseName = 'children_ovc4.db';
@@ -147,6 +148,18 @@ class LocalDb {
           ${FormMetadata.columnTheOrder} $textType
         )
         ''');
+
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS $metadataTable(
+          ${FormMetadata.columnId} $idType,
+          ${FormMetadata.columnItemId} $textType,
+          ${FormMetadata.columnFieldName} $textType,
+          ${FormMetadata.columnItemDescription} $textType,
+          ${FormMetadata.columnItemSubCategory} $textType,
+          ${FormMetadata.columnTheOrder} $textType
+        );
+      ''');
+
 
     await db.execute('''
         CREATE TABLE $unapprovedForm1Table (
