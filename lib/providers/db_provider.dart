@@ -81,7 +81,10 @@ class LocalDb {
         ${OvcFields.sex} $textType,
         ${OvcFields.caregiverCpimsId} $textType,
         ${OvcFields.chvCpimsId} $textType,
-        ${OvcFields.ovchivstatus} $textType
+        ${OvcFields.ovchivstatus} $textType,
+        ${OvcFields.benchMarks} $textType,
+        ${OvcFields.benchMarksScore} $intType,
+        ${OvcFields.benchMarksPathWay} $textType
       )
     ''');
 
@@ -2476,6 +2479,9 @@ class OvcFields {
     caregiverCpimsId,
     chvCpimsId,
     ovchivstatus,
+    benchMarks,
+    benchMarksScore,
+    benchMarksPathWay
   ];
 
   static const String id = '_id';
@@ -2490,6 +2496,9 @@ class OvcFields {
   static const String caregiverCpimsId = 'caregiver_cpims_id';
   static const String chvCpimsId = 'chv_cpims_id';
   static const String ovchivstatus = 'ovchivstatus';
+  static const String benchMarks = 'benchmarks';
+  static const String benchMarksScore = 'benchmarks_score';
+  static const String benchMarksPathWay = 'benchmarks_pathway';
 }
 
 class SummaryFields {
