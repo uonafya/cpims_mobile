@@ -24,7 +24,6 @@ class CaseLoadService {
 
   Future<void> fetchCaseLoadData({
     required BuildContext context,
-    required bool isForceSync,
     required String deviceID,
   }) async {
     final preferences = await SharedPreferences.getInstance();
@@ -61,9 +60,8 @@ class CaseLoadService {
         },
       );
     }
-
-    if (!(isForceSync || diff > 2592000000)) {
-      // Todo: 30 days - 2592000000 milliseconds
+    if (caseloadLastSave > 0) {
+      // Todo: 7 days - 1000 * 3600 * 24 * 7 milliseconds
       print("CaseLoadService not sync");
       Navigator.of(context).pop();
       return;
