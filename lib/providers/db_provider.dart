@@ -30,6 +30,14 @@ import '../screens/forms/form1a/new/form_one_a.dart';
 import '../screens/forms/hiv_assessment/unapproved/hiv_risk_assessment_form_model.dart';
 import '../services/metadata_service.dart';
 
+String idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
+String textType = 'TEXT NOT NULL';
+String textTypeNull = 'TEXT NULL';
+String defaultTime = 'DATETIME DEFAULT CURRENT_TIMESTAMP';
+String intType = 'INTEGER';
+String intTypeNull = 'INTEGER NULL';
+String unique = 'UNIQUE';
+
 class LocalDb {
   static const String _databaseName = 'children_ovc4.db';
   static final LocalDb instance = LocalDb._init();
@@ -52,22 +60,37 @@ class LocalDb {
     _database = null;
   }
 
+  List<String> migrationScripts = [
+    '''
+        CREATE TABLE IF NOT EXISTS $metadataTable(
+          ${FormMetadata.columnId} $idType,
+          ${FormMetadata.columnItemId} $textType,
+          ${FormMetadata.columnFieldName} $textType,
+          ${FormMetadata.columnItemDescription} $textType,
+          ${FormMetadata.columnItemSubCategory} $textType,
+          ${FormMetadata.columnTheOrder} $textType
+        );
+      '''
+  ];
+
 //create database and child table
 
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
-    return await openDatabase(path, version: 1, onCreate: _createTables);
+    return await openDatabase(
+        path,
+        version: 2,
+        onCreate: _createTables,
+        onUpgrade: (Database db, int oldVersion, int newVersion) async {
+          debugPrint("onUpgrade: Migration");
+          for (var i = oldVersion - 1; i <= newVersion - 2; i++) {
+            await db.execute(migrationScripts[i]);
+          }
+        });
   }
 
   Future<void> _createTables(Database db, int version) async {
-    const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
-    const textType = 'TEXT NOT NULL';
-    const textTypeNull = 'TEXT NULL';
-    const defaultTime = 'DATETIME DEFAULT CURRENT_TIMESTAMP';
-    const intType = 'INTEGER';
-    const intTypeNull = 'INTEGER NULL';
-    const unique = 'UNIQUE';
 
     await db.execute('''
       CREATE TABLE $caseloadTable (
@@ -152,6 +175,9 @@ class LocalDb {
           ${FormMetadata.columnTheOrder} $textType
         )
         ''');
+
+
+
 
       await db.execute('''
         CREATE TABLE IF NOT EXISTS $metadataTable(
