@@ -108,7 +108,8 @@ class LocalDb {
         ${OvcFields.ovchivstatus} $textType,
         ${OvcFields.benchMarks} $textType,
         ${OvcFields.benchMarksScore} $intType,
-        ${OvcFields.benchMarksPathWay} $textType
+        ${OvcFields.benchMarksPathWay} $textType,
+        ${OvcFields.hhGaps} $textType
       )
     ''');
 
@@ -165,7 +166,18 @@ class LocalDb {
         )
         ''');
 
-      await db.execute('''
+    await db.execute('''
+        CREATE TABLE $tableFormMetadata (
+          ${FormMetadata.columnId} $idType,
+          ${FormMetadata.columnItemId} $textType,
+          ${FormMetadata.columnFieldName} $textType,
+          ${FormMetadata.columnItemDescription} $textType,
+          ${FormMetadata.columnItemSubCategory} $textType,
+          ${FormMetadata.columnTheOrder} $textType
+        )
+        ''');
+
+    await db.execute('''
         CREATE TABLE IF NOT EXISTS $metadataTable(
           ${FormMetadata.columnId} $idType,
           ${FormMetadata.columnItemId} $textType,
@@ -2369,6 +2381,8 @@ class LocalDb {
 
   Future<List<Map<String, dynamic>>>
       fetchUnapprovedGraduationMonitoringData() async {
+  Future<List<Map<String, dynamic>>>
+      fetchUnapprovedGraduationMonitoringData() async {
     try {
       final db = await LocalDb.instance.database;
       final graduationData = await db.rawQuery(
@@ -2569,7 +2583,8 @@ class OvcFields {
     ovchivstatus,
     benchMarks,
     benchMarksScore,
-    benchMarksPathWay
+    benchMarksPathWay,
+    hhGaps
   ];
 
   static const String id = '_id';
@@ -2577,6 +2592,7 @@ class OvcFields {
   static const String ovcFirstName = 'ovc_first_name';
   static const String ovcSurname = 'ovc_surname';
   static const String dateOfBirth = 'date_of_birth';
+  static const String age = 'age';
   static const String age = 'age';
   static const String registationDate = 'registration_date';
   static const String caregiverNames = 'caregiver_names';
@@ -2587,6 +2603,7 @@ class OvcFields {
   static const String benchMarks = 'benchmarks';
   static const String benchMarksScore = 'benchmarks_score';
   static const String benchMarksPathWay = 'benchmarks_pathway';
+  static const String hhGaps = 'hh_gaps';
 }
 
 class SummaryFields {
