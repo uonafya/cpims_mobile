@@ -1,11 +1,13 @@
 import 'package:cpims_mobile/screens/forms/form1b/utils/form1bConstants.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
+import 'package:cpims_mobile/utils/map_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../providers/form1b_provider.dart';
+import '../../../../services/manager/metadata_manager.dart';
 
 class CriticalEventForm1b extends StatefulWidget {
   const CriticalEventForm1b({Key? key}) : super(key: key);
@@ -45,7 +47,7 @@ class _CriticalEventForm1bState extends State<CriticalEventForm1b> {
             // CustomToastWidget.showToast(form1bProvider.criticalEventDataForm1b.selectedEvents[0].label);
           },
           selectedOptions: selectedCriticalEvents,
-          options: careGiverCriticalItems,
+          options: MetadataManager.getInstance().caregiverCriticalEvent.toValueItemList(),
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
