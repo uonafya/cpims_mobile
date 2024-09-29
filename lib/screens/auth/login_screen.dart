@@ -376,7 +376,9 @@ class _LoginScreenState extends State<LoginScreen> {
         await Provider.of<ConnectivityProvider>(context, listen: false)
             .checkInternetConnection();
     if (!hasConnection) {
-      if (hasUserSetup == null) {
+      int authTokenTimestamp = prefs.getInt(AuthProvider.authTokenTimeStampKey) ?? 0;
+      int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
+      if (hasUserSetup == null || currentTimestamp - authTokenTimestamp > AuthProvider.authTokenMaxOfflineLoginTimeLimit) {
         Get.off(() => const ConnectivityScreen(redirectScreen: LoginScreen()));
         return;
       }

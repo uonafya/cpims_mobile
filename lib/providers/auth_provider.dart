@@ -17,7 +17,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthProvider with ChangeNotifier {
   static const String _lockAppPrefKey = '_lockAppPrefKey';
   static const String _authRefreshTokenTimeStampKey = 'authRefreshTokenTimeStampKey';
-  static const int _refreshTokenExpiryDurationMilli = 1000 * 3600 * 24 * 12; // 12 days, two day before actually expiration date.
+  static const String authTokenTimeStampKey = 'authTokenTimestampKey';
+  static const int _refreshTokenExpiryDurationMilli = 1000 * 3600 * 24 * 12;
+  static const int authTokenMaxOfflineLoginTimeLimit = 1000 * 3600 * 24 * 30;
 
   UserModel _user = UserModel(
     username: '',
@@ -101,7 +103,7 @@ class AuthProvider with ChangeNotifier {
           // await prefs.setBool("hasUserSetup", true);
 
           await prefs.setInt(
-            'authTokenTimestamp',
+            authTokenTimeStampKey,
             DateTime.now().millisecondsSinceEpoch,
           );
 
@@ -168,7 +170,7 @@ class AuthProvider with ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       String? refreshToken = prefs.getString('refresh');
-      int? authTokenTimestamp = prefs.getInt('authTokenTimestamp');
+      int? authTokenTimestamp = prefs.getInt(authTokenTimeStampKey);
       int? authRefreshTokenTimestamp = prefs.getInt(_authRefreshTokenTimeStampKey);
       if (refreshToken != null && authTokenTimestamp != null && authRefreshTokenTimestamp != null) {
 
