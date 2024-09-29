@@ -105,6 +105,33 @@ static Future<List<Metadata>> getMetadata(MetadataTypes type) async {
   }
 }
 
+static Future<List<Metadata>> getForm1bMetadata(MetadataSubCategory subCategory) async {
+  MetadataTypes type = MetadataTypes.form1bItems;
+    debugPrint("getMetadata run ${type.value}:");
+  try {
+    debugPrint("getMetadata ${type.value}: try  ${type.value}");
+    var db = await LocalDb.instance.database;
+    var results = await db.query(metadataTable,
+        distinct: true,
+        where: "field_name = ? AND item_sub_category = ?",
+        columns: ['item_description', 'item_id', 'item_sub_category', 'the_order'],
+        whereArgs: [type.value, subCategory.value]);
+
+    debugPrint("getMetadata ${type.value}: $results");
+    return results
+        .map((e) => Metadata(
+            itemDescription: e['item_description'].toString(),
+            itemId: e['item_id'].toString(),
+            itemName: e['field_name'].toString(),
+            itemSubCategory: e['item_sub_category'].toString(),
+            itemTheOrder: int.tryParse(e['the_order'].toString()) ?? 0))
+        .toList();
+  } catch (err) {
+    debugPrint("getMetadata ${type.value}: $err");
+    throw "Could Not Get Metadata";
+  }
+}
+
 }
 
 enum MetadataTypes {
@@ -203,3 +230,24 @@ extension MetadataValues on MetadataTypes {
   }
 }
 
+enum MetadataSubCategory {
+  oneS,
+  threeS,
+  sixS,
+}
+
+extension MetadataSubCategoryValues on MetadataSubCategory {
+  String get value {
+    switch (this) {
+      case MetadataSubCategory.oneS:
+        return "1s";
+      case MetadataSubCategory.threeS:
+        return "3s";
+      case MetadataSubCategory.sixS:
+        return "6s";
+      default:
+        throw "Unsupported Type";
+
+    }
+  }
+}

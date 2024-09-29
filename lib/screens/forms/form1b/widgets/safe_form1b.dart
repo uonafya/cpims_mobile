@@ -1,10 +1,12 @@
 import 'package:cpims_mobile/screens/forms/form1b/utils/form1bConstants.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
+import 'package:cpims_mobile/utils/map_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 import '../../../../providers/form1b_provider.dart';
+import '../../../../services/manager/metadata_manager.dart';
 
 class SafeForm1b extends StatefulWidget {
   const SafeForm1b({super.key});
@@ -46,7 +48,7 @@ class _SafeForm1bState extends State<SafeForm1b> {
             form1bProvider.setSelectedSafeFormDataServices(
                 selectedCareGiverProtectionServices, domainId);
           },
-          options: caregiverProtectionItems,
+          options: MetadataManager.getInstance().threeS.toValueItemList(),
           selectedOptions:
               selectedCareGiverProtectionServicesOptions.cast<ValueItem>(),
           maxItems: 13,

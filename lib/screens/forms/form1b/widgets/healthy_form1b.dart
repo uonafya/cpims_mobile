@@ -49,7 +49,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
             form1bProvider.setSelectedHealthServices(
                 selectedCareGiverServices, healthDomainId);
           },
-          options: MetadataManager.getInstance().form1bitems.toValueItemList(),
+          options: MetadataManager.getInstance().oneS.toValueItemList(),
           maxItems: 13,
           selectedOptions: selectedCareGiverServicesOptions.cast<ValueItem>(),
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
