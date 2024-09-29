@@ -39,6 +39,9 @@ class MetadataManager {
   final Map<String, String> _casePlanServicesStable = {};
   final Map<String, String> _olmisCriticalEvent = {};
   final Map<String, String> _caregiverCriticalEvent = {};
+  final Map<String, String> _oneS = {};
+  final Map<String, String> _threeS = {};
+  final Map<String, String> _sixS = {};
   
 
   Map<String, String> get sex => _sex;
@@ -70,6 +73,9 @@ class MetadataManager {
   Map<String, String> get casePlanServicesStable => _casePlanServicesStable;
   Map<String, String> get olmisCriticalEvent => _olmisCriticalEvent;
   Map<String, String> get caregiverCriticalEvent => _caregiverCriticalEvent;
+  Map<String, String> get oneS => _oneS;
+  Map<String, String> get threeS => _threeS;
+  Map<String, String> get sixS => _sixS;
  
 
   List<String> get sexNames => _sex.keys.toList();
@@ -101,7 +107,9 @@ class MetadataManager {
   List<String> get casePlanServicesStableNames => _casePlanServicesStable.keys.toList();
   List<String> get olmisCriticalEventNames => _olmisCriticalEvent.keys.toList();
   List<String> get caregiverCriticalEventNames => _caregiverCriticalEvent.keys.toList();
-   
+  List<String> get oneSNames => _oneS.keys.toList();
+  List<String> get threeSNames => _threeS.keys.toList();
+  List<String> get sixSNames => _sixS.keys.toList();   
  
 
   static MetadataManager getInstance() {
@@ -143,6 +151,9 @@ class MetadataManager {
     _loadCasePlanServicesStableMetaData();
     _loadOlmisCriticalEventMetaData();
     _loadCaregiverCriticalEvents();
+    _loadOneS();
+    _loadThreeS();
+    _loadSixs();
     
   }
 
@@ -337,6 +348,25 @@ class MetadataManager {
     _caregiverCriticalEvent.addAll({for (var e in caregiverCriticalEventsMetadata) e.itemId: e.itemDescription });
   }
 
+  Future<void> _loadOneS() async {
+    List<Metadata> oneS = await MetadataService.getForm1bMetadata(MetadataSubCategory.oneS);
+    _oneS.clear();
+    _oneS.addAll({for (var e in oneS) e.itemId: e.itemDescription });
+  }
+
+  Future<void> _loadThreeS() async {
+    List<Metadata> threeS = await MetadataService.getForm1bMetadata(MetadataSubCategory.threeS);
+    _threeS.clear();
+    _threeS.addAll({for (var e in threeS) e.itemId: e.itemDescription });
+  }
+
+  Future<void> _loadSixs() async {
+    List<Metadata> sixS = await MetadataService.getForm1bMetadata(MetadataSubCategory.sixS);
+    _sixS.clear();
+    _sixS.addAll({for (var e in sixS) e.itemId: e.itemDescription });
+  }
+
+
   String getSexValue(String key) {
     return _sex[key] ?? key;
   }
@@ -449,4 +479,15 @@ class MetadataManager {
     return _caregiverCriticalEvent[key] ?? key;
   }
   
+  String getOneSValue(String key) {
+    return _oneS[key] ?? key;
+  }
+
+  String getThreeSValue(String key) {
+    return _threeS[key] ?? key;
+  }
+
+  String getSixSValue(String key) {
+    return _sixS[key] ?? key;
+  }
 }
