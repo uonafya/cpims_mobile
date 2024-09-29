@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:cpims_mobile/services/metadata_service.dart';
 
 const kPrimaryColor = Color(0xff00acac);
 const kTextGrey = Color(0XFF707478);
