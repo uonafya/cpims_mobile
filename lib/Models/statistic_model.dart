@@ -5,7 +5,7 @@ class SummaryDataModel {
   int ngo = 0;
   int caseRecords = 0;
   int pendingCases = 0;
-  int orgUnits = 0;
+  String orgUnits = "";
   int workforceMembers = 0;
   int household = 0;
   int childrenAll = 0; //ever register
@@ -68,7 +68,7 @@ class SummaryDataModel {
       ngo: json['ngo'],
       caseRecords: json['case_records'],
       pendingCases: json['pending_cases'],
-      orgUnits: json['org_units'],
+      orgUnits: json['org_units'].toString(),
       workforceMembers: json['workforce_members'],
       household: json['household'],
       childrenAll: json['children_all'],
