@@ -1,16 +1,17 @@
 import 'package:android_id/android_id.dart';
 import 'package:cpims_mobile/providers/auth_provider.dart';
 import 'package:cpims_mobile/screens/homepage/home_page.dart';
+import 'package:cpims_mobile/screens/initial_loader.dart';
 import 'package:cpims_mobile/screens/ovc_care/ovc_care_screen.dart';
 import 'package:cpims_mobile/screens/profile/profile_screen.dart';
 import 'package:cpims_mobile/screens/unapproved_records/unapproved_records_screen.dart';
 import 'package:cpims_mobile/services/caseload_service.dart';
+import 'package:cpims_mobile/services/sync_upstream.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-
 
 const kPrimaryColor = Color(0xff00acac);
 const kTextGrey = Color(0XFF707478);
@@ -146,51 +147,36 @@ List drawerOptions(BuildContext context) {
           const androidIdPlugin = AndroidId();
           final String? androidId = await androidIdPlugin.getId();
           if (context.mounted) {
-            CaseLoadService().updateCaseLoadData(
-              context: context,
-              deviceID: androidId!,
-            );
-          }
-          // syncWorkflows();
-          snackBar = SnackBar(
-            content: const Text(
-              'Syncing in progress ...',
-              style: TextStyle(color: Colors.green),
-            ),
-            duration:
-                const Duration(seconds: 5), // Duration to display the Snackbar
-            action: SnackBarAction(
-              textColor: Colors.red,
-              label: 'Close',
-              onPressed: () {
-                Get.back();
-                // Action to perform when the "Close" button is pressed
-              },
-            ),
-          );
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          }
-          Future.delayed(const Duration(seconds: 4));
+            final SyncUpstreamImpl syncUpstreamImpl =
+                SyncUpstreamImpl(context: context);
 
-          snackBar = SnackBar(
-            content: const Text(
-              'Sync completed successfully',
-              style: TextStyle(color: Colors.green),
-            ),
-            duration:
-                const Duration(seconds: 1), // Duration to display the Snackbar
-            action: SnackBarAction(
-              textColor: Colors.red,
-              label: 'Close',
-              onPressed: () {
-                Get.back();
-                // Action to perform when the "Close" button is pressed
-              },
-            ),
-          );
-          if (context.mounted) {
+            snackBar = SnackBar(
+              content: const Text(
+                'Syncing in progress ...',
+                style: TextStyle(color: Colors.green),
+              ),
+              duration: const Duration(
+                  seconds: 5), // Duration to display the Snackbar
+              action: SnackBarAction(
+                textColor: Colors.red,
+                label: 'Close',
+                onPressed: () {
+                  Get.back();
+                  // Action to perform when the "Close" button is pressed
+                },
+              ),
+            );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+            final isSyncSuccessful = await syncUpstreamImpl.syncWorkflows();
+            if (isSyncSuccessful) {
+              CaseLoadService.saveCaseLoadLastSave(0);
+              Get.to(() => const InitialLoadingScreen(),
+                  transition: Transition.fadeIn,
+                  duration: const Duration(milliseconds: 1000));
+            } else {
+              throw Exception('Sync failed');
+            }
           }
         } catch (e) {
           snackBar = SnackBar(

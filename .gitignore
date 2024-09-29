@@ -47,3 +47,26 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /lib/screens/forms/form1a_test_screen.dart
+
+# ignore iOS related files
+/ios/Runner.app.dSYM.zip
+/ios/Runner.ipa
+# /ios/Flutter
+/ios/build/
+/ios/gc_keys.json
+/ios/vendor
+/ios/fastlane/metadata/
+
+# Web related
+lib/generated_plugin_registrant.dart
+
+# Android related
+**/android/**/gradle-wrapper.jar
+**/android/.gradle
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/debug_key.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/build/ios/*
