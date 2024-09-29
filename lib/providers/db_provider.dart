@@ -277,6 +277,46 @@ class LocalDb {
 
   Future<void> updateMultipleCaseLoad(
       List<CaseLoadModel> caseLoadModelList) async {
+    /**
+     * There was an alternative approach to syncing caseloads. We will leave the commented ode here in case there is need to switch back to this approach.
+     * This approach goes like so:
+     * -> sync data upstream -> get all caseloads from the server -> upsert all caseloads into the local db -> delete all caseloads not in the fetched data
+     * For now we will only leave the upsert without the delete functionality
+     * await db.transaction((txn) async {
+        // Step 1: Create a temporary table to store the fetched IDs
+        await txn.execute('''
+        CREATE TEMPORARY TABLE temp_caseload_ids (
+        ovc_cpims_id TEXT PRIMARY KEY
+        )
+        ''');
+
+        // Step 2: Insert fetched IDs into the temporary table and upsert data
+        final batch = txn.batch();
+        for (final caseLoad in caseLoadModelList) {
+        batch.insert(
+        'temp_caseload_ids',
+        {'ovc_cpims_id': caseLoad.cpimsId},
+        conflictAlgorithm: ConflictAlgorithm.ignore,
+        );
+        batch.insert(
+        caseloadTable,
+        caseLoad.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+        }
+        await batch.commit(noResult: true);
+
+        // Step 3: Delete records not in the fetched data
+        await txn.delete(
+        caseloadTable,
+        where:
+        'ovc_cpims_id NOT IN (SELECT ovc_cpims_id FROM temp_caseload_ids)',
+        );
+
+        // Step 4: Drop the temporary table
+        await txn.execute('DROP TABLE temp_caseload_ids');
+        });
+     * */
     try {
       final db = await instance.database;
 
@@ -293,7 +333,7 @@ class LocalDb {
       // Commit the batch to update all the data in a single transaction
       await batch.commit(noResult: true);
     } catch (e) {
-      debugPrint("Error updating caseload data: $e");
+      debugPrint('Error updating caseload data: $e');
     }
   }
 
@@ -2340,7 +2380,8 @@ class LocalDb {
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchUnapprovedGraduationMonitoringData() async {
+  Future<List<Map<String, dynamic>>>
+      fetchUnapprovedGraduationMonitoringData() async {
     try {
       final db = await LocalDb.instance.database;
       final graduationData = await db.rawQuery(
@@ -2459,6 +2500,53 @@ class LocalDb {
       return false; // Data was not deleted
     }
   }
+
+  Future<void> clearAllTables() async {
+    try {
+      final db = await instance.database;
+
+      /**
+       * currently hard coded table names which is bad practice but will be refactored
+       * to dynamically get all table names and clear them once we unify the table names
+       * across the app
+       * */
+      // TODO: Refactor to dynamically get all table names
+      final tables = [
+        "Form",
+        "ChildAnswer",
+        "HMFForm",
+        "HRSForm",
+        "HouseholdAnswer",
+        "UnapprovedCPARA",
+        "UnapprovedCPARAAnswers",
+        "app_form_metadata",
+        "case_plan",
+        "case_plan_services",
+        "form1",
+        "form1_critical_events",
+        "form1_services",
+        "form_metadata",
+        "graduation_monitoring",
+        "ovcs",
+        "ovcsubpopulation",
+        "statistics",
+        "unapproved_form1",
+        "unapproved_cpt",
+      ];
+
+      // Use a batch to clear all tables
+      final batch = db.batch();
+
+      for (final table in tables) {
+        batch.delete(table);
+      }
+
+      // Commit the batch to clear all the data in a single transaction
+      await batch.commit(noResult: true);
+    } catch (e) {
+      debugPrint('Error clearing tables: $e');
+    }
+  }
 }
 
 // table name and field names
@@ -2479,7 +2567,7 @@ const HMForms = 'HMFForm';
 const cparaHouseholdAnswers = 'cpara_household_answers';
 const cparaChildAnswers = 'cpara_child_answers';
 const graduation_monitoring = 'graduation_monitoring';
-// const String metadataTable = "metadata";
+const appFormMetadata = 'app_form_metadata';
 
 class OvcFields {
   static final List<String> values = [
@@ -2503,7 +2591,7 @@ class OvcFields {
   static const String ovcFirstName = 'ovc_first_name';
   static const String ovcSurname = 'ovc_surname';
   static const String dateOfBirth = 'date_of_birth';
-  static const String age= 'age';
+  static const String age = 'age';
   static const String registationDate = 'registration_date';
   static const String caregiverNames = 'caregiver_names';
   static const String sex = 'sex';
