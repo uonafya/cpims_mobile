@@ -61,7 +61,7 @@ class CaseLoadService {
       );
     }
     if (diff < 1000 * 3600 * 24 * 30) {
-      // Todo: 7 days - 1000 * 3600 * 24 * 7 milliseconds
+      // Todo: 30 days = 1000 * 3600 * 24 * 30 milliseconds
       print("CaseLoadService not sync");
       Navigator.of(context).pop();
       return;
