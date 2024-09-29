@@ -306,17 +306,11 @@ class _CareGiverDetailsScreenState extends State<CareGiverDetailsScreen> {
             ],
           ),
           const SizedBox(height: 10),
-          const Text(
-            "Results",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
           const SizedBox(height: 5),
           Row(
             children: [
               const Text(
-                "Score:",
+                "Total Score:",
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                 ),
@@ -334,7 +328,7 @@ class _CareGiverDetailsScreenState extends State<CareGiverDetailsScreen> {
           Row(
             children: [
               const Text(
-                "Pathway:",
+                "CPA Pathway:",
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                 ),
@@ -349,6 +343,30 @@ class _CareGiverDetailsScreenState extends State<CareGiverDetailsScreen> {
             ],
           ),
           const SizedBox(height: 10),
+          const Divider(),
+          const Text(
+            "Case Plan Services",
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          firstChild.hhGaps != null && firstChild.hhGaps!.isNotEmpty
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: firstChild.hhGaps!
+                      .map((gap) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: Text(
+                              "• $gap",
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ))
+                      .toList(),
+                )
+              : const Text(
+                  "No case plan services identified.",
+                  style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                ),
           const Footer(),
         ],
       ),

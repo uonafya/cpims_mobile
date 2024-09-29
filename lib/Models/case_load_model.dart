@@ -17,6 +17,7 @@ class CaseLoadModel {
   List<Scores>? benchmarks;
   int? benchmarksScore;
   String? benchmarksPathway;
+  List<String>? hhGaps;
 
   CaseLoadModel({
     this.cpimsId,
@@ -33,6 +34,7 @@ class CaseLoadModel {
     this.benchmarks,
     this.benchmarksScore,
     this.benchmarksPathway,
+    this.hhGaps,
   });
 
   factory CaseLoadModel.fromJson(Map<String, dynamic> json) {
@@ -52,6 +54,7 @@ class CaseLoadModel {
       benchmarks: _parseBenchmarks(json['benchmarks']),
       benchmarksScore: json['benchmarks_score'],
       benchmarksPathway: json['benchmarks_pathway'],
+      hhGaps: _parseHhGaps(json['hh_gaps']),
     );
   }
 
@@ -66,6 +69,24 @@ class CaseLoadModel {
       }
     } else if (benchmarksData is List) {
       return benchmarksData.map((b) => Scores.fromJson(b)).toList();
+    }
+    return [];
+  }
+
+  static List<String>? _parseHhGaps(dynamic hhGapsData) {
+    if (hhGapsData == null) {
+      return null;
+    }
+    if (hhGapsData is String) {
+      try {
+        final List<dynamic> parsedList = json.decode(hhGapsData);
+        return parsedList.map((gap) => gap.toString()).toList();
+      } catch (e) {
+        print('Error parsing hh_gaps: $e');
+        return [];
+      }
+    } else if (hhGapsData is List) {
+      return hhGapsData.map((gap) => gap.toString()).toList();
     }
     return [];
   }
@@ -86,6 +107,7 @@ class CaseLoadModel {
     data['benchmarks'] = benchmarks;
     data['benchmarks_score'] = benchmarksScore;
     data['benchmarks_pathway'] = benchmarksPathway;
+    data['hh_gaps'] = hhGaps;
     return data;
   }
 
@@ -107,6 +129,7 @@ class CaseLoadModel {
           : json.encode([Scores().toJson()]),
       'benchmarks_score': benchmarksScore,
       'benchmarks_pathway': benchmarksPathway,
+      'hh_gaps': hhGaps != null ? json.encode(hhGaps) : null,
     };
   }
 
@@ -126,11 +149,12 @@ class CaseLoadModel {
       benchmarks: _parseBenchmarks(map['benchmarks']),
       benchmarksScore: map['benchmarks_score'],
       benchmarksPathway: map['benchmarks_pathway'],
+      hhGaps: _parseHhGaps(map['hh_gaps']),
     );
   }
 
   @override
   String toString() {
-    return 'CaseLoadModel{cpimsId: $cpimsId, ovcFirstName: $ovcFirstName, ovcSurname: $ovcSurname, dateOfBirth: $dateOfBirth, registrationDate: $registrationDate, $benchmarks, benchmarksScore: $benchmarksScore, benchmarksPathway: $benchmarksPathway}';
+    return 'CaseLoadModel{cpimsId: $cpimsId, ovcFirstName: $ovcFirstName, ovcSurname: $ovcSurname, dateOfBirth: $dateOfBirth, registrationDate: $registrationDate, $benchmarks, benchmarksScore: $benchmarksScore, benchmarksPathway: $benchmarksPathway, hhGaps: $hhGaps}';
   }
 }

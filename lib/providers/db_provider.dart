@@ -78,20 +78,16 @@ class LocalDb {
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
-    return await openDatabase(
-        path,
-        version: 2,
-        onCreate: _createTables,
+    return await openDatabase(path, version: 2, onCreate: _createTables,
         onUpgrade: (Database db, int oldVersion, int newVersion) async {
-          debugPrint("onUpgrade: Migration");
-          for (var i = oldVersion - 1; i <= newVersion - 2; i++) {
-            await db.execute(migrationScripts[i]);
-          }
-        });
+      debugPrint("onUpgrade: Migration");
+      for (var i = oldVersion - 1; i <= newVersion - 2; i++) {
+        await db.execute(migrationScripts[i]);
+      }
+    });
   }
 
   Future<void> _createTables(Database db, int version) async {
-
     await db.execute('''
       CREATE TABLE $caseloadTable (
         ${OvcFields.id} $idType,
@@ -108,7 +104,8 @@ class LocalDb {
         ${OvcFields.ovchivstatus} $textType,
         ${OvcFields.benchMarks} $textType,
         ${OvcFields.benchMarksScore} $intType,
-        ${OvcFields.benchMarksPathWay} $textType
+        ${OvcFields.benchMarksPathWay} $textType,
+        ${OvcFields.hhGaps} $textType
       )
     ''');
 
@@ -165,7 +162,7 @@ class LocalDb {
         )
         ''');
 
-      await db.execute('''
+    await db.execute('''
         CREATE TABLE IF NOT EXISTS $metadataTable(
           ${FormMetadata.columnId} $idType,
           ${FormMetadata.columnItemId} $textType,
@@ -2569,7 +2566,8 @@ class OvcFields {
     ovchivstatus,
     benchMarks,
     benchMarksScore,
-    benchMarksPathWay
+    benchMarksPathWay,
+    hhGaps
   ];
 
   static const String id = '_id';
@@ -2587,6 +2585,7 @@ class OvcFields {
   static const String benchMarks = 'benchmarks';
   static const String benchMarksScore = 'benchmarks_score';
   static const String benchMarksPathWay = 'benchmarks_pathway';
+  static const String hhGaps = 'hh_gaps';
 }
 
 class SummaryFields {
