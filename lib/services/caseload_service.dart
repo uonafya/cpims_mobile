@@ -60,7 +60,7 @@ class CaseLoadService {
         },
       );
     }
-    if (caseloadLastSave > 0) {
+    if (diff < 1000 * 3600 * 24 * 30) {
       // Todo: 7 days - 1000 * 3600 * 24 * 7 milliseconds
       print("CaseLoadService not sync");
       Navigator.of(context).pop();
