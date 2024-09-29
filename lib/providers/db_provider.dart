@@ -165,20 +165,6 @@ class LocalDb {
         )
         ''');
 
-    await db.execute('''
-        CREATE TABLE $tableFormMetadata (
-          ${FormMetadata.columnId} $idType,
-          ${FormMetadata.columnItemId} $textType,
-          ${FormMetadata.columnFieldName} $textType,
-          ${FormMetadata.columnItemDescription} $textType,
-          ${FormMetadata.columnItemSubCategory} $textType,
-          ${FormMetadata.columnTheOrder} $textType
-        )
-        ''');
-
-
-
-
       await db.execute('''
         CREATE TABLE IF NOT EXISTS $metadataTable(
           ${FormMetadata.columnId} $idType,
@@ -189,7 +175,6 @@ class LocalDb {
           ${FormMetadata.columnTheOrder} $textType
         );
       ''');
-
 
     await db.execute('''
         CREATE TABLE $unapprovedForm1Table (
@@ -1247,30 +1232,6 @@ class LocalDb {
     final db = await LocalDb.instance.database;
     final result = await db.query(ovcsubpopulation);
     return result;
-  }
-
-  // insert Metadata
-  Future<bool> insertMetadata(Metadata metadata) async {
-    final db = await instance.database;
-    await db.insert(tableFormMetadata, metadata.toJson());
-    return true;
-  }
-
-  // Query All form Metadata
-  Future<List<Map<String, dynamic>>> queryAllMetadataRows() async {
-    final db = await instance.database;
-    List<Map<String, dynamic>> results = await db.query(tableFormMetadata);
-    return results;
-  }
-
-  //Query specific field Items
-  Future<List<Map<String, dynamic>>> querySpecificMetadataFieldItems(
-      String fieldName) async {
-    final db = await instance.database;
-    const sql = 'SELECT * FROM $tableFormMetadata WHERE field_name = ?';
-    final List<Map<String, dynamic>> results =
-        await db.rawQuery(sql, [fieldName]);
-    return results;
   }
 
   Future<void> insertAppFormMetaData(
@@ -2490,7 +2451,6 @@ class LocalDb {
 // table name and field names
 const caseloadTable = 'ovcs';
 const statisticsTable = 'statistics';
-const tableFormMetadata = 'form_metadata';
 const casePlanTable = 'case_plan';
 const casePlanServicesTable = 'case_plan_services';
 const form1Table = 'form1';
@@ -2505,7 +2465,6 @@ const HMForms = 'HMFForm';
 const cparaHouseholdAnswers = 'cpara_household_answers';
 const cparaChildAnswers = 'cpara_child_answers';
 const graduation_monitoring = 'graduation_monitoring';
-// const String metadataTable = "metadata";
 
 class OvcFields {
   static final List<String> values = [
