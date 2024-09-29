@@ -101,7 +101,7 @@ class SummaryDataModel {
       'ngo': ngo,
       'case_records': caseRecords,
       'pending_cases': pendingCases,
-      'org_units': orgUnits.toString(),
+      'org_units': orgUnits,
       'workforce_members': workforceMembers,
       'household': household,
       'children_all': childrenAll,

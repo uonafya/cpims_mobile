@@ -12,7 +12,7 @@ class LogOutDialog extends StatefulWidget {
 }
 
 class _LogOutDialogState extends State<LogOutDialog> {
-  bool _saveCredentials = true;q
+  bool _saveCredentials = true;
 
   @override
   Widget build(BuildContext context) {
