@@ -38,6 +38,7 @@ class MetadataManager {
   final Map<String, String> _casePlanServicesSchool = {};
   final Map<String, String> _casePlanServicesStable = {};
   final Map<String, String> _olmisCriticalEvent = {};
+  final Map<String, String> _caregiverCriticalEvent = {};
   
 
   Map<String, String> get sex => _sex;
@@ -68,6 +69,7 @@ class MetadataManager {
   Map<String, String> get casePlanServicesSchool => _casePlanServicesSchool;
   Map<String, String> get casePlanServicesStable => _casePlanServicesStable;
   Map<String, String> get olmisCriticalEvent => _olmisCriticalEvent;
+  Map<String, String> get caregiverCriticalEvent => _caregiverCriticalEvent;
  
 
   List<String> get sexNames => _sex.keys.toList();
@@ -98,6 +100,7 @@ class MetadataManager {
   List<String> get casePlanServicesSchoolNames => _casePlanServicesSchool.keys.toList();
   List<String> get casePlanServicesStableNames => _casePlanServicesStable.keys.toList();
   List<String> get olmisCriticalEventNames => _olmisCriticalEvent.keys.toList();
+  List<String> get caregiverCriticalEventNames => _caregiverCriticalEvent.keys.toList();
    
  
 
@@ -139,6 +142,7 @@ class MetadataManager {
     _loadCasePlanServicesSchoolMetaData();
     _loadCasePlanServicesStableMetaData();
     _loadOlmisCriticalEventMetaData();
+    _loadCaregiverCriticalEvents();
     
   }
 
@@ -326,6 +330,13 @@ class MetadataManager {
     _olmisCriticalEvent.addAll({for (var e in olmisCriticalEventMetadata) e.itemId: e.itemDescription });
   }
 
+  Future<void> _loadCaregiverCriticalEvents() async {
+    List<Metadata> caregiverCriticalEventsMetadata =
+        await MetadataService.getMetadata(MetadataTypes.caregiverCriticalEvents);
+    _caregiverCriticalEvent.clear();
+    _caregiverCriticalEvent.addAll({for (var e in caregiverCriticalEventsMetadata) e.itemId: e.itemDescription });
+  }
+
   String getSexValue(String key) {
     return _sex[key] ?? key;
   }
@@ -432,6 +443,10 @@ class MetadataManager {
 
   String getOlmisCriticalEventValue(String key) {
     return _olmisCriticalEvent[key] ?? key;
+  }
+
+  String getCaregiverCriticalEventValue(String key) {
+    return _caregiverCriticalEvent[key] ?? key;
   }
   
 }

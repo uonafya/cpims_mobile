@@ -134,7 +134,8 @@ enum MetadataTypes {
   casePlanServicesSafe,
   casePlanServicesSchool,
   casePlanServicesStable,
-  olmisCriticalEvent
+  olmisCriticalEvent,
+  caregiverCriticalEvents,
 }
 
 extension MetadataValues on MetadataTypes {
@@ -194,6 +195,8 @@ extension MetadataValues on MetadataTypes {
         return "case_plan_services_stable";
       case MetadataTypes.olmisCriticalEvent:
         return "olmis_critical_event_id";
+      case MetadataTypes.caregiverCriticalEvents:
+        return "caregiver_critical_event_id";
       default:
         throw "Unsupported Type";
     }
