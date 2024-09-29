@@ -68,7 +68,7 @@ class SummaryDataModel {
       ngo: json['ngo'],
       caseRecords: json['case_records'],
       pendingCases: json['pending_cases'],
-      orgUnits: int.tryParse(json['org_units'].toString()) ?? 0,
+      orgUnits: json['org_units'],
       workforceMembers: json['workforce_members'],
       household: json['household'],
       childrenAll: json['children_all'],
