@@ -18,6 +18,16 @@ class SummaryDataModel {
   String orgUnit = '';
   int orgUnitId = 0;
   String details = '';
+  String userOrgUnits = '';
+  String username = '';
+  int userCpimsId = 0;
+  String email = '';
+  String ward = '';
+  String subCounties = '';
+  int caseloadOvc = 0;
+  int caseloadHh = 0;
+  int caseloadClhiv = 0;
+  int caseloadHei = 0;
 
   SummaryDataModel({
     required this.children,
@@ -38,6 +48,16 @@ class SummaryDataModel {
     required this.orgUnit,
     required this.orgUnitId,
     required this.details,
+    required this.userOrgUnits,
+    required this.username,
+    required this.userCpimsId,
+    required this.email,
+    required this.ward,
+    required this.subCounties,
+    required this.caseloadOvc,
+    required this.caseloadHh,
+    required this.caseloadClhiv,
+    required this.caseloadHei,
   });
 
   factory SummaryDataModel.fromJson(Map<String, dynamic> json) {
@@ -60,6 +80,16 @@ class SummaryDataModel {
       orgUnit: json['org_unit'],
       orgUnitId: json['org_unit_id'],
       details: json['details'],
+      userOrgUnits: json['user_org_units'] ?? "N/A",
+      username: json['username'],
+      userCpimsId: json['user_cpims_id'],
+      email: json['email'],
+      ward: json['wards'],
+      subCounties: json['sub_counties'],
+      caseloadOvc: json['caseload_ovc'] ?? 0,
+      caseloadHh: json['caseload_hh'] ?? 0,
+      caseloadClhiv: json['caseload_clhiv'] ?? 0,
+      caseloadHei: json['caseload_hei'] ?? 0,
     );
   }
 
@@ -71,7 +101,7 @@ class SummaryDataModel {
       'ngo': ngo,
       'case_records': caseRecords,
       'pending_cases': pendingCases,
-      'org_units': orgUnits,
+      'org_units': orgUnits.toString(),
       'workforce_members': workforceMembers,
       'household': household,
       'children_all': childrenAll,
@@ -83,6 +113,16 @@ class SummaryDataModel {
       'org_unit': orgUnit,
       'org_unit_id': orgUnitId,
       'details': details,
+      'user_org_units': userOrgUnits,
+      'username': username,
+      'user_cpims_id': userCpimsId,
+      'email': email,
+      'wards': ward,
+      'sub_counties': subCounties,
+      'caseload_ovc': caseloadOvc,
+      'caseload_hh': caseloadHh,
+      'caseload_clhiv': caseloadClhiv,
+      'caseload_hei': caseloadHei,
     };
   }
 
@@ -106,7 +146,18 @@ class SummaryDataModel {
         'criteria: $criteria, '
         'orgUnit: $orgUnit, '
         'orgUnitId: $orgUnitId, '
-        'details: $details}';
+        'details: $details, '
+        'user_org_units: $userOrgUnits,'
+        'username: $username,'
+        'user_cpims_id: $userCpimsId,'
+        'email: $email,'
+        'wards: $ward,'
+        'sub_counties: $subCounties,'
+        'caseload_ovc: $caseloadOvc,'
+        'caseload_hh: $caseloadHh,'
+        'caseload_clhiv: $caseloadClhiv,'
+        'caseload_hei: $caseloadHei}'
+    ;
   }
 }
 

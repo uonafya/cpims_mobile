@@ -103,6 +103,8 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
             final accessToken = prefs.getString('access');
             final dashRep = await DashBoardService().dashBoard(accessToken);
             if (isMounted) {
+              final isAuthenticated = await Provider.of<AuthProvider>(context, listen: false)
+                  .verifyToken(context: context);
               if (dashRep == null) {
                 Provider.of<UIProvider>(context, listen: false)
                     .setDashData(localDashData);
@@ -115,7 +117,6 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
               if (isMounted) {
                 await CaseLoadService().fetchCaseLoadData(
                   context: context,
-                  isForceSync: false,
                   deviceID: androidId!,
                 );
               }
@@ -125,9 +126,6 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
                 Get.off(() => const LockedScreen());
                 return;
               }
-
-              // TODO Fetch unapproved data from server
-              await UnapprovedDataService.fetchRemoteUnapprovedData(accessToken);
 
               // fetch unapproved data from local db
               final List<UnapprovedCparaModel> cparaRecords =
@@ -140,12 +138,18 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
                 await Provider.of<UIProvider>(context, listen: false)
                     .setCaseLoadData();
               }
-              try {
-                // await MetadataService.fetchMetadata();
-                await MetadataService.saveMetadata();
-              } catch (e) {
-                if (kDebugMode) {
-                  print("Error fetching metadata in init load: $e");
+
+              // TODO Fetch unapproved data from server
+              if (isAuthenticated) {
+                await UnapprovedDataService.fetchRemoteUnapprovedData(accessToken);
+
+                try {
+                  // await MetadataService.fetchMetadata();
+                  await MetadataService.saveMetadata();
+                } catch (e) {
+                  if (kDebugMode) {
+                    print("Error fetching metadata in init load: $e");
+                  }
                 }
               }
               MetadataManager.getInstance().loadMetaData();
