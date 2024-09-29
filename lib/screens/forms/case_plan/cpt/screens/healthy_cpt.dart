@@ -2,12 +2,14 @@ import 'dart:core';
 
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
+import 'package:cpims_mobile/utils/map_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
+import '../../../../../services/manager/metadata_manager.dart';
 import '../../../../../widgets/custom_text_field.dart';
 import '../../../../cpara/widgets/cpara_details_widget.dart';
 import '../../../../registry/organisation_units/widgets/steps_wrapper.dart';
@@ -225,7 +227,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
             }
           },
           selectedOptions: selectedGoalOptions,
-          options: casePlanGoalHealthList,
+          options: MetadataManager.getInstance().casePlanGoalsHealth.toValueItemList(),
           maxItems: 35,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.single,
@@ -261,7 +263,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
               print("The selected need was ${selectedEvents[0].value}");
             }
           },
-          options: casePlanGapsHealthList,
+          options: MetadataManager.getInstance().casePlanGapsHealth.toValueItemList(),
           selectedOptions: selectedNeedOptions,
           maxItems: 35,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
@@ -298,7 +300,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
               print("The selected prioity was ${selectedEvents[0].value}");
             }
           },
-          options: casePlanPrioritiesHealthList,
+          options: MetadataManager.getInstance().casePlanPrioritiesHealth.toValueItemList(),
           selectedOptions: selectedPriorityActionOptions,
           maxItems: 35,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
@@ -340,7 +342,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
             }
           },
           selectedOptions: selectedServicesOptions,
-          options: casePlanServicesHealthList,
+          options: MetadataManager.getInstance().casePlanServicesHealth.toValueItemList(),
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
@@ -384,7 +386,7 @@ class _HealthyCasePlanState extends State<HealthyCasePlan> {
             }
           },
           selectedOptions: selectedPersonsResponsibleOptions,
-          options: casePlanProviderPersonsResponsibleList,
+          options: MetadataManager.getInstance().casePlanResponsible.toValueItemList(),
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,

@@ -1,5 +1,8 @@
 import 'package:cpims_mobile/Models/case_load_model.dart';
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/new_cpt_provider.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/healthy_cpt.dart';
+import 'package:cpims_mobile/services/manager/metadata_manager.dart';
+import 'package:cpims_mobile/utils/map_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -235,7 +238,7 @@ class _StableCasePlanState extends State<StableCasePlan> {
             }
           },
           selectedOptions: selectedGoalOptions,
-          options: casePlanGoalStableList,
+          options: MetadataManager.getInstance().casePlanGoalsStable.toValueItemList(),
           maxItems: 35,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.single,
@@ -270,7 +273,7 @@ class _StableCasePlanState extends State<StableCasePlan> {
               print("The selected need was ${selectedEvents[0].value}");
             }
           },
-          options: casePlanGapsStableList,
+          options: MetadataManager.getInstance().casePlanGapsStable.toValueItemList(),
           selectedOptions: selectedNeedOptions,
           maxItems: 35,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
@@ -307,7 +310,7 @@ class _StableCasePlanState extends State<StableCasePlan> {
               print("The selected prioity was ${selectedEvents[0].value}");
             }
           },
-          options: casePlanPrioritiesStableList,
+          options: MetadataManager.getInstance().casePlanPrioritiesStable.toValueItemList(),
           selectedOptions: selectedPriorityActionOptions,
           maxItems: 35,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
@@ -348,7 +351,7 @@ class _StableCasePlanState extends State<StableCasePlan> {
             }
           },
           selectedOptions: selectedServicesOptions,
-          options: casePlanServicesStableList,
+          options: MetadataManager.getInstance().casePlanServicesStable.toValueItemList(),
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
@@ -390,7 +393,7 @@ class _StableCasePlanState extends State<StableCasePlan> {
             }
           },
           selectedOptions: selectedPersonsResponsibleOptions,
-          options: casePlanProviderPersonsResponsibleList,
+          options: MetadataManager.getInstance().casePlanResponsible.toValueItemList(),
           maxItems: 13,
           disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,

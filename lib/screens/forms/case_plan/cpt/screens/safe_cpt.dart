@@ -1,4 +1,7 @@
 import 'package:cpims_mobile/screens/forms/case_plan/cpt/models/safe_cpt_model.dart';
+import 'package:cpims_mobile/screens/forms/case_plan/cpt/screens/healthy_cpt.dart';
+import 'package:cpims_mobile/services/manager/metadata_manager.dart';
+import 'package:cpims_mobile/utils/map_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -222,7 +225,7 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
           }
         },
         selectedOptions: selectedGoalOptions,
-        options: casePlanGoalSafeList,
+        options: MetadataManager.getInstance().casePlanGoalsSafe.toValueItemList(),
         maxItems: 35,
         disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
         selectionType: SelectionType.single,
@@ -256,7 +259,7 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
             print("The selected need was ${selectedEvents[0].value}");
           }
         },
-        options: casePlanGapsSafeList,
+        options: MetadataManager.getInstance().casePlanGapsSafe.toValueItemList(),
         selectedOptions: selectedNeedOptions,
         maxItems: 35,
         disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
@@ -290,7 +293,7 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
             print("The selected priority was ${selectedEvents[0].value}");
           }
         },
-        options: casePlanPrioritiesSafeList,
+        options: MetadataManager.getInstance().casePlanPrioritiesSafe.toValueItemList(),
         selectedOptions: selectedPriorityActionOptions,
         maxItems: 35,
         disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
@@ -330,7 +333,7 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
           }
         },
         selectedOptions: selectedServicesOptions,
-        options: casePlanServicesSafeList,
+        options: MetadataManager.getInstance().casePlanServicesSafe.toValueItemList(),
         maxItems: 13,
         disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
         selectionType: SelectionType.multi,
@@ -371,7 +374,7 @@ class _SafeCasePlanState extends State<SafeCasePlan> {
           }
         },
         selectedOptions: selectedPersonsResponsibleOptions,
-        options: casePlanProviderPersonsResponsibleList,
+        options: MetadataManager.getInstance().casePlanResponsible.toValueItemList(),
         maxItems: 13,
         disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
         selectionType: SelectionType.multi,

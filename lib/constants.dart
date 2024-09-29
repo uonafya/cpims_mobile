@@ -11,6 +11,7 @@ import 'package:get/route_manager.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
+
 const kPrimaryColor = Color(0xff00acac);
 const kTextGrey = Color(0XFF707478);
 const kSystemPadding = EdgeInsets.symmetric(horizontal: 20, vertical: 0);
