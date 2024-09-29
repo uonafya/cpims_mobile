@@ -1,11 +1,13 @@
 import 'package:cpims_mobile/screens/forms/form1b/utils/form1bConstants.dart';
 import 'package:cpims_mobile/screens/registry/organisation_units/widgets/steps_wrapper.dart';
+import 'package:cpims_mobile/utils/map_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../providers/form1b_provider.dart';
+import '../../../../services/manager/metadata_manager.dart';
 
 class StableForm1b extends StatefulWidget {
   const StableForm1b({super.key});
@@ -46,7 +48,7 @@ class _StableForm1bState extends State<StableForm1b> {
             form1bProvider.setSelectedStableFormDataServices(
                 selectedCareGiverStableServices, domainId);
           },
-          options: caregiverEconomicItems,
+          options: MetadataManager.getInstance().sixS.toValueItemList(),
           selectedOptions:
               selectedCareGiverStableServicesOptions.cast<ValueItem>(),
           maxItems: 50,
