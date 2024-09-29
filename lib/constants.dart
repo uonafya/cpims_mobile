@@ -11,7 +11,6 @@ import 'package:get/route_manager.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
-import 'services/metadata_service.dart';
 
 const kPrimaryColor = Color(0xff00acac);
 const kTextGrey = Color(0XFF707478);
@@ -241,14 +240,6 @@ List drawerOptions(BuildContext context) {
       'onTap': () => {
             Get.to(() => const UnapprovedRecordsScreens()),
           },
-      'children': []
-    },
-    {
-      'title': 'Test',
-      'icon': FontAwesomeIcons.hackerNews,
-      'onTap': () async {
-          await MetadataService.testGetMetadata(); // Call the method on the instance
-        },
       'children': []
     },
   ];
