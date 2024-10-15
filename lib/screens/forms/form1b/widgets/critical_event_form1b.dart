@@ -49,7 +49,7 @@ class _CriticalEventForm1bState extends State<CriticalEventForm1b> {
           selectedOptions: selectedCriticalEvents,
           options: MetadataManager.getInstance().caregiverCriticalEvent.toValueItemList(),
           maxItems: 13,
-          disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
+          // disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
           chipConfig: const ChipConfig(wrapType: WrapType.wrap),
           dropdownHeight: 300,

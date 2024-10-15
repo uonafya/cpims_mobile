@@ -52,7 +52,7 @@ class _HealthyForm1bState extends State<HealthyForm1b> {
           options: MetadataManager.getInstance().oneS.toValueItemList(),
           maxItems: 13,
           selectedOptions: selectedCareGiverServicesOptions.cast<ValueItem>(),
-          disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
+          // disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
           chipConfig: const ChipConfig(wrapType: WrapType.wrap),
           dropdownHeight: 300,
