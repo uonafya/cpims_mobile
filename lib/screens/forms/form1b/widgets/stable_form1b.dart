@@ -52,7 +52,7 @@ class _StableForm1bState extends State<StableForm1b> {
           selectedOptions:
               selectedCareGiverStableServicesOptions.cast<ValueItem>(),
           maxItems: 50,
-          disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
+          // disabledOptions: const [ValueItem(label: 'Option 1', value: '1')],
           selectionType: SelectionType.multi,
           chipConfig: const ChipConfig(wrapType: WrapType.wrap),
           dropdownHeight: 300,

@@ -315,9 +315,9 @@ class _HomepageState extends State<Homepage> {
   }
 
   Future<void> showCountUnsyncedForms() async {
-    updatedCountA = (await Form1Service.getCountAllFormOneA())!;
-    updatedCountB = (await Form1Service.getCountAllFormOneB())!;
-    updatedCountCpara = (await Form1Service.getCountAllFormCpara())!;
+    updatedCountA = (await Form1Service.getCountAllFormOneA());
+    updatedCountB = (await Form1Service.getCountAllFormOneB());
+    updatedCountCpara = (await Form1Service.getCountAllFormCpara());
     updatedCountOvcSubpopulation = await Form1Service.ovcSubCount();
     updatedCptCount = await CasePlanService.getCaseplanUnsyncedCount();
     updatedHrsCount = await CasePlanService.getCountOfHRSForms();

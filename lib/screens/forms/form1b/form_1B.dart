@@ -11,6 +11,7 @@ import 'package:cpims_mobile/widgets/custom_stepper.dart';
 import 'package:cpims_mobile/widgets/drawer.dart';
 import 'package:cpims_mobile/widgets/footer.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -61,20 +62,37 @@ class _Form1BScreen extends State<Form1BScreen> {
     });
   }
 
+  bool isFormInvalid() {
+    Form1bProvider form1bProvider =
+        Provider.of<Form1bProvider>(context, listen: false);
+    // Check if the date is filled
+    bool isDateValid = (form1bProvider.formData.selectedDate != null ||
+        !form1bProvider.formData.selectedDate.isBlank!);
+
+    // Check if all selected services are valid
+    bool areServicesValid =
+        (!form1bProvider.formData.selectedServices.isBlank! &&
+            !form1bProvider.safeFormData.selectedServices.isBlank! &&
+            !form1bProvider.stableFormData.selectedServices.isBlank! &&
+            !form1bProvider.criticalEventDataForm1b.selectedEvents.isBlank!);
+
+    return !(isDateValid && areServicesValid);
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isLastStep = selectedStep == steps.length - 1;
     Form1bProvider form1bProvider =
         Provider.of<Form1bProvider>(context, listen: false);
 
-    bool isFormInvalid() {
-      return ((form1bProvider.formData.selectedDate == null ||
-              form1bProvider.formData.selectedDate == '') &&
-          (form1bProvider.formData.selectedServices.isBlank! &&
-              form1bProvider.safeFormData.selectedServices.isBlank! &&
-              form1bProvider.stableFormData.selectedServices.isBlank! &&
-              form1bProvider.criticalEventDataForm1b.selectedEvents.isBlank!));
-    }
+    // bool isFormInvalid() {
+    //   return ((form1bProvider.formData.selectedDate == null ||
+    //           form1bProvider.formData.selectedDate == '') &&
+    //       (form1bProvider.formData.selectedServices.isBlank! &&
+    //           form1bProvider.safeFormData.selectedServices.isBlank! &&
+    //           form1bProvider.stableFormData.selectedServices.isBlank! &&
+    //           form1bProvider.criticalEventDataForm1b.selectedEvents.isBlank!));
+    // }
 
     return Scaffold(
       appBar: customAppBar(),
@@ -199,30 +217,39 @@ class _Form1BScreen extends State<Form1BScreen> {
                                     ? 'Submit Form1B'
                                     : 'Next',
                                 onTap: () async {
-                                  try {
-                                    if (selectedStep == steps.length - 1) {
-                                      if (form1bProvider
-                                              .formData.selectedDate ==
-                                          "") {
-                                        Get.snackbar(
-                                          'Error',
-                                          'Please select date of event',
-                                          duration: const Duration(seconds: 2),
-                                          snackPosition: SnackPosition.TOP,
-                                          backgroundColor: Colors.red,
-                                          colorText: Colors.white,
-                                          margin: const EdgeInsets.all(16),
-                                          borderRadius: 8,
-                                        );
-                                        setState(() {
-                                          isLoading = false;
-                                        });
-                                        return;
-                                      } else {
-                                        if (isFormInvalid()) {
+                                  // try {
+                                  if (selectedStep == steps.length - 1) {
+                                    if (isFormInvalid()) {
+                                      Get.snackbar(
+                                        'Error',
+                                        'Please fill all the information',
+                                        duration: const Duration(seconds: 2),
+                                        snackPosition: SnackPosition.TOP,
+                                        backgroundColor: Colors.red,
+                                        colorText: Colors.white,
+                                        margin: const EdgeInsets.all(16),
+                                        borderRadius: 8,
+                                      );
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                      return;
+                                    } else {
+                                      try {
+                                        String startInterviewTime = '';
+                                        if (context.mounted) {
+                                          startInterviewTime = context
+                                                  .read<AppMetaDataProvider>()
+                                                  .startTimeInterview ??
+                                              '';
+                                        }
+                                        if (dateOfEvent.isEmpty &&
+                                            form1bProvider
+                                                    .formData.selectedDate ==
+                                                "") {
                                           Get.snackbar(
                                             'Error',
-                                            'Please fill all the information',
+                                            'Please select date of event',
                                             duration:
                                                 const Duration(seconds: 2),
                                             snackPosition: SnackPosition.TOP,
@@ -234,99 +261,84 @@ class _Form1BScreen extends State<Form1BScreen> {
                                           setState(() {
                                             isLoading = false;
                                           });
-                                          return;
-                                        } else {
-                                          String startInterviewTime = '';
-                                          if (context.mounted) {
-                                            startInterviewTime = context
-                                                    .read<AppMetaDataProvider>()
-                                                    .startTimeInterview ??
-                                                '';
-                                          }
-                                          if (dateOfEvent.isEmpty &&
-                                              form1bProvider
-                                                      .formData.selectedDate ==
-                                                  "") {
+                                        }
+
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        bool isFormSaved =
+                                            await form1bProvider.saveForm1bData(
+                                                form1bProvider.formData,
+                                                startInterviewTime,
+                                                context,
+                                                widget.unapprovedForm1);
+
+                                        setState(() {
+                                          if (isFormSaved == true) {
+                                            isLoading = false;
+                                            if (context.mounted) {
+                                              context
+                                                  .read<StatsProvider>()
+                                                  .updateFormOneBStats();
+                                              context
+                                                  .read<StatsProvider>()
+                                                  .updateFormOneBDistinctStats();
+                                              context
+                                                  .read<AppMetaDataProvider>()
+                                                  .clearFormMetaData();
+                                            }
                                             Get.snackbar(
-                                              'Error',
-                                              'Please select date of event',
+                                              'Success',
+                                              'Form1B data saved successfully.',
                                               duration:
                                                   const Duration(seconds: 2),
                                               snackPosition: SnackPosition.TOP,
-                                              backgroundColor: Colors.red,
+                                              // Display at the top of the screen
+                                              backgroundColor: Colors.green,
                                               colorText: Colors.white,
                                               margin: const EdgeInsets.all(16),
                                               borderRadius: 8,
                                             );
-                                            setState(() {
-                                              isLoading = false;
-                                            });
+                                            Navigator.pop(context, true);
+                                            selectedStep = 0;
                                           }
-
-                                          setState(() {
-                                            isLoading = true;
-                                          });
-                                          bool isFormSaved =
-                                              await form1bProvider
-                                                  .saveForm1bData(
-                                                      form1bProvider.formData,
-                                                      startInterviewTime,
-                                                      context,
-                                                      widget.unapprovedForm1);
-
-                                          setState(() {
-                                            if (isFormSaved == true) {
-                                              isLoading = false;
-                                              if (context.mounted) {
-                                                context
-                                                    .read<StatsProvider>()
-                                                    .updateFormOneBStats();
-                                                context
-                                                    .read<StatsProvider>()
-                                                    .updateFormOneBDistinctStats();
-                                                context
-                                                    .read<AppMetaDataProvider>()
-                                                    .clearFormMetaData();
-                                              }
-                                              Get.snackbar(
-                                                'Success',
-                                                'Form1B data saved successfully.',
-                                                duration:
-                                                    const Duration(seconds: 2),
-                                                snackPosition:
-                                                    SnackPosition.TOP,
-                                                // Display at the top of the screen
-                                                backgroundColor: Colors.green,
-                                                colorText: Colors.white,
-                                                margin:
-                                                    const EdgeInsets.all(16),
-                                                borderRadius: 8,
-                                              );
-                                              Navigator.pop(context, true);
-                                              selectedStep = 0;
-                                            }
-                                          });
-                                        }
-                                      }
-                                    } else {
-                                      setState(() {
-                                        isLoading = false;
-                                        if (selectedStep < steps.length - 1) {
-                                          selectedStep++;
-                                        }
-                                      });
-                                    }
-                                  } catch (e) {
-                                    if (e.toString() == locationDisabled ||
-                                        e.toString() == locationDenied) {
-                                      if (context.mounted) {
+                                        });
+                                      } catch (e) {
                                         setState(() {
                                           isLoading = false;
                                         });
-                                        locationMissingDialog(context);
+                                        if (kDebugMode) {
+                                          print(
+                                            "Error getting user location: ${e.toString()}",
+                                          );
+                                        }
+                                        if (e.toString() == locationDisabled ||
+                                            e.toString() == locationDenied) {
+                                          if (context.mounted) {
+                                            locationMissingDialog(context);
+                                          }
+                                        }
                                       }
                                     }
+                                  } else {
+                                    setState(() {
+                                      isLoading = false;
+                                      if (selectedStep < steps.length - 1) {
+                                        selectedStep++;
+                                      }
+                                    });
                                   }
+                                  // } catch (e) {
+                                  //   if (e.toString() == locationDisabled ||
+                                  //       e.toString() == locationDenied) {
+                                  //     if (context.mounted) {
+                                  //       setState(() {
+                                  //         isLoading = false;
+                                  //       });
+                                  //       locationMissingDialog(context);
+                                  //     }
+                                  //   }
+                                  // }
                                 },
                               ),
                             ),
@@ -340,7 +352,7 @@ class _Form1BScreen extends State<Form1BScreen> {
                             TextButton(
                                 onPressed: () {
                                   Provider.of<Form1bProvider>(context,
-                                      listen: false)
+                                          listen: false)
                                       .resetFormData();
                                   Navigator.pop(context);
                                 },
