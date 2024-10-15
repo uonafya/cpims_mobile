@@ -24,12 +24,12 @@ class Form1Service {
       await db.insertForm1Data(formType, formData, metadata, uuid);
       return true;
     } catch (e) {
-      // if (kDebugMode) {
-      //   print(e);
-      // }
+      if (kDebugMode) {
+        print(e);
+      }
       rethrow;
     }
-    return false;
+    // return false;
   }
 
 // delete a form from local storage

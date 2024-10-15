@@ -1389,9 +1389,9 @@ class LocalDb {
         );
       }
     } catch (e) {
-      // if (kDebugMode) {
-      //   print('Error inserting form1 data: $e');
-      // }
+      if (kDebugMode) {
+        print('Error inserting form1 data: $e');
+      }
       rethrow;
     }
   }
